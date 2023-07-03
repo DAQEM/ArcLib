@@ -1,0 +1,10 @@
+{
+  "powerup": "arc:alchemist/longer_potions_v",
+  "type": "arc:on_effect_added",
+  "rewards": [
+    {
+      "type": "arc:effect_duration_multiplier",
+      "multiplier": 2.0
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+modLoader = "javafml"
+loaderVersion = "[43,)"
+issueTrackerURL = "https://github.com/DAQEM/Arc/issues"
+license = "MIT"
+
+[[mods]]
+modId = "arc"
+version = "${version}"
+displayName = "Arc"
+authors = "DAQEM"
+description = '''
+
+'''
+#logoFile = ""
+
+[[dependencies.arc]]
+modId = "forge"
+mandatory = true
+versionRange = "[43,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.arc]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.19.2,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.arc]]
+modId = "architectury"
+mandatory = true
+versionRange = "[6.5.85,)"
+ordering = "AFTER"
+side = "BOTH"

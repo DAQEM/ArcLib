@@ -1,0 +1,144 @@
+package com.daqem.arc.data.serializer;
+
+import com.daqem.arc.api.action.holder.type.IActionHolderType;
+import com.daqem.arc.registry.ArcRegistry;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import net.minecraft.core.Registry;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.TagParser;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectCategory;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
+public interface ArcSerializer {
+
+    default ResourceLocation getResourceLocation(JsonObject jsonObject, String elementName){
+        return new ResourceLocation(getString(jsonObject, elementName));
+    }
+
+    default @Nullable CompoundTag getCompoundTag(JsonObject jsonObject){
+        CompoundTag tag = null;
+        if (jsonObject.has("tag")) {
+            String tagString = jsonObject.get("tag").getAsString();
+            try {
+                tag = TagParser.parseTag(tagString);
+            } catch (CommandSyntaxException e) {
+                throw new JsonParseException("Failed to parse tag ( " + tagString + " )");
+            }
+        }
+        return tag;
+    }
+
+    default IActionHolderType<?> getHolderType(JsonObject jsonObject, String elementName){
+        return new ElementConverter<>(ArcRegistry.ACTION_HOLDER).convertToElement(getString(jsonObject, elementName));
+    }
+
+    default Item getItem(JsonObject jsonObject, String elementName){
+        return new ElementConverter<>(Registry.ITEM).convertToElement(getString(jsonObject, elementName));
+    }
+
+    default ItemStack getItemStack(JsonObject jsonObject, String elementName){
+        return new ItemStack(getItem(jsonObject, elementName));
+    }
+
+    default Block getBlock(JsonObject jsonObject, String elementName){
+        return new ElementConverter<>(Registry.BLOCK).convertToElement(getString(jsonObject, elementName));
+    }
+
+    default MobEffect getMobEffect(JsonObject jsonObject, String elementName){
+        return new ElementConverter<>(Registry.MOB_EFFECT).convertToElement(getString(jsonObject, elementName));
+    }
+
+    default EntityType<?> getEntityType(JsonObject jsonObject, String elementName){
+        return new ElementConverter<>(Registry.ENTITY_TYPE).convertToElement(getString(jsonObject, elementName));
+    }
+
+    default String getString(JsonObject jsonObject, String elementName){
+        return GsonHelper.getAsString(jsonObject, elementName);
+    }
+
+    default List<String> getStrings(JsonObject jsonObject, String elementName){
+        return StreamSupport.stream(
+                        GsonHelper.getAsJsonArray(jsonObject, elementName).spliterator(), false)
+                .map(JsonElement::getAsString)
+                .collect(Collectors.toList());
+    }
+
+    default <E> List<E> getElementsFromJson(Registry<E> registry, JsonObject jsonObject, String elementName){
+        return new ElementConverter<>(registry).convertToElements(getStrings(jsonObject, elementName));
+    }
+
+    default <E> List<TagKey<E>> getTagKeysFromJson(Registry<E> registry, JsonObject jsonObject, String elementName){
+        return new ElementConverter<>(registry).convertToElementTags(getStrings(jsonObject, elementName));
+    }
+
+    default List<Block> getBlocks(JsonObject jsonObject, String elementName){
+        return getElementsFromJson(Registry.BLOCK, jsonObject, elementName);
+    }
+
+    default List<TagKey<Block>> getBlockTags(JsonObject jsonObject, String elementName){
+        return getTagKeysFromJson(Registry.BLOCK, jsonObject, elementName);
+    }
+
+    default List<Item> getItems(JsonObject jsonObject, String elementName){
+        return getElementsFromJson(Registry.ITEM, jsonObject, elementName);
+    }
+
+    default List<TagKey<Item>> getItemTags(JsonObject jsonObject, String elementName){
+        return getTagKeysFromJson(Registry.ITEM, jsonObject, elementName);
+    }
+
+    default List<EntityType<?>> getEntityTypes(JsonObject jsonObject, String elementName){
+        return getElementsFromJson(Registry.ENTITY_TYPE, jsonObject, elementName);
+    }
+
+    default InteractionHand getHand(JsonObject jsonObject, String elementName){
+        String handName = getString(jsonObject, elementName);
+        InteractionHand hand;
+        try {
+            hand = InteractionHand.valueOf(handName);
+        } catch (IllegalArgumentException e) {
+            throw new JsonParseException("Invalid hand, expected to find a valid hand ('MAIN_HAND' or 'OFF_HAND').");
+        }
+        return hand;
+    }
+
+    default MobEffectCategory getMobEffectCategory(JsonObject jsonObject, String elementName){
+        String effectCategoryName = getString(jsonObject, elementName);
+        MobEffectCategory effectCategory;
+        try {
+            effectCategory = MobEffectCategory.valueOf(effectCategoryName);
+        } catch (IllegalArgumentException e) {
+            throw new JsonParseException("Invalid effect_category, expected to find a valid effect category ('BENEFICIAL', 'HARMFUL' or 'NEUTRAL').");
+        }
+        return effectCategory;
+    }
+
+    default ResourceKey<Level> getDimension(JsonObject jsonObject, String elementName){
+        String dimensionName = getString(jsonObject, elementName);
+        ResourceKey<Level> dimension;
+        try {
+            dimension = ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(dimensionName));
+        } catch (IllegalArgumentException e) {
+            throw new JsonParseException("Invalid dimension, expected to find a valid dimension.");
+        }
+        return dimension;
+    }
+}

@@ -1,0 +1,62 @@
+package com.daqem.arc.data.condition.item;
+
+import com.daqem.arc.api.action.data.ActionData;
+import com.daqem.arc.api.condition.AbstractCondition;
+import com.daqem.arc.api.condition.serializer.ConditionSerializer;
+import com.daqem.arc.api.condition.serializer.IConditionSerializer;
+import com.daqem.arc.api.condition.type.ConditionType;
+import com.daqem.arc.api.condition.type.IConditionType;
+import com.google.gson.*;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+
+public class ItemInInventoryCondition extends AbstractCondition {
+
+    private final ItemStack itemStack;
+
+    public ItemInInventoryCondition(boolean inverted, ItemStack itemStack) {
+        super(inverted);
+        this.itemStack = itemStack;
+    }
+
+    @Override
+    public boolean isMet(ActionData actionData) {
+        Player player = actionData.getPlayer().getPlayer();
+        return player.getInventory().items.stream().anyMatch(stack -> stack.getItem() == itemStack.getItem());
+    }
+
+    @Override
+    public IConditionType<?> getType() {
+        return ConditionType.ITEM_IN_INVENTORY;
+    }
+
+    @Override
+    public IConditionSerializer<?> getSerializer() {
+        return ConditionSerializer.ITEM_IN_INVENTORY;
+    }
+
+    public static class Serializer implements ConditionSerializer<ItemInInventoryCondition> {
+
+        @Override
+        public ItemInInventoryCondition fromJson(ResourceLocation location, JsonObject jsonObject, boolean inverted) {
+            return new ItemInInventoryCondition(
+                    inverted,
+                    getItemStack(jsonObject, "item"));
+        }
+
+        @Override
+        public ItemInInventoryCondition fromNetwork(ResourceLocation location, FriendlyByteBuf friendlyByteBuf, boolean inverted) {
+            return new ItemInInventoryCondition(
+                    inverted,
+                    friendlyByteBuf.readItem());
+        }
+
+        @Override
+        public void toNetwork(FriendlyByteBuf friendlyByteBuf, ItemInInventoryCondition type) {
+            ConditionSerializer.super.toNetwork(friendlyByteBuf, type);
+            friendlyByteBuf.writeItem(type.itemStack);
+        }
+    }
+}

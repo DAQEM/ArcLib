@@ -1,0 +1,21 @@
+{
+  "powerup": "arc:alchemist/stronger_potions_iii",
+  "type": "arc:on_effect_added",
+  "rewards": [
+    {
+      "type": "arc:effect_amplifier_addition",
+      "addition": 1,
+      "chance": 60
+    }
+  ],
+  "conditions": [
+    {
+      "type": "arc:powerup_not_active",
+      "powerup": "arc:alchemist/stronger_potions_iv"
+    },
+    {
+      "type": "arc:powerup_not_active",
+      "powerup": "arc:alchemist/stronger_potions_v"
+    }
+  ]
+}

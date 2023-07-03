@@ -1,0 +1,26 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.daqem.arc.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "client": [
+    "client.MixinLocalPlayer"
+  ],
+  "mixins": [
+    "MixinAbstractFurnaceBlockEntity",
+    "MixinAnimal",
+    "MixinAxeItem",
+    "MixinBlockStateBase",
+    "MixinBrewingStandBlockEntity",
+    "MixinExampleServerPlayer",
+    "MixinFishingHook",
+    "MixinItemStack",
+    "MixinLivingEntity",
+    "MixinProjectile",
+    "MixinRecipeHolder",
+    "MixinServerPlayer"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

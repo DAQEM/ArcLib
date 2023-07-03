@@ -1,0 +1,18 @@
+{
+  "type": "arc:on_harvest_crop",
+  "holder": {
+    "type": "example:example_action_type",
+    "id": "example:example_action_holder_1"
+  },
+  "rewards": [
+    {
+      "type": "arc:item",
+      "item": "minecraft:diamond"
+    }
+  ],
+  "conditions": [
+    {
+      "type": "arc:crop_fully_grown"
+    }
+  ]
+}

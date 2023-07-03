@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "id": "arc",
+  "version": "${version}",
+  "name": "Arc",
+  "description": "",
+  "authors": [
+    "DAQEM"
+  ],
+  "contact": {
+    "homepage": "https://daqem.com/",
+    "sources": "https://github.com/DAQEM/Arc"
+  },
+  "license": "MIT",
+  "icon": "assets/arc/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.daqem.arc.fabric.ArcFabric"
+    ],
+    "client": [
+      "com.daqem.arc.fabric.client.ArcFabricClient"
+    ]
+  },
+  "mixins": [
+    "arc.mixins.json",
+    "arc-common.mixins.json"
+  ],
+  "depends": {
+    "fabric": "*",
+    "minecraft": ">=1.19.2",
+    "architectury": ">=6.5.85"
+  }
+}

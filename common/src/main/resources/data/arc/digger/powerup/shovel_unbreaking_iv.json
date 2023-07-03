@@ -1,0 +1,23 @@
+{
+  "powerup": "arc:digger/shovel_unbreaking_iv",
+  "type": "arc:on_hurt_item",
+  "rewards": [
+    {
+      "type": "arc:cancel_action",
+      "chance": 40
+    }
+  ],
+  "conditions": [
+    {
+      "type": "arc:items",
+      "items": [
+        "#forge:tools/shovels",
+        "#c:shovels"
+      ]
+    },
+    {
+      "type": "arc:powerup_not_active",
+      "powerup": "arc:digger/shovel_unbreaking_v"
+    }
+  ]
+}
