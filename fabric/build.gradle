@@ -83,9 +83,6 @@ publishing {
 }
 
 curseforge {
-//    if (project.hasProperty("curseForgeApiKey")) {
-//        apiKey = rootProject.curse_forge_api_key
-//    }
     apiKey = System.getenv('CURSEFORGE_API_KEY')
     project {
         id = rootProject.curse_forge_project_id
