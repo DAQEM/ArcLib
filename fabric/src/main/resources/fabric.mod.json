@@ -12,7 +12,7 @@
     "sources": "https://github.com/DAQEM/Arc"
   },
   "license": "MIT",
-  "icon": "assets/arc/icon.png",
+  "icon": "icon.png",
   "environment": "*",
   "entrypoints": {
     "main": [

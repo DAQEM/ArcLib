@@ -8,6 +8,7 @@ modId = "arc"
 version = "${version}"
 displayName = "Arc"
 authors = "DAQEM"
+logoFile = "icon.png"
 description = '''
 
 '''
