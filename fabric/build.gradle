@@ -49,7 +49,7 @@ remapJar {
     injectAccessWidener = true
     input.set shadowJar.archiveFile
     dependsOn shadowJar
-    classifier null
+    classifier "fabric"
 }
 
 jar {
@@ -80,4 +80,33 @@ publishing {
     repositories {
         // Add repositories to publish to here.
     }
+}
+
+curseforge {
+//    if (project.hasProperty("curseForgeApiKey")) {
+//        apiKey = rootProject.curse_forge_api_key
+//    }
+    apiKey = System.getenv('CURSEFORGE_API_KEY')
+    project {
+        id = rootProject.curse_forge_project_id
+        releaseType = rootProject.curse_forge_release_type
+        addGameVersion "$rootProject.minecraft_version"
+        addGameVersion "Java 17"
+        addGameVersion "Fabric"
+
+        relations {
+            requiredDependency("architectury-api")
+        }
+
+        mainArtifact(remapJar) {
+            displayName = "Arc Fabric $rootProject.minecraft_version - $rootProject.mod_version"
+        }
+    }
+    options {
+        forgeGradleIntegration = false
+    }
+}
+
+afterEvaluate {
+    tasks.curseforge883593.dependsOn remapJar
 }
