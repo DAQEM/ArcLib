@@ -1,6 +1,7 @@
 plugins {
     id "com.github.johnrengelman.shadow" version "7.1.2"
     id 'com.matthewprenger.cursegradle' version '1.4.0'
+    id "com.modrinth.minotaur" version "2.+"
 }
 
 architectury {
@@ -115,5 +116,19 @@ curseforge {
         mainArtifact(remapJar) {
             displayName = "Arc Forge $rootProject.minecraft_version - $rootProject.mod_version"
         }
+    }
+}
+
+modrinth {
+    token = System.getenv("MODRINTH_API_KEY")
+    projectId = "H3eKhxi7"
+    versionName = "Arc Forge $rootProject.minecraft_version - $rootProject.mod_version"
+    versionNumber = "$rootProject.mod_version"
+    versionType = "$rootProject.curse_forge_release_type"
+    uploadFile = remapJar
+    gameVersions = ["$rootProject.minecraft_version"]
+    loaders = ["forge"]
+    dependencies {
+        required.project "architectury-api"
     }
 }
