@@ -99,6 +99,10 @@ curseforge {
         mainArtifact(remapJar) {
             displayName = "Arc Fabric $rootProject.minecraft_version - $rootProject.mod_version"
         }
+
+        addArtifact(sourcesJar) {
+            displayName = "Arc Fabric $rootProject.minecraft_version - $rootProject.mod_version Sources"
+        }
     }
     options {
         forgeGradleIntegration = false

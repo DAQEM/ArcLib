@@ -116,6 +116,10 @@ curseforge {
         mainArtifact(remapJar) {
             displayName = "Arc Forge $rootProject.minecraft_version - $rootProject.mod_version"
         }
+
+        addArtifact(sourcesJar) {
+            displayName = "Arc Forge $rootProject.minecraft_version - $rootProject.mod_version Sources"
+        }
     }
 }
 
