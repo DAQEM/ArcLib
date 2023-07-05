@@ -51,7 +51,6 @@ public abstract class MixinServerPlayer extends Player implements ArcServerPlaye
 
     public MixinServerPlayer(Level level, BlockPos blockPos, float yaw, GameProfile gameProfile, @Nullable ProfilePublicKey profilePublicKey) {
         super(level, blockPos, yaw, gameProfile, profilePublicKey);
-        Arc.LOGGER.info("ServerPlayer constructor");
     }
 
     @Override

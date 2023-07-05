@@ -37,7 +37,6 @@ public abstract class MixinBlockStateBase {
     @Inject(at = @At("RETURN"), method = "getDestroyProgress(Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/world/level/BlockGetter;Lnet/minecraft/core/BlockPos;)F", cancellable = true)
     public void getDestroyProgress(Player player, BlockGetter blockGetter, BlockPos blockPos, CallbackInfoReturnable<Float> cir) {
         if (player instanceof ArcPlayer arcPlayer) {
-            float old = cir.getReturnValue();
             cir.setReturnValue(
                     cir.getReturnValue()
                             * new ActionDataBuilder(arcPlayer, ActionType.GET_DESTROY_SPEED)
@@ -49,9 +48,6 @@ public abstract class MixinBlockStateBase {
                             .sendToAction()
                             .getDestroySpeedModifier()
             );
-            float newSpeed = cir.getReturnValue();
-            if (player instanceof ArcServerPlayer)
-                Arc.LOGGER.info("Destroy speed percentage: " + newSpeed / old * 100 + "% new: " + newSpeed);
         }
     }
 }

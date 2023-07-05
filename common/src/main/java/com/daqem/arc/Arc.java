@@ -22,7 +22,6 @@ public class Arc {
 
     public static void initCommon() {
         registerEvents();
-        ArcRegistry.init();
         ArcNetworking.init();
     }
 
