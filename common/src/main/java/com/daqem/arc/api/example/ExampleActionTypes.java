@@ -6,9 +6,7 @@ import net.minecraft.resources.ResourceLocation;
 public class ExampleActionTypes {
 
     public static final ActionHolderType<ExampleActionHolder> EXAMPLE_ACTION_TYPE =
-            ActionHolderType.register(
-                    new ResourceLocation("example:example_action_type"),
-                    ExampleActionHolderManager.getInstance().getActionHolders());
+            ActionHolderType.register(new ResourceLocation("example:example_action_type"));
 
     public static void init() {
     }

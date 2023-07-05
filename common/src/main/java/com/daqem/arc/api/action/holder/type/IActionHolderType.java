@@ -8,6 +8,4 @@ import java.util.List;
 public interface IActionHolderType<T extends IActionHolder> {
 
     ResourceLocation getLocation();
-
-    List<IActionHolder> getActionHolders();
 }

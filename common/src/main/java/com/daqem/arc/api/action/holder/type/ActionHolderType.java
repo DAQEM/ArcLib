@@ -9,18 +9,8 @@ import java.util.List;
 
 public interface ActionHolderType<T extends IActionHolder> extends IActionHolderType<T> {
 
-    static <T extends IActionHolder> ActionHolderType<T> register(final ResourceLocation location, final List<IActionHolder> actionHolders) {
-        return Registry.register(ArcRegistry.ACTION_HOLDER, location, new ActionHolderType<T>() {
-            @Override
-            public ResourceLocation getLocation() {
-                return location;
-            }
-
-            @Override
-            public List<IActionHolder> getActionHolders() {
-                return actionHolders;
-            }
-        });
+    static <T extends IActionHolder> ActionHolderType<T> register(final ResourceLocation location) {
+        return Registry.register(ArcRegistry.ACTION_HOLDER, location, () -> location);
     }
 
     static void init() {
