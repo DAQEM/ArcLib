@@ -1,5 +1,6 @@
 package com.daqem.arc;
 
+import com.daqem.arc.api.example.ExampleRegistryEvent;
 import com.daqem.arc.event.EventPlayerJoin;
 import com.daqem.arc.event.command.EventRegisterCommands;
 import com.daqem.arc.event.triggers.AdvancementEvents;
@@ -7,6 +8,7 @@ import com.daqem.arc.event.triggers.BlockEvents;
 import com.daqem.arc.event.triggers.EntityEvents;
 import com.daqem.arc.event.triggers.ItemEvents;
 import com.daqem.arc.networking.ArcNetworking;
+import com.daqem.arc.registry.ArcRegistry;
 import com.mojang.logging.LogUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -20,6 +22,7 @@ public class Arc {
 
     public static void initCommon() {
         registerEvents();
+        ArcRegistry.init();
         ArcNetworking.init();
     }
 
@@ -31,8 +34,11 @@ public class Arc {
         EntityEvents.registerEvents();
         AdvancementEvents.registerEvents();
 
-
         EventPlayerJoin.registerEvent();
+
+        if (isDevEnvironment()) {
+            ExampleRegistryEvent.registerActionHolderType();
+        }
     }
 
     public static ResourceLocation getId(String id) {

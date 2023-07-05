@@ -1,26 +1,21 @@
 package com.daqem.arc.registry;
 
 import com.daqem.arc.Arc;
-import com.daqem.arc.api.action.IAction;
-import com.daqem.arc.api.action.holder.IActionHolder;
 import com.daqem.arc.api.action.holder.type.ActionHolderType;
 import com.daqem.arc.api.action.holder.type.IActionHolderType;
 import com.daqem.arc.api.action.serializer.ActionSerializer;
 import com.daqem.arc.api.action.serializer.IActionSerializer;
 import com.daqem.arc.api.action.type.ActionType;
 import com.daqem.arc.api.action.type.IActionType;
-import com.daqem.arc.api.condition.ICondition;
 import com.daqem.arc.api.condition.serializer.ConditionSerializer;
 import com.daqem.arc.api.condition.serializer.IConditionSerializer;
 import com.daqem.arc.api.condition.type.ConditionType;
 import com.daqem.arc.api.condition.type.IConditionType;
-import com.daqem.arc.api.example.ExampleActionHolder;
-import com.daqem.arc.api.example.ExampleActionTypes;
-import com.daqem.arc.api.reward.IReward;
 import com.daqem.arc.api.reward.serializer.IRewardSerializer;
 import com.daqem.arc.api.reward.serializer.RewardSerializer;
 import com.daqem.arc.api.reward.type.IRewardType;
 import com.daqem.arc.api.reward.type.RewardType;
+import com.daqem.arc.event.events.RegistryEvent;
 import com.mojang.serialization.Lifecycle;
 import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.Registry;
@@ -47,7 +42,7 @@ public class ArcRegistry {
     public static Registry<IRewardSerializer<?>> REWARD_SERIALIZER;
     public static Registry<IConditionSerializer<?>> CONDITION_SERIALIZER;
 
-    public static void initRegistry() {
+    public static void init() {
         ACTION = new MappedRegistry<>(ArcRegistry.ACTION_KEY, Lifecycle.experimental(), null);
         REWARD = new MappedRegistry<>(ArcRegistry.REWARD_KEY, Lifecycle.experimental(), null);
         CONDITION = new MappedRegistry<>(ArcRegistry.CONDITION_KEY, Lifecycle.experimental(), null);
@@ -61,12 +56,9 @@ public class ArcRegistry {
         RewardType.init();
         ConditionType.init();
         ActionHolderType.init();
+
         ActionSerializer.init();
         RewardSerializer.init();
         ConditionSerializer.init();
-
-        if (Arc.isDevEnvironment()) {
-            ExampleActionTypes.init();
-        }
     }
 }

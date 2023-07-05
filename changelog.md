@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file.
 
+
+
 ## [0.2] - 2023-07-05
 ### Fixed
 - Made `ActionDataType` register function publicly accessible.
