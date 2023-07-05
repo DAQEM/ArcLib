@@ -125,7 +125,6 @@ modrinth {
     uploadFile = remapJar
     gameVersions = ["$rootProject.minecraft_version"]
     loaders = ["fabric"]
-    changelog = rootProject.file('changelog.md')
     dependencies {
         required.project "architectury-api"
     }
