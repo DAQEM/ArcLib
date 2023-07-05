@@ -2,6 +2,7 @@ package com.daqem.arc.api.action.data;
 
 import com.daqem.arc.api.action.IAction;
 import com.daqem.arc.api.action.data.type.IActionDataType;
+import com.daqem.arc.api.action.holder.IActionHolder;
 import com.daqem.arc.api.action.type.ActionType;
 import com.daqem.arc.api.action.type.IActionType;
 import com.daqem.arc.api.player.ArcPlayer;
@@ -17,6 +18,7 @@ public class ActionData implements IActionData {
     private final ArcPlayer player;
     private final ActionType<?> actionType;
     private final Map<IActionDataType<?>, Object> actionData;
+    private IActionHolder sourceActionHolder;
 
     public ActionData(ArcPlayer player, ActionType<?> actionType, Map<IActionDataType<?>, Object> actionData) {
         this.player = player;
@@ -47,6 +49,15 @@ public class ActionData implements IActionData {
                 .filter(this::isTypeOfCurrentAction)
                 .map(this::performCurrentAction)
                 .reduce(new ActionResult(), ActionResult::merge);
+    }
+
+    @Override
+    public IActionHolder getSourceActionHolder() {
+        return sourceActionHolder;
+    }
+
+    public void setSourceActionHolder(IActionHolder sourceActionHolder) {
+        this.sourceActionHolder = sourceActionHolder;
     }
 
     private List<IAction> getPlayerActions() {

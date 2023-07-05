@@ -32,4 +32,9 @@ public class ExampleActionHolder implements IActionHolder {
     public void addAction(IAction action) {
         this.actions.add(action);
     }
+
+    @Override
+    public IActionHolderType<?> getType() {
+        return ExampleActionTypes.EXAMPLE_ACTION_TYPE;
+    }
 }
