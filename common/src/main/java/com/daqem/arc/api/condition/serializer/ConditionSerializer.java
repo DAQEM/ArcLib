@@ -28,6 +28,7 @@ import com.daqem.arc.data.condition.recipe.IsSmokingRecipeCondition;
 import com.daqem.arc.data.condition.scoreboard.ScoreboardCondition;
 import com.daqem.arc.data.condition.team.TeamCondition;
 import com.daqem.arc.data.condition.world.DimensionCondition;
+import com.daqem.arc.event.events.RegistryEvent;
 import com.daqem.arc.registry.ArcRegistry;
 import com.google.gson.JsonObject;
 import net.minecraft.core.Registry;
@@ -65,9 +66,6 @@ public interface ConditionSerializer<T extends ICondition> extends IConditionSer
     IConditionSerializer<BlockHardnessCondition> BLOCK_HARDNESS = register(Arc.getId("block_hardness"), new BlockHardnessCondition.Serializer());
     IConditionSerializer<BlockMaterialColorCondition> BLOCK_MATERIAL_COLOR = register(Arc.getId("block_material_color"), new BlockMaterialColorCondition.Serializer());
 
-    static void init() {
-    }
-
     @Override
     default T fromJson(ResourceLocation location, JsonObject jsonObject) {
         return fromJson(location, jsonObject, GsonHelper.getAsBoolean(jsonObject, "inverted", false));
@@ -85,5 +83,9 @@ public interface ConditionSerializer<T extends ICondition> extends IConditionSer
 
     static <T extends ICondition> IConditionSerializer<T> register(final ResourceLocation location, final ConditionSerializer<T> serializer) {
         return Registry.register(ArcRegistry.CONDITION_SERIALIZER, location, serializer);
+    }
+
+    static void init() {
+        RegistryEvent.REGISTER_CONDITION_SERIALIZER.invoker().registerConditionSerializer();
     }
 }

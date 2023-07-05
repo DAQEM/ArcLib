@@ -13,6 +13,7 @@ import com.daqem.arc.data.reward.effect.EffectReward;
 import com.daqem.arc.data.reward.effect.RemoveEffectReward;
 import com.daqem.arc.data.reward.experience.ExpReward;
 import com.daqem.arc.data.reward.item.ItemReward;
+import com.daqem.arc.event.events.RegistryEvent;
 import com.daqem.arc.registry.ArcRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
@@ -44,5 +45,6 @@ public interface RewardType<T extends IReward> extends IRewardType<T> {
     }
 
     static void init() {
+        RegistryEvent.REGISTER_REWARD_TYPE.invoker().registerRewardType();
     }
 }

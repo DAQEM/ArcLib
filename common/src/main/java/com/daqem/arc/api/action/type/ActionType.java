@@ -8,6 +8,7 @@ import com.daqem.arc.data.action.entity.*;
 import com.daqem.arc.data.action.item.*;
 import com.daqem.arc.data.action.movement.*;
 import com.daqem.arc.data.action.player.*;
+import com.daqem.arc.event.events.RegistryEvent;
 import com.daqem.arc.registry.ArcRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
@@ -77,5 +78,6 @@ public interface ActionType<T extends IAction> extends IActionType<T> {
     }
 
     static void init() {
+        RegistryEvent.REGISTER_ACTION_TYPE.invoker().registerActionType();
     }
 }

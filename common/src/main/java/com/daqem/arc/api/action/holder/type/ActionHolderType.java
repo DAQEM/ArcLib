@@ -1,6 +1,7 @@
 package com.daqem.arc.api.action.holder.type;
 
 import com.daqem.arc.api.action.holder.IActionHolder;
+import com.daqem.arc.event.events.RegistryEvent;
 import com.daqem.arc.registry.ArcRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
@@ -14,5 +15,6 @@ public interface ActionHolderType<T extends IActionHolder> extends IActionHolder
     }
 
     static void init() {
+        RegistryEvent.REGISTER_ACTION_HOLDER_TYPE.invoker().registerActionHolderType();
     }
 }

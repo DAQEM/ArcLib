@@ -10,6 +10,7 @@ import com.daqem.arc.data.reward.effect.EffectReward;
 import com.daqem.arc.data.reward.effect.RemoveEffectReward;
 import com.daqem.arc.data.reward.experience.ExpReward;
 import com.daqem.arc.data.reward.item.ItemReward;
+import com.daqem.arc.event.events.RegistryEvent;
 import com.daqem.arc.registry.ArcRegistry;
 import com.google.gson.JsonObject;
 import net.minecraft.core.Registry;
@@ -28,9 +29,6 @@ public interface RewardSerializer<T extends IReward> extends IRewardSerializer<T
     IRewardSerializer<ItemReward> ITEM = register(Arc.getId("item"), new ItemReward.Serializer());
     IRewardSerializer<CancelActionReward> CANCEL_ACTION = register(Arc.getId("cancel_action"), new CancelActionReward.Serializer());
 
-    static void init() {
-    }
-
     @Override
     default T fromJson(ResourceLocation location, JsonObject jsonObject) {
         return fromJson(jsonObject, GsonHelper.getAsDouble(jsonObject, "chance", 100D));
@@ -48,5 +46,9 @@ public interface RewardSerializer<T extends IReward> extends IRewardSerializer<T
 
     static <T extends IReward> IRewardSerializer<T> register(final ResourceLocation location, final RewardSerializer<T> serializer) {
         return Registry.register(ArcRegistry.REWARD_SERIALIZER, location, serializer);
+    }
+
+    static void init() {
+        RegistryEvent.REGISTER_REWARD_SERIALIZER.invoker().registerRewardSerializer();
     }
 }

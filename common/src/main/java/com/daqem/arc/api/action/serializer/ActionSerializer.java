@@ -12,6 +12,7 @@ import com.daqem.arc.data.action.entity.*;
 import com.daqem.arc.data.action.item.*;
 import com.daqem.arc.data.action.movement.*;
 import com.daqem.arc.data.action.player.*;
+import com.daqem.arc.event.events.RegistryEvent;
 import com.daqem.arc.registry.ArcRegistry;
 import com.google.gson.JsonObject;
 import net.minecraft.core.Registry;
@@ -128,5 +129,6 @@ public interface ActionSerializer<T extends IAction> extends IActionSerializer<T
     }
 
     static void init() {
+        RegistryEvent.REGISTER_ACTION_SERIALIZER.invoker().registerActionSerializer();
     }
 }

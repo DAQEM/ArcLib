@@ -24,6 +24,7 @@ import com.daqem.arc.data.condition.recipe.IsSmokingRecipeCondition;
 import com.daqem.arc.data.condition.scoreboard.ScoreboardCondition;
 import com.daqem.arc.data.condition.team.TeamCondition;
 import com.daqem.arc.data.condition.world.DimensionCondition;
+import com.daqem.arc.event.events.RegistryEvent;
 import com.daqem.arc.registry.ArcRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
@@ -74,5 +75,6 @@ public interface ConditionType<T extends ICondition> extends IConditionType<T> {
     }
 
     static void init() {
+        RegistryEvent.REGISTER_CONDITION_TYPE.invoker().registerConditionType();
     }
 }
