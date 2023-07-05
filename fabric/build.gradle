@@ -4,6 +4,8 @@ plugins {
     id "com.modrinth.minotaur" version "2.+"
 }
 
+version = "$rootProject.mod_version-fabric"
+
 architectury {
     platformSetupLoomIde()
     fabric()
@@ -50,7 +52,7 @@ remapJar {
     injectAccessWidener = true
     input.set shadowJar.archiveFile
     dependsOn shadowJar
-    classifier "fabric"
+    classifier ""
 }
 
 jar {
@@ -101,7 +103,6 @@ curseforge {
         }
 
         addArtifact(sourcesJar) {
-            displayName = "Arc Fabric $rootProject.minecraft_version - $rootProject.mod_version Sources"
         }
     }
     options {

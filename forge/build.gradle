@@ -4,6 +4,8 @@ plugins {
     id "com.modrinth.minotaur" version "2.+"
 }
 
+version = "$rootProject.mod_version-forge"
+
 architectury {
     platformSetupLoomIde()
     forge()
@@ -67,7 +69,7 @@ shadowJar {
 remapJar {
     input.set shadowJar.archiveFile
     dependsOn shadowJar
-    classifier "forge"
+    classifier ""
 }
 
 jar {
@@ -118,7 +120,6 @@ curseforge {
         }
 
         addArtifact(sourcesJar) {
-            displayName = "Arc Forge $rootProject.minecraft_version - $rootProject.mod_version Sources"
         }
     }
 }

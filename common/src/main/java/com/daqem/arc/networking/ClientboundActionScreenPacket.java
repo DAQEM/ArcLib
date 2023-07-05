@@ -7,6 +7,8 @@ import com.daqem.arc.data.ActionManager;
 import dev.architectury.networking.NetworkManager;
 import dev.architectury.networking.simple.BaseS2CMessage;
 import dev.architectury.networking.simple.MessageType;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 
@@ -35,6 +37,7 @@ public class ClientboundActionScreenPacket extends BaseS2CMessage {
     }
 
     @Override
+    @Environment(value= EnvType.CLIENT)
     public void handle(NetworkManager.PacketContext context) {
         Minecraft.getInstance().setScreen(new ActionScreen(null,
                 ActionManager.getInstance().getActions(),

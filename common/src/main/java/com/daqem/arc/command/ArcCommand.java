@@ -11,7 +11,7 @@ import net.minecraft.resources.ResourceLocation;
 public class ArcCommand {
 
     public static void registerCommand(CommandDispatcher<CommandSourceStack> dispatcher) {
-        dispatcher.register(Commands.literal("arc")
+        dispatcher.register(Commands.literal("arc").requires(source -> source.hasPermission(2))
                 .then(Commands.literal("screen")
                         .then(Commands.argument("action", StringArgumentType.string())
                                 .executes(context -> {
