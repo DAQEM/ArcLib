@@ -107,6 +107,8 @@ curseforge {
     project {
         id = rootProject.curse_forge_project_id
         releaseType = rootProject.curse_forge_release_type
+        changelogType = "markdown"
+        changelog = rootProject.file('changelog.md')
         addGameVersion "$rootProject.minecraft_version"
         addGameVersion "Java 17"
         addGameVersion "Forge"
@@ -133,6 +135,7 @@ modrinth {
     uploadFile = remapJar
     gameVersions = ["$rootProject.minecraft_version"]
     loaders = ["forge"]
+    changelog = rootProject.file('changelog.md')
     dependencies {
         required.project "architectury-api"
     }
