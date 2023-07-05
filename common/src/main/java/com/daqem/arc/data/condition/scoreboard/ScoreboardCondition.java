@@ -24,6 +24,10 @@ public class ScoreboardCondition extends AbstractCondition {
         this.objective = objective;
         this.min = min;
         this.max = max;
+
+        if (min > max) {
+            throw new IllegalArgumentException("min cannot be greater than max for ScoreboardCondition.");
+        }
     }
 
     @Override

@@ -21,6 +21,10 @@ public class ExpDropCondition extends AbstractCondition {
         super(inverted);
         this.min = min;
         this.max = max;
+
+        if (min > max) {
+            throw new IllegalArgumentException("min cannot be greater than max for ExpDropCondition.");
+        }
     }
 
     @Override

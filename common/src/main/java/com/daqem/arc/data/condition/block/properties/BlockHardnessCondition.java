@@ -16,13 +16,17 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public class BlockHardnessCondition extends AbstractCondition {
 
-    private final float minHardness;
-    private final float maxHardness;
+    private final float min;
+    private final float max;
 
-    public BlockHardnessCondition(boolean inverted, float minHardness, float maxHardness) {
+    public BlockHardnessCondition(boolean inverted, float min, float max) {
         super(inverted);
-        this.minHardness = minHardness;
-        this.maxHardness = maxHardness;
+        this.min = min;
+        this.max = max;
+
+        if (min > max) {
+            throw new IllegalArgumentException("min cannot be greater than max for BlockHardnessCondition.");
+        }
     }
 
     @Override
@@ -31,7 +35,7 @@ public class BlockHardnessCondition extends AbstractCondition {
         BlockPos blockPos = actionData.getData(ActionDataType.BLOCK_POSITION);
         if (blockState == null || blockPos == null) return false;
         float hardness = blockState.getDestroySpeed(actionData.getPlayer().getLevel(), blockPos);
-        return hardness >= minHardness && hardness <= maxHardness;
+        return hardness >= min && hardness <= max;
     }
 
     @Override
@@ -65,8 +69,8 @@ public class BlockHardnessCondition extends AbstractCondition {
         @Override
         public void toNetwork(FriendlyByteBuf friendlyByteBuf, BlockHardnessCondition type) {
             ConditionSerializer.super.toNetwork(friendlyByteBuf, type);
-            friendlyByteBuf.writeFloat(type.minHardness);
-            friendlyByteBuf.writeFloat(type.maxHardness);
+            friendlyByteBuf.writeFloat(type.min);
+            friendlyByteBuf.writeFloat(type.max);
         }
     }
 }
