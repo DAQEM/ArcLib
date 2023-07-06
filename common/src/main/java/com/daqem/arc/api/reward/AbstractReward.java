@@ -19,7 +19,7 @@ public abstract class AbstractReward implements IReward {
     public abstract ActionResult apply(ActionData actionData);
 
     public boolean passedChance(ActionData actionData) {
-        return chance == 100 || actionData.getPlayer().nextRandomDouble() * 100 <= chance;
+        return chance == 100 || actionData.getPlayer().arc$nextRandomDouble() * 100 <= chance;
     }
 
 //    public static class ActionRewardSerializer<T extends AbstractReward> implements JsonDeserializer<T> {

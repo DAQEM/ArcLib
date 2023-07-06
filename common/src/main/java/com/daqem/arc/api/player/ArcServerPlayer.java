@@ -6,13 +6,13 @@ import net.minecraft.server.level.ServerPlayer;
 
 public interface ArcServerPlayer extends ArcPlayer {
 
-    ServerPlayer getServerPlayer();
+    ServerPlayer arc$getServerPlayer();
 
-    NonNullList<StatData> getStatData();
+    NonNullList<StatData> arc$getStatData();
 
-    void addStatData(StatData statData);
+    void arc$addStatData(StatData statData);
 
-    void setSwimmingDistanceInCm(int swimmingDistanceInCm);
+    void arc$setSwimmingDistanceInCm(int swimmingDistanceInCm);
 
-    void setElytraFlyingDistanceInCm(float flyingDistanceInCm);
+    void arc$setElytraFlyingDistanceInCm(float flyingDistanceInCm);
 }

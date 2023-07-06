@@ -11,8 +11,6 @@ import com.daqem.arc.api.reward.type.RewardType;
 import com.google.gson.JsonObject;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 
 public class ItemReward extends AbstractReward {
@@ -27,7 +25,7 @@ public class ItemReward extends AbstractReward {
     @Override
     public ActionResult apply(ActionData actionData) {
         ArcPlayer player = actionData.getPlayer();
-        player.getPlayer().addItem(itemStack.copy());
+        player.arc$getPlayer().addItem(itemStack.copy());
         return new ActionResult();
     }
 

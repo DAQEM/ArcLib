@@ -11,7 +11,6 @@ import com.daqem.arc.api.reward.type.RewardType;
 import com.google.gson.*;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.Mth;
@@ -33,7 +32,7 @@ public class EffectDurationMultiplierReward extends AbstractReward {
     public ActionResult apply(ActionData actionData) {
         MobEffectInstance effect = actionData.getData(ActionDataType.MOB_EFFECT_INSTANCE);
         if (effect != null) {
-            if (actionData.getPlayer().getPlayer() instanceof ServerPlayer player){
+            if (actionData.getPlayer().arc$getPlayer() instanceof ServerPlayer player){
                 MobEffectInstance newEffect = new MobEffectInstance(effect.getEffect(), Mth.floor(effect.getDuration() * multiplier), effect.getAmplifier(), effect.isAmbient(), effect.isVisible());
                 player.addEffect(newEffect, new ServerPlayer(Objects.requireNonNull(player.getServer()), player.getLevel(), new GameProfile(UUID.randomUUID(), "a"), null));
             }

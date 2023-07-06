@@ -27,7 +27,7 @@ public class DimensionCondition extends AbstractCondition {
     public boolean isMet(ActionData actionData) {
         Level world = actionData.getData(ActionDataType.WORLD);
         if (world == null)
-            world = actionData.getPlayer().getLevel();
+            world = actionData.getPlayer().arc$getLevel();
         return world.dimension().location().equals(dimension.location());
     }
 

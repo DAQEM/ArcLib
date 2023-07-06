@@ -34,7 +34,7 @@ public class BlockHardnessCondition extends AbstractCondition {
         BlockState blockState = actionData.getData(ActionDataType.BLOCK_STATE);
         BlockPos blockPos = actionData.getData(ActionDataType.BLOCK_POSITION);
         if (blockState == null || blockPos == null) return false;
-        float hardness = blockState.getDestroySpeed(actionData.getPlayer().getLevel(), blockPos);
+        float hardness = blockState.getDestroySpeed(actionData.getPlayer().arc$getLevel(), blockPos);
         return hardness >= min && hardness <= max;
     }
 

@@ -12,50 +12,63 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Mixin(LocalPlayer.class)
 public abstract class MixinLocalPlayer extends AbstractClientPlayer implements ArcClientPlayer {
+
+    @Unique
+    private final List<IActionHolder> actionHolders = new ArrayList<>();
 
     public MixinLocalPlayer(ClientLevel clientLevel, GameProfile gameProfile, @Nullable ProfilePublicKey profilePublicKey) {
         super(clientLevel, gameProfile, profilePublicKey);
     }
 
     @Override
-    public List<IActionHolder> getActionHolders() {
-        return new ArrayList<>();
+    public List<IActionHolder> arc$getActionHolders() {
+        return actionHolders;
     }
 
     @Override
-    public String name() {
-        return getLocalPlayer().getName().getString();
+    public void arc$addActionHolder(IActionHolder actionHolder) {
+        actionHolders.add(actionHolder);
     }
 
     @Override
-    public double nextRandomDouble() {
-        return getLocalPlayer().getRandom().nextDouble();
+    public void arc$addActionHolders(List<IActionHolder> actionHolders) {
+        this.actionHolders.addAll(actionHolders);
     }
 
     @Override
-    public @NotNull UUID getUUID() {
-        return super.getUUID();
+    public void arc$removeActionHolder(IActionHolder actionHolder) {
+        actionHolders.remove(actionHolder);
     }
 
     @Override
-    public @NotNull Level getLevel() {
+    public double arc$nextRandomDouble() {
+        return arc$getLocalPlayer().getRandom().nextDouble();
+    }
+
+    @Override
+    public @NotNull Level arc$getLevel() {
         return super.getLevel();
     }
 
     @Override
-    public Player getPlayer() {
-        return getLocalPlayer();
+    public String arc$getName() {
+        return super.getName().getString();
     }
 
     @Override
-    public LocalPlayer getLocalPlayer() {
+    public Player arc$getPlayer() {
+        return arc$getLocalPlayer();
+    }
+
+    @Override
+    public LocalPlayer arc$getLocalPlayer() {
         return (LocalPlayer) (Object) this;
     }
 }

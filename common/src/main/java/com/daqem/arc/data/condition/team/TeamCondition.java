@@ -24,7 +24,7 @@ public class TeamCondition extends AbstractCondition {
     @Override
     public boolean isMet(ActionData actionData) {
         ArcPlayer player = actionData.getPlayer();
-        Team team = player.getPlayer().getTeam();
+        Team team = player.arc$getPlayer().getTeam();
         return team != null && team.getName().equals(this.team);
     }
 

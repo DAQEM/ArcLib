@@ -1,6 +1,7 @@
 package com.daqem.arc.fabric;
 
 import com.daqem.arc.Arc;
+import com.daqem.arc.fabric.event.FabricReloadListenerEvent;
 import com.daqem.arc.fabric.data.ActionManagerFabric;
 import com.daqem.arc.registry.ArcRegistry;
 import net.fabricmc.api.ModInitializer;
@@ -13,10 +14,14 @@ public class ArcFabric implements ModInitializer {
     @Override
     public void onInitialize() {
         Arc.initCommon();
-        ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new ActionManagerFabric());
 
         DynamicRegistrySetupCallback.EVENT.register(registryManager -> {
             ArcRegistry.init();
+
+            ResourceManagerHelper helper = ResourceManagerHelper.get(PackType.SERVER_DATA);
+            FabricReloadListenerEvent.REGISTER_RELOAD_LISTENERS.invoker().registerReloadListener(helper);
+
+            helper.registerReloadListener(new ActionManagerFabric());
         });
     }
 }

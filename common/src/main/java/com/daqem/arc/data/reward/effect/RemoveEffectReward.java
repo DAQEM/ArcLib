@@ -10,7 +10,6 @@ import com.daqem.arc.api.reward.type.IRewardType;
 import com.daqem.arc.api.reward.type.RewardType;
 import com.google.gson.*;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.player.Player;
 
@@ -25,7 +24,7 @@ public class RemoveEffectReward extends AbstractReward {
     public ActionResult apply(ActionData actionData) {
         MobEffectInstance effect = actionData.getData(ActionDataType.MOB_EFFECT_INSTANCE);
         if (effect != null) {
-            Player player = actionData.getPlayer().getPlayer();
+            Player player = actionData.getPlayer().arc$getPlayer();
             player.removeEffect(effect.getEffect());
         }
         return new ActionResult();

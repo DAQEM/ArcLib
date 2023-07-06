@@ -61,7 +61,7 @@ public class ActionData implements IActionData {
     }
 
     private List<IAction> getPlayerActions() {
-        return this.player.getActionHolders().stream()
+        return this.player.arc$getActionHolders().stream()
                 .flatMap(actionHolder -> actionHolder.getActions().stream())
                 .collect(Collectors.toList());
     }

@@ -11,12 +11,9 @@ import com.daqem.arc.api.reward.type.RewardType;
 import com.google.gson.*;
 import net.minecraft.core.Registry;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
-
-import java.lang.reflect.Type;
 
 public class EffectReward extends AbstractReward {
 
@@ -32,7 +29,7 @@ public class EffectReward extends AbstractReward {
     @Override
     public ActionResult apply(ActionData actionData) {
         ArcPlayer player = actionData.getPlayer();
-        player.getPlayer().addEffect(new MobEffectInstance(effect, duration));
+        player.arc$getPlayer().addEffect(new MobEffectInstance(effect, duration));
         return new ActionResult();
     }
 

@@ -15,7 +15,7 @@ public class StatEvents {
 
     private static void onAwardSwimStat(ArcServerPlayer player, Stat<?> stat, int newAmount) {
         if (stat.equals(Stats.CUSTOM.get(Stats.SWIM_ONE_CM))) {
-            player.setSwimmingDistanceInCm(newAmount);
+            player.arc$setSwimmingDistanceInCm(newAmount);
         }
     }
 
@@ -27,7 +27,7 @@ public class StatEvents {
 
     private static void onAwardElytraFlyingStat(ArcServerPlayer player, Stat<?> stat, int newAmount) {
         if (stat == Stats.CUSTOM.get(Stats.AVIATE_ONE_CM)) {
-            player.setElytraFlyingDistanceInCm(newAmount);
+            player.arc$setElytraFlyingDistanceInCm(newAmount);
         }
     }
 }

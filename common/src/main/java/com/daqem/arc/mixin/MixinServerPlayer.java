@@ -1,6 +1,5 @@
 package com.daqem.arc.mixin;
 
-import com.daqem.arc.Arc;
 import com.daqem.arc.api.action.holder.IActionHolder;
 import com.daqem.arc.event.triggers.MovementEvents;
 import com.daqem.arc.event.triggers.PlayerEvents;
@@ -24,6 +23,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -31,22 +31,35 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Mixin(ServerPlayer.class)
 public abstract class MixinServerPlayer extends Player implements ArcServerPlayer {
 
+    @Unique
+    private final List<IActionHolder> actionHolders = new ArrayList<>();
+    @Unique
     private final NonNullList<StatData> statData = NonNullList.create();
+    @Unique
     private boolean isSwimming = false;
+    @Unique
     private int swimmingDistanceInCm = 0;
+    @Unique
     private boolean isWalking = false;
+    @Unique
     private float walkingDistance = 0;
+    @Unique
     private boolean isSprinting = false;
+    @Unique
     private float sprintingDistance = 0;
+    @Unique
     private boolean isCrouching = false;
+    @Unique
     private float crouchingDistance = 0;
+    @Unique
     private boolean isElytraFlying = false;
+    @Unique
     private float elytraFlyingDistance = 0;
+    @Unique
     private boolean isGrinding = false;
 
     public MixinServerPlayer(Level level, BlockPos blockPos, float yaw, GameProfile gameProfile, @Nullable ProfilePublicKey profilePublicKey) {
@@ -54,42 +67,47 @@ public abstract class MixinServerPlayer extends Player implements ArcServerPlaye
     }
 
     @Override
-    public List<IActionHolder> getActionHolders() {
-        return new ArrayList<>();
+    public List<IActionHolder> arc$getActionHolders() {
+        return actionHolders;
     }
 
     @Override
-    public @NotNull UUID getUUID() {
-        return super.getUUID();
+    public void arc$addActionHolder(IActionHolder actionHolder) {
+        this.actionHolders.add(actionHolder);
     }
 
     @Override
-    public ServerPlayer getServerPlayer() {
+    public void arc$addActionHolders(List<IActionHolder> actionHolders) {
+        this.actionHolders.addAll(actionHolders);
+    }
+
+    @Override
+    public void arc$removeActionHolder(IActionHolder actionHolder) {
+        this.actionHolders.remove(actionHolder);
+    }
+
+    @Override
+    public ServerPlayer arc$getServerPlayer() {
         return (ServerPlayer) (Object) this;
     }
 
     @Override
-    public String name() {
-        return super.getName().getString();
-    }
-
-    @Override
-    public NonNullList<StatData> getStatData() {
+    public NonNullList<StatData> arc$getStatData() {
         return this.statData;
     }
 
     @Override
-    public void addStatData(StatData statData) {
+    public void arc$addStatData(StatData statData) {
         this.statData.add(statData);
     }
 
     @Override
-    public void setSwimmingDistanceInCm(int swimmingDistanceInCm) {
+    public void arc$setSwimmingDistanceInCm(int swimmingDistanceInCm) {
         this.swimmingDistanceInCm = swimmingDistanceInCm;
     }
 
     @Override
-    public void setElytraFlyingDistanceInCm(float flyingDistanceInCm) {
+    public void arc$setElytraFlyingDistanceInCm(float flyingDistanceInCm) {
         this.elytraFlyingDistance = flyingDistanceInCm;
     }
 
@@ -100,18 +118,23 @@ public abstract class MixinServerPlayer extends Player implements ArcServerPlaye
     }
 
     @Override
-    public double nextRandomDouble() {
-        return this.getServerPlayer().getRandom().nextDouble();
+    public double arc$nextRandomDouble() {
+        return this.arc$getServerPlayer().getRandom().nextDouble();
     }
 
     @Override
-    public @NotNull Level getLevel() {
+    public @NotNull Level arc$getLevel() {
         return super.getLevel();
     }
 
     @Override
-    public Player getPlayer() {
-        return getServerPlayer();
+    public String arc$getName() {
+        return super.getName().getString();
+    }
+
+    @Override
+    public Player arc$getPlayer() {
+        return arc$getServerPlayer();
     }
 
     @Inject(at = @At("TAIL"), method = "tick()V")
@@ -185,7 +208,7 @@ public abstract class MixinServerPlayer extends Player implements ArcServerPlaye
             }
         }
 
-        if (getServerPlayer().containerMenu instanceof GrindstoneMenu) {
+        if (arc$getServerPlayer().containerMenu instanceof GrindstoneMenu) {
             if (isGrinding) {
                 boolean firstSlot = false;
                 boolean secondSlot = false;
@@ -225,7 +248,7 @@ public abstract class MixinServerPlayer extends Player implements ArcServerPlaye
     public void awardStat(Stat<?> stat, int amount, CallbackInfo ci) {
         int previousAmount = 0;
         boolean found = false;
-        for (StatData statData : getStatData()) {
+        for (StatData statData : arc$getStatData()) {
             if (statData.getStat().equals(stat)) {
                 previousAmount = statData.getAmount();
                 statData.addAmount(amount);
@@ -234,7 +257,7 @@ public abstract class MixinServerPlayer extends Player implements ArcServerPlaye
             }
         }
         if (!found) {
-            addStatData(new StatData(stat, amount));
+            arc$addStatData(new StatData(stat, amount));
         }
         StatEvents.onAwardStat(this, stat, previousAmount, previousAmount + amount);
     }

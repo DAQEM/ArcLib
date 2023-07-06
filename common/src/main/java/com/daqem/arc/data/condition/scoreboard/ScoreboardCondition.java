@@ -32,10 +32,10 @@ public class ScoreboardCondition extends AbstractCondition {
 
     @Override
     public boolean isMet(ActionData actionData) {
-        Scoreboard scoreboard = actionData.getPlayer().getPlayer().getScoreboard();
+        Scoreboard scoreboard = actionData.getPlayer().arc$getPlayer().getScoreboard();
         Objective objective = scoreboard.getObjective(this.objective);
         if (objective != null) {
-            int score = scoreboard.getOrCreatePlayerScore(actionData.getPlayer().name(), objective).getScore();
+            int score = scoreboard.getOrCreatePlayerScore(actionData.getPlayer().arc$getName(), objective).getScore();
             return score >= min && score <= max;
         }
         return false;

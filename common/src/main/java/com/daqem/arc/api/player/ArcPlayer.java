@@ -5,19 +5,22 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
 import java.util.List;
-import java.util.UUID;
 
 public interface ArcPlayer {
 
-    List<IActionHolder> getActionHolders();
+    List<IActionHolder> arc$getActionHolders();
 
-    UUID getUUID();
+    void arc$addActionHolder(IActionHolder actionHolder);
 
-    String name();
+    void arc$addActionHolders(List<IActionHolder> actionHolders);
 
-    double nextRandomDouble();
+    void arc$removeActionHolder(IActionHolder actionHolder);
 
-    Level getLevel();
+    Level arc$getLevel();
 
-    Player getPlayer();
+    double arc$nextRandomDouble();
+
+    Player arc$getPlayer();
+
+    String arc$getName();
 }

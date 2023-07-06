@@ -26,7 +26,7 @@ public class ItemInHandCondition extends AbstractCondition {
 
     @Override
     public boolean isMet(ActionData actionData) {
-        Player player = actionData.getPlayer().getPlayer();
+        Player player = actionData.getPlayer().arc$getPlayer();
         return (hand == null && player.getMainHandItem().getItem() == itemStack.getItem() || player.getOffhandItem().getItem() == itemStack.getItem())
                 || (hand != null && player.getItemInHand(hand).getItem() == itemStack.getItem());
     }

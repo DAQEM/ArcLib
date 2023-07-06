@@ -75,14 +75,14 @@ public abstract class AbstractAction implements IAction {
     }
 
     public ActionResult perform(ActionData actionData) {
-        actionData.setSourceActionHolder(actionData.getPlayer().getActionHolders().stream()
+        actionData.setSourceActionHolder(actionData.getPlayer().arc$getActionHolders().stream()
                 .filter(actionHolder -> actionHolder.getType() == this.getActionHolderType())
                 .filter(actionHolder -> actionHolder.getLocation().equals(this.getActionHolderLocation()))
                 .findFirst().orElse(null));
 
         ActionResult result = new ActionResult();
 
-        if (actionData.getPlayer().getLevel().isClientSide() && !performOnClient) {
+        if (actionData.getPlayer().arc$getLevel().isClientSide() && !performOnClient) {
             return result;
         }
 

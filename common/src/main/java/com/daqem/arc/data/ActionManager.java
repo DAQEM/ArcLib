@@ -49,7 +49,7 @@ public abstract class ActionManager extends SimpleJsonResourceReloadListener {
                 .filter(entry -> entry.getValue() != null)
                 .collect(ImmutableMap.toImmutableMap(Map.Entry::getKey, entry -> entry.getValue().build()));
         this.byName = tempActions.build();
-        Arc.LOGGER.info("Loaded {} actions", tempActionTypes.size());
+        Arc.LOGGER.info("Loaded {} actions", this.byName.size());
     }
 
     /**
