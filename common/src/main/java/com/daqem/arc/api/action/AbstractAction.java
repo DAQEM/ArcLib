@@ -6,6 +6,8 @@ import com.daqem.arc.api.action.holder.type.IActionHolderType;
 import com.daqem.arc.api.action.result.ActionResult;
 import com.daqem.arc.api.condition.ICondition;
 import com.daqem.arc.api.reward.IReward;
+import com.daqem.arc.event.events.ActionEvent;
+import dev.architectury.event.EventResult;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
@@ -86,7 +88,15 @@ public abstract class AbstractAction implements IAction {
             return result;
         }
 
+        EventResult beforeConditionsEventResult = ActionEvent.BEFORE_CONDITIONS.invoker().registerBeforeConditions(actionData);
+        if (beforeConditionsEventResult == EventResult.interrupt(true)) {
+            return result;
+        }
         if (metConditions(actionData)) {
+            EventResult beforeRewardsEventResult = ActionEvent.BEFORE_REWARDS.invoker().registerBeforeRewards(actionData);
+            if (beforeRewardsEventResult == EventResult.interrupt(true)) {
+                return result;
+            }
             Arc.LOGGER.info("Action {} passed conditions for action holder {}", this.getType().getLocation(), this.actionHolderLocation);
             result = applyRewards(actionData);
         }
