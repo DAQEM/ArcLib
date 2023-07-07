@@ -33,25 +33,15 @@ public class ArcRegistry {
     public static final ResourceKey<Registry<IConditionSerializer<?>>> CONDITION_SERIALIZER_KEY = ResourceKey.createRegistryKey(Arc.getId("condition_serializer"));
 
 
-    public static Registry<IActionType<?>> ACTION;
-    public static Registry<IRewardType<?>> REWARD;
-    public static Registry<IConditionType<?>> CONDITION;
-    public static Registry<IActionHolderType<?>> ACTION_HOLDER;
-
-    public static Registry<IActionSerializer<?>> ACTION_SERIALIZER;
-    public static Registry<IRewardSerializer<?>> REWARD_SERIALIZER;
-    public static Registry<IConditionSerializer<?>> CONDITION_SERIALIZER;
+    public static final Registry<IActionType<?>> ACTION = new MappedRegistry<>(ArcRegistry.ACTION_KEY, Lifecycle.experimental(), null);
+    public static final Registry<IRewardType<?>> REWARD = new MappedRegistry<>(ArcRegistry.REWARD_KEY, Lifecycle.experimental(), null);
+    public static final Registry<IConditionType<?>> CONDITION = new MappedRegistry<>(ArcRegistry.CONDITION_KEY, Lifecycle.experimental(), null);
+    public static final Registry<IActionHolderType<?>> ACTION_HOLDER = new MappedRegistry<>(ArcRegistry.ACTION_HOLDER_KEY, Lifecycle.experimental(), null);
+    public static final Registry<IActionSerializer<?>> ACTION_SERIALIZER = new MappedRegistry<>(ArcRegistry.ACTION_SERIALIZER_KEY, Lifecycle.experimental(), null);
+    public static final Registry<IRewardSerializer<?>> REWARD_SERIALIZER = new MappedRegistry<>(ArcRegistry.REWARD_SERIALIZER_KEY, Lifecycle.experimental(), null);
+    public static final Registry<IConditionSerializer<?>> CONDITION_SERIALIZER = new MappedRegistry<>(ArcRegistry.CONDITION_SERIALIZER_KEY, Lifecycle.experimental(), null);
 
     public static void init() {
-        ACTION = new MappedRegistry<>(ArcRegistry.ACTION_KEY, Lifecycle.experimental(), null);
-        REWARD = new MappedRegistry<>(ArcRegistry.REWARD_KEY, Lifecycle.experimental(), null);
-        CONDITION = new MappedRegistry<>(ArcRegistry.CONDITION_KEY, Lifecycle.experimental(), null);
-        ACTION_HOLDER = new MappedRegistry<>(ArcRegistry.ACTION_HOLDER_KEY, Lifecycle.experimental(), null);
-
-        ACTION_SERIALIZER = new MappedRegistry<>(ArcRegistry.ACTION_SERIALIZER_KEY, Lifecycle.experimental(), null);
-        REWARD_SERIALIZER = new MappedRegistry<>(ArcRegistry.REWARD_SERIALIZER_KEY, Lifecycle.experimental(), null);
-        CONDITION_SERIALIZER = new MappedRegistry<>(ArcRegistry.CONDITION_SERIALIZER_KEY, Lifecycle.experimental(), null);
-
         ActionType.init();
         RewardType.init();
         ConditionType.init();

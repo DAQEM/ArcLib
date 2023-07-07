@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.6]
+### Removed
+- Reload listener events.
+
+[0.6]: https://github.com/DAQEM/Arc/compare/47cf6bff91bea433511be6a2720b48a7961a3f3d...fea0bcf479e223dc9daa72965ed290ecc66b1b96
+
 ## [0.5]
 ### Added
 - Action events.
