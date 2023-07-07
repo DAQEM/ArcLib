@@ -1,6 +1,7 @@
 package com.daqem.arc.fabric;
 
 import com.daqem.arc.Arc;
+import com.daqem.arc.api.example.ExampleActionHolderManager;
 import com.daqem.arc.fabric.event.FabricReloadListenerEvent;
 import com.daqem.arc.fabric.data.ActionManagerFabric;
 import com.daqem.arc.registry.ArcRegistry;
@@ -15,6 +16,12 @@ public class ArcFabric implements ModInitializer {
     public void onInitialize() {
         Arc.initCommon();
 
+        if (Arc.isDevEnvironment()) {
+            FabricReloadListenerEvent.REGISTER_RELOAD_LISTENERS.register((manager) -> {
+                ExampleActionHolderManager.getInstance();
+            });
+        }
+
         DynamicRegistrySetupCallback.EVENT.register(registryManager -> {
             ArcRegistry.init();
 
@@ -23,5 +30,7 @@ public class ArcFabric implements ModInitializer {
 
             helper.registerReloadListener(new ActionManagerFabric());
         });
+
+
     }
 }

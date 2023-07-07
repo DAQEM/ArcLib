@@ -3,6 +3,7 @@ package com.daqem.arc.data;
 import com.daqem.arc.Arc;
 import com.daqem.arc.ArcExpectPlatform;
 import com.daqem.arc.api.action.IAction;
+import com.daqem.arc.api.action.holder.ActionHolderManager;
 import com.daqem.arc.api.action.type.IActionType;
 import com.daqem.arc.registry.ArcRegistry;
 import com.google.common.collect.ImmutableMap;
@@ -50,6 +51,8 @@ public abstract class ActionManager extends SimpleJsonResourceReloadListener {
                 .collect(ImmutableMap.toImmutableMap(Map.Entry::getKey, entry -> entry.getValue().build()));
         this.byName = tempActions.build();
         Arc.LOGGER.info("Loaded {} actions", this.byName.size());
+        this.assignActionsToActionHolders();
+        ActionHolderManager.getInstance();
     }
 
     /**
@@ -150,5 +153,11 @@ public abstract class ActionManager extends SimpleJsonResourceReloadListener {
         this.actions = ImmutableMap.copyOf(map);
         this.byName = builder.build();
         Arc.LOGGER.info("Updated {} actions", map.size());
+    }
+
+    private void assignActionsToActionHolders() {
+        for (IAction action : this.getActions()) {
+            ActionHolderManager.getInstance().registerAction(action);
+        }
     }
 }

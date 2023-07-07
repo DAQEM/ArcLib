@@ -1,5 +1,6 @@
 package com.daqem.arc.api.example;
 
+import com.daqem.arc.api.action.holder.ActionHolderManager;
 import com.daqem.arc.api.action.holder.IActionHolder;
 import net.minecraft.resources.ResourceLocation;
 
@@ -17,6 +18,8 @@ public class ExampleActionHolderManager {
         actionHolders.add(new ExampleActionHolder(new ResourceLocation("example:example_action_holder_2")));
         actionHolders.add(new ExampleActionHolder(new ResourceLocation("example:example_action_holder_3")));
         actionHolders.add(new ExampleActionHolder(new ResourceLocation("example:example_action_holder_4")));
+
+        actionHolders.forEach(ActionHolderManager.getInstance()::registerActionHolder);
     }
 
     public List<IActionHolder> getActionHolders() {
