@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.6.1]
+### Changed
+- Made registries final.
+
+[0.6.1]: https://github.com/DAQEM/Arc/compare/fea0bcf479e223dc9daa72965ed290ecc66b1b96...a5d62eb40733fc4bda4f2ba7454684d5b7961ca8
+
 ## [0.6]
 ### Removed
 - Reload listener events.
