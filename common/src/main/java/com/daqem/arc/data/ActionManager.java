@@ -155,7 +155,7 @@ public abstract class ActionManager extends SimpleJsonResourceReloadListener {
         Arc.LOGGER.info("Updated {} actions", map.size());
     }
 
-    private void assignActionsToActionHolders() {
+    public void assignActionsToActionHolders() {
         for (IAction action : this.getActions()) {
             ActionHolderManager.getInstance().registerAction(action);
         }

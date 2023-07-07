@@ -2,6 +2,7 @@ package com.daqem.arc.api.action.holder;
 
 import com.daqem.arc.api.action.IAction;
 import com.daqem.arc.api.action.holder.type.IActionHolderType;
+import com.daqem.arc.data.ActionManager;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
@@ -36,6 +37,7 @@ public class ActionHolderManager {
             actionHolders.add(actionHolder);
             this.actionHolders.put(actionHolder.getType(), actionHolders);
         }
+        ActionManager.getInstance().assignActionsToActionHolders();
     }
 
     /**
@@ -46,7 +48,9 @@ public class ActionHolderManager {
     public void registerAction(IAction action) {
         IActionHolder actionHolder = getActionHolder(action.getActionHolderType(), action.getActionHolderLocation());
         if (actionHolder != null) {
-            actionHolder.addAction(action);
+            if (!actionHolder.getActions().contains(action)) {
+                actionHolder.addAction(action);
+            }
         }
     }
 

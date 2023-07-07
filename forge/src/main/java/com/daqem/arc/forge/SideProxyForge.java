@@ -4,7 +4,6 @@ import com.daqem.arc.Arc;
 import com.daqem.arc.api.example.ExampleActionHolderManager;
 import com.daqem.arc.client.ArcClient;
 import com.daqem.arc.forge.data.ActionManagerForge;
-import com.daqem.arc.forge.event.ForgeReloadListenerEvent;
 import com.daqem.arc.registry.ArcRegistry;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AddReloadListenerEvent;
@@ -21,18 +20,14 @@ public class SideProxyForge {
 
         eventBus.addListener(this::onAddReloadListeners);
         modEventBus.addListener(this::onRegisterRegistries);
-
-        if (Arc.isDevEnvironment()) {
-            ForgeReloadListenerEvent.REGISTER_RELOAD_LISTENERS.register((manager) -> {
-                ExampleActionHolderManager.getInstance();
-            });
-        }
     }
 
     public void onAddReloadListeners(AddReloadListenerEvent event) {
-        ForgeReloadListenerEvent.REGISTER_RELOAD_LISTENERS.invoker().registerReloadListener(event);
-
         event.addListener(new ActionManagerForge());
+
+        if (Arc.isDevEnvironment()) {
+            ExampleActionHolderManager.getInstance();
+        }
     }
 
     @SubscribeEvent
