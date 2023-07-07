@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.6.2]
+### Fixed
+- OrCondition serializer.
+
+[0.6.2]: https://github.com/DAQEM/Arc/compare/a5d62eb40733fc4bda4f2ba7454684d5b7961ca8...02c414f7dae0e8c606fddda0eaddf33be63547b5
+
 ## [0.6.1]
 ### Changed
 - Made registries final.

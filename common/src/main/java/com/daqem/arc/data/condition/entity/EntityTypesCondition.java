@@ -71,7 +71,7 @@ public class EntityTypesCondition extends AbstractCondition {
             ConditionSerializer.super.toNetwork(friendlyByteBuf, type);
             friendlyByteBuf.writeVarInt(type.entityTypes.size());
             for (EntityType<?> entityType : type.entityTypes) {
-                friendlyByteBuf.writeResourceLocation(Registry.ENTITY_TYPE.getKey(entityType));
+                friendlyByteBuf.writeId(Registry.ENTITY_TYPE, entityType);
             }
         }
     }
