@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.6.3]
+### Fixed
+- EntityTypes serializer.
+
+[0.6.3]: https://github.com/DAQEM/Arc/compare/02c414f7dae0e8c606fddda0eaddf33be63547b5...c8ef659b10c8e66f19e09a198e86154ce111a60a
+
+
 ## [0.6.2]
 ### Fixed
 - OrCondition serializer.

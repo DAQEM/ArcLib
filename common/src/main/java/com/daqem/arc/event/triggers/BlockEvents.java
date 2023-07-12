@@ -1,5 +1,6 @@
 package com.daqem.arc.event.triggers;
 
+import com.daqem.arc.api.action.result.ActionResult;
 import com.daqem.arc.api.action.type.ActionType;
 import com.daqem.arc.api.player.ArcServerPlayer;
 import com.daqem.arc.api.action.data.ActionDataBuilder;
@@ -16,22 +17,29 @@ public class BlockEvents {
     public static void registerEvents() {
         BlockEvent.PLACE.register((level, pos, state, placer) -> {
             if (placer instanceof ArcServerPlayer arcServerPlayer) {
-                new ActionDataBuilder(arcServerPlayer, ActionType.PLACE_BLOCK)
+                ActionResult actionResult = new ActionDataBuilder(arcServerPlayer, ActionType.PLACE_BLOCK)
                         .withData(ActionDataType.BLOCK_STATE, state)
                         .withData(ActionDataType.BLOCK_POSITION, pos)
                         .withData(ActionDataType.WORLD, level)
                         .build()
                         .sendToAction();
 
+                if (actionResult.shouldCancelAction()) {
+                    return EventResult.interruptFalse();
+                }
+
                 if (state.getBlock() instanceof CropBlock) {
-                    onPlantCrop(arcServerPlayer, state, pos, level);
+                    ActionResult actionResult1 = onPlantCrop(arcServerPlayer, state, pos, level);
+                    if (actionResult1.shouldCancelAction()) {
+                        return EventResult.interruptFalse();
+                    }
                 }
             }
             return EventResult.pass();
         });
         BlockEvent.BREAK.register((level, pos, state, player, xp) -> {
             if (player instanceof ArcServerPlayer arcServerPlayer) {
-                new ActionDataBuilder(arcServerPlayer, ActionType.BREAK_BLOCK)
+                ActionResult actionResult = new ActionDataBuilder(arcServerPlayer, ActionType.BREAK_BLOCK)
                         .withData(ActionDataType.BLOCK_STATE, state)
                         .withData(ActionDataType.BLOCK_POSITION, pos)
                         .withData(ActionDataType.EXP_DROP, xp == null ? 0 : xp.get())
@@ -39,16 +47,23 @@ public class BlockEvents {
                         .build()
                         .sendToAction();
 
+                if (actionResult.shouldCancelAction()) {
+                    return EventResult.interruptFalse();
+                }
+
                 if (state.getBlock() instanceof CropBlock) {
-                    onHarvestCrop(arcServerPlayer, state, pos, level);
+                    ActionResult actionResult1 = onHarvestCrop(arcServerPlayer, state, pos, level);
+                    if (actionResult1.shouldCancelAction()) {
+                        return EventResult.interruptFalse();
+                    }
                 }
             }
             return EventResult.pass();
         });
     }
 
-    public static void onBlockInteract(ArcServerPlayer player, BlockState state, BlockPos pos, Level level) {
-        new ActionDataBuilder(player, ActionType.INTERACT_BLOCK)
+    public static ActionResult onBlockInteract(ArcServerPlayer player, BlockState state, BlockPos pos, Level level) {
+        return new ActionDataBuilder(player, ActionType.INTERACT_BLOCK)
                 .withData(ActionDataType.BLOCK_STATE, state)
                 .withData(ActionDataType.BLOCK_POSITION, pos)
                 .withData(ActionDataType.WORLD, level)
@@ -56,8 +71,8 @@ public class BlockEvents {
                 .sendToAction();
     }
 
-    public static void onPlantCrop(ArcServerPlayer player, BlockState state, BlockPos pos, Level level) {
-        new ActionDataBuilder(player, ActionType.PLANT_CROP)
+    public static ActionResult onPlantCrop(ArcServerPlayer player, BlockState state, BlockPos pos, Level level) {
+        return new ActionDataBuilder(player, ActionType.PLANT_CROP)
                 .withData(ActionDataType.BLOCK_STATE, state)
                 .withData(ActionDataType.BLOCK_POSITION, pos)
                 .withData(ActionDataType.WORLD, level)
@@ -65,8 +80,8 @@ public class BlockEvents {
                 .sendToAction();
     }
 
-    public static void onHarvestCrop(ArcServerPlayer player, BlockState state, BlockPos pos, Level level) {
-        new ActionDataBuilder(player, ActionType.HARVEST_CROP)
+    public static ActionResult onHarvestCrop(ArcServerPlayer player, BlockState state, BlockPos pos, Level level) {
+        return new ActionDataBuilder(player, ActionType.HARVEST_CROP)
                 .withData(ActionDataType.BLOCK_STATE, state)
                 .withData(ActionDataType.BLOCK_POSITION, pos)
                 .withData(ActionDataType.WORLD, level)

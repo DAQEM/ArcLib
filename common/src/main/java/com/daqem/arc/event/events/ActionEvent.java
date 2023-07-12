@@ -8,6 +8,11 @@ import dev.architectury.event.EventResult;
 public interface ActionEvent {
 
     /**
+     * @see ActionEvent.BeforeAction#registerBeforeAction()
+     */
+    Event<ActionEvent.BeforeAction> BEFORE_ACTION = EventFactory.createLoop();
+
+    /**
      * @see ActionEvent.BeforeRewards#registerBeforeRewards(ActionData)
      */
     Event<ActionEvent.BeforeRewards> BEFORE_REWARDS = EventFactory.createLoop();
@@ -16,6 +21,15 @@ public interface ActionEvent {
      * @see ActionEvent.BeforeConditions#registerBeforeConditions(ActionData)
      */
     Event<ActionEvent.BeforeConditions> BEFORE_CONDITIONS = EventFactory.createLoop();
+
+    interface BeforeAction {
+        /**
+         * Invoked before an action is sent.
+         *
+         * @return The event result.
+         */
+        EventResult registerBeforeAction();
+    }
 
     interface BeforeRewards {
         /**

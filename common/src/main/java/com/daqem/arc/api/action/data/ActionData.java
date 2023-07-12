@@ -7,6 +7,8 @@ import com.daqem.arc.api.action.type.ActionType;
 import com.daqem.arc.api.action.type.IActionType;
 import com.daqem.arc.api.player.ArcPlayer;
 import com.daqem.arc.api.action.result.ActionResult;
+import com.daqem.arc.event.events.ActionEvent;
+import dev.architectury.event.EventResult;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -44,6 +46,10 @@ public class ActionData implements IActionData {
 
     @Override
     public ActionResult sendToAction() {
+        EventResult result = ActionEvent.BEFORE_ACTION.invoker().registerBeforeAction();
+        if (result.interruptsFurtherEvaluation()) {
+            return new ActionResult().withCancelAction(true);
+        }
         List<IAction> playerActions = getPlayerActions();
         return playerActions.stream()
                 .filter(this::isTypeOfCurrentAction)
