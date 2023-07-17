@@ -46,8 +46,8 @@ public class ActionData implements IActionData {
 
     @Override
     public ActionResult sendToAction() {
-        EventResult result = ActionEvent.BEFORE_ACTION.invoker().registerBeforeAction();
-        if (result.interruptsFurtherEvaluation()) {
+        EventResult result = ActionEvent.BEFORE_ACTION.invoker().registerBeforeAction(this);
+        if (result != null && result.interruptsFurtherEvaluation()) {
             return new ActionResult().withCancelAction(true);
         }
         List<IAction> playerActions = getPlayerActions();
