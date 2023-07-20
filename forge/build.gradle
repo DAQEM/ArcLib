@@ -4,7 +4,7 @@ plugins {
     id "com.modrinth.minotaur" version "2.+"
 }
 
-version = "$rootProject.mod_version-forge"
+version = "$rootProject.mod_version"
 
 architectury {
     platformSetupLoomIde()
@@ -69,7 +69,7 @@ shadowJar {
 remapJar {
     input.set shadowJar.archiveFile
     dependsOn shadowJar
-    classifier ""
+    classifier "forge"
 }
 
 jar {

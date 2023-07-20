@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.8]
+### Fixed
+- Crash when there was no event subscriber for the before action event.
+
+[0.8]: https://github.com/DAQEM/Arc/compare/c78aec18fb66fec8b039caecdf683c2171b48363...3bd17d3ff7d8451b0c92b8d513cf9254b718514a
+
 ## [0.7]
 ### Added
 - Before action event.
