@@ -35,12 +35,12 @@ public class GetDestroySpeedAction extends AbstractAction {
 
         @Override
         public GetDestroySpeedAction fromJson(ResourceLocation location, JsonObject jsonObject, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-            return new GetDestroySpeedAction(location, actionHolderLocation, actionHolderType, performOnClient, rewards, conditions);
+            return new GetDestroySpeedAction(location, actionHolderLocation, actionHolderType, true, rewards, conditions);
         }
 
         @Override
         public GetDestroySpeedAction fromNetwork(ResourceLocation location, FriendlyByteBuf friendlyByteBuf, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-            return new GetDestroySpeedAction(location, actionHolderLocation, actionHolderType, performOnClient, rewards, conditions);
+            return new GetDestroySpeedAction(location, actionHolderLocation, actionHolderType, true, rewards, conditions);
         }
 
         @Override
