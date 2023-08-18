@@ -1,6 +1,7 @@
 package com.daqem.arc.api.action.holder;
 
 import com.daqem.arc.api.action.IAction;
+import com.daqem.arc.api.action.data.ActionData;
 import com.daqem.arc.api.action.holder.type.IActionHolderType;
 import net.minecraft.resources.ResourceLocation;
 
@@ -16,4 +17,8 @@ public interface IActionHolder {
     void addAction(IAction action);
 
     IActionHolderType<?> getType();
+
+    default boolean passedHolderCondition(ActionData actionData) {
+        return true;
+    }
 }

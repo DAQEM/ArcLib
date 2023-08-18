@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.8.2]
+### Fixed
+- Set GetDestroySpeedAction to perform on client.
+
+[0.8.2]: https://github.com/DAQEM/Arc/compare/166fd568eeceb9cde52e73e9fe09876c2d670df5...1d19d8b9c1e8cf09f8f5bc0254df15773e1f5a30
+
 ## [0.8]
 ### Fixed
 - Crash when there was no event subscriber for the before action event.

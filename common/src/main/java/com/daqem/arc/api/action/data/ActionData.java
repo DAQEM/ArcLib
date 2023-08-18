@@ -50,9 +50,13 @@ public class ActionData implements IActionData {
         if (result != null && result.interruptsFurtherEvaluation()) {
             return new ActionResult().withCancelAction(true);
         }
-        List<IAction> playerActions = getPlayerActions();
-        return playerActions.stream()
+
+        List<IAction> allPlayerActions = getPlayerActions();
+        List<IAction> correctPlayerActions = allPlayerActions.stream()
                 .filter(this::isTypeOfCurrentAction)
+                .toList();
+
+        return correctPlayerActions.stream()
                 .map(this::performCurrentAction)
                 .reduce(new ActionResult(), ActionResult::merge);
     }

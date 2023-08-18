@@ -2,6 +2,7 @@ package com.daqem.arc.api.action;
 
 import com.daqem.arc.Arc;
 import com.daqem.arc.api.action.data.ActionData;
+import com.daqem.arc.api.action.holder.IActionHolder;
 import com.daqem.arc.api.action.holder.type.IActionHolderType;
 import com.daqem.arc.api.action.result.ActionResult;
 import com.daqem.arc.api.condition.ICondition;
@@ -77,10 +78,15 @@ public abstract class AbstractAction implements IAction {
     }
 
     public ActionResult perform(ActionData actionData) {
-        actionData.setSourceActionHolder(actionData.getPlayer().arc$getActionHolders().stream()
-                .filter(actionHolder -> actionHolder.getType() == this.getActionHolderType())
-                .filter(actionHolder -> actionHolder.getLocation().equals(this.getActionHolderLocation()))
-                .findFirst().orElse(null));
+        List<IActionHolder> iActionHolders = actionData.getPlayer().arc$getActionHolders();
+        List<IActionHolder> iActionHoldersWithCorrectType = iActionHolders.stream().filter(actionHolder -> actionHolder.getType() == this.getActionHolderType()).toList();
+        List<IActionHolder> iActionHoldersWithCorrectLocation = iActionHoldersWithCorrectType.stream().filter(actionHolder -> actionHolder.getLocation().equals(this.getActionHolderLocation())).toList();
+
+        IActionHolder sourceActionHolder = iActionHoldersWithCorrectLocation.stream()
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("Action holder not found for action " + this.getType().getLocation() + " and action holder " + this.getActionHolderLocation()));
+
+        actionData.setSourceActionHolder(sourceActionHolder);
 
         ActionResult result = new ActionResult();
 
@@ -92,6 +98,11 @@ public abstract class AbstractAction implements IAction {
         if (beforeConditionsEventResult == EventResult.interrupt(true)) {
             return result;
         }
+
+        if (!actionData.getSourceActionHolder().passedHolderCondition(actionData)) {
+            return result;
+        }
+
         if (metConditions(actionData)) {
             EventResult beforeRewardsEventResult = ActionEvent.BEFORE_REWARDS.invoker().registerBeforeRewards(actionData);
             if (beforeRewardsEventResult == EventResult.interrupt(true)) {
