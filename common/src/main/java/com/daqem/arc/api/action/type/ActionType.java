@@ -61,6 +61,7 @@ public interface ActionType<T extends IAction> extends IActionType<T> {
     ActionType<UseAnvilAction> USE_ANVIL = register(Arc.getId("on_use_anvil"));
     ActionType<HurtItemAction> HURT_ITEM = register(Arc.getId("on_hurt_item"));
     ActionType<GetDestroySpeedAction> GET_DESTROY_SPEED = register(Arc.getId("on_get_destroy_speed"));
+    ActionType<GetAttackSpeedAction> GET_ATTACK_SPEED = register(Arc.getId("on_get_attack_speed"));
 
     static <T extends IAction> ActionType<T> register(final ResourceLocation location) {
         return Registry.register(ArcRegistry.ACTION, location, new ActionType<T>(){

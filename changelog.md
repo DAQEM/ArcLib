@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.8.3]
+### Added
+- Static Action Holder condition.
+
+[0.8.3]: https://github.com/DAQEM/Arc/compare/1d19d8b9c1e8cf09f8f5bc0254df15773e1f5a30...7d1fbddb2137e80350a0a63d129078659e54883b
+
 ## [0.8.2]
 ### Fixed
 - Set GetDestroySpeedAction to perform on client.

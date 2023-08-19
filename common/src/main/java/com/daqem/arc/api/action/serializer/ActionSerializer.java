@@ -71,6 +71,7 @@ public interface ActionSerializer<T extends IAction> extends IActionSerializer<T
     IActionSerializer<UseAnvilAction> USE_ANVIL = register(Arc.getId("on_use_anvil"), new UseAnvilAction.Serializer());
     IActionSerializer<HurtItemAction> HURT_ITEM = register(Arc.getId("on_hurt_item"), new HurtItemAction.Serializer());
     IActionSerializer<GetDestroySpeedAction> GET_DESTROY_SPEED = register(Arc.getId("on_get_destroy_speed"), new GetDestroySpeedAction.Serializer());
+    IActionSerializer<GetAttackSpeedAction> GET_ATTACK_SPEED = register(Arc.getId("on_get_attack_speed"), new GetAttackSpeedAction.Serializer());
 
     @Override
     default T fromJson(ResourceLocation location, JsonObject jsonObject) {

@@ -18,7 +18,8 @@
     "MixinLivingEntity",
     "MixinProjectile",
     "MixinRecipeHolder",
-    "MixinServerPlayer"
+    "MixinServerPlayer",
+    "common.MixinPlayer"
   ],
   "injectors": {
     "defaultRequire": 1

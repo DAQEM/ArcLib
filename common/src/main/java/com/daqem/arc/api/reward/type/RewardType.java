@@ -13,6 +13,7 @@ import com.daqem.arc.data.reward.effect.EffectReward;
 import com.daqem.arc.data.reward.effect.RemoveEffectReward;
 import com.daqem.arc.data.reward.experience.ExpReward;
 import com.daqem.arc.data.reward.item.ItemReward;
+import com.daqem.arc.data.reward.player.AttackSpeedMultiplierReward;
 import com.daqem.arc.event.events.RegistryEvent;
 import com.daqem.arc.registry.ArcRegistry;
 import net.minecraft.core.Registry;
@@ -28,6 +29,7 @@ public interface RewardType<T extends IReward> extends IRewardType<T> {
     IRewardType<RemoveEffectReward> REMOVE_EFFECT = register(Arc.getId("remove_effect"));
     IRewardType<CancelActionReward> CANCEL_ACTION = register(Arc.getId("cancel_action"));
     IRewardType<DestroySpeedMultiplierReward> DESTROY_SPEED_MULTIPLIER = register(Arc.getId("destroy_speed_multiplier"));
+    IRewardType<AttackSpeedMultiplierReward> ATTACK_SPEED_MULTIPLIER = register(Arc.getId("attack_speed_multiplier"));
 
     static <T extends IReward> IRewardType<T> register(final ResourceLocation location) {
         return Registry.register(ArcRegistry.REWARD, location, new RewardType<T>(){
