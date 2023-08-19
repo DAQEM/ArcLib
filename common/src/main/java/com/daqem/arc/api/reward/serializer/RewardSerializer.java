@@ -11,6 +11,7 @@ import com.daqem.arc.data.reward.effect.RemoveEffectReward;
 import com.daqem.arc.data.reward.experience.ExpReward;
 import com.daqem.arc.data.reward.item.ItemReward;
 import com.daqem.arc.data.reward.player.AttackSpeedMultiplierReward;
+import com.daqem.arc.data.reward.world.DropItemReward;
 import com.daqem.arc.event.events.RegistryEvent;
 import com.daqem.arc.registry.ArcRegistry;
 import com.google.gson.JsonObject;
@@ -30,6 +31,7 @@ public interface RewardSerializer<T extends IReward> extends IRewardSerializer<T
     IRewardSerializer<ItemReward> ITEM = register(Arc.getId("item"), new ItemReward.Serializer());
     IRewardSerializer<CancelActionReward> CANCEL_ACTION = register(Arc.getId("cancel_action"), new CancelActionReward.Serializer());
     IRewardSerializer<AttackSpeedMultiplierReward> ATTACK_SPEED_MULTIPLIER = register(Arc.getId("attack_speed_multiplier"), new AttackSpeedMultiplierReward.Serializer());
+    IRewardSerializer<DropItemReward> DROP_ITEM = register(Arc.getId("drop_item"), new DropItemReward.Serializer());
 
     @Override
     default T fromJson(ResourceLocation location, JsonObject jsonObject) {
