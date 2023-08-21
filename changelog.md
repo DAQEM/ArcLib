@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.8.4]
+### Added
+- Static Action Holder condition.
+
+[0.8.4]: https://github.com/DAQEM/Arc/compare/7d1fbddb2137e80350a0a63d129078659e54883b...1ebaa35771e85db2973d4791e2ce8f0ea92cd6b0
+
 ## [0.8.3]
 ### Added
 - Static Action Holder condition.
