@@ -1,0 +1,15 @@
+{
+  "type": "arc:on_kill_entity",
+  "holder": {
+    "type": "example:example_action_type",
+    "id": "example:example_action_holder_1"
+  },
+  "rewards": [
+    {
+      "type": "arc:exp_multiplier",
+      "multiplier": 500
+    }
+  ],
+  "conditions": [
+  ]
+}

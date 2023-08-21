@@ -16,8 +16,8 @@ public class DestroySpeedMultiplierReward extends AbstractReward {
 
     private final float multiplier;
 
-    public DestroySpeedMultiplierReward(double chance, float multiplier) {
-        super(chance);
+    public DestroySpeedMultiplierReward(double chance, int priority, float multiplier) {
+        super(chance, priority);
         this.multiplier = multiplier;
     }
 
@@ -39,16 +39,18 @@ public class DestroySpeedMultiplierReward extends AbstractReward {
     public static class Serializer implements RewardSerializer<DestroySpeedMultiplierReward> {
 
         @Override
-        public DestroySpeedMultiplierReward fromJson(JsonObject jsonObject, double chance) {
+        public DestroySpeedMultiplierReward fromJson(JsonObject jsonObject, double chance, int priority) {
             return new DestroySpeedMultiplierReward(
                     chance,
+                    priority,
                     GsonHelper.getAsFloat(jsonObject, "multiplier"));
         }
 
         @Override
-        public DestroySpeedMultiplierReward fromNetwork(FriendlyByteBuf friendlyByteBuf, double chance) {
+        public DestroySpeedMultiplierReward fromNetwork(FriendlyByteBuf friendlyByteBuf, double chance, int priority) {
             return new DestroySpeedMultiplierReward(
                     chance,
+                    priority,
                     friendlyByteBuf.readFloat());
         }
 

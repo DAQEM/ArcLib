@@ -20,8 +20,8 @@ public class EffectReward extends AbstractReward {
     private final MobEffect effect;
     private final int duration;
 
-    public EffectReward(double chance, MobEffect effect, int duration) {
-        super(chance);
+    public EffectReward(double chance, int priority, MobEffect effect, int duration) {
+        super(chance, priority);
         this.effect = effect;
         this.duration = duration;
     }
@@ -46,17 +46,19 @@ public class EffectReward extends AbstractReward {
     public static class Serializer implements RewardSerializer<EffectReward> {
 
         @Override
-        public EffectReward fromJson(JsonObject jsonObject, double chance) {
+        public EffectReward fromJson(JsonObject jsonObject, double chance, int priority) {
             return new EffectReward(
                     chance,
+                    priority,
                     getMobEffect(jsonObject, "effect"),
                     GsonHelper.getAsInt(jsonObject, "duration"));
         }
 
         @Override
-        public EffectReward fromNetwork(FriendlyByteBuf friendlyByteBuf, double chance) {
+        public EffectReward fromNetwork(FriendlyByteBuf friendlyByteBuf, double chance, int priority) {
             return new EffectReward(
                     chance,
+                    priority,
                     Registry.MOB_EFFECT.byId(friendlyByteBuf.readVarInt()),
                     friendlyByteBuf.readVarInt());
         }

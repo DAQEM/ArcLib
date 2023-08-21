@@ -14,6 +14,8 @@ public interface IReward extends ArcSerializable {
 
     double getChance();
 
+    int getPriority();
+
     ActionResult apply(ActionData actionData);
 
     boolean passedChance(ActionData actionData);

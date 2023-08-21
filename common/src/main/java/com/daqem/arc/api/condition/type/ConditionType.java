@@ -12,6 +12,7 @@ import com.daqem.arc.data.condition.block.properties.BlockHardnessCondition;
 import com.daqem.arc.data.condition.block.properties.BlockMaterialColorCondition;
 import com.daqem.arc.data.condition.effect.EffectCategoryCondition;
 import com.daqem.arc.data.condition.effect.EffectCondition;
+import com.daqem.arc.data.condition.entity.EntityInBlockCondition;
 import com.daqem.arc.data.condition.entity.EntityTypeCondition;
 import com.daqem.arc.data.condition.entity.EntityTypesCondition;
 import com.daqem.arc.data.condition.entity.ReadyForShearingCondition;
@@ -58,6 +59,7 @@ public interface ConditionType<T extends ICondition> extends IConditionType<T> {
     ConditionType<EffectCondition> EFFECT = register(Arc.getId("effect"));
     ConditionType<BlockHardnessCondition> BLOCK_HARDNESS = register(Arc.getId("block_hardness"));
     ConditionType<BlockMaterialColorCondition> BLOCK_MATERIAL_COLOR = register(Arc.getId("block_material_color"));
+    IConditionType<EntityInBlockCondition> ENTITY_IN_BLOCK = register(Arc.getId("entity_in_block"));
 
     static <T extends ICondition> ConditionType<T> register(final ResourceLocation location) {
         return Registry.register(ArcRegistry.CONDITION, location, new ConditionType<T>(){

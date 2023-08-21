@@ -23,8 +23,8 @@ public class EffectDurationMultiplierReward extends AbstractReward {
 
     private final double multiplier;
 
-    public EffectDurationMultiplierReward(double chance, double multiplier) {
-        super(chance);
+    public EffectDurationMultiplierReward(double chance, int priority, double multiplier) {
+        super(chance, priority);
         this.multiplier = multiplier;
     }
 
@@ -53,16 +53,18 @@ public class EffectDurationMultiplierReward extends AbstractReward {
     public static class Serializer implements RewardSerializer<EffectDurationMultiplierReward> {
 
         @Override
-        public EffectDurationMultiplierReward fromJson(JsonObject jsonObject, double chance) {
+        public EffectDurationMultiplierReward fromJson(JsonObject jsonObject, double chance, int priority) {
             return new EffectDurationMultiplierReward(
                     chance,
+                    priority,
                     GsonHelper.getAsDouble(jsonObject, "multiplier"));
         }
 
         @Override
-        public EffectDurationMultiplierReward fromNetwork(FriendlyByteBuf friendlyByteBuf, double chance) {
+        public EffectDurationMultiplierReward fromNetwork(FriendlyByteBuf friendlyByteBuf, double chance, int priority) {
             return new EffectDurationMultiplierReward(
                     chance,
+                    priority,
                     friendlyByteBuf.readDouble());
         }
 

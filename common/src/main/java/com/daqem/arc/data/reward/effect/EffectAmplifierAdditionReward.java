@@ -23,8 +23,8 @@ public class EffectAmplifierAdditionReward extends AbstractReward {
 
     private final int addition;
 
-    public EffectAmplifierAdditionReward(double chance, int addition) {
-        super(chance);
+    public EffectAmplifierAdditionReward(double chance, int priority, int addition) {
+        super(chance, priority);
         this.addition = addition;
     }
 
@@ -53,16 +53,18 @@ public class EffectAmplifierAdditionReward extends AbstractReward {
     public static class Serializer implements RewardSerializer<EffectAmplifierAdditionReward> {
 
         @Override
-        public EffectAmplifierAdditionReward fromJson(JsonObject jsonObject, double chance) {
+        public EffectAmplifierAdditionReward fromJson(JsonObject jsonObject, double chance, int priority) {
             return new EffectAmplifierAdditionReward(
                     chance,
+                    priority,
                     GsonHelper.getAsInt(jsonObject, "addition"));
         }
 
         @Override
-        public EffectAmplifierAdditionReward fromNetwork(FriendlyByteBuf friendlyByteBuf, double chance) {
+        public EffectAmplifierAdditionReward fromNetwork(FriendlyByteBuf friendlyByteBuf, double chance, int priority) {
             return new EffectAmplifierAdditionReward(
                     chance,
+                    priority,
                     friendlyByteBuf.readInt());
         }
 

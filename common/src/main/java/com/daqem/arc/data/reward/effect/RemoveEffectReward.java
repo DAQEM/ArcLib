@@ -16,8 +16,8 @@ import net.minecraft.world.entity.player.Player;
 public class RemoveEffectReward extends AbstractReward {
 
 
-    public RemoveEffectReward(double chance) {
-        super(chance);
+    public RemoveEffectReward(double chance, int priority) {
+        super(chance, priority);
     }
 
     @Override
@@ -43,13 +43,13 @@ public class RemoveEffectReward extends AbstractReward {
     public static class Serializer implements RewardSerializer<RemoveEffectReward> {
 
         @Override
-        public RemoveEffectReward fromJson(JsonObject jsonObject, double chance) {
-            return new RemoveEffectReward(chance);
+        public RemoveEffectReward fromJson(JsonObject jsonObject, double chance, int priority) {
+            return new RemoveEffectReward(chance, priority);
         }
 
         @Override
-        public RemoveEffectReward fromNetwork(FriendlyByteBuf friendlyByteBuf, double chance) {
-            return new RemoveEffectReward(chance);
+        public RemoveEffectReward fromNetwork(FriendlyByteBuf friendlyByteBuf, double chance, int priority) {
+            return new RemoveEffectReward(chance, priority);
         }
 
         @Override

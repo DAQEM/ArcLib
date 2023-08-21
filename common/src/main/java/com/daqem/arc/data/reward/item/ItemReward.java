@@ -17,8 +17,8 @@ public class ItemReward extends AbstractReward {
 
     private final ItemStack itemStack;
 
-    public ItemReward(double chance, ItemStack itemStack) {
-        super(chance);
+    public ItemReward(double chance, int priority, ItemStack itemStack) {
+        super(chance, priority);
         this.itemStack = itemStack;
     }
 
@@ -42,16 +42,16 @@ public class ItemReward extends AbstractReward {
     public static class Serializer implements RewardSerializer<ItemReward> {
 
         @Override
-        public ItemReward fromJson(JsonObject jsonObject, double chance) {
+        public ItemReward fromJson(JsonObject jsonObject, double chance, int priority) {
             ItemStack itemStack = getItemStack(jsonObject, "item");
             CompoundTag tag = getCompoundTag(jsonObject);
             if (tag != null) itemStack.setTag(tag);
-            return new ItemReward(chance, itemStack);
+            return new ItemReward(chance, priority, itemStack);
         }
 
         @Override
-        public ItemReward fromNetwork(FriendlyByteBuf friendlyByteBuf, double chance) {
-            return new ItemReward(chance, friendlyByteBuf.readItem());
+        public ItemReward fromNetwork(FriendlyByteBuf friendlyByteBuf, double chance, int priority) {
+            return new ItemReward(chance, priority, friendlyByteBuf.readItem());
         }
 
         @Override

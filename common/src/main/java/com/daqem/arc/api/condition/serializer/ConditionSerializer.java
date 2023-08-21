@@ -16,6 +16,7 @@ import com.daqem.arc.data.condition.block.properties.BlockHardnessCondition;
 import com.daqem.arc.data.condition.block.properties.BlockMaterialColorCondition;
 import com.daqem.arc.data.condition.effect.EffectCategoryCondition;
 import com.daqem.arc.data.condition.effect.EffectCondition;
+import com.daqem.arc.data.condition.entity.EntityInBlockCondition;
 import com.daqem.arc.data.condition.entity.EntityTypeCondition;
 import com.daqem.arc.data.condition.entity.EntityTypesCondition;
 import com.daqem.arc.data.condition.entity.ReadyForShearingCondition;
@@ -65,6 +66,7 @@ public interface ConditionSerializer<T extends ICondition> extends IConditionSer
     IConditionSerializer<EffectCondition> EFFECT = register(Arc.getId("effect"), new EffectCondition.Serializer());
     IConditionSerializer<BlockHardnessCondition> BLOCK_HARDNESS = register(Arc.getId("block_hardness"), new BlockHardnessCondition.Serializer());
     IConditionSerializer<BlockMaterialColorCondition> BLOCK_MATERIAL_COLOR = register(Arc.getId("block_material_color"), new BlockMaterialColorCondition.Serializer());
+    IConditionSerializer<EntityInBlockCondition> ENTITY_IN_BLOCK = register(Arc.getId("entity_in_block"), new EntityInBlockCondition.Serializer());
 
     @Override
     default T fromJson(ResourceLocation location, JsonObject jsonObject) {

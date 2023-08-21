@@ -13,8 +13,8 @@ import net.minecraft.resources.ResourceLocation;
 
 public class CancelActionReward extends AbstractReward {
 
-    public CancelActionReward(double chance) {
-        super(chance);
+    public CancelActionReward(double chance, int priority) {
+        super(chance, priority);
     }
 
     @Override
@@ -35,13 +35,13 @@ public class CancelActionReward extends AbstractReward {
     public static class Serializer implements RewardSerializer<CancelActionReward> {
 
         @Override
-        public CancelActionReward fromJson(JsonObject jsonObject, double chance) {
-            return new CancelActionReward(chance);
+        public CancelActionReward fromJson(JsonObject jsonObject, double chance, int priority) {
+            return new CancelActionReward(chance, priority);
         }
 
         @Override
-        public CancelActionReward fromNetwork(FriendlyByteBuf friendlyByteBuf, double chance) {
-            return new CancelActionReward(chance);
+        public CancelActionReward fromNetwork(FriendlyByteBuf friendlyByteBuf, double chance, int priority) {
+            return new CancelActionReward(chance, priority);
         }
 
         @Override

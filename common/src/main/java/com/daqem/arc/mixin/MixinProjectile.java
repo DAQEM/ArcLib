@@ -22,7 +22,7 @@ public abstract class MixinProjectile extends Entity {
     }
 
     @Inject(at = @At("HEAD"), method = "shootFromRotation(Lnet/minecraft/world/entity/Entity;FFFFF)V")
-    private void shootFromRotation(Entity entity, float f, float g, float h, float i, float j, CallbackInfo ci) {
+    private void shootFromRotationPre(Entity entity, float f, float g, float h, float i, float j, CallbackInfo ci) {
         if (entity instanceof ArcServerPlayer player) {
             if ((Projectile) (Object) this instanceof ThrowableItemProjectile throwableItemProjectile) {
                 ItemEvents.onThrowItem(player, throwableItemProjectile);

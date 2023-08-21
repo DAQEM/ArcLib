@@ -21,24 +21,14 @@ public class ExpReward extends AbstractReward {
     private final int min;
     private final int max;
 
-    public ExpReward(double chance, int min, int max) {
-        super(chance);
+    public ExpReward(double chance, int priority, int min, int max) {
+        super(chance, priority);
         this.min = min;
         this.max = max;
 
         if (min > max) {
             throw new IllegalArgumentException("min cannot be greater than max for ExpActionReward.");
         }
-    }
-
-    @Override
-    public String toString() {
-        return "ExpActionReward{" +
-                "chance=" + this.getChance() +
-                ", type=" + this.getType() +
-                ", min_exp=" + min +
-                ", max_exp=" + max +
-                '}';
     }
 
     @Override
@@ -62,17 +52,19 @@ public class ExpReward extends AbstractReward {
     public static class Serializer implements RewardSerializer<ExpReward> {
 
         @Override
-        public ExpReward fromJson(JsonObject jsonObject, double chance) {
+        public ExpReward fromJson(JsonObject jsonObject, double chance, int priority) {
             return new ExpReward(
                     chance,
+                    priority,
                     GsonHelper.getAsInt(jsonObject, "min"),
                     GsonHelper.getAsInt(jsonObject, "max"));
         }
 
         @Override
-        public ExpReward fromNetwork(FriendlyByteBuf friendlyByteBuf, double chance) {
+        public ExpReward fromNetwork(FriendlyByteBuf friendlyByteBuf, double chance, int priority) {
             return new ExpReward(
                     chance,
+                    priority,
                     friendlyByteBuf.readInt(),
                     friendlyByteBuf.readInt());
         }

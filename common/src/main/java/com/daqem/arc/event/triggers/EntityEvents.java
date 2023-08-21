@@ -1,5 +1,6 @@
 package com.daqem.arc.event.triggers;
 
+import com.daqem.arc.Arc;
 import com.daqem.arc.api.action.result.ActionResult;
 import com.daqem.arc.api.action.type.ActionType;
 import com.daqem.arc.api.player.ArcServerPlayer;
@@ -24,6 +25,8 @@ public class EntityEvents {
             } else if (source.getEntity() instanceof ArcServerPlayer arcServerPlayer) {
                 new ActionDataBuilder(arcServerPlayer, ActionType.KILL_ENTITY)
                         .withData(ActionDataType.ENTITY, entity)
+                        .withData(ActionDataType.BLOCK_POSITION, entity.blockPosition())
+                        .withData(ActionDataType.WORLD, entity.level)
                         .withData(ActionDataType.EXP_DROP, entity.getExperienceReward())
                         .build()
                         .sendToAction();
@@ -45,6 +48,7 @@ public class EntityEvents {
             }
 
             if (source.getEntity() instanceof ArcServerPlayer arcServerPlayer) {
+                Arc.LOGGER.info("damage: " + amount);
                 ActionResult actionResult = new ActionDataBuilder(arcServerPlayer, ActionType.HURT_ENTITY)
                         .withData(ActionDataType.ENTITY, entity)
                         .withData(ActionDataType.DAMAGE_AMOUNT, amount)

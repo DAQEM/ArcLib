@@ -15,9 +15,9 @@ public interface IRewardSerializer<T extends IReward> extends ArcSerializer {
 
     void toNetwork(FriendlyByteBuf friendlyByteBuf, T type);
 
-    T fromJson(JsonObject jsonObject, double chance);
+    T fromJson(JsonObject jsonObject, double chance, int priority);
 
-    T fromNetwork(FriendlyByteBuf friendlyByteBuf, double chance);
+    T fromNetwork(FriendlyByteBuf friendlyByteBuf, double chance, int priority);
 
     static IReward fromNetwork(FriendlyByteBuf friendlyByteBuf) {
         ResourceLocation resourceLocation = friendlyByteBuf.readResourceLocation();

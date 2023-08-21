@@ -1,0 +1,25 @@
+{
+  "type": "arc:on_shoot_projectile",
+  "holder": {
+    "type": "example:example_action_type",
+    "id": "example:example_action_holder_1"
+  },
+  "rewards": [
+    {
+      "type": "arc:multiple_arrows",
+      "priority": 2,
+      "amount": 2
+    },
+    {
+      "type": "arc:entity_on_fire",
+      "priority": 3,
+      "ticks": 2000
+    }
+  ],
+  "conditions": [
+    {
+      "type": "arc:entity_type",
+      "entity_type": "minecraft:arrow"
+    }
+  ]
+}

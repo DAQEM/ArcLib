@@ -122,6 +122,7 @@ public abstract class AbstractAction implements IAction {
 
     public ActionResult applyRewards(ActionData actionData) {
         return rewards.stream()
+                .sorted((reward1, reward2) -> Integer.compare(reward2.getPriority(), reward1.getPriority()))
                 .map(reward -> applyReward(actionData, reward))
                 .reduce(new ActionResult(), ActionResult::merge);
     }

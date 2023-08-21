@@ -1,6 +1,7 @@
 package com.daqem.arc.event.triggers;
 
 import com.daqem.arc.api.action.type.ActionType;
+import com.daqem.arc.api.player.ArcPlayer;
 import com.daqem.arc.api.player.ArcServerPlayer;
 import com.daqem.arc.api.action.data.ActionDataBuilder;
 import com.daqem.arc.api.action.result.ActionResult;
@@ -9,6 +10,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.projectile.FishingHook;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.Level;
@@ -118,6 +120,15 @@ public class PlayerEvents {
         return new ActionDataBuilder(player, ActionType.HURT_ITEM)
                 .withData(ActionDataType.ITEM_STACK, itemStack)
                 .withData(ActionDataType.ITEM, itemStack.getItem())
+                .build()
+                .sendToAction();
+    }
+
+    public static void onRodReelIn(ArcPlayer serverPlayer, FishingHook fishingHook) {
+        new ActionDataBuilder(serverPlayer, ActionType.ROD_REEL_IN)
+                .withData(ActionDataType.ENTITY, fishingHook)
+                .withData(ActionDataType.BLOCK_POSITION, fishingHook.blockPosition())
+                .withData(ActionDataType.WORLD, fishingHook.level)
                 .build()
                 .sendToAction();
     }
