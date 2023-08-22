@@ -22,12 +22,9 @@ All notable changes to this project will be documented in this file.
 
 [0.8.6]: https://github.com/DAQEM/Arc/compare/790392c3b45b5a2df454a6ba8a6772371735ceac...bc45351dc5e7f3542ae0bb76bc705b8cb61adcf8
 
-## [0.8.5]
+## 0.8.5
 ### Fixed
 - Turned off debug mode.
-
-[0.8.5]: 
-
 
 ## [0.8.4]
 ### Added
