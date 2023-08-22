@@ -3,6 +3,10 @@ package com.daqem.arc.data.serializer;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
 
 import java.util.List;
 import java.util.function.Function;
@@ -35,9 +39,22 @@ public class ElementConverter<T> {
     public T convertToElement(String element) {
         T type = registry.get(new ResourceLocation(element));
 
+        if (type instanceof Block && element.equals("minecraft:air")) {
+            return type;
+        }
+        else if (type instanceof Item && element.equals("minecraft:air")) {
+            return type;
+        }
+        else if (type instanceof MobEffect && element.equals("minecraft:luck")) {
+            return type;
+        }
+        else if (type instanceof EntityType<?> && element.equals("minecraft:pig")) {
+            return type;
+        }
+
         // If not found in the registry, it will return the default value for the type.
         // This checks if the element is actually in the registry.
-        if (type == registry.get(new ResourceLocation("x"))) {
+        else if (type == registry.get(new ResourceLocation("x"))) {
             throw new IllegalArgumentException(element + " could not be found in registry " + registry.key().location());
         }
 
