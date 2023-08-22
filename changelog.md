@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.9]
+### Added
+- Damage Multiplier Reward.
+- pickup delay to Drop Item Reward.
+
+[0.9]: https://github.com/DAQEM/Arc/compare/d86fc894198d0826b7dbdecbe0a5b87a2799a938...60021b402788f40abb454270ef7bab1afd2b3da4
+
 ## [0.8.7]
 ### Added
 - Not Condition.
