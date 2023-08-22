@@ -18,7 +18,7 @@ import org.slf4j.Logger;
 public class Arc {
     public static final String MOD_ID = "arc";
     public static final Logger LOGGER = LogUtils.getLogger();
-    public static final boolean DEV_ENVIRONMENT = true;
+    public static final boolean DEV_ENVIRONMENT = false;
 
     public static void initCommon() {
         registerEvents();
