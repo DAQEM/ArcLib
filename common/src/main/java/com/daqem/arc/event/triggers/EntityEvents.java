@@ -34,34 +34,6 @@ public class EntityEvents {
             return EventResult.pass();
         });
 
-        EntityEvent.LIVING_HURT.register((entity, source, amount) -> {
-            if (entity instanceof ArcServerPlayer arcServerPlayer) {
-                ActionResult actionResult = new ActionDataBuilder(arcServerPlayer, ActionType.GET_HURT)
-                        .withData(ActionDataType.DAMAGE_SOURCE, source)
-                        .withData(ActionDataType.DAMAGE_AMOUNT, amount)
-                        .build()
-                        .sendToAction();
-
-                if (actionResult.shouldCancelAction()) {
-                    return EventResult.interruptFalse();
-                }
-            }
-
-            if (source.getEntity() instanceof ArcServerPlayer arcServerPlayer) {
-                Arc.LOGGER.info("damage: " + amount);
-                ActionResult actionResult = new ActionDataBuilder(arcServerPlayer, ActionType.HURT_ENTITY)
-                        .withData(ActionDataType.ENTITY, entity)
-                        .withData(ActionDataType.DAMAGE_AMOUNT, amount)
-                        .build()
-                        .sendToAction();
-
-                if (actionResult.shouldCancelAction()) {
-                    return EventResult.interruptFalse();
-                }
-            }
-            return EventResult.pass();
-        });
-
         EntityEvent.ANIMAL_TAME.register((animal, player) -> {
             if (player instanceof ArcServerPlayer arcServerPlayer) {
                 ActionResult actionResult = new ActionDataBuilder(arcServerPlayer, ActionType.TAME_ANIMAL)

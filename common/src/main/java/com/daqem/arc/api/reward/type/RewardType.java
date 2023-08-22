@@ -12,6 +12,7 @@ import com.daqem.arc.data.reward.effect.EffectAmplifierAdditionReward;
 import com.daqem.arc.data.reward.effect.EffectDurationMultiplierReward;
 import com.daqem.arc.data.reward.effect.EffectReward;
 import com.daqem.arc.data.reward.effect.RemoveEffectReward;
+import com.daqem.arc.data.reward.entity.DamageMultiplierReward;
 import com.daqem.arc.data.reward.entity.EntityOnFireReward;
 import com.daqem.arc.data.reward.entity.MultipleArrowsReward;
 import com.daqem.arc.data.reward.experience.ExpMultiplierReward;
@@ -42,6 +43,7 @@ public interface RewardType<T extends IReward> extends IRewardType<T> {
     IRewardType<BlockDropMultiplierReward> BLOCK_DROP_MULTIPLIER = register(Arc.getId("block_drop_multiplier"));
     IRewardType<MoveToEntityReward> MOVE_TO_ENTITY = register(Arc.getId("move_to_entity"));
     IRewardType<ExpMultiplierReward> EXP_MULTIPLIER = register(Arc.getId("exp_multiplier"));
+    IRewardType<DamageMultiplierReward> DAMAGE_MULTIPLIER = register(Arc.getId("damage_multiplier"));
 
     static <T extends IReward> IRewardType<T> register(final ResourceLocation location) {
         return Registry.register(ArcRegistry.REWARD, location, new RewardType<T>(){

@@ -1,16 +1,22 @@
 package com.daqem.arc.mixin;
 
+import com.daqem.arc.api.action.data.ActionDataBuilder;
+import com.daqem.arc.api.action.data.type.ActionDataType;
 import com.daqem.arc.api.action.holder.IActionHolder;
+import com.daqem.arc.api.action.result.ActionResult;
+import com.daqem.arc.api.action.type.ActionType;
 import com.daqem.arc.event.triggers.MovementEvents;
 import com.daqem.arc.event.triggers.PlayerEvents;
 import com.daqem.arc.event.triggers.StatEvents;
 import com.daqem.arc.api.player.ArcServerPlayer;
 import com.daqem.arc.player.stat.StatData;
 import com.mojang.authlib.GameProfile;
+import dev.architectury.event.EventResult;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stat;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Inventory;
@@ -26,7 +32,9 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyArgs;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -269,5 +277,43 @@ public abstract class MixinServerPlayer extends Player implements ArcServerPlaye
     @Inject(at = @At("TAIL"), method = "onEnchantmentPerformed(Lnet/minecraft/world/item/ItemStack;I)V")
     public void onEnchantmentPerformed(ItemStack itemStack, int level, CallbackInfo ci) {
         PlayerEvents.onEnchantItem(this, itemStack, level);
+    }
+
+    @ModifyArgs(
+            method = "hurt(Lnet/minecraft/world/damagesource/DamageSource;F)Z",
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;hurt(Lnet/minecraft/world/damagesource/DamageSource;F)Z")
+    )    public void hurt(Args args) {
+        Entity entity = this.arc$getPlayer();
+        DamageSource source = args.get(0);
+        float amount = args.get(1);
+        if (entity instanceof ArcServerPlayer arcServerPlayer) {
+            ActionResult actionResult = new ActionDataBuilder(arcServerPlayer, ActionType.GET_HURT)
+                    .withData(ActionDataType.DAMAGE_SOURCE, source)
+                    .withData(ActionDataType.DAMAGE_AMOUNT, amount)
+                    .build()
+                    .sendToAction();
+
+            if (actionResult.shouldCancelAction()) {
+                args.set(1, 0F);
+            }
+            if (actionResult.getDamageModifier() != 1F) {
+                args.set(1, amount * actionResult.getDamageModifier());
+            }
+        }
+
+        if (source.getEntity() instanceof ArcServerPlayer arcServerPlayer) {
+            ActionResult actionResult = new ActionDataBuilder(arcServerPlayer, ActionType.HURT_ENTITY)
+                    .withData(ActionDataType.ENTITY, entity)
+                    .withData(ActionDataType.DAMAGE_AMOUNT, amount)
+                    .build()
+                    .sendToAction();
+
+            if (actionResult.shouldCancelAction()) {
+                args.set(1, 0F);
+            }
+            if (actionResult.getDamageModifier() != 1F) {
+                args.set(1, amount * actionResult.getDamageModifier());
+            }
+        }
     }
 }

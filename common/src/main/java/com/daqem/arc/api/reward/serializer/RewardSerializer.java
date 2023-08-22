@@ -9,6 +9,7 @@ import com.daqem.arc.data.reward.effect.EffectAmplifierAdditionReward;
 import com.daqem.arc.data.reward.effect.EffectDurationMultiplierReward;
 import com.daqem.arc.data.reward.effect.EffectReward;
 import com.daqem.arc.data.reward.effect.RemoveEffectReward;
+import com.daqem.arc.data.reward.entity.DamageMultiplierReward;
 import com.daqem.arc.data.reward.entity.EntityOnFireReward;
 import com.daqem.arc.data.reward.entity.MultipleArrowsReward;
 import com.daqem.arc.data.reward.experience.ExpMultiplierReward;
@@ -42,6 +43,7 @@ public interface RewardSerializer<T extends IReward> extends IRewardSerializer<T
     IRewardSerializer<BlockDropMultiplierReward> BLOCK_DROP_MULTIPLIER = register(Arc.getId("block_drop_multiplier"), new BlockDropMultiplierReward.Serializer());
     IRewardSerializer<MoveToEntityReward> MOVE_TO_ENTITY = register(Arc.getId("move_to_entity"), new MoveToEntityReward.Serializer());
     IRewardSerializer<ExpMultiplierReward> EXP_MULTIPLIER = register(Arc.getId("exp_multiplier"), new ExpMultiplierReward.Serializer());
+    IRewardSerializer<DamageMultiplierReward> DAMAGE_MULTIPLIER = register(Arc.getId("damage_multiplier"), new DamageMultiplierReward.Serializer());
 
     @Override
     default T fromJson(ResourceLocation location, JsonObject jsonObject) {
