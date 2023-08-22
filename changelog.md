@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.8.6]
+### Fixed
+- Registry default type checking.
+- Block drop multiplier item drop amount calculation.
+
+[0.8.5]:
+
 ## [0.8.5]
 ### Fixed
 - Turned off debug mode.
