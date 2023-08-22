@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.8.5]
+### Fixed
+- Turned off debug mode.
+
+[0.8.5]: 
+
+
 ## [0.8.4]
 ### Added
 - Static Action Holder condition.
