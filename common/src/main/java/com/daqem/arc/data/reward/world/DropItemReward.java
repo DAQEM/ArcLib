@@ -45,12 +45,14 @@ public class DropItemReward extends AbstractReward {
             if (level instanceof ServerLevel serverLevel) {
                 if (!itemStack.isEmpty()) {
                     for (int i = 0; i < amount; i++) {
-                        serverLevel.addFreshEntity(new ItemEntity(
+                        ItemEntity entity = new ItemEntity(
                                 serverLevel,
                                 pos.getX(),
                                 pos.getY(),
                                 pos.getZ(),
-                                itemStack.copy()));
+                                itemStack.copy());
+                        entity.setDefaultPickUpDelay();
+                        serverLevel.addFreshEntity(entity);
                     }
                 } else {
                     BlockState state = actionData.getData(ActionDataType.BLOCK_STATE);
@@ -65,12 +67,14 @@ public class DropItemReward extends AbstractReward {
                         );
                         for (int i = 0; i < amount; i++) {
                             ItemStack randomDrop = drops.get(serverLevel.random.nextInt(drops.size()));
-                            serverLevel.addFreshEntity(new ItemEntity(
+                            ItemEntity entity = new ItemEntity(
                                     serverLevel,
                                     pos.getX(),
                                     pos.getY(),
                                     pos.getZ(),
-                                    randomDrop));
+                                    randomDrop);
+                            entity.setDefaultPickUpDelay();
+                            serverLevel.addFreshEntity(entity);
                         }
                     }
                 }
