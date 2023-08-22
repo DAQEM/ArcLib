@@ -1,6 +1,7 @@
 package com.daqem.arc;
 
 import com.daqem.arc.api.example.ExampleRegistryEvent;
+import com.daqem.arc.config.ArcCommonConfig;
 import com.daqem.arc.event.EventPlayerJoin;
 import com.daqem.arc.event.command.EventRegisterCommands;
 import com.daqem.arc.event.triggers.AdvancementEvents;
@@ -8,7 +9,6 @@ import com.daqem.arc.event.triggers.BlockEvents;
 import com.daqem.arc.event.triggers.EntityEvents;
 import com.daqem.arc.event.triggers.ItemEvents;
 import com.daqem.arc.networking.ArcNetworking;
-import com.daqem.arc.registry.ArcRegistry;
 import com.mojang.logging.LogUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -18,7 +18,6 @@ import org.slf4j.Logger;
 public class Arc {
     public static final String MOD_ID = "arc";
     public static final Logger LOGGER = LogUtils.getLogger();
-    public static final boolean DEV_ENVIRONMENT = false;
 
     public static void initCommon() {
         registerEvents();
@@ -35,7 +34,7 @@ public class Arc {
 
         EventPlayerJoin.registerEvent();
 
-        if (isDevEnvironment()) {
+        if (isDebugEnvironment()) {
             ExampleRegistryEvent.registerActionHolderType();
         }
     }
@@ -56,7 +55,7 @@ public class Arc {
         return Component.literal(str);
     }
 
-    public static boolean isDevEnvironment() {
-        return DEV_ENVIRONMENT;
+    public static boolean isDebugEnvironment() {
+        return ArcCommonConfig.isDebug.get();
     }
 }

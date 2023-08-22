@@ -34,3 +34,10 @@ mandatory = true
 versionRange = "[6.5.85,)"
 ordering = "AFTER"
 side = "BOTH"
+
+[[dependencies.arc]]
+modId = "supermartijn642configlib"
+mandatory = true
+versionRange = "[1.1.0,)"
+ordering = "AFTER"
+side = "BOTH"

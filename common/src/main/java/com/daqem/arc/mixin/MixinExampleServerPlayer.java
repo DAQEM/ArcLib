@@ -28,7 +28,7 @@ public abstract class MixinExampleServerPlayer extends Player implements Example
     @Inject(at = @At("RETURN"), method = "<init>")
     private void onInit(MinecraftServer minecraftServer, ServerLevel serverLevel, GameProfile gameProfile, ProfilePublicKey profilePublicKey, CallbackInfo ci) {
         if (((ServerPlayer) (Object) this) instanceof ArcPlayer arcPlayer) {
-            if (Arc.isDevEnvironment()) {
+            if (Arc.isDebugEnvironment()) {
                 arcPlayer.arc$addActionHolders(ExampleActionHolderManager.getInstance().getActionHolders());
             }
         }

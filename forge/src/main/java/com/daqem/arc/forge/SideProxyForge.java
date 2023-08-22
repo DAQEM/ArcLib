@@ -25,7 +25,7 @@ public class SideProxyForge {
     public void onAddReloadListeners(AddReloadListenerEvent event) {
         event.addListener(new ActionManagerForge());
 
-        if (Arc.isDevEnvironment()) {
+        if (Arc.isDebugEnvironment()) {
             ExampleActionHolderManager.getInstance();
         }
     }

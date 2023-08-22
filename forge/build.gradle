@@ -48,6 +48,7 @@ dependencies {
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionForge")) { transitive = false }
 
+    modImplementation "curse.maven:supermartijn642s-config-lib-438332:${project.config_library_file_forge}"
 }
 
 processResources {
@@ -115,6 +116,7 @@ curseforge {
 
         relations {
             requiredDependency("architectury-api")
+            requiredDependency("supermartijn642s-config-lib")
         }
 
         mainArtifact(remapJar) {
@@ -137,5 +139,6 @@ modrinth {
     loaders = ["forge"]
     dependencies {
         required.project "architectury-api"
+        required.project "supermartijn642s-config-lib"
     }
 }
