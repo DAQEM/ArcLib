@@ -53,7 +53,7 @@ public class BlockDropMultiplierReward extends AbstractReward {
                                         .withParameter(LootContextParams.THIS_ENTITY, actionData.getPlayer().arc$getPlayer())
                         );
                         for (ItemStack drop : drops) {
-                            for (int i = 0; i < multiplier; i++) {
+                            for (int i = 1; i < multiplier; i++) {
                                 level.addFreshEntity(
                                         new ItemEntity(level, vec3.x(), vec3.y(), vec3.z(), drop));
                             }
