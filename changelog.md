@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.9.1]
+### Added
+- Damage Source Condition.
+
+[0.9.1]: https://github.com/DAQEM/Arc/compare/60021b402788f40abb454270ef7bab1afd2b3da4...25ac8ca910647bf986929c2dbd289739ff4ab4d4
+
+
 ## [0.9]
 ### Added
 - Damage Multiplier Reward.
