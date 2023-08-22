@@ -127,9 +127,6 @@ public class MultipleArrowsReward extends AbstractReward {
                     this.discard();
                 }
             };
-            Arc.LOGGER.info("base: " + projectile.getBaseDamage());
-            Arc.LOGGER.info("length: " + projectile.getDeltaMovement().length());
-            Arc.LOGGER.info("power: " + power);
             projectile.pickup = AbstractArrow.Pickup.CREATIVE_ONLY;
             Vector3f vector3f = new Vector3f(player.getViewVector(1.0F));
             vector3f.transform(new Quaternion(new Vector3f(player.getUpVector(1.0F)), pitch, true));
