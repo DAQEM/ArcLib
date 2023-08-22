@@ -2,12 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.8.7]
+### Added
+- Not Condition.
+
+[0.8.7]: https://github.com/DAQEM/Arc/compare/bc45351dc5e7f3542ae0bb76bc705b8cb61adcf8...d86fc894198d0826b7dbdecbe0a5b87a2799a938
+
 ## [0.8.6]
 ### Fixed
 - Registry default type checking.
 - Block drop multiplier item drop amount calculation.
 
-[0.8.5]:
+[0.8.6]: https://github.com/DAQEM/Arc/compare/790392c3b45b5a2df454a6ba8a6772371735ceac...bc45351dc5e7f3542ae0bb76bc705b8cb61adcf8
 
 ## [0.8.5]
 ### Fixed
