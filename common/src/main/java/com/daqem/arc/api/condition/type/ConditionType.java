@@ -33,6 +33,7 @@ import net.minecraft.resources.ResourceLocation;
 public interface ConditionType<T extends ICondition> extends IConditionType<T> {
 
     ConditionType<OrCondition> OR = register(Arc.getId("or"));
+    ConditionType<OrCondition> NOT = register(Arc.getId("not"));
 
     ConditionType<CropFullyGrownCondition> CROP_FULLY_GROWN = register(Arc.getId("crop_fully_grown"));
     ConditionType<CropAgeCondition> CROP_AGE = register(Arc.getId("crop_age"));

@@ -6,6 +6,7 @@ import com.daqem.arc.api.action.serializer.ActionSerializer;
 import com.daqem.arc.api.action.serializer.IActionSerializer;
 import com.daqem.arc.api.condition.ICondition;
 import com.daqem.arc.api.condition.type.ConditionType;
+import com.daqem.arc.data.condition.NotCondition;
 import com.daqem.arc.data.condition.OrCondition;
 import com.daqem.arc.data.condition.block.BlockCondition;
 import com.daqem.arc.data.condition.block.BlocksCondition;
@@ -40,6 +41,7 @@ import net.minecraft.util.GsonHelper;
 public interface ConditionSerializer<T extends ICondition> extends IConditionSerializer<T> {
 
     IConditionSerializer<OrCondition> OR = register(Arc.getId("or"), new OrCondition.Serializer());
+    IConditionSerializer<NotCondition> NOT = register(Arc.getId("not"), new NotCondition.Serializer());
 
     IConditionSerializer<CropFullyGrownCondition> CROP_FULLY_GROWN = register(Arc.getId("crop_fully_grown"), new CropFullyGrownCondition.Serializer());
     IConditionSerializer<CropAgeCondition> CROP_AGE = register(Arc.getId("crop_age"), new CropAgeCondition.Serializer());
