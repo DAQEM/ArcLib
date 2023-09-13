@@ -6,6 +6,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
@@ -98,8 +99,9 @@ public class ActionScreen extends AbstractScreen {
     }
 
     @Override
-    public void render(@NotNull PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
-        this.renderBackground(poseStack);
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float f) {
+        PoseStack poseStack = guiGraphics.pose();
+        this.renderBackground(guiGraphics);
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         normal();
         RenderSystem.setShaderTexture(0, BACKGROUND);
@@ -109,33 +111,34 @@ public class ActionScreen extends AbstractScreen {
 
         this.mouse = new ActionScreen.Mouse(this, mouseX, mouseY);
 
-        drawTopButtons(poseStack);
+        drawTopButtons(guiGraphics);
 
-        this.blit(poseStack, 0, 0, 0, 0, IMAGE_WIDTH, IMAGE_HEIGHT);
-        this.blit(poseStack, SCROLL_WHEEL_POS_X, (int) (SCROLL_WHEEL_POS_Y + SCROLL_BAR_HEIGHT * scrollOffset), SCROLL_WHEEL_START_X, SCROLL_WHEEL_START_Y, SCROLL_WHEEL_WIDTH, SCROLL_WHEEL_HEIGHT);
+        this.blit(guiGraphics, 0, 0, 0, 0, IMAGE_WIDTH, IMAGE_HEIGHT);
+        this.blit(guiGraphics, SCROLL_WHEEL_POS_X, (int) (SCROLL_WHEEL_POS_Y + SCROLL_BAR_HEIGHT * scrollOffset), SCROLL_WHEEL_START_X, SCROLL_WHEEL_START_Y, SCROLL_WHEEL_WIDTH, SCROLL_WHEEL_HEIGHT);
 
-        drawBottomButtons(poseStack);
+        drawBottomButtons(guiGraphics);
 
-        this.blit(poseStack, REWARDS_ICON_POS_X, REWARDS_ICON_POS_Y, REWARDS_ICON_START_X, REWARDS_ICON_START_Y, REWARDS_ICON_WIDTH, REWARDS_ICON_HEIGHT);
-        this.blit(poseStack, CONDITIONS_ICON_POS_X, CONDITIONS_ICON_POS_Y, CONDITIONS_ICON_START_X, CONDITIONS_ICON_START_Y, CONDITIONS_ICON_WIDTH, CONDITIONS_ICON_HEIGHT);
+        this.blit(guiGraphics, REWARDS_ICON_POS_X, REWARDS_ICON_POS_Y, REWARDS_ICON_START_X, REWARDS_ICON_START_Y, REWARDS_ICON_WIDTH, REWARDS_ICON_HEIGHT);
+        this.blit(guiGraphics, CONDITIONS_ICON_POS_X, CONDITIONS_ICON_POS_Y, CONDITIONS_ICON_START_X, CONDITIONS_ICON_START_Y, CONDITIONS_ICON_WIDTH, CONDITIONS_ICON_HEIGHT);
 
-        font.draw(poseStack, String.valueOf(actionIndex + 1), startX + 140 - font.width(String.valueOf(actionIndex + 1)), startY + 13, 0xA9A9A9);
+        guiGraphics.drawString(font, String.valueOf(actionIndex + 1), startX + 140 - font.width(String.valueOf(actionIndex + 1)), startY + 13, 0xA9A9A9);
 
-        font.draw(poseStack, ChatFormatting.STRIKETHROUGH + "                                 ", startX + 7, startY + 20, 0xFFFFFF);
+        guiGraphics.drawString(font, ChatFormatting.STRIKETHROUGH + "                                 ", startX + 7, startY + 20, 0xFFFFFF);
 
-        drawDynamicComponent(poseStack, action.getName().copy().withStyle(Style.EMPTY.withBold(true)), startX + 7, startY + 13, 125, color.darker().getRGB());
+        drawDynamicComponent(guiGraphics, action.getName().copy().withStyle(Style.EMPTY.withBold(true)), startX + 7, startY + 13, 125, color.darker().getRGB());
 
         try {
-            drawActionDescription(poseStack);
+            drawActionDescription(guiGraphics);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private void drawActionDescription(PoseStack poseStack) {
+    private void drawActionDescription(GuiGraphics guiGraphics) {
+        PoseStack poseStack = guiGraphics.pose();
         float scale = 1.0F;
         int tries = 0;
-        while (getTextHeightForDescription(poseStack, scale) > 112) {
+        while (getTextHeightForDescription(guiGraphics, scale) > 112) {
             if (tries > 1000) break;
             tries++;
             scale -= 0.025F;
@@ -158,15 +161,15 @@ public class ActionScreen extends AbstractScreen {
                 descriptionSplit = Arrays.copyOfRange(descriptionSplit, 1, descriptionSplit.length);
                 if (descriptionSplit.length == 0) break;
             }
-            font.draw(poseStack, line.toString(), (startX + 7) / scale, (startY + 30 + (lineCount * (9 * scale))) / scale, 0x555555);
+            guiGraphics.drawString(font, line.toString(), (int)((startX + 7) / scale), (int)((startY + 30 + (lineCount * (9 * scale))) / scale), 0x555555);
             lineCount++;
         }
         poseStack.popPose();
     }
 
-    private float getTextHeightForDescription(PoseStack poseStack, float scale) {
-        poseStack.pushPose();
-        poseStack.scale(scale, scale, scale);
+    private float getTextHeightForDescription(GuiGraphics guiGraphics, float scale) {
+        guiGraphics.pose().pushPose();
+        guiGraphics.pose().scale(scale, scale, scale);
         String description = action.getDescription().getString();
         String[] descriptionSplit = description.split(" ");
         int lineCount = 0;
@@ -185,11 +188,11 @@ public class ActionScreen extends AbstractScreen {
             }
             lineCount++;
         }
-        poseStack.popPose();
+        guiGraphics.pose().popPose();
         return lineCount * (9 * scale);
     }
 
-    private void drawTopButtons(@NotNull PoseStack poseStack) {
+    private void drawTopButtons(GuiGraphics guiGraphics) {
         int offset = 0;
         if (activeTopButton != TopButtonType.REWARDS) {
             grayedOut();
@@ -198,7 +201,7 @@ public class ActionScreen extends AbstractScreen {
             }
             offset = TOP_BUTTON_OFFSET_Y;
         }
-        this.blit(poseStack, TOP_BUTTON_POS_X, TOP_BUTTON_POS_Y + offset, TOP_BUTTON_START_X, TOP_BUTTON_START_Y, TOP_BUTTON_WIDTH, TOP_BUTTON_HEIGHT);
+        this.blit(guiGraphics, TOP_BUTTON_POS_X, TOP_BUTTON_POS_Y + offset, TOP_BUTTON_START_X, TOP_BUTTON_START_Y, TOP_BUTTON_WIDTH, TOP_BUTTON_HEIGHT);
         normal();
 
         offset = 0;
@@ -209,31 +212,31 @@ public class ActionScreen extends AbstractScreen {
             }
             offset = TOP_BUTTON_OFFSET_Y;
         }
-        this.blit(poseStack, TOP_BUTTON_POS_X + TOP_BUTTON_WIDTH + TOP_BUTTON_SPACE_X, TOP_BUTTON_POS_Y + offset, TOP_BUTTON_START_X, TOP_BUTTON_START_Y, TOP_BUTTON_WIDTH, TOP_BUTTON_HEIGHT);
+        this.blit(guiGraphics, TOP_BUTTON_POS_X + TOP_BUTTON_WIDTH + TOP_BUTTON_SPACE_X, TOP_BUTTON_POS_Y + offset, TOP_BUTTON_START_X, TOP_BUTTON_START_Y, TOP_BUTTON_WIDTH, TOP_BUTTON_HEIGHT);
         normal();
     }
 
-    private void drawBottomButtons(@NotNull PoseStack poseStack) {
-        drawBackButton(poseStack);
-        drawForwardButton(poseStack);
+    private void drawBottomButtons(GuiGraphics guiGraphics) {
+        drawBackButton(guiGraphics);
+        drawForwardButton(guiGraphics);
         normal();
     }
 
-    private void drawForwardButton(@NotNull PoseStack poseStack) {
+    private void drawForwardButton(GuiGraphics guiGraphics) {
         if (!hasMultipleActions()) {
             grayedOut();
         }
         checkForBottomButtonHover(BottomButtonType.FORWARD);
-        this.blit(poseStack, FORWARD_BUTTON_POS_X, FORWARD_BUTTON_POS_Y, FORWARD_BUTTON_START_X, FORWARD_BUTTON_START_Y, BOTTOM_BUTTON_WIDTH, BOTTOM_BUTTON_HEIGHT);
+        this.blit(guiGraphics, FORWARD_BUTTON_POS_X, FORWARD_BUTTON_POS_Y, FORWARD_BUTTON_START_X, FORWARD_BUTTON_START_Y, BOTTOM_BUTTON_WIDTH, BOTTOM_BUTTON_HEIGHT);
         normal();
     }
 
-    private void drawBackButton(@NotNull PoseStack poseStack) {
+    private void drawBackButton(GuiGraphics guiGraphics) {
         if (!hasMultipleActions()) {
             grayedOut();
         }
         checkForBottomButtonHover(BottomButtonType.BACK);
-        this.blit(poseStack, BACK_BUTTON_POS_X, BACK_BUTTON_POS_Y, BACK_BUTTON_START_X, BACK_BUTTON_START_Y, BOTTOM_BUTTON_WIDTH, BOTTOM_BUTTON_HEIGHT);
+        this.blit(guiGraphics, BACK_BUTTON_POS_X, BACK_BUTTON_POS_Y, BACK_BUTTON_START_X, BACK_BUTTON_START_Y, BOTTOM_BUTTON_WIDTH, BOTTOM_BUTTON_HEIGHT);
         normal();
     }
 
@@ -307,9 +310,8 @@ public class ActionScreen extends AbstractScreen {
         return false;
     }
 
-    @Override
-    public void blit(@NotNull PoseStack poseStack, int posX, int posY, int startX, int startY, int width, int height) {
-        blit(poseStack, this.startX + posX, this.startY + posY, startX, startY, width, height, 362, 362);
+    public void blit(@NotNull GuiGraphics guiGraphics, int posX, int posY, int startX, int startY, int width, int height) {
+        guiGraphics.blit(BACKGROUND, this.startX + posX, this.startY + posY, startX, startY, width, height, 362, 362);
     }
 
     private enum TopButtonType {

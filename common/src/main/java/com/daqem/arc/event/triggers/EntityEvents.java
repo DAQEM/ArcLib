@@ -26,7 +26,7 @@ public class EntityEvents {
                 new ActionDataBuilder(arcServerPlayer, ActionType.KILL_ENTITY)
                         .withData(ActionDataType.ENTITY, entity)
                         .withData(ActionDataType.BLOCK_POSITION, entity.blockPosition())
-                        .withData(ActionDataType.WORLD, entity.level)
+                        .withData(ActionDataType.WORLD, entity.level())
                         .withData(ActionDataType.EXP_DROP, entity.getExperienceReward())
                         .build()
                         .sendToAction();

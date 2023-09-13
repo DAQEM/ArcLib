@@ -23,8 +23,8 @@ public abstract class MixinLocalPlayer extends AbstractClientPlayer implements A
     @Unique
     private final List<IActionHolder> actionHolders = new ArrayList<>();
 
-    public MixinLocalPlayer(ClientLevel clientLevel, GameProfile gameProfile, @Nullable ProfilePublicKey profilePublicKey) {
-        super(clientLevel, gameProfile, profilePublicKey);
+    public MixinLocalPlayer(ClientLevel clientLevel, GameProfile gameProfile) {
+        super(clientLevel, gameProfile);
     }
 
     @Override
@@ -54,7 +54,7 @@ public abstract class MixinLocalPlayer extends AbstractClientPlayer implements A
 
     @Override
     public @NotNull Level arc$getLevel() {
-        return super.getLevel();
+        return super.level();
     }
 
     @Override

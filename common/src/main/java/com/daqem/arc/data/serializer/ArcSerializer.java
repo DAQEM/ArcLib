@@ -7,6 +7,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.TagParser;
 import net.minecraft.resources.ResourceKey;
@@ -51,7 +53,7 @@ public interface ArcSerializer {
     }
 
     default Item getItem(JsonObject jsonObject, String elementName){
-        return new ElementConverter<>(Registry.ITEM).convertToElement(getString(jsonObject, elementName));
+        return new ElementConverter<>(BuiltInRegistries.ITEM).convertToElement(getString(jsonObject, elementName));
     }
 
     default ItemStack getItemStack(JsonObject jsonObject, String elementName){
@@ -59,15 +61,15 @@ public interface ArcSerializer {
     }
 
     default Block getBlock(JsonObject jsonObject, String elementName){
-        return new ElementConverter<>(Registry.BLOCK).convertToElement(getString(jsonObject, elementName));
+        return new ElementConverter<>(BuiltInRegistries.BLOCK).convertToElement(getString(jsonObject, elementName));
     }
 
     default MobEffect getMobEffect(JsonObject jsonObject, String elementName){
-        return new ElementConverter<>(Registry.MOB_EFFECT).convertToElement(getString(jsonObject, elementName));
+        return new ElementConverter<>(BuiltInRegistries.MOB_EFFECT).convertToElement(getString(jsonObject, elementName));
     }
 
     default EntityType<?> getEntityType(JsonObject jsonObject, String elementName){
-        return new ElementConverter<>(Registry.ENTITY_TYPE).convertToElement(getString(jsonObject, elementName));
+        return new ElementConverter<>(BuiltInRegistries.ENTITY_TYPE).convertToElement(getString(jsonObject, elementName));
     }
 
     default String getString(JsonObject jsonObject, String elementName){
@@ -90,23 +92,23 @@ public interface ArcSerializer {
     }
 
     default List<Block> getBlocks(JsonObject jsonObject, String elementName){
-        return getElementsFromJson(Registry.BLOCK, jsonObject, elementName);
+        return getElementsFromJson(BuiltInRegistries.BLOCK, jsonObject, elementName);
     }
 
     default List<TagKey<Block>> getBlockTags(JsonObject jsonObject, String elementName){
-        return getTagKeysFromJson(Registry.BLOCK, jsonObject, elementName);
+        return getTagKeysFromJson(BuiltInRegistries.BLOCK, jsonObject, elementName);
     }
 
     default List<Item> getItems(JsonObject jsonObject, String elementName){
-        return getElementsFromJson(Registry.ITEM, jsonObject, elementName);
+        return getElementsFromJson(BuiltInRegistries.ITEM, jsonObject, elementName);
     }
 
     default List<TagKey<Item>> getItemTags(JsonObject jsonObject, String elementName){
-        return getTagKeysFromJson(Registry.ITEM, jsonObject, elementName);
+        return getTagKeysFromJson(BuiltInRegistries.ITEM, jsonObject, elementName);
     }
 
     default List<EntityType<?>> getEntityTypes(JsonObject jsonObject, String elementName){
-        return getElementsFromJson(Registry.ENTITY_TYPE, jsonObject, elementName);
+        return getElementsFromJson(BuiltInRegistries.ENTITY_TYPE, jsonObject, elementName);
     }
 
     default InteractionHand getHand(JsonObject jsonObject, String elementName){
@@ -135,7 +137,7 @@ public interface ArcSerializer {
         String dimensionName = getString(jsonObject, elementName);
         ResourceKey<Level> dimension;
         try {
-            dimension = ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(dimensionName));
+            dimension = ResourceKey.create(Registries.DIMENSION, new ResourceLocation(dimensionName));
         } catch (IllegalArgumentException e) {
             throw new JsonParseException("Invalid dimension, expected to find a valid dimension.");
         }

@@ -9,6 +9,7 @@ import com.daqem.arc.api.condition.type.ConditionType;
 import com.daqem.arc.api.condition.type.IConditionType;
 import com.google.gson.JsonObject;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -54,7 +55,7 @@ public class DimensionCondition extends AbstractCondition {
         public DimensionCondition fromNetwork(ResourceLocation location, FriendlyByteBuf friendlyByteBuf, boolean inverted) {
             return new DimensionCondition(
                     inverted,
-                    friendlyByteBuf.readResourceKey(Registry.DIMENSION_REGISTRY));
+                    friendlyByteBuf.readResourceKey(Registries.DIMENSION));
         }
 
         @Override

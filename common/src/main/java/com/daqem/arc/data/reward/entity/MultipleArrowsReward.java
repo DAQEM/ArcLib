@@ -10,8 +10,6 @@ import com.daqem.arc.api.reward.serializer.RewardSerializer;
 import com.daqem.arc.api.reward.type.IRewardType;
 import com.daqem.arc.api.reward.type.RewardType;
 import com.google.gson.JsonObject;
-import com.mojang.math.Quaternion;
-import com.mojang.math.Vector3f;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -26,7 +24,10 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 import java.util.Random;
 
@@ -67,7 +68,7 @@ public class MultipleArrowsReward extends AbstractReward {
                 float[] afloat = getShotPitches(new Random());
                 int[] arrowPositions = scatterArrows(amount);
                 for (int i = 0; i < amount; i++) {
-                    shootProjectile(shotArrow, player.level, player, bow, Items.ARROW.getDefaultInstance(), afloat[1], power * 3, arrowPositions[i]);
+                    shootProjectile(shotArrow, player.level(), player, bow, Items.ARROW.getDefaultInstance(), afloat[1], power * 3, arrowPositions[i]);
                 }
             }
         }
@@ -128,31 +129,16 @@ public class MultipleArrowsReward extends AbstractReward {
                 }
             };
             projectile.pickup = AbstractArrow.Pickup.CREATIVE_ONLY;
-            Vector3f vector3f = new Vector3f(player.getViewVector(1.0F));
-            vector3f.transform(new Quaternion(new Vector3f(player.getUpVector(1.0F)), pitch, true));
-            projectile.shoot(vector3f.x(), vector3f.y(), vector3f.z(), power, (float) 1.0);
+            Vec3 vec3 = player.getUpVector(1.0f);
+            Quaternionf quaternionf = new Quaternionf().setAngleAxis(pitch * ((float)Math.PI / 180), vec3.x, vec3.y, vec3.z);
+            Vec3 vec32 = player.getViewVector(1.0f);
+            Vector3f vector3f = vec32.toVector3f().rotate(quaternionf);
+            projectile.shoot(vector3f.x(), vector3f.y(), vector3f.z(), power, 1.0F);
 
             bow.hurtAndBreak(1, player, player2 -> player2.broadcastBreakEvent(player.getUsedItemHand()));
             level.addFreshEntity(projectile);
             level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ARROW_SHOOT, SoundSource.PLAYERS, 1.0F, shotPitch);
         }
-    }
-
-    private AbstractArrow getArrow(Level p_40915_, LivingEntity p_40916_, ItemStack stack, ItemStack p_40918_) {
-        ArrowItem arrowitem = (ArrowItem) (p_40918_.getItem() instanceof ArrowItem ? p_40918_.getItem() : Items.ARROW);
-        AbstractArrow abstractarrow = arrowitem.createArrow(p_40915_, p_40918_, p_40916_);
-        if (p_40916_ instanceof Player) {
-            abstractarrow.setCritArrow(true);
-        }
-
-        abstractarrow.setSoundEvent(SoundEvents.ARROW_HIT);
-        abstractarrow.setShotFromCrossbow(true);
-        int i = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.PIERCING, stack);
-        if (i > 0) {
-            abstractarrow.setPierceLevel((byte) i);
-        }
-
-        return abstractarrow;
     }
 
     private float[] getShotPitches(Random random) {

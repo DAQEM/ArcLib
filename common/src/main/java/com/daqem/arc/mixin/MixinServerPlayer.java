@@ -70,8 +70,8 @@ public abstract class MixinServerPlayer extends Player implements ArcServerPlaye
     @Unique
     private boolean isGrinding = false;
 
-    public MixinServerPlayer(Level level, BlockPos blockPos, float yaw, GameProfile gameProfile, @Nullable ProfilePublicKey profilePublicKey) {
-        super(level, blockPos, yaw, gameProfile, profilePublicKey);
+    public MixinServerPlayer(Level level, BlockPos blockPos, float yaw, GameProfile gameProfile) {
+        super(level, blockPos, yaw, gameProfile);
     }
 
     @Override
@@ -132,7 +132,7 @@ public abstract class MixinServerPlayer extends Player implements ArcServerPlaye
 
     @Override
     public @NotNull Level arc$getLevel() {
-        return super.getLevel();
+        return super.level();
     }
 
     @Override

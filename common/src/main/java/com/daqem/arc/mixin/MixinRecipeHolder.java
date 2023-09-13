@@ -16,7 +16,7 @@ public interface MixinRecipeHolder {
         Recipe<?> recipe = ((RecipeHolder) this).getRecipeUsed();
         if (player instanceof ArcServerPlayer arcServerPlayer) {
             if (recipe != null) {
-                PlayerEvents.onCraftItem(arcServerPlayer, recipe, recipe.getResultItem(), player.level);
+                PlayerEvents.onCraftItem(arcServerPlayer, recipe, recipe.getResultItem(arcServerPlayer.arc$getServerPlayer().getServer().registryAccess()), player.level());
             }
         }
         if (recipe != null && !recipe.isSpecial()) {

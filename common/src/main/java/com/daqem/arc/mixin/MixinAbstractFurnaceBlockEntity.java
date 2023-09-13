@@ -24,11 +24,11 @@ public abstract class MixinAbstractFurnaceBlockEntity {
     @Inject(at = @At("HEAD"), method = "awardUsedRecipesAndPopExperience")
     private void awardUsedRecipesAndPopExperience(ServerPlayer serverPlayer, CallbackInfo ci) {
         if (serverPlayer instanceof ArcServerPlayer arcServerPlayer) {
-            ServerLevel serverLevel = serverPlayer.getLevel();
+            ServerLevel serverLevel = serverPlayer.serverLevel();
             this.recipesUsed.forEach((recipeId, recipeCount) -> {
                 serverLevel.getRecipeManager().byKey(recipeId).ifPresent((recipe) -> {
                     for (int i = 0; i < recipeCount; i++) {
-                        PlayerEvents.onSmeltItem(arcServerPlayer, recipe, recipe.getResultItem(),
+                        PlayerEvents.onSmeltItem(arcServerPlayer, recipe, recipe.getResultItem(arcServerPlayer.arc$getServerPlayer().getServer().registryAccess()),
                                 ((AbstractFurnaceBlockEntity) (Object) this).getBlockPos(), serverLevel);
                     }
                 });

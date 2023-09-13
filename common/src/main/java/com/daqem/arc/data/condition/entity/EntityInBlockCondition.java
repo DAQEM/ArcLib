@@ -9,6 +9,7 @@ import com.daqem.arc.api.condition.type.ConditionType;
 import com.daqem.arc.api.condition.type.IConditionType;
 import com.google.gson.JsonObject;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
@@ -26,7 +27,7 @@ public class EntityInBlockCondition extends AbstractCondition {
     @Override
     public boolean isMet(ActionData actionData) {
         Entity entity = actionData.getData(ActionDataType.ENTITY);
-        return entity != null && entity.level.getBlockState(entity.blockPosition()).is(block);
+        return entity != null && entity.level().getBlockState(entity.blockPosition()).is(block);
     }
 
     @Override
@@ -52,13 +53,13 @@ public class EntityInBlockCondition extends AbstractCondition {
         public EntityInBlockCondition fromNetwork(ResourceLocation location, FriendlyByteBuf friendlyByteBuf, boolean inverted) {
             return new EntityInBlockCondition(
                     inverted,
-                    friendlyByteBuf.readById(Registry.BLOCK));
+                    friendlyByteBuf.readById(BuiltInRegistries.BLOCK));
         }
 
         @Override
         public void toNetwork(FriendlyByteBuf friendlyByteBuf, EntityInBlockCondition type) {
             ConditionSerializer.super.toNetwork(friendlyByteBuf, type);
-            friendlyByteBuf.writeId(Registry.BLOCK, type.block);
+            friendlyByteBuf.writeId(BuiltInRegistries.BLOCK, type.block);
         }
     }
 }

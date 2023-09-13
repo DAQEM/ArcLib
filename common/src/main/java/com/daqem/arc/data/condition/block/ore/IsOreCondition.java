@@ -9,6 +9,8 @@ import com.daqem.arc.api.condition.type.ConditionType;
 import com.daqem.arc.api.condition.type.IConditionType;
 import com.google.gson.*;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -44,8 +46,8 @@ public class IsOreCondition extends AbstractCondition {
     public static boolean isOre(Block block) {
         return ((block instanceof DropExperienceBlock && block != Blocks.SCULK)
                 || block instanceof RedStoneOreBlock
-                || block.defaultBlockState().is(new TagKey<>(Registry.BLOCK_REGISTRY, new ResourceLocation("forge", "ores")))
-                || block.defaultBlockState().is(new TagKey<>(Registry.BLOCK_REGISTRY, new ResourceLocation("c", "ores")))
+                || block.defaultBlockState().is(new TagKey<>(Registries.BLOCK, new ResourceLocation("forge", "ores")))
+                || block.defaultBlockState().is(new TagKey<>(Registries.BLOCK, new ResourceLocation("c", "ores")))
                 || block == Blocks.ANCIENT_DEBRIS);
     }
 

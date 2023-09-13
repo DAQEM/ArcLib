@@ -18,6 +18,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.Vec3;
 
@@ -45,8 +46,7 @@ public class BlockDropMultiplierReward extends AbstractReward {
                 if (level != null) {
                     if (level instanceof ServerLevel serverLevel) {
                         Vec3 vec3 = Vec3.atCenterOf(blockPos);
-                        List<ItemStack> drops = blockState.getDrops(new LootContext.Builder(serverLevel)
-                                        .withRandom(serverLevel.random)
+                        List<ItemStack> drops = blockState.getDrops(new LootParams.Builder(serverLevel)
                                         .withParameter(LootContextParams.ORIGIN, vec3)
                                         .withParameter(LootContextParams.TOOL, actionData.getPlayer().arc$getPlayer().getMainHandItem())
                                         .withParameter(LootContextParams.BLOCK_STATE, blockState)

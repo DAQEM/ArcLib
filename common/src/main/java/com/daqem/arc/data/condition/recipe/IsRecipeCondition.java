@@ -24,7 +24,7 @@ public abstract class IsRecipeCondition<T extends Recipe<?>> extends AbstractCon
                     .map(r -> (T) r)
                     .toList();
             for (T r : recipes) {
-                if (r.getResultItem().getItem().equals(smeltingRecipe.getResultItem().getItem())) {
+                if (r.getResultItem(server.registryAccess()).getItem().equals(smeltingRecipe.getResultItem(server.registryAccess()).getItem())) {
                     for (int i = 0; i < r.getIngredients().size(); i++) {
                         Ingredient ingredient = r.getIngredients().get(i);
                         for (int i1 = 0; i1 < ingredient.getItems().length; i1++) {

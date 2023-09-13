@@ -1,11 +1,7 @@
 package com.daqem.arc.api.condition.serializer;
 
 import com.daqem.arc.Arc;
-import com.daqem.arc.api.action.IAction;
-import com.daqem.arc.api.action.serializer.ActionSerializer;
-import com.daqem.arc.api.action.serializer.IActionSerializer;
 import com.daqem.arc.api.condition.ICondition;
-import com.daqem.arc.api.condition.type.ConditionType;
 import com.daqem.arc.data.condition.NotCondition;
 import com.daqem.arc.data.condition.OrCondition;
 import com.daqem.arc.data.condition.block.BlockCondition;
@@ -14,7 +10,6 @@ import com.daqem.arc.data.condition.block.crop.CropAgeCondition;
 import com.daqem.arc.data.condition.block.crop.CropFullyGrownCondition;
 import com.daqem.arc.data.condition.block.ore.IsOreCondition;
 import com.daqem.arc.data.condition.block.properties.BlockHardnessCondition;
-import com.daqem.arc.data.condition.block.properties.BlockMaterialColorCondition;
 import com.daqem.arc.data.condition.effect.EffectCategoryCondition;
 import com.daqem.arc.data.condition.effect.EffectCondition;
 import com.daqem.arc.data.condition.entity.*;
@@ -64,7 +59,6 @@ public interface ConditionSerializer<T extends ICondition> extends IConditionSer
     IConditionSerializer<EffectCategoryCondition> EFFECT_CATEGORY = register(Arc.getId("effect_category"), new EffectCategoryCondition.Serializer());
     IConditionSerializer<EffectCondition> EFFECT = register(Arc.getId("effect"), new EffectCondition.Serializer());
     IConditionSerializer<BlockHardnessCondition> BLOCK_HARDNESS = register(Arc.getId("block_hardness"), new BlockHardnessCondition.Serializer());
-    IConditionSerializer<BlockMaterialColorCondition> BLOCK_MATERIAL_COLOR = register(Arc.getId("block_material_color"), new BlockMaterialColorCondition.Serializer());
     IConditionSerializer<EntityInBlockCondition> ENTITY_IN_BLOCK = register(Arc.getId("entity_in_block"), new EntityInBlockCondition.Serializer());
     IConditionSerializer<DamageSourceCondition> DAMAGE_SOURCE = register(Arc.getId("damage_source"), new DamageSourceCondition.Serializer());
 

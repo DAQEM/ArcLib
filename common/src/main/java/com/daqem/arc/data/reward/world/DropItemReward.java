@@ -20,6 +20,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.LootParams;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSet;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.Vec3;
 
@@ -58,8 +61,7 @@ public class DropItemReward extends AbstractReward {
                     BlockState state = actionData.getData(ActionDataType.BLOCK_STATE);
                     if (state != null) {
                         List<ItemStack> drops = state.getDrops(
-                                new LootContext.Builder(serverLevel)
-                                        .withRandom(serverLevel.random)
+                                new LootParams.Builder(serverLevel)
                                         .withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(pos))
                                         .withParameter(LootContextParams.TOOL, actionData.getPlayer().arc$getPlayer().getMainHandItem())
                                         .withParameter(LootContextParams.BLOCK_STATE, state)

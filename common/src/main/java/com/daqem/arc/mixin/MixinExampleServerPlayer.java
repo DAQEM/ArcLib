@@ -21,12 +21,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(ServerPlayer.class)
 public abstract class MixinExampleServerPlayer extends Player implements ExampleServerPlayer {
 
-    public MixinExampleServerPlayer(Level level, BlockPos blockPos, float f, GameProfile gameProfile, @Nullable ProfilePublicKey profilePublicKey) {
-        super(level, blockPos, f, gameProfile, profilePublicKey);
+    public MixinExampleServerPlayer(Level level, BlockPos blockPos, float f, GameProfile gameProfile) {
+        super(level, blockPos, f, gameProfile);
     }
 
     @Inject(at = @At("RETURN"), method = "<init>")
-    private void onInit(MinecraftServer minecraftServer, ServerLevel serverLevel, GameProfile gameProfile, ProfilePublicKey profilePublicKey, CallbackInfo ci) {
+    private void onInit(MinecraftServer minecraftServer, ServerLevel serverLevel, GameProfile gameProfile, CallbackInfo ci) {
         if (((ServerPlayer) (Object) this) instanceof ArcPlayer arcPlayer) {
             if (Arc.isDebugEnvironment()) {
                 arcPlayer.arc$addActionHolders(ExampleActionHolderManager.getInstance().getActionHolders());

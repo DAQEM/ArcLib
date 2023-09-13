@@ -9,6 +9,7 @@ import com.daqem.arc.api.condition.type.ConditionType;
 import com.daqem.arc.api.condition.type.IConditionType;
 import com.google.gson.*;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffect;
@@ -52,13 +53,13 @@ public class EffectCondition extends AbstractCondition {
         public EffectCondition fromNetwork(ResourceLocation location, FriendlyByteBuf friendlyByteBuf, boolean inverted) {
             return new EffectCondition(
                     inverted,
-                    friendlyByteBuf.readById(Registry.MOB_EFFECT));
+                    friendlyByteBuf.readById(BuiltInRegistries.MOB_EFFECT));
         }
 
         @Override
         public void toNetwork(FriendlyByteBuf friendlyByteBuf, EffectCondition type) {
             ConditionSerializer.super.toNetwork(friendlyByteBuf, type);
-            friendlyByteBuf.writeId(Registry.MOB_EFFECT, type.effect);
+            friendlyByteBuf.writeId(BuiltInRegistries.MOB_EFFECT, type.effect);
         }
     }
 }

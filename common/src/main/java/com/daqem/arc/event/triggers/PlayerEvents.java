@@ -128,7 +128,7 @@ public class PlayerEvents {
         new ActionDataBuilder(serverPlayer, ActionType.ROD_REEL_IN)
                 .withData(ActionDataType.ENTITY, fishingHook)
                 .withData(ActionDataType.BLOCK_POSITION, fishingHook.blockPosition())
-                .withData(ActionDataType.WORLD, fishingHook.level)
+                .withData(ActionDataType.WORLD, fishingHook.level())
                 .build()
                 .sendToAction();
     }

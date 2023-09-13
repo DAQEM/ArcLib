@@ -9,6 +9,7 @@ import com.daqem.arc.api.condition.type.ConditionType;
 import com.daqem.arc.api.condition.type.IConditionType;
 import com.google.gson.*;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -79,11 +80,11 @@ public class ItemsCondition extends AbstractCondition {
             List<TagKey<Item>> itemTags = new ArrayList<>();
 
             for (int i = 0; i < itemCount; i++) {
-                items.add(friendlyByteBuf.readById(Registry.ITEM));
+                items.add(friendlyByteBuf.readById(BuiltInRegistries.ITEM));
             }
 
             for (int i = 0; i < tagCount; i++) {
-                itemTags.add(TagKey.create(Registry.ITEM.key(), friendlyByteBuf.readResourceLocation()));
+                itemTags.add(TagKey.create(BuiltInRegistries.ITEM.key(), friendlyByteBuf.readResourceLocation()));
             }
 
 
@@ -98,7 +99,7 @@ public class ItemsCondition extends AbstractCondition {
             ConditionSerializer.super.toNetwork(friendlyByteBuf, type);
             friendlyByteBuf.writeVarInt(type.items.size());
             friendlyByteBuf.writeVarInt(type.itemTags.size());
-            type.items.forEach(item -> friendlyByteBuf.writeId(Registry.ITEM, item));
+            type.items.forEach(item -> friendlyByteBuf.writeId(BuiltInRegistries.ITEM, item));
             type.itemTags.forEach(tag -> friendlyByteBuf.writeResourceLocation(tag.location()));
         }
     }

@@ -9,7 +9,6 @@ import com.daqem.arc.data.condition.block.crop.CropAgeCondition;
 import com.daqem.arc.data.condition.block.crop.CropFullyGrownCondition;
 import com.daqem.arc.data.condition.block.ore.IsOreCondition;
 import com.daqem.arc.data.condition.block.properties.BlockHardnessCondition;
-import com.daqem.arc.data.condition.block.properties.BlockMaterialColorCondition;
 import com.daqem.arc.data.condition.effect.EffectCategoryCondition;
 import com.daqem.arc.data.condition.effect.EffectCondition;
 import com.daqem.arc.data.condition.entity.*;
@@ -56,7 +55,6 @@ public interface ConditionType<T extends ICondition> extends IConditionType<T> {
     ConditionType<EffectCategoryCondition> EFFECT_CATEGORY = register(Arc.getId("effect_category"));
     ConditionType<EffectCondition> EFFECT = register(Arc.getId("effect"));
     ConditionType<BlockHardnessCondition> BLOCK_HARDNESS = register(Arc.getId("block_hardness"));
-    ConditionType<BlockMaterialColorCondition> BLOCK_MATERIAL_COLOR = register(Arc.getId("block_material_color"));
     IConditionType<EntityInBlockCondition> ENTITY_IN_BLOCK = register(Arc.getId("entity_in_block"));
     IConditionType<DamageSourceCondition> DAMAGE_SOURCE = register(Arc.getId("damage_source"));
 

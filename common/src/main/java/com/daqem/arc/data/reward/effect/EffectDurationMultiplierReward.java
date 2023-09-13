@@ -34,7 +34,7 @@ public class EffectDurationMultiplierReward extends AbstractReward {
         if (effect != null) {
             if (actionData.getPlayer().arc$getPlayer() instanceof ServerPlayer player){
                 MobEffectInstance newEffect = new MobEffectInstance(effect.getEffect(), Mth.floor(effect.getDuration() * multiplier), effect.getAmplifier(), effect.isAmbient(), effect.isVisible());
-                player.addEffect(newEffect, new ServerPlayer(Objects.requireNonNull(player.getServer()), player.getLevel(), new GameProfile(UUID.randomUUID(), "a"), null));
+                player.addEffect(newEffect, new ServerPlayer(Objects.requireNonNull(player.getServer()), player.serverLevel(), new GameProfile(UUID.randomUUID(), "a")));
             }
         }
         return new ActionResult();

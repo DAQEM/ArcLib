@@ -10,6 +10,7 @@ import com.daqem.arc.api.reward.type.IRewardType;
 import com.daqem.arc.api.reward.type.RewardType;
 import com.google.gson.*;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.effect.MobEffect;
@@ -59,14 +60,14 @@ public class EffectReward extends AbstractReward {
             return new EffectReward(
                     chance,
                     priority,
-                    Registry.MOB_EFFECT.byId(friendlyByteBuf.readVarInt()),
+                    BuiltInRegistries.MOB_EFFECT.byId(friendlyByteBuf.readVarInt()),
                     friendlyByteBuf.readVarInt());
         }
 
         @Override
         public void toNetwork(FriendlyByteBuf friendlyByteBuf, EffectReward type) {
             RewardSerializer.super.toNetwork(friendlyByteBuf, type);
-            friendlyByteBuf.writeVarInt(Registry.MOB_EFFECT.getId(type.effect));
+            friendlyByteBuf.writeVarInt(BuiltInRegistries.MOB_EFFECT.getId(type.effect));
             friendlyByteBuf.writeVarInt(type.duration);
         }
     }

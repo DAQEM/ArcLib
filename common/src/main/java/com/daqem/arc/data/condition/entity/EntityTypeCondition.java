@@ -9,6 +9,7 @@ import com.daqem.arc.api.condition.type.ConditionType;
 import com.daqem.arc.api.condition.type.IConditionType;
 import com.google.gson.*;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
@@ -52,13 +53,13 @@ public class EntityTypeCondition extends AbstractCondition {
         public EntityTypeCondition fromNetwork(ResourceLocation location, FriendlyByteBuf friendlyByteBuf, boolean inverted) {
             return new EntityTypeCondition(
                     inverted,
-                    friendlyByteBuf.readById(Registry.ENTITY_TYPE));
+                    friendlyByteBuf.readById(BuiltInRegistries.ENTITY_TYPE));
         }
 
         @Override
         public void toNetwork(FriendlyByteBuf friendlyByteBuf, EntityTypeCondition type) {
             ConditionSerializer.super.toNetwork(friendlyByteBuf, type);
-            friendlyByteBuf.writeId(Registry.ENTITY_TYPE, type.entityType);
+            friendlyByteBuf.writeId(BuiltInRegistries.ENTITY_TYPE, type.entityType);
         }
     }
 }
