@@ -1,7 +1,9 @@
 package com.daqem.arc.event;
 
+import com.daqem.arc.Arc;
 import com.daqem.arc.data.ActionManager;
 import com.daqem.arc.networking.ClientboundUpdateActionsPacket;
+import dev.architectury.event.events.common.LifecycleEvent;
 import dev.architectury.event.events.common.PlayerEvent;
 import net.minecraft.server.dedicated.DedicatedServer;
 

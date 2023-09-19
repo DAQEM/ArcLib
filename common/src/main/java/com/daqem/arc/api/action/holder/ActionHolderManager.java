@@ -10,7 +10,7 @@ import java.util.*;
 
 public class ActionHolderManager {
 
-    private final Map<IActionHolderType<?>, List<IActionHolder>> actionHolders = new HashMap<>();
+    private final Map<IActionHolderType<?>, Map<ResourceLocation, IActionHolder>> actionHolders = new HashMap<>();
 
     private static ActionHolderManager instance;
 
@@ -31,10 +31,10 @@ public class ActionHolderManager {
      */
     public void registerActionHolder(IActionHolder actionHolder) {
         if (this.actionHolders.containsKey(actionHolder.getType())) {
-            this.actionHolders.get(actionHolder.getType()).add(actionHolder);
+            this.actionHolders.get(actionHolder.getType()).put(actionHolder.getLocation(), actionHolder);
         } else {
-            List<IActionHolder> actionHolders = new ArrayList<>();
-            actionHolders.add(actionHolder);
+            Map<ResourceLocation, IActionHolder> actionHolders = new HashMap<>();
+            actionHolders.put(actionHolder.getLocation(), actionHolder);
             this.actionHolders.put(actionHolder.getType(), actionHolders);
         }
         ActionManager.getInstance().assignActionsToActionHolders();
@@ -61,7 +61,8 @@ public class ActionHolderManager {
      * @return The list of action holders for the specified type, or {@code null} if no action holders were found.
      */
     public @Nullable List<IActionHolder> getActionHolders(IActionHolderType<?> actionHolderType) {
-        return actionHolders.get(actionHolderType);
+        if (!actionHolders.containsKey(actionHolderType)) return null;
+        return new ArrayList<>(actionHolders.get(actionHolderType).values());
     }
 
     /**
@@ -73,7 +74,7 @@ public class ActionHolderManager {
      */
     public @Nullable IActionHolder getActionHolder(IActionHolderType<?> actionHolderType, ResourceLocation actionHolderLocation) {
         if (!actionHolders.containsKey(actionHolderType)) return null;
-        return actionHolders.get(actionHolderType).stream()
+        return actionHolders.get(actionHolderType).values().stream()
                 .filter(actionHolder -> actionHolder.getLocation().equals(actionHolderLocation))
                 .findFirst()
                 .orElse(null);
