@@ -20,6 +20,7 @@ public class Arc {
     public static final Logger LOGGER = LogUtils.getLogger();
 
     public static void initCommon() {
+        Arc.LOGGER.info("Arc initialized");
         registerEvents();
         ArcNetworking.init();
     }
@@ -35,6 +36,7 @@ public class Arc {
         EventPlayerJoin.registerEvent();
 
         if (isDebugEnvironment()) {
+            Arc.LOGGER.warn("Arc debug mode enabled");
             ExampleRegistryEvent.registerActionHolderType();
         }
     }
@@ -47,6 +49,7 @@ public class Arc {
         return Component.translatable(MOD_ID + "." + str);
     }
 
+    @SuppressWarnings("unused")
     public static MutableComponent translatable(String str, Object... objects) {
         return Component.translatable(MOD_ID + "." + str, objects);
     }
