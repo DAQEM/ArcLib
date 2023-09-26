@@ -34,6 +34,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArgs;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
 import javax.annotation.Nullable;
@@ -279,41 +280,43 @@ public abstract class MixinServerPlayer extends Player implements ArcServerPlaye
         PlayerEvents.onEnchantItem(this, itemStack, level);
     }
 
-    @ModifyArgs(
+    @Inject(at = @At(
+            value = "INVOKE",
+            target = "Lnet/minecraft/world/entity/player/Player;hurt(Lnet/minecraft/world/damagesource/DamageSource;F)Z",
+            shift = At.Shift.BEFORE),
             method = "hurt(Lnet/minecraft/world/damagesource/DamageSource;F)Z",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;hurt(Lnet/minecraft/world/damagesource/DamageSource;F)Z")
-    )    public void hurt(Args args) {
+            cancellable = true)
+    public void hurt(DamageSource damageSource, float f, CallbackInfoReturnable<Boolean> cir) {
         Entity entity = this.arc$getPlayer();
-        DamageSource source = args.get(0);
-        float amount = args.get(1);
         if (entity instanceof ArcServerPlayer arcServerPlayer) {
             ActionResult actionResult = new ActionDataBuilder(arcServerPlayer, ActionType.GET_HURT)
-                    .withData(ActionDataType.DAMAGE_SOURCE, source)
-                    .withData(ActionDataType.DAMAGE_AMOUNT, amount)
+                    .withData(ActionDataType.DAMAGE_SOURCE, damageSource)
+                    .withData(ActionDataType.DAMAGE_AMOUNT, f)
                     .build()
                     .sendToAction();
 
             if (actionResult.shouldCancelAction()) {
-                args.set(1, 0F);
+                f = 0F;
             }
             if (actionResult.getDamageModifier() != 1F) {
-                args.set(1, amount * actionResult.getDamageModifier());
+                f = f * actionResult.getDamageModifier();
             }
         }
 
-        if (source.getEntity() instanceof ArcServerPlayer arcServerPlayer) {
+        if (damageSource.getEntity() instanceof ArcServerPlayer arcServerPlayer) {
             ActionResult actionResult = new ActionDataBuilder(arcServerPlayer, ActionType.HURT_ENTITY)
                     .withData(ActionDataType.ENTITY, entity)
-                    .withData(ActionDataType.DAMAGE_AMOUNT, amount)
+                    .withData(ActionDataType.DAMAGE_AMOUNT, f)
                     .build()
                     .sendToAction();
 
             if (actionResult.shouldCancelAction()) {
-                args.set(1, 0F);
+                f = 0F;
             }
             if (actionResult.getDamageModifier() != 1F) {
-                args.set(1, amount * actionResult.getDamageModifier());
+                f = f * actionResult.getDamageModifier();
             }
         }
+        cir.setReturnValue(super.hurt(damageSource, f));
     }
 }
