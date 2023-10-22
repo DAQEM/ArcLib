@@ -121,9 +121,9 @@ public class ActionScreen extends AbstractScreen {
         this.blit(guiGraphics, REWARDS_ICON_POS_X, REWARDS_ICON_POS_Y, REWARDS_ICON_START_X, REWARDS_ICON_START_Y, REWARDS_ICON_WIDTH, REWARDS_ICON_HEIGHT);
         this.blit(guiGraphics, CONDITIONS_ICON_POS_X, CONDITIONS_ICON_POS_Y, CONDITIONS_ICON_START_X, CONDITIONS_ICON_START_Y, CONDITIONS_ICON_WIDTH, CONDITIONS_ICON_HEIGHT);
 
-        guiGraphics.drawString(font, String.valueOf(actionIndex + 1), startX + 140 - font.width(String.valueOf(actionIndex + 1)), startY + 13, 0xA9A9A9);
+        guiGraphics.drawString(font, String.valueOf(actionIndex + 1), startX + 140 - font.width(String.valueOf(actionIndex + 1)), startY + 13, 0xA9A9A9, false);
 
-        guiGraphics.drawString(font, ChatFormatting.STRIKETHROUGH + "                                 ", startX + 7, startY + 20, 0xFFFFFF);
+        guiGraphics.drawString(font, ChatFormatting.STRIKETHROUGH + "                                 ", startX + 7, startY + 20, 0xFFFFFF, false);
 
         drawDynamicComponent(guiGraphics, action.getName().copy().withStyle(Style.EMPTY.withBold(true)), startX + 7, startY + 13, 125, color.darker().getRGB());
 
@@ -161,7 +161,7 @@ public class ActionScreen extends AbstractScreen {
                 descriptionSplit = Arrays.copyOfRange(descriptionSplit, 1, descriptionSplit.length);
                 if (descriptionSplit.length == 0) break;
             }
-            guiGraphics.drawString(font, line.toString(), (int)((startX + 7) / scale), (int)((startY + 30 + (lineCount * (9 * scale))) / scale), 0x555555);
+            guiGraphics.drawString(font, line.toString(), (int)((startX + 7) / scale), (int)((startY + 30 + (lineCount * (9 * scale))) / scale), 0x555555, false);
             lineCount++;
         }
         poseStack.popPose();

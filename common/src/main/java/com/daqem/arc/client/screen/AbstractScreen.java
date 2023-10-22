@@ -25,7 +25,7 @@ public abstract class AbstractScreen extends Screen {
 
         guiGraphics.pose().pushPose();
         guiGraphics.pose().scale(scale, scale, scale);
-        guiGraphics.drawString(font, component, (int)(x / scale), (int)(y / scale), color);
+        guiGraphics.drawString(font, component, (int)(x / scale), (int)(y / scale), color, false);
         guiGraphics.pose().popPose();
     }
 
@@ -40,11 +40,11 @@ public abstract class AbstractScreen extends Screen {
     }
 
     public void drawRightAlignedString(GuiGraphics guiGraphics, @NotNull String text, int posX, int posY, int color) {
-        guiGraphics.drawString(font, text, posX - font.width(text), posY, color);
+        guiGraphics.drawString(font, text, posX - font.width(text), posY, color, false);
     }
 
     public void drawCenteredString(GuiGraphics guiGraphics, @NotNull String text, int posX, int posY, int color) {
-        guiGraphics.drawString(font, text, posX - font.width(text) / 2, posY, color);
+        guiGraphics.drawString(font, text, posX - font.width(text) / 2, posY, color, false);
     }
 
     public static void normal() {
