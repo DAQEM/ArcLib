@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.3]
+
+### Fixed 
+- onEffectAdded Action not being called the first time.
+
 ## [0.9.1]
 ### Added
 - Damage Source Condition.

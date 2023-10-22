@@ -36,9 +36,8 @@ public abstract class MixinLivingEntity extends Entity {
                         }
                     }
                 }
-                //On update effect
-                PlayerEvents.onEffectAdded(serverPlayer, effect, entity);
             }
+            PlayerEvents.onEffectAdded(serverPlayer, effect, entity);
         }
     }
 }
