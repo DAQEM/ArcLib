@@ -7,6 +7,9 @@ All notable changes to this project will be documented in this file.
 ### Fixed 
 - onEffectAdded Action not being called the first time.
 
+### Removed
+- Shadow from text
+
 ## [0.9.1]
 ### Added
 - Damage Source Condition.
