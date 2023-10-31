@@ -1,5 +1,6 @@
 package com.daqem.arc.mixin;
 
+import com.daqem.arc.api.action.result.ActionResult;
 import com.daqem.arc.event.triggers.PlayerEvents;
 import com.daqem.arc.api.player.ArcServerPlayer;
 import net.minecraft.server.level.ServerPlayer;
@@ -24,7 +25,7 @@ public abstract class MixinLivingEntity extends Entity {
         return (LivingEntity) (Object) this;
     }
 
-    @Inject(at = @At("HEAD"), method = "addEffect(Lnet/minecraft/world/effect/MobEffectInstance;Lnet/minecraft/world/entity/Entity;)Z")
+    @Inject(at = @At("RETURN"), method = "addEffect(Lnet/minecraft/world/effect/MobEffectInstance;Lnet/minecraft/world/entity/Entity;)Z")
     private void addEffect(MobEffectInstance effect, Entity entity, CallbackInfoReturnable<Boolean> cir) {
         if (getLivingEntity() instanceof ArcServerPlayer serverPlayer) {
             MobEffectInstance mobEffectInstance2 = getLivingEntity().getActiveEffectsMap().get(effect.getEffect());
@@ -37,7 +38,10 @@ public abstract class MixinLivingEntity extends Entity {
                     }
                 }
             }
-            PlayerEvents.onEffectAdded(serverPlayer, effect, entity);
+            ActionResult actionResult = PlayerEvents.onEffectAdded(serverPlayer, effect, entity);
+            if (actionResult.shouldCancelAction()) {
+                getLivingEntity().removeEffect(effect.getEffect());
+            }
         }
     }
 }

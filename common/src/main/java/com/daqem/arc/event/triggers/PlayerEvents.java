@@ -49,12 +49,13 @@ public class PlayerEvents {
                 .sendToAction();
     }
 
-    public static void onEffectAdded(ArcServerPlayer player, MobEffectInstance effect, Entity source) {
-        new ActionDataBuilder(player, ActionType.EFFECT_ADDED)
+    public static ActionResult onEffectAdded(ArcServerPlayer player, MobEffectInstance effect, Entity source) {
+        return new ActionDataBuilder(player, ActionType.EFFECT_ADDED)
                 .withData(ActionDataType.MOB_EFFECT_INSTANCE, effect)
                 .withData(ActionDataType.ENTITY, source)
                 .build()
                 .sendToAction();
+
     }
 
     public static void onSmeltItem(ArcServerPlayer player, Recipe<?> recipe, ItemStack stack, BlockPos furnacePos, Level level) {

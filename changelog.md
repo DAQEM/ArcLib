@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.3.1]
+
+### Fixed
+- Remove effect reward
+
 ## [1.3]
 
 ### Fixed 
