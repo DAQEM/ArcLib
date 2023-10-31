@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## 1.3
+
+### Added
+- null checking on add action holder(s).
+
 ## [0.9.1]
 ### Added
 - Damage Source Condition.
