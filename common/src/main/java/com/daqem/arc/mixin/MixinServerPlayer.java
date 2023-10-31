@@ -5,13 +5,12 @@ import com.daqem.arc.api.action.data.type.ActionDataType;
 import com.daqem.arc.api.action.holder.IActionHolder;
 import com.daqem.arc.api.action.result.ActionResult;
 import com.daqem.arc.api.action.type.ActionType;
+import com.daqem.arc.api.player.ArcServerPlayer;
 import com.daqem.arc.event.triggers.MovementEvents;
 import com.daqem.arc.event.triggers.PlayerEvents;
 import com.daqem.arc.event.triggers.StatEvents;
-import com.daqem.arc.api.player.ArcServerPlayer;
 import com.daqem.arc.player.stat.StatData;
 import com.mojang.authlib.GameProfile;
-import dev.architectury.event.EventResult;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.server.level.ServerPlayer;
@@ -32,14 +31,13 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyArgs;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Mixin(ServerPlayer.class)
 public abstract class MixinServerPlayer extends Player implements ArcServerPlayer {
@@ -82,11 +80,14 @@ public abstract class MixinServerPlayer extends Player implements ArcServerPlaye
 
     @Override
     public void arc$addActionHolder(IActionHolder actionHolder) {
+        if (actionHolder == null) return;
         this.actionHolders.add(actionHolder);
     }
 
     @Override
     public void arc$addActionHolders(List<IActionHolder> actionHolders) {
+        if (actionHolders == null) return;
+        actionHolders.removeIf(Objects::isNull);
         this.actionHolders.addAll(actionHolders);
     }
 
@@ -97,6 +98,7 @@ public abstract class MixinServerPlayer extends Player implements ArcServerPlaye
 
     @Override
     public ServerPlayer arc$getServerPlayer() {
+        //noinspection DataFlowIssue
         return (ServerPlayer) (Object) this;
     }
 
