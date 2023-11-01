@@ -26,6 +26,7 @@ import net.minecraft.world.inventory.GrindstoneMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.AirItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
@@ -318,5 +319,11 @@ public abstract class MixinServerPlayer extends Player implements ArcServerPlaye
             }
         }
         cir.setReturnValue(super.hurt(damageSource, f));
+    }
+
+    @Inject(at = @At("HEAD"), method = "triggerRecipeCrafted")
+    public void mixinTriggerRecipeCrafted(Recipe<?> recipe, List<ItemStack> list, CallbackInfo ci) {
+        Level level = level();
+        PlayerEvents.onCraftItem(this, recipe, recipe.getResultItem(level.registryAccess()), level);
     }
 }

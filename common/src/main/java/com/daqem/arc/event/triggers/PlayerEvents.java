@@ -1,5 +1,6 @@
 package com.daqem.arc.event.triggers;
 
+import com.daqem.arc.Arc;
 import com.daqem.arc.api.action.type.ActionType;
 import com.daqem.arc.api.player.ArcPlayer;
 import com.daqem.arc.api.player.ArcServerPlayer;

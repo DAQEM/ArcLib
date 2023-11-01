@@ -25,7 +25,7 @@ public abstract class MixinAnvilMenu extends ItemCombinerMenu {
     @Inject(method = "onTake", at = @At("HEAD"))
     public void mixinOnTake(Player player, ItemStack itemStack, CallbackInfo ci) {
         if (player instanceof ArcServerPlayer arcServerPlayer) {
-            PlayerEvents.onUseAnvil(arcServerPlayer, itemStack);
+            PlayerEvents.onUseAnvil(arcServerPlayer, this.inputSlots.getItem(0));
         }
     }
 }
