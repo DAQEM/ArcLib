@@ -41,6 +41,7 @@ import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Mixin(ServerPlayer.class)
 public abstract class MixinServerPlayer extends Player implements ArcServerPlayer {
@@ -83,11 +84,14 @@ public abstract class MixinServerPlayer extends Player implements ArcServerPlaye
 
     @Override
     public void arc$addActionHolder(IActionHolder actionHolder) {
+        if (actionHolder == null) return;
         this.actionHolders.add(actionHolder);
     }
 
     @Override
     public void arc$addActionHolders(List<IActionHolder> actionHolders) {
+        if (actionHolders == null) return;
+        actionHolders.removeIf(Objects::isNull);
         this.actionHolders.addAll(actionHolders);
     }
 

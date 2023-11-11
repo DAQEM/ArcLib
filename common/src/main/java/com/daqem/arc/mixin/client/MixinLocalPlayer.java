@@ -16,6 +16,7 @@ import org.spongepowered.asm.mixin.Unique;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Mixin(LocalPlayer.class)
 public abstract class MixinLocalPlayer extends AbstractClientPlayer implements ArcClientPlayer {
@@ -34,11 +35,14 @@ public abstract class MixinLocalPlayer extends AbstractClientPlayer implements A
 
     @Override
     public void arc$addActionHolder(IActionHolder actionHolder) {
+        if (actionHolder == null) return;
         actionHolders.add(actionHolder);
     }
 
     @Override
     public void arc$addActionHolders(List<IActionHolder> actionHolders) {
+        if (actionHolders == null) return;
+        actionHolders.removeIf(Objects::isNull);
         this.actionHolders.addAll(actionHolders);
     }
 
