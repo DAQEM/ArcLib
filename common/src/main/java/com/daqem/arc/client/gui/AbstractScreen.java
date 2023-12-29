@@ -1,14 +1,12 @@
-package com.daqem.arc.client.screen;
+package com.daqem.arc.client.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
-import org.jetbrains.annotations.NotNull;
 
 public abstract class AbstractScreen extends Screen {
 
@@ -39,11 +37,11 @@ public abstract class AbstractScreen extends Screen {
         return scale;
     }
 
-    public void drawRightAlignedString(GuiGraphics guiGraphics, @NotNull String text, int posX, int posY, int color) {
+    public void drawRightAlignedString(GuiGraphics guiGraphics, String text, int posX, int posY, int color) {
         guiGraphics.drawString(font, text, posX - font.width(text), posY, color, false);
     }
 
-    public void drawCenteredString(GuiGraphics guiGraphics, @NotNull String text, int posX, int posY, int color) {
+    public void drawCenteredString(GuiGraphics guiGraphics, String text, int posX, int posY, int color) {
         guiGraphics.drawString(font, text, posX - font.width(text) / 2, posY, color, false);
     }
 

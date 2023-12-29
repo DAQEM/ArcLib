@@ -5,6 +5,7 @@ import com.daqem.arc.ArcExpectPlatform;
 import com.daqem.arc.api.action.IAction;
 import com.daqem.arc.api.action.holder.ActionHolderManager;
 import com.daqem.arc.api.action.type.IActionType;
+import com.daqem.arc.config.ArcCommonConfig;
 import com.daqem.arc.registry.ArcRegistry;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
@@ -35,6 +36,11 @@ public abstract class ActionManager extends SimpleJsonResourceReloadListener {
     protected void apply(@NotNull Map<ResourceLocation, JsonElement> map, @NotNull ResourceManager resourceManager, @NotNull ProfilerFiller profilerFiller) {
         HashMap<IActionType<?>, ImmutableMap.Builder<ResourceLocation, IAction>> tempActionTypes = Maps.newHashMap();
         ImmutableMap.Builder<ResourceLocation, IAction> tempActions = ImmutableMap.builder();
+
+        if (!ArcCommonConfig.isDebug.get()) {
+            map.entrySet().removeIf(entry -> entry.getKey().getNamespace().equals("test"));
+        }
+
         for (Map.Entry<ResourceLocation, JsonElement> entry : map.entrySet()) {
             ResourceLocation location = entry.getKey();
             try {

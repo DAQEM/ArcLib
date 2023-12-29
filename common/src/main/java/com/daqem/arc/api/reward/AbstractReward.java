@@ -1,7 +1,9 @@
 package com.daqem.arc.api.reward;
 
+import com.daqem.arc.Arc;
 import com.daqem.arc.api.action.data.ActionData;
 import com.daqem.arc.api.action.result.ActionResult;
+import net.minecraft.network.chat.Component;
 
 public abstract class AbstractReward implements IReward {
 
@@ -26,5 +28,15 @@ public abstract class AbstractReward implements IReward {
 
     public boolean passedChance(ActionData actionData) {
         return chance == 100 || actionData.getPlayer().arc$nextRandomDouble() * 100 <= chance;
+    }
+
+    @Override
+    public Component getName() {
+        return Arc.translatable("reward." + this.getType().getLocation().getPath());
+    }
+
+    @Override
+    public Component getDescription() {
+        return Arc.translatable("reward.description." + this.getType().getLocation().getPath());
     }
 }

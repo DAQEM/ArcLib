@@ -1,20 +1,19 @@
-package com.daqem.arc.api.example;
+package com.daqem.arc.api.player.holder;
 
 import com.daqem.arc.api.action.IAction;
 import com.daqem.arc.api.action.holder.IActionHolder;
 import com.daqem.arc.api.action.holder.type.IActionHolderType;
-import net.minecraft.network.protocol.status.ClientboundStatusResponsePacket;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ExampleActionHolder implements IActionHolder {
+public class PlayerActionHolder implements IActionHolder {
 
     private final ResourceLocation location;
     private final List<IAction> actions = new ArrayList<>();
 
-    public ExampleActionHolder(ResourceLocation location) {
+    public PlayerActionHolder(ResourceLocation location) {
         this.location = location;
     }
 
@@ -35,6 +34,6 @@ public class ExampleActionHolder implements IActionHolder {
 
     @Override
     public IActionHolderType<?> getType() {
-        return ExampleActionTypes.EXAMPLE_ACTION_TYPE;
+        return PlayerActionTypes.PLAYER_ACTION_TYPE;
     }
 }

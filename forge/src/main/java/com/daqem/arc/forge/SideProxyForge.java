@@ -1,7 +1,7 @@
 package com.daqem.arc.forge;
 
 import com.daqem.arc.Arc;
-import com.daqem.arc.api.example.ExampleActionHolderManager;
+import com.daqem.arc.api.player.holder.PlayerActionHolderManager;
 import com.daqem.arc.client.ArcClient;
 import com.daqem.arc.forge.data.ActionManagerForge;
 import com.daqem.arc.registry.ArcRegistry;
@@ -26,7 +26,7 @@ public class SideProxyForge {
         event.addListener(new ActionManagerForge());
 
         if (Arc.isDebugEnvironment()) {
-            ExampleActionHolderManager.getInstance();
+            PlayerActionHolderManager.getInstance();
         }
     }
 

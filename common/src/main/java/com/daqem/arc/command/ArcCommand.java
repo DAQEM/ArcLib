@@ -15,12 +15,18 @@ public class ArcCommand {
                 .then(Commands.literal("screen")
                         .then(Commands.argument("action", StringArgumentType.string())
                                 .executes(context -> {
-                                    new ClientboundActionScreenPacket(ActionManager.getInstance().byKey(new ResourceLocation(StringArgumentType.getString(context, "action"))).orElse(null)).sendTo(context.getSource().getPlayer());
+                                    new ClientboundActionScreenPacket(ActionManager.getInstance().byKey(new ResourceLocation(StringArgumentType.getString(context, "action"))).orElse(null), false).sendTo(context.getSource().getPlayer());
+                                    return 1;
+                                })
+                        )
+                        .then(Commands.literal("new")
+                                .executes(context -> {
+                                    new ClientboundActionScreenPacket(ActionManager.getInstance().getActions().get(0), true).sendTo(context.getSource().getPlayer());
                                     return 1;
                                 })
                         )
                 .executes(context -> {
-                        new ClientboundActionScreenPacket(ActionManager.getInstance().getActions().get(0)).sendTo(context.getSource().getPlayer());
+                        new ClientboundActionScreenPacket(ActionManager.getInstance().getActions().get(0), false).sendTo(context.getSource().getPlayer());
                         return 1;
                 }))
         );

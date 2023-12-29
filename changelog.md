@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## 1.3.3
+
+### Fixed
+- Issue #4 Client Crash upon loading into multiplayer server.
+
 ## 1.3.2
 
 ### Fixed

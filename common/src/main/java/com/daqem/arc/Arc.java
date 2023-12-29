@@ -1,6 +1,6 @@
 package com.daqem.arc;
 
-import com.daqem.arc.api.example.ExampleRegistryEvent;
+import com.daqem.arc.api.player.holder.PlayerRegistryEvent;
 import com.daqem.arc.config.ArcCommonConfig;
 import com.daqem.arc.event.EventPlayerJoin;
 import com.daqem.arc.event.command.EventRegisterCommands;
@@ -35,7 +35,8 @@ public class Arc {
         EventPlayerJoin.registerEvent();
 
         if (isDebugEnvironment()) {
-            ExampleRegistryEvent.registerActionHolderType();
+            PlayerRegistryEvent.registerActionHolderType();
+
         }
     }
 
