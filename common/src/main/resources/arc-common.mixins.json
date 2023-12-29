@@ -13,7 +13,6 @@
     "MixinAxeItem",
     "MixinBlockStateBase",
     "MixinBrewingStandBlockEntity",
-    "MixinExampleServerPlayer",
     "MixinFishingHook",
     "MixinItemStack",
     "MixinLivingEntity",

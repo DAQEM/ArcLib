@@ -1,4 +1,4 @@
-package com.daqem.arc.client.screen;
+package com.daqem.arc.client.gui;
 
 import com.daqem.arc.Arc;
 import com.daqem.arc.api.action.IAction;

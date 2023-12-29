@@ -24,15 +24,16 @@ configurations {
 }
 
 dependencies {
-    modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
-    modApi "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
+    modImplementation "net.fabricmc:fabric-loader:${project.fabric_loader_version}"
+    modApi "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
     // Remove the next line if you don't want to depend on the API
-    modApi "dev.architectury:architectury-fabric:${rootProject.architectury_version}"
+    modApi "dev.architectury:architectury-fabric:${project.architectury_version}"
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
 
     modImplementation "curse.maven:supermartijn642s-config-lib-438332:${project.config_library_file_fabric}"
+    modImplementation "curse.maven:ui-933200:${project.ui_library_file_fabric}"
 }
 
 processResources {
@@ -101,6 +102,7 @@ curseforge {
         relations {
             requiredDependency("architectury-api")
             requiredDependency("supermartijn642s-config-lib")
+            requiredDependency("ui")
         }
 
         mainArtifact(remapJar) {
@@ -131,5 +133,6 @@ modrinth {
     dependencies {
         required.project "architectury-api"
         required.project "supermartijn642s-config-lib"
+        required.project "ui-lib"
     }
 }

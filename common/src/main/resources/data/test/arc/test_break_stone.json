@@ -1,0 +1,19 @@
+{
+  "holder": {
+    "type": "arc:player",
+    "id": "arc:player"
+  },
+  "type": "arc:on_break_block",
+  "conditions": [
+    {
+        "type": "arc:block",
+        "block": "minecraft:stone"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "arc:item",
+      "item": "minecraft:diamond"
+    }
+  ]
+}

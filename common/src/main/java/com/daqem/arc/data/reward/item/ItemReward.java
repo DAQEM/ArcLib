@@ -11,15 +11,18 @@ import com.daqem.arc.api.reward.type.RewardType;
 import com.google.gson.JsonObject;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 
 public class ItemReward extends AbstractReward {
 
     private final ItemStack itemStack;
+    private final int amount;
 
-    public ItemReward(double chance, int priority, ItemStack itemStack) {
+    public ItemReward(double chance, int priority, ItemStack itemStack, int amount) {
         super(chance, priority);
         this.itemStack = itemStack;
+        this.amount = amount;
     }
 
     @Override
@@ -44,20 +47,23 @@ public class ItemReward extends AbstractReward {
         @Override
         public ItemReward fromJson(JsonObject jsonObject, double chance, int priority) {
             ItemStack itemStack = getItemStack(jsonObject, "item");
+            int amount = GsonHelper.getAsInt(jsonObject, "amount", 1);
+            itemStack.setCount(amount);
             CompoundTag tag = getCompoundTag(jsonObject);
             if (tag != null) itemStack.setTag(tag);
-            return new ItemReward(chance, priority, itemStack);
+            return new ItemReward(chance, priority, itemStack, amount);
         }
 
         @Override
         public ItemReward fromNetwork(FriendlyByteBuf friendlyByteBuf, double chance, int priority) {
-            return new ItemReward(chance, priority, friendlyByteBuf.readItem());
+            return new ItemReward(chance, priority, friendlyByteBuf.readItem(), friendlyByteBuf.readInt());
         }
 
         @Override
         public void toNetwork(FriendlyByteBuf friendlyByteBuf, ItemReward type) {
             RewardSerializer.super.toNetwork(friendlyByteBuf, type);
             friendlyByteBuf.writeItem(type.itemStack);
+            friendlyByteBuf.writeInt(type.amount);
         }
     }
 }

@@ -5,6 +5,8 @@ import com.daqem.arc.api.action.data.type.ActionDataType;
 import com.daqem.arc.api.action.holder.IActionHolder;
 import com.daqem.arc.api.action.result.ActionResult;
 import com.daqem.arc.api.action.type.ActionType;
+import com.daqem.arc.api.player.ArcPlayer;
+import com.daqem.arc.api.player.holder.PlayerActionHolderManager;
 import com.daqem.arc.event.triggers.MovementEvents;
 import com.daqem.arc.event.triggers.PlayerEvents;
 import com.daqem.arc.event.triggers.StatEvents;
@@ -14,6 +16,8 @@ import com.mojang.authlib.GameProfile;
 import dev.architectury.event.EventResult;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stat;
 import net.minecraft.world.damagesource.DamageSource;
@@ -75,6 +79,13 @@ public abstract class MixinServerPlayer extends Player implements ArcServerPlaye
 
     public MixinServerPlayer(Level level, BlockPos blockPos, float yaw, GameProfile gameProfile) {
         super(level, blockPos, yaw, gameProfile);
+    }
+
+    @Inject(at = @At("RETURN"), method = "<init>")
+    private void onInit(MinecraftServer minecraftServer, ServerLevel serverLevel, GameProfile gameProfile, CallbackInfo ci) {
+        if (((ServerPlayer) (Object) this) instanceof ArcPlayer arcPlayer) {
+            arcPlayer.arc$addActionHolders(PlayerActionHolderManager.getInstance().getActionHolders());
+        }
     }
 
     @Override
