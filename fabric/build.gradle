@@ -102,6 +102,7 @@ curseforge {
         relations {
             requiredDependency("architectury-api")
             requiredDependency("supermartijn642s-config-lib")
+            requiredDependency("ui")
         }
 
         mainArtifact(remapJar) {
@@ -132,5 +133,6 @@ modrinth {
     dependencies {
         required.project "architectury-api"
         required.project "supermartijn642s-config-lib"
+        required.project "ui-lib"
     }
 }
