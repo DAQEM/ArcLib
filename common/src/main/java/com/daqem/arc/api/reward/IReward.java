@@ -23,5 +23,7 @@ public interface IReward extends ArcSerializable {
 
     Component getName();
 
+    Component getDescription(Object... args);
+
     Component getDescription();
 }

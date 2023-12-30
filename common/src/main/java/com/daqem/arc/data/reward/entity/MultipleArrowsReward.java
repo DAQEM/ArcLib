@@ -11,6 +11,7 @@ import com.daqem.arc.api.reward.type.IRewardType;
 import com.daqem.arc.api.reward.type.RewardType;
 import com.google.gson.JsonObject;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.GsonHelper;
@@ -38,6 +39,11 @@ public class MultipleArrowsReward extends AbstractReward {
     public MultipleArrowsReward(double chance, int priority, int amount) {
         super(chance, priority);
         this.amount = amount;
+    }
+
+    @Override
+    public Component getDescription() {
+        return getDescription(amount);
     }
 
     @Override

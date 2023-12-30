@@ -9,6 +9,7 @@ import com.daqem.arc.api.reward.type.IRewardType;
 import com.daqem.arc.api.reward.type.RewardType;
 import com.google.gson.JsonObject;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.GsonHelper;
 
 public class AttackSpeedMultiplierReward extends AbstractReward {
@@ -18,6 +19,11 @@ public class AttackSpeedMultiplierReward extends AbstractReward {
     public AttackSpeedMultiplierReward(double chance, int priority, float multiplier) {
         super(chance, priority);
         this.multiplier = multiplier;
+    }
+
+    @Override
+    public Component getDescription() {
+        return getDescription(multiplier);
     }
 
     @Override

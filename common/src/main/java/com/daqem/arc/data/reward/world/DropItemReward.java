@@ -12,6 +12,7 @@ import com.google.gson.JsonObject;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -37,6 +38,11 @@ public class DropItemReward extends AbstractReward {
         super(chance, priority);
         this.itemStack = itemStack;
         this.amount = amount;
+    }
+
+    @Override
+    public Component getDescription() {
+        return getDescription(amount, itemStack.getHoverName());
     }
 
     @Override

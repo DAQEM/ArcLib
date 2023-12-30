@@ -3,7 +3,7 @@
     "type": "arc:player",
     "id": "arc:player"
   },
-  "type": "arc:on_break_block",
+  "type": "arc:on_place_block",
   "conditions": [
     {
         "type": "arc:block",
@@ -11,6 +11,10 @@
     }
   ],
   "rewards": [
+    {
+      "type": "arc:item",
+      "item": "minecraft:diamond"
+    },
     {
       "type": "arc:item",
       "item": "minecraft:diamond"

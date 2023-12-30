@@ -11,6 +11,7 @@ import com.daqem.arc.api.reward.type.RewardType;
 import com.google.gson.JsonObject;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -31,6 +32,11 @@ public class BlockDropMultiplierReward extends AbstractReward {
     public BlockDropMultiplierReward(double chance, int priority, int multiplier) {
         super(chance, priority);
         this.multiplier = multiplier;
+    }
+
+    @Override
+    public Component getDescription() {
+        return getDescription(multiplier);
     }
 
     @Override

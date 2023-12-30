@@ -10,6 +10,7 @@ import com.daqem.arc.api.reward.type.IRewardType;
 import com.daqem.arc.api.reward.type.RewardType;
 import com.google.gson.JsonObject;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -21,6 +22,11 @@ public class MoveToEntityReward extends AbstractReward {
     public MoveToEntityReward(double chance, int priority, float force) {
         super(chance, priority);
         this.force = force;
+    }
+
+    @Override
+    public Component getDescription() {
+        return getDescription(force);
     }
 
     @Override

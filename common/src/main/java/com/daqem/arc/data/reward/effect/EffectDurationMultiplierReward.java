@@ -11,6 +11,7 @@ import com.daqem.arc.api.reward.type.RewardType;
 import com.google.gson.*;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.Mth;
@@ -26,6 +27,11 @@ public class EffectDurationMultiplierReward extends AbstractReward {
     public EffectDurationMultiplierReward(double chance, int priority, double multiplier) {
         super(chance, priority);
         this.multiplier = multiplier;
+    }
+
+    @Override
+    public Component getDescription() {
+        return getDescription(multiplier);
     }
 
     @Override

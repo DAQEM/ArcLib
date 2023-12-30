@@ -3,7 +3,9 @@ package com.daqem.arc.api.reward;
 import com.daqem.arc.Arc;
 import com.daqem.arc.api.action.data.ActionData;
 import com.daqem.arc.api.action.result.ActionResult;
+import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.contents.TranslatableContents;
 
 public abstract class AbstractReward implements IReward {
 
@@ -36,7 +38,12 @@ public abstract class AbstractReward implements IReward {
     }
 
     @Override
+    public Component getDescription(Object... args) {
+        return Arc.translatable("reward.description." + this.getType().getLocation().getPath(), args);
+    }
+
+    @Override
     public Component getDescription() {
-        return Arc.translatable("reward.description." + this.getType().getLocation().getPath());
+        return getDescription(TranslatableContents.NO_ARGS);
     }
 }

@@ -17,7 +17,7 @@ import java.awt.*;
 public class ClientboundActionScreenPacket extends BaseS2CMessage {
 
     IAction action;
-    boolean newScreen = false;
+    boolean newScreen;
 
     public ClientboundActionScreenPacket(IAction action, boolean newScreen) {
         this.action = action;
@@ -45,7 +45,7 @@ public class ClientboundActionScreenPacket extends BaseS2CMessage {
     public void handle(NetworkManager.PacketContext context) {
         if (newScreen) {
             Minecraft.getInstance().setScreen(new com.daqem.arc.client.gui.action.ActionScreen(ActionManager.getInstance().getActions(),
-                    action));
+                    ActionManager.getInstance().getActions().stream().filter(a -> a.getLocation().equals(action.getLocation())).findFirst().orElse(null)));
         } else {
             Minecraft.getInstance().setScreen(new ActionScreen(null,
                     ActionManager.getInstance().getActions(),

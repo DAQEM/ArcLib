@@ -10,6 +10,7 @@ import com.daqem.arc.api.reward.type.IRewardType;
 import com.daqem.arc.api.reward.type.RewardType;
 import com.google.gson.JsonObject;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.entity.Entity;
 
@@ -20,6 +21,11 @@ public class EntityOnFireReward extends AbstractReward {
     public EntityOnFireReward(double chance, int priority, int fireTicks) {
         super(chance, priority);
         this.fireTicks = fireTicks;
+    }
+
+    @Override
+    public Component getDescription() {
+        return getDescription(String.format("%.1f", fireTicks / 20F));
     }
 
     @Override

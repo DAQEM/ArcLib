@@ -9,6 +9,7 @@ import com.daqem.arc.api.reward.type.IRewardType;
 import com.daqem.arc.api.reward.type.RewardType;
 import com.google.gson.JsonObject;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.GsonHelper;
 
 public class DamageMultiplierReward extends AbstractReward {
@@ -18,6 +19,11 @@ public class DamageMultiplierReward extends AbstractReward {
     public DamageMultiplierReward(double chance, int priority, double multiplier) {
         super(chance, priority);
         this.multiplier = multiplier;
+    }
+
+    @Override
+    public Component getDescription() {
+        return getDescription(multiplier);
     }
 
     @Override
