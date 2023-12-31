@@ -11,6 +11,7 @@ import com.google.gson.*;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -22,6 +23,11 @@ public class EffectCondition extends AbstractCondition {
     public EffectCondition(boolean inverted, MobEffect effect) {
         super(inverted);
         this.effect = effect;
+    }
+
+    @Override
+    public Component getDescription() {
+        return getDescription(effect.getDisplayName());
     }
 
     @Override

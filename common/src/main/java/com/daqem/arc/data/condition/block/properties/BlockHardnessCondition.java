@@ -10,6 +10,7 @@ import com.daqem.arc.api.condition.type.IConditionType;
 import com.google.gson.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.block.state.BlockState;
@@ -27,6 +28,11 @@ public class BlockHardnessCondition extends AbstractCondition {
         if (min > max) {
             throw new IllegalArgumentException("min cannot be greater than max for BlockHardnessCondition.");
         }
+    }
+
+    @Override
+    public Component getDescription() {
+        return getDescription(min, max);
     }
 
     @Override

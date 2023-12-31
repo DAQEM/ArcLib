@@ -9,6 +9,7 @@ import com.daqem.arc.api.condition.type.ConditionType;
 import com.daqem.arc.api.condition.type.IConditionType;
 import com.google.gson.*;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
@@ -24,6 +25,11 @@ public class CropAgeCondition extends AbstractCondition {
     public CropAgeCondition(boolean inverted, int age) {
         super(inverted);
         this.age = age;
+    }
+
+    @Override
+    public Component getDescription() {
+        return getDescription(age);
     }
 
     @Override

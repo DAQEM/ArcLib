@@ -9,6 +9,7 @@ import com.daqem.arc.api.condition.type.ConditionType;
 import com.daqem.arc.api.condition.type.IConditionType;
 import com.google.gson.*;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 
@@ -20,6 +21,11 @@ public class DistanceCondition extends AbstractCondition {
     public DistanceCondition(boolean inverted, int distanceInBlocks) {
         super(inverted);
         this.distanceInBlocks = distanceInBlocks;
+    }
+
+    @Override
+    public Component getDescription() {
+        return getDescription(distanceInBlocks);
     }
 
     @Override

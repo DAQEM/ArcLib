@@ -9,6 +9,7 @@ import com.daqem.arc.api.condition.type.ConditionType;
 import com.daqem.arc.api.condition.type.IConditionType;
 import com.google.gson.JsonObject;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.damagesource.DamageSource;
 
@@ -19,6 +20,11 @@ public class DamageSourceCondition extends AbstractCondition {
     public DamageSourceCondition(boolean inverted, String source) {
         super(inverted);
         this.source = source;
+    }
+
+    @Override
+    public Component getDescription() {
+        return getDescription(source);
     }
 
     @Override

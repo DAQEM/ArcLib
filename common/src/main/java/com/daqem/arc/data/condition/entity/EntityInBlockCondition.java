@@ -11,6 +11,7 @@ import com.google.gson.JsonObject;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.Block;
@@ -22,6 +23,11 @@ public class EntityInBlockCondition extends AbstractCondition {
     public EntityInBlockCondition(boolean inverted, Block block) {
         super(inverted);
         this.block = block;
+    }
+
+    @Override
+    public Component getDescription() {
+        return getDescription(block.getName());
     }
 
     @Override

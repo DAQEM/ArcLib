@@ -11,6 +11,7 @@ import com.google.gson.JsonObject;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
@@ -22,6 +23,11 @@ public class DimensionCondition extends AbstractCondition {
     public DimensionCondition(boolean inverted, ResourceKey<Level> dimension) {
         super(inverted);
         this.dimension = dimension;
+    }
+
+    @Override
+    public Component getDescription() {
+        return getDescription(dimension.location());
     }
 
     @Override

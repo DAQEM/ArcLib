@@ -8,6 +8,7 @@ import com.daqem.arc.api.condition.type.ConditionType;
 import com.daqem.arc.api.condition.type.IConditionType;
 import com.google.gson.*;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.scores.Objective;
@@ -28,6 +29,11 @@ public class ScoreboardCondition extends AbstractCondition {
         if (min > max) {
             throw new IllegalArgumentException("min cannot be greater than max for ScoreboardCondition.");
         }
+    }
+
+    @Override
+    public Component getDescription() {
+        return getDescription(objective, min, max);
     }
 
     @Override

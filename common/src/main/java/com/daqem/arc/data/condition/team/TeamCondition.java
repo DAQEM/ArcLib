@@ -9,6 +9,7 @@ import com.daqem.arc.api.condition.type.IConditionType;
 import com.daqem.arc.api.player.ArcPlayer;
 import com.google.gson.*;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.scores.Team;
 
@@ -19,6 +20,11 @@ public class TeamCondition extends AbstractCondition {
     public TeamCondition(boolean inverted, String team) {
         super(inverted);
         this.team = team;
+    }
+
+    @Override
+    public Component getDescription() {
+        return getDescription(team);
     }
 
     @Override

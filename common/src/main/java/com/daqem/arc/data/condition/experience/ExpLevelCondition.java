@@ -9,6 +9,7 @@ import com.daqem.arc.api.condition.type.ConditionType;
 import com.daqem.arc.api.condition.type.IConditionType;
 import com.google.gson.*;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 
@@ -19,6 +20,11 @@ public class ExpLevelCondition extends AbstractCondition {
     public ExpLevelCondition(boolean inverted, int level) {
         super(inverted);
         this.level = level;
+    }
+
+    @Override
+    public Component getDescription() {
+        return getDescription(level);
     }
 
     @Override

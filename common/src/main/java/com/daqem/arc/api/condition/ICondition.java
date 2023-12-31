@@ -18,5 +18,7 @@ public interface ICondition extends ArcSerializable {
 
     Component getName();
 
+    Component getDescription(Object... args);
+
     Component getDescription();
 }
