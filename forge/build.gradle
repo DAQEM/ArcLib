@@ -84,6 +84,10 @@ sourcesJar {
     from commonSources.archiveFile.map { zipTree(it) }
 }
 
+remapSourcesJar {
+    archiveClassifier = "forge-sources"
+}
+
 components.java {
     withVariantsFromConfiguration(project.configurations.shadowRuntimeElements) {
         skip()
@@ -137,8 +141,10 @@ modrinth {
     versionNumber = "$rootProject.mod_version"
     versionType = "$rootProject.curse_forge_release_type"
     uploadFile = remapJar
+    additionalFiles = [remapSourcesJar]
     gameVersions = ["$rootProject.minecraft_version"]
     loaders = ["forge"]
+    changelog = rootProject.file('changelog.md').text
     dependencies {
         required.project "architectury-api"
         required.project "supermartijn642s-config-lib"
