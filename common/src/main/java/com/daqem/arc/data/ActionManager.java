@@ -166,4 +166,12 @@ public abstract class ActionManager extends SimpleJsonResourceReloadListener {
             ActionHolderManager.getInstance().registerAction(action);
         }
     }
+
+    public Optional<IAction> getAction(ResourceLocation resourceLocation) {
+        return Optional.ofNullable(this.byName.get(resourceLocation));
+    }
+
+    public List<String> getActionLocationStrings() {
+        return this.byName.keySet().stream().map(ResourceLocation::toString).toList();
+    }
 }
