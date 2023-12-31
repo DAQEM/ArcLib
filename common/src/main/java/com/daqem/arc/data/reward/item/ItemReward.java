@@ -11,6 +11,7 @@ import com.daqem.arc.api.reward.type.RewardType;
 import com.google.gson.JsonObject;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 
@@ -23,6 +24,11 @@ public class ItemReward extends AbstractReward {
         super(chance, priority);
         this.itemStack = itemStack;
         this.amount = amount;
+    }
+
+    @Override
+    public Component getDescription() {
+        return getDescription(amount, itemStack.getHoverName());
     }
 
     @Override

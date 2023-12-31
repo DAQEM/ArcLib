@@ -25,17 +25,17 @@ public class ScrollComponent extends AbstractComponent<ScrollComponent> {
     int scrollBarYOffset = 1;
 
     NineSlicedTexture scrollPaneTexture = Textures.SCROLL_PANE;
-    NineSlicedTexture scrollBarTexture = Textures.SCROLL_BAR;
+    NineSlicedTexture scrollBarTexture = Textures.SCROLL_WHEEL;
 
     ScrollPanelComponent scrollPane;
     ScrollWheelComponent scrollWheelComponent = new ScrollWheelComponent(scrollBarTexture, 0, 0, scrollBarWidth);
     ScrollBarComponent scrollBarComponent = new ScrollBarComponent(scrollPaneWidth + scrollBarXOffset, scrollBarYOffset, scrollBarWidth, scrollPaneHeight - (scrollBarYOffset * 2), orientation, scrollWheelComponent);
-    ScrollContentComponent content = new ScrollContentComponent(0, 0, 10, orientation);
+    ScrollContentComponent content = new ScrollContentComponent(0, 0, 0, orientation);
 
     List<ScrollItemComponent> items;
 
     public ScrollComponent(int x, int y, int width, int height, List<ScrollItemComponent> items) {
-        super(null, x, y, width, height, null, null, null);
+        super(null, x, y, width, height);
         this.items = items;
     }
 

@@ -12,26 +12,39 @@ import com.google.gson.*;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffectUtil;
 
 public class EffectReward extends AbstractReward {
 
     private final MobEffect effect;
     private final int duration;
+    private final int amplifier;
 
-    public EffectReward(double chance, int priority, MobEffect effect, int duration) {
+    public EffectReward(double chance, int priority, MobEffect effect, int duration, int amplifier) {
         super(chance, priority);
         this.effect = effect;
         this.duration = duration;
+        this.amplifier = amplifier;
+    }
+
+    @Override
+    public Component getDescription() {
+        return getDescription(effect.getDisplayName(), MobEffectUtil.formatDuration(getMobEffectInstance(), 1.0F), amplifier + 1);
     }
 
     @Override
     public ActionResult apply(ActionData actionData) {
         ArcPlayer player = actionData.getPlayer();
-        player.arc$getPlayer().addEffect(new MobEffectInstance(effect, duration));
+        player.arc$getPlayer().addEffect(getMobEffectInstance());
         return new ActionResult();
+    }
+
+    private MobEffectInstance getMobEffectInstance() {
+        return new MobEffectInstance(effect, duration, amplifier);
     }
 
     @Override
@@ -52,7 +65,8 @@ public class EffectReward extends AbstractReward {
                     chance,
                     priority,
                     getMobEffect(jsonObject, "effect"),
-                    GsonHelper.getAsInt(jsonObject, "duration"));
+                    GsonHelper.getAsInt(jsonObject, "duration"),
+                    GsonHelper.getAsInt(jsonObject, "amplifier", 0));
         }
 
         @Override
@@ -61,6 +75,7 @@ public class EffectReward extends AbstractReward {
                     chance,
                     priority,
                     BuiltInRegistries.MOB_EFFECT.byId(friendlyByteBuf.readVarInt()),
+                    friendlyByteBuf.readVarInt(),
                     friendlyByteBuf.readVarInt());
         }
 
@@ -69,6 +84,7 @@ public class EffectReward extends AbstractReward {
             RewardSerializer.super.toNetwork(friendlyByteBuf, type);
             friendlyByteBuf.writeVarInt(BuiltInRegistries.MOB_EFFECT.getId(type.effect));
             friendlyByteBuf.writeVarInt(type.duration);
+            friendlyByteBuf.writeVarInt(type.amplifier);
         }
     }
 }

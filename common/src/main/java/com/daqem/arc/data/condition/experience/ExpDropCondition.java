@@ -9,6 +9,7 @@ import com.daqem.arc.api.condition.type.ConditionType;
 import com.daqem.arc.api.condition.type.IConditionType;
 import com.google.gson.*;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 
@@ -25,6 +26,11 @@ public class ExpDropCondition extends AbstractCondition {
         if (min > max) {
             throw new IllegalArgumentException("min cannot be greater than max for ExpDropCondition.");
         }
+    }
+
+    @Override
+    public Component getDescription() {
+        return getDescription(min, max);
     }
 
     @Override

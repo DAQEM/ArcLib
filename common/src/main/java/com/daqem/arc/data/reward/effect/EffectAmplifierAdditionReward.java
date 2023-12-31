@@ -11,6 +11,7 @@ import com.daqem.arc.api.reward.type.RewardType;
 import com.google.gson.*;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.Mth;
@@ -26,6 +27,11 @@ public class EffectAmplifierAdditionReward extends AbstractReward {
     public EffectAmplifierAdditionReward(double chance, int priority, int addition) {
         super(chance, priority);
         this.addition = addition;
+    }
+
+    @Override
+    public Component getDescription() {
+        return getDescription(addition);
     }
 
     @Override

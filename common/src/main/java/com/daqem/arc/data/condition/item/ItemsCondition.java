@@ -11,6 +11,7 @@ import com.google.gson.*;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -29,6 +30,11 @@ public class ItemsCondition extends AbstractCondition {
         super(inverted);
         this.items = items;
         this.itemTags = itemTags;
+    }
+
+    @Override
+    public Component getDescription() {
+        return getDescription(items.stream().map(Item::getDescription).toArray(Component[]::new), itemTags.stream().map(TagKey::location).toArray(ResourceLocation[]::new));
     }
 
     @Override

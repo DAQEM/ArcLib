@@ -2,6 +2,7 @@ package com.daqem.arc.api.condition;
 
 import com.daqem.arc.Arc;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.contents.TranslatableContents;
 
 public abstract class AbstractCondition implements ICondition {
 
@@ -22,7 +23,12 @@ public abstract class AbstractCondition implements ICondition {
     }
 
     @Override
+    public Component getDescription(Object... args) {
+        return Arc.translatable("condition.description." + this.getType().getLocation().getPath(), args);
+    }
+
+    @Override
     public Component getDescription() {
-        return Arc.translatable("condition.description." + this.getType().getLocation().getPath());
+        return getDescription(TranslatableContents.NO_ARGS);
     }
 }

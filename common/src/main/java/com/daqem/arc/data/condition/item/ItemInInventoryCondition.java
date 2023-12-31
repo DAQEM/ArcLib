@@ -8,6 +8,7 @@ import com.daqem.arc.api.condition.type.ConditionType;
 import com.daqem.arc.api.condition.type.IConditionType;
 import com.google.gson.*;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -19,6 +20,11 @@ public class ItemInInventoryCondition extends AbstractCondition {
     public ItemInInventoryCondition(boolean inverted, ItemStack itemStack) {
         super(inverted);
         this.itemStack = itemStack;
+    }
+
+    @Override
+    public Component getDescription() {
+        return getDescription(itemStack.getHoverName());
     }
 
     @Override

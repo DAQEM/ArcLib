@@ -11,6 +11,7 @@ import com.google.gson.*;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -22,6 +23,11 @@ public class EntityTypeCondition extends AbstractCondition {
     public EntityTypeCondition(boolean inverted, EntityType<?> entityType) {
         super(inverted);
         this.entityType = entityType;
+    }
+
+    @Override
+    public Component getDescription() {
+        return getDescription(entityType.getDescription());
     }
 
     @Override

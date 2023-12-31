@@ -8,6 +8,7 @@ import com.daqem.arc.api.condition.type.ConditionType;
 import com.daqem.arc.api.condition.type.IConditionType;
 import com.google.gson.*;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
@@ -22,6 +23,11 @@ public class ItemInHandCondition extends AbstractCondition {
         super(inverted);
         this.itemStack = itemStack;
         this.hand = hand;
+    }
+
+    @Override
+    public Component getDescription() {
+        return getDescription(itemStack.getHoverName(), hand.name().toLowerCase().replace("_", " "));
     }
 
     @Override

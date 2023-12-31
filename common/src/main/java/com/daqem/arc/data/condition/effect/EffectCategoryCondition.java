@@ -9,6 +9,7 @@ import com.daqem.arc.api.condition.type.ConditionType;
 import com.daqem.arc.api.condition.type.IConditionType;
 import com.google.gson.*;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -20,6 +21,11 @@ public class EffectCategoryCondition extends AbstractCondition {
     public EffectCategoryCondition(boolean inverted, MobEffectCategory effectCategory) {
         super(inverted);
         this.effectCategory = effectCategory;
+    }
+
+    @Override
+    public Component getDescription() {
+        return getDescription(effectCategory.name().toLowerCase());
     }
 
     @Override

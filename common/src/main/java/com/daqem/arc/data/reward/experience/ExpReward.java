@@ -10,6 +10,7 @@ import com.daqem.arc.api.reward.type.IRewardType;
 import com.daqem.arc.api.reward.type.RewardType;
 import com.google.gson.*;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.GsonHelper;
@@ -29,6 +30,11 @@ public class ExpReward extends AbstractReward {
         if (min > max) {
             throw new IllegalArgumentException("min cannot be greater than max for ExpActionReward.");
         }
+    }
+
+    @Override
+    public Component getDescription() {
+        return getDescription(min, max);
     }
 
     @Override

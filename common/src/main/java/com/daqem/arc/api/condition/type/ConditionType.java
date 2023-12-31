@@ -35,7 +35,7 @@ public interface ConditionType<T extends ICondition> extends IConditionType<T> {
     ConditionType<CropAgeCondition> CROP_AGE = register(Arc.getId("crop_age"));
     ConditionType<BlockCondition> BLOCK = register(Arc.getId("block"));
     ConditionType<BlocksCondition> BLOCKS = register(Arc.getId("blocks"));
-    ConditionType<DistanceCondition> DISTANCE = register(Arc.getId("swimming_distance"));
+    ConditionType<DistanceCondition> DISTANCE = register(Arc.getId("distance"));
     ConditionType<EntityTypeCondition> ENTITY_TYPE = register(Arc.getId("entity_type"));
     ConditionType<EntityTypesCondition> ENTITY_TYPES = register(Arc.getId("entity_types"));
     ConditionType<DimensionCondition> DIMENSION = register(Arc.getId("dimension"));

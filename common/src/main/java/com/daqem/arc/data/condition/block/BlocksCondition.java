@@ -11,6 +11,7 @@ import com.google.gson.*;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
@@ -28,6 +29,11 @@ public class BlocksCondition extends AbstractCondition {
         super(inverted);
         this.blocks = blocks;
         this.blockTags = blockTags;
+    }
+
+    @Override
+    public Component getDescription() {
+        return getDescription(blocks.stream().map(Block::getName).toArray(Component[]::new), blockTags.stream().map(TagKey::location).toArray(ResourceLocation[]::new));
     }
 
     @Override

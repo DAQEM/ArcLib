@@ -9,6 +9,7 @@ import com.daqem.arc.api.condition.type.ConditionType;
 import com.daqem.arc.api.condition.type.IConditionType;
 import com.google.gson.*;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Shearable;
@@ -17,13 +18,6 @@ public class ReadyForShearingCondition extends AbstractCondition {
 
     public ReadyForShearingCondition(boolean inverted) {
         super(inverted);
-    }
-
-    @Override
-    public String toString() {
-        return "ReadyForShearingActionCondition{" +
-                "type=" + this.getType() +
-                '}';
     }
 
     @Override
