@@ -41,3 +41,10 @@ mandatory = true
 versionRange = "[1.1.0,)"
 ordering = "AFTER"
 side = "BOTH"
+
+[[dependencies.arc]]
+modId = "uilib"
+mandatory = true
+versionRange = "[0.3,)"
+ordering = "NONE"
+side = "CLIENT"
