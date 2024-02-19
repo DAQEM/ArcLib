@@ -7,7 +7,7 @@ import com.daqem.uilib.api.client.gui.texture.ITexture;
 import com.daqem.uilib.client.gui.component.IconComponent;
 import com.daqem.uilib.client.gui.component.SolidColorComponent;
 import com.daqem.uilib.client.gui.component.TextComponent;
-import com.daqem.uilib.client.gui.component.TextureComponent;
+import com.daqem.uilib.client.gui.component.texture.TextureComponent;
 import com.daqem.uilib.client.gui.text.Text;
 import com.daqem.uilib.client.gui.text.TruncatedText;
 import com.daqem.uilib.client.gui.text.multiline.MultiLineText;

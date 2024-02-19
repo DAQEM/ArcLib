@@ -6,11 +6,10 @@ import com.daqem.arc.client.gui.action.components.ActionComponent;
 import com.daqem.arc.client.gui.icon.ArcIcons;
 import com.daqem.uilib.client.gui.AbstractScreen;
 import com.daqem.uilib.client.gui.background.Backgrounds;
-import com.daqem.uilib.client.gui.component.TextureComponent;
+import com.daqem.uilib.client.gui.component.texture.TextureComponent;
 import net.minecraft.client.gui.GuiGraphics;
 import org.lwjgl.glfw.GLFW;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ActionScreen extends AbstractScreen {
@@ -32,12 +31,12 @@ public class ActionScreen extends AbstractScreen {
 
     @Override
     public void startScreen() {
-        this.actionComponent = new ActionComponent(font, getCurrentIndex(), selectedAction);
+        this.actionComponent = new ActionComponent(getFont(), getCurrentIndex(), selectedAction);
         this.arrowLeftComponent = new TextureComponent(ArcIcons.ARROW_LEFT, 0, 0, 20, 20);
         this.arrowRightComponent = new TextureComponent(ArcIcons.ARROW_RIGHT, 0, 0, 20, 20);
 
         setPauseScreen(false);
-        setBackground(Backgrounds.getDefaultBackground(width, height));
+        setBackground(Backgrounds.getDefaultBackground(getWidth(), getHeight()));
 
         startComponents();
     }
@@ -104,7 +103,7 @@ public class ActionScreen extends AbstractScreen {
         if (nextIndex == getCurrentIndex()) {
             return actionComponent;
         }
-        return new ActionComponent(font, nextIndex, actions.get(nextIndex));
+        return new ActionComponent(getFont(), nextIndex, actions.get(nextIndex));
     }
 
     private ActionComponent getPreviousActionComponent() {
@@ -115,7 +114,7 @@ public class ActionScreen extends AbstractScreen {
         if (previousIndex == getCurrentIndex()) {
             return actionComponent;
         }
-        return new ActionComponent(font, previousIndex, actions.get(previousIndex));
+        return new ActionComponent(getFont(), previousIndex, actions.get(previousIndex));
     }
 
     private void moveToPreviousActionComponent() {
