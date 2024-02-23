@@ -1,10 +1,10 @@
 package com.daqem.arc.forge;
 
 import com.daqem.arc.Arc;
-import com.daqem.arc.api.player.holder.PlayerActionHolderManager;
 import com.daqem.arc.client.ArcClient;
 import com.daqem.arc.command.argument.ActionArgument;
 import com.daqem.arc.forge.data.ActionManagerForge;
+import com.daqem.arc.forge.data.PlayerActionHolderManagerForge;
 import com.daqem.arc.registry.ArcRegistry;
 import net.minecraft.commands.synchronization.ArgumentTypeInfo;
 import net.minecraft.commands.synchronization.ArgumentTypeInfos;
@@ -38,10 +38,7 @@ public class SideProxyForge {
 
     public void onAddReloadListeners(AddReloadListenerEvent event) {
         event.addListener(new ActionManagerForge());
-
-        if (Arc.isDebugEnvironment()) {
-            PlayerActionHolderManager.getInstance();
-        }
+        event.addListener(new PlayerActionHolderManagerForge());
     }
 
     @SubscribeEvent

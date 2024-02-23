@@ -6,7 +6,7 @@ import com.daqem.arc.api.action.holder.IActionHolder;
 import com.daqem.arc.api.action.result.ActionResult;
 import com.daqem.arc.api.action.type.ActionType;
 import com.daqem.arc.api.player.ArcPlayer;
-import com.daqem.arc.api.player.holder.PlayerActionHolderManager;
+import com.daqem.arc.data.PlayerActionHolderManager;
 import com.daqem.arc.event.triggers.MovementEvents;
 import com.daqem.arc.event.triggers.PlayerEvents;
 import com.daqem.arc.event.triggers.StatEvents;
@@ -84,7 +84,7 @@ public abstract class MixinServerPlayer extends Player implements ArcServerPlaye
     @Inject(at = @At("RETURN"), method = "<init>")
     private void onInit(MinecraftServer minecraftServer, ServerLevel serverLevel, GameProfile gameProfile, CallbackInfo ci) {
         if (((ServerPlayer) (Object) this) instanceof ArcPlayer arcPlayer) {
-            arcPlayer.arc$addActionHolders(PlayerActionHolderManager.getInstance().getActionHolders());
+            arcPlayer.arc$addActionHolders(PlayerActionHolderManager.getInstance().getPlayerActionHoldersList());
         }
     }
 

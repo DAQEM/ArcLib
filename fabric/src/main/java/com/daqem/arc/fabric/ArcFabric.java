@@ -3,6 +3,7 @@ package com.daqem.arc.fabric;
 import com.daqem.arc.Arc;
 import com.daqem.arc.command.argument.ActionArgument;
 import com.daqem.arc.fabric.data.ActionManagerFabric;
+import com.daqem.arc.fabric.data.PlayerActionHolderManagerFabric;
 import com.daqem.arc.registry.ArcRegistry;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.ArgumentTypeRegistry;
@@ -16,7 +17,9 @@ public class ArcFabric implements ModInitializer {
     public void onInitialize() {
         Arc.initCommon();
         ArcRegistry.init();
-        ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new ActionManagerFabric());registerCommandArgumentTypes();
+        ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new ActionManagerFabric());
+        ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new PlayerActionHolderManagerFabric());
+        registerCommandArgumentTypes();
     }
 
     private void registerCommandArgumentTypes() {

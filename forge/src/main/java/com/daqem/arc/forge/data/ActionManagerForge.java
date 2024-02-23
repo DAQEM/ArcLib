@@ -10,9 +10,4 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Map;
 
 public class ActionManagerForge extends ActionManager {
-
-    @Override
-    protected void apply(@NotNull Map<ResourceLocation, JsonElement> map, @NotNull ResourceManager resourceManager, @NotNull ProfilerFiller profilerFiller) {
-        super.apply(map, resourceManager, profilerFiller);
-    }
 }
