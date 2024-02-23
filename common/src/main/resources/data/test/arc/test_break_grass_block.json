@@ -13,33 +13,7 @@
   "rewards": [
     {
       "type": "arc:item",
-      "item": "minecraft:diamond"
-    },
-    {
-      "type": "arc:item",
-      "item": "minecraft:diamond"
-    },
-    {
-      "type": "arc:item",
-      "item": "minecraft:diamond"
-    },
-    {
-      "type": "arc:item",
-      "item": "minecraft:diamond"
-    },{
-      "type": "arc:item",
-      "item": "minecraft:diamond"
-    },
-    {
-      "type": "arc:item",
-      "item": "minecraft:diamond"
-    },
-    {
-      "type": "arc:item",
-      "item": "minecraft:diamond"
-    },{
-      "type": "arc:item",
-      "item": "minecraft:diamond"
+      "item": "minecraft:dirt"
     }
   ]
 }

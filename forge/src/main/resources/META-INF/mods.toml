@@ -1,5 +1,5 @@
 modLoader = "javafml"
-loaderVersion = "[43,)"
+loaderVersion = "[${forge_loader_version},)"
 issueTrackerURL = "https://github.com/DAQEM/Arc/issues"
 license = "MIT"
 
@@ -17,34 +17,34 @@ description = '''
 [[dependencies.arc]]
 modId = "forge"
 mandatory = true
-versionRange = "[43,)"
+versionRange = "[${forge_loader_version},)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.arc]]
 modId = "minecraft"
 mandatory = true
-versionRange = "[1.19.2,)"
+versionRange = "[${minecraft_version},)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.arc]]
 modId = "architectury"
 mandatory = true
-versionRange = "[6.5.85,)"
+versionRange = "[${architectury_version},)"
 ordering = "AFTER"
 side = "BOTH"
 
 [[dependencies.arc]]
 modId = "supermartijn642configlib"
 mandatory = true
-versionRange = "[1.1.0,)"
+versionRange = "[${config_library_version},)"
 ordering = "AFTER"
 side = "BOTH"
 
 [[dependencies.arc]]
 modId = "uilib"
 mandatory = true
-versionRange = "[0.3.1,)"
+versionRange = "[${ui_library_version},)"
 ordering = "NONE"
 side = "CLIENT"

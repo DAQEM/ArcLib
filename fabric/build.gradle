@@ -38,9 +38,19 @@ dependencies {
 
 processResources {
     inputs.property "version", project.version
+    inputs.property "minecraft_version", rootProject.minecraft_version
+    inputs.property "architectury_version", rootProject.architectury_version
+    inputs.property "config_library_version", project.config_library_version
+    inputs.property "ui_library_version", project.ui_library_version
 
     filesMatching("fabric.mod.json") {
-        expand "version": project.version
+        expand ([
+                "version": project.version,
+                "minecraft_version": rootProject.minecraft_version,
+                "architectury_version": rootProject.architectury_version,
+                "config_library_version": project.config_library_version,
+                "ui_library_version": project.ui_library_version
+        ])
     }
 }
 
@@ -48,18 +58,18 @@ shadowJar {
     exclude "architectury.common.json"
 
     configurations = [project.configurations.shadowCommon]
-    classifier "dev-shadow"
+    archiveClassifier = "fabric-dev-shadow"
 }
 
 remapJar {
     injectAccessWidener = true
     input.set shadowJar.archiveFile
     dependsOn shadowJar
-    classifier "fabric"
+    archiveClassifier = "fabric"
 }
 
 jar {
-    classifier "dev"
+    archiveClassifier = "dev"
 }
 
 sourcesJar {
@@ -96,7 +106,7 @@ curseforge {
     apiKey = System.getenv('CURSEFORGE_API_KEY')
     project {
         id = rootProject.curse_forge_project_id
-        releaseType = rootProject.curse_forge_release_type
+        releaseType = rootProject.release_type
         changelogType = "markdown"
         changelog = rootProject.file('changelog.md')
         addGameVersion "$rootProject.minecraft_version"
@@ -113,7 +123,7 @@ curseforge {
             displayName = "Arc Fabric $rootProject.minecraft_version - $rootProject.mod_version"
         }
 
-        addArtifact(sourcesJar) {
+        addArtifact(remapSourcesJar) {
         }
     }
     options {
@@ -121,16 +131,12 @@ curseforge {
     }
 }
 
-afterEvaluate {
-    tasks.curseforge883593.dependsOn remapJar
-}
-
 modrinth {
     token = System.getenv("MODRINTH_API_KEY")
-    projectId = "H3eKhxi7"
+    projectId = rootProject.modrinth_project_id
     versionName = "Arc Fabric $rootProject.minecraft_version - $rootProject.mod_version"
     versionNumber = "$rootProject.mod_version"
-    versionType = "$rootProject.curse_forge_release_type"
+    versionType = "$rootProject.release_type"
     uploadFile = remapJar
     additionalFiles = [remapSourcesJar]
     gameVersions = ["$rootProject.minecraft_version"]
