@@ -20,6 +20,7 @@ import com.daqem.arc.data.reward.experience.ExpReward;
 import com.daqem.arc.data.reward.item.ItemReward;
 import com.daqem.arc.data.reward.player.AttackSpeedMultiplierReward;
 import com.daqem.arc.data.reward.player.MoveToEntityReward;
+import com.daqem.arc.data.reward.server.CommandReward;
 import com.daqem.arc.data.reward.world.DropItemReward;
 import com.daqem.arc.event.events.RegistryEvent;
 import com.daqem.arc.registry.ArcRegistry;
@@ -44,6 +45,7 @@ public interface RewardType<T extends IReward> extends IRewardType<T> {
     IRewardType<MoveToEntityReward> MOVE_TO_ENTITY = register(Arc.getId("move_to_entity"));
     IRewardType<ExpMultiplierReward> EXP_MULTIPLIER = register(Arc.getId("exp_multiplier"));
     IRewardType<DamageMultiplierReward> DAMAGE_MULTIPLIER = register(Arc.getId("damage_multiplier"));
+    IRewardType<CommandReward> COMMAND = register(Arc.getId("command"));
 
     static <T extends IReward> IRewardType<T> register(final ResourceLocation location) {
         return Registry.register(ArcRegistry.REWARD, location, new RewardType<T>(){
