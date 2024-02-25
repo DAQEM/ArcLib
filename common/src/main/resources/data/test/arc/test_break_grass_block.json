@@ -3,13 +3,7 @@
     "type": "arc:player",
     "id": "arc:player"
   },
-  "type": "arc:on_break_block",
-  "conditions": [
-    {
-        "type": "arc:block",
-        "block": "minecraft:grass_block"
-    }
-  ],
+  "type": "arc:on_strip_log",
   "rewards": [
     {
       "type": "arc:item",
