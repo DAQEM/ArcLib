@@ -6,8 +6,8 @@
   "type": "arc:on_strip_log",
   "rewards": [
     {
-      "type": "arc:item",
-      "item": "minecraft:dirt"
+      "type": "arc:command",
+      "command": "give %player% minecraft:stone 1"
     }
   ]
 }

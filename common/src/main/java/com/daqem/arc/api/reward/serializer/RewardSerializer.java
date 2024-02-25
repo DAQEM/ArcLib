@@ -17,6 +17,7 @@ import com.daqem.arc.data.reward.experience.ExpReward;
 import com.daqem.arc.data.reward.item.ItemReward;
 import com.daqem.arc.data.reward.player.AttackSpeedMultiplierReward;
 import com.daqem.arc.data.reward.player.MoveToEntityReward;
+import com.daqem.arc.data.reward.server.CommandReward;
 import com.daqem.arc.data.reward.world.DropItemReward;
 import com.daqem.arc.event.events.RegistryEvent;
 import com.daqem.arc.registry.ArcRegistry;
@@ -44,6 +45,7 @@ public interface RewardSerializer<T extends IReward> extends IRewardSerializer<T
     IRewardSerializer<MoveToEntityReward> MOVE_TO_ENTITY = register(Arc.getId("move_to_entity"), new MoveToEntityReward.Serializer());
     IRewardSerializer<ExpMultiplierReward> EXP_MULTIPLIER = register(Arc.getId("exp_multiplier"), new ExpMultiplierReward.Serializer());
     IRewardSerializer<DamageMultiplierReward> DAMAGE_MULTIPLIER = register(Arc.getId("damage_multiplier"), new DamageMultiplierReward.Serializer());
+    IRewardSerializer<CommandReward> COMMAND = register(Arc.getId("command"), new CommandReward.Serializer());
 
     @Override
     default T fromJson(ResourceLocation location, JsonObject jsonObject) {
