@@ -16,6 +16,7 @@ import com.daqem.arc.player.stat.StatData;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -46,13 +47,13 @@ import java.util.*;
 public abstract class MixinServerPlayer extends Player implements ArcServerPlayer {
 
     @Unique
-    private final List<IActionHolder> arc$actionHolders = new ArrayList<>();
+    private Map<ResourceLocation, IActionHolder> arc$actionHolders = new HashMap<>();
     @Unique
-    private final NonNullList<StatData> arc$statData = NonNullList.create();
+    private NonNullList<StatData> arc$statData = NonNullList.create();
     @Unique
-    private final Map<ICondition, Integer> arc$lastDistanceInCm = new HashMap<>();
+    private Map<ICondition, Integer> arc$lastDistanceInCm = new HashMap<>();
     @Unique
-    private final Map<ICondition, Integer> arc$lastRemainderInCm = new HashMap<>();
+    private Map<ICondition, Integer> arc$lastRemainderInCm = new HashMap<>();
     @Unique
     private boolean arc$isSwimming = false;
     @Unique
@@ -89,25 +90,27 @@ public abstract class MixinServerPlayer extends Player implements ArcServerPlaye
 
     @Override
     public List<IActionHolder> arc$getActionHolders() {
-        return arc$actionHolders;
+        return new ArrayList<>(arc$actionHolders.values());
     }
 
     @Override
     public void arc$addActionHolder(IActionHolder actionHolder) {
         if (actionHolder == null) return;
-        this.arc$actionHolders.add(actionHolder);
+        this.arc$actionHolders.put(actionHolder.getLocation(), actionHolder);
     }
 
     @Override
     public void arc$addActionHolders(List<IActionHolder> actionHolders) {
         if (actionHolders == null) return;
-        actionHolders.removeIf(Objects::isNull);
-        this.arc$actionHolders.addAll(actionHolders);
+        for (IActionHolder actionHolder : actionHolders) {
+            if (actionHolder == null) continue;
+            this.arc$actionHolders.put(actionHolder.getLocation(), actionHolder);
+        }
     }
 
     @Override
     public void arc$removeActionHolder(IActionHolder actionHolder) {
-        this.arc$actionHolders.remove(actionHolder);
+        this.arc$actionHolders.remove(actionHolder.getLocation());
     }
 
     @Override
@@ -155,6 +158,76 @@ public abstract class MixinServerPlayer extends Player implements ArcServerPlaye
     @Override
     public void arc$setLastRemainderInCm(ICondition distanceCondition, int lastRemainderInCm) {
         arc$lastRemainderInCm.put(distanceCondition, lastRemainderInCm);
+    }
+
+    @Override
+    public Map<ResourceLocation, IActionHolder> arc$getActionHoldersMap() {
+        return this.arc$actionHolders;
+    }
+
+    @Override
+    public Map<ICondition, Integer> arc$getLastDistancesInCm() {
+        return this.arc$lastDistanceInCm;
+    }
+
+    @Override
+    public Map<ICondition, Integer> arc$getLastRemaindersInCm() {
+        return this.arc$lastRemainderInCm;
+    }
+
+    @Override
+    public boolean arc$isSwimming() {
+        return this.arc$isSwimming;
+    }
+
+    @Override
+    public int arc$getSwimmingDistanceInCm() {
+        return this.arc$swimmingDistanceInCm;
+    }
+
+    @Override
+    public boolean arc$isWalking() {
+        return this.arc$isWalking;
+    }
+
+    @Override
+    public float arc$getWalkingDistance() {
+        return this.arc$walkingDistance;
+    }
+
+    @Override
+    public boolean arc$isSprinting() {
+        return this.arc$isSprinting;
+    }
+
+    @Override
+    public float arc$getSprintingDistance() {
+        return this.arc$sprintingDistance;
+    }
+
+    @Override
+    public boolean arc$isCrouching() {
+        return this.arc$isCrouching;
+    }
+
+    @Override
+    public float arc$getCrouchingDistance() {
+        return this.arc$crouchingDistance;
+    }
+
+    @Override
+    public boolean arc$isElytraFlying() {
+        return this.arc$isElytraFlying;
+    }
+
+    @Override
+    public float arc$getElytraFlyingDistance() {
+        return this.arc$elytraFlyingDistance;
+    }
+
+    @Override
+    public boolean arc$isGrinding() {
+        return this.arc$isGrinding;
     }
 
     @Override
@@ -361,5 +434,26 @@ public abstract class MixinServerPlayer extends Player implements ArcServerPlaye
     public void mixinTriggerRecipeCrafted(Recipe<?> recipe, List<ItemStack> list, CallbackInfo ci) {
         Level level = level();
         PlayerEvents.onCraftItem(this, recipe, recipe.getResultItem(level.registryAccess()), level);
+    }
+
+    @Inject(at = @At("TAIL"), method = "restoreFrom(Lnet/minecraft/server/level/ServerPlayer;Z)V")
+    public void restoreFrom(ServerPlayer oldPlayer, boolean alive, CallbackInfo ci) {
+        if (oldPlayer instanceof ArcServerPlayer arcServerPlayer) {
+            this.arc$actionHolders = arcServerPlayer.arc$getActionHoldersMap();
+            this.arc$statData = arcServerPlayer.arc$getStatData();
+            this.arc$lastDistanceInCm = arcServerPlayer.arc$getLastDistancesInCm();
+            this.arc$lastRemainderInCm = arcServerPlayer.arc$getLastRemaindersInCm();
+            this.arc$isSwimming = arcServerPlayer.arc$isSwimming();
+            this.arc$swimmingDistanceInCm = arcServerPlayer.arc$getSwimmingDistanceInCm();
+            this.arc$isWalking = arcServerPlayer.arc$isWalking();
+            this.arc$walkingDistance = arcServerPlayer.arc$getWalkingDistance();
+            this.arc$isSprinting = arcServerPlayer.arc$isSprinting();
+            this.arc$sprintingDistance = arcServerPlayer.arc$getSprintingDistance();
+            this.arc$isCrouching = arcServerPlayer.arc$isCrouching();
+            this.arc$crouchingDistance = arcServerPlayer.arc$getCrouchingDistance();
+            this.arc$isElytraFlying = arcServerPlayer.arc$isElytraFlying();
+            this.arc$elytraFlyingDistance = arcServerPlayer.arc$getElytraFlyingDistance();
+            this.arc$isGrinding = arcServerPlayer.arc$isGrinding();
+        }
     }
 }
