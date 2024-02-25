@@ -17,8 +17,8 @@ public class ArcFabric implements ModInitializer {
     public void onInitialize() {
         Arc.initCommon();
         ArcRegistry.init();
-        ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new ActionManagerFabric());
         ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new PlayerActionHolderManagerFabric());
+        ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new ActionManagerFabric());
         registerCommandArgumentTypes();
     }
 

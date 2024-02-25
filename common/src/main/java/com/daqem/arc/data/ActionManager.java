@@ -38,7 +38,7 @@ public abstract class ActionManager extends SimpleJsonResourceReloadListener {
         ImmutableMap.Builder<ResourceLocation, IAction> tempActions = ImmutableMap.builder();
 
         if (!ArcCommonConfig.isDebug.get()) {
-            map.entrySet().removeIf(entry -> entry.getKey().getNamespace().equals("test"));
+            map.entrySet().removeIf(entry -> entry.getKey().getNamespace().equals("debug"));
         }
 
         for (Map.Entry<ResourceLocation, JsonElement> entry : map.entrySet()) {

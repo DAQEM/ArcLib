@@ -3,17 +3,17 @@
     "type": "arc:player",
     "id": "arc:player"
   },
-  "type": "arc:on_break_block",
+  "type": "arc:on_swim",
   "conditions": [
     {
-        "type": "arc:block",
-        "block": "minecraft:grass_block"
+      "type": "arc:distance",
+      "distance_in_blocks": 1
     }
   ],
   "rewards": [
     {
       "type": "arc:item",
-      "item": "minecraft:dirt"
+      "item": "minecraft:cobblestone"
     }
   ]
 }
