@@ -37,8 +37,8 @@ public class SideProxyForge {
     }
 
     public void onAddReloadListeners(AddReloadListenerEvent event) {
-        event.addListener(new ActionManagerForge());
         event.addListener(new PlayerActionHolderManagerForge());
+        event.addListener(new ActionManagerForge());
     }
 
     @SubscribeEvent

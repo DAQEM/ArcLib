@@ -39,7 +39,7 @@ public interface ConditionSerializer<T extends ICondition> extends IConditionSer
     IConditionSerializer<CropAgeCondition> CROP_AGE = register(Arc.getId("crop_age"), new CropAgeCondition.Serializer());
     IConditionSerializer<BlockCondition> BLOCK = register(Arc.getId("block"), new BlockCondition.Serializer());
     IConditionSerializer<BlocksCondition> BLOCKS = register(Arc.getId("blocks"), new BlocksCondition.Serializer());
-    IConditionSerializer<DistanceCondition> DISTANCE = register(Arc.getId("swimming_distance"), new DistanceCondition.Serializer());
+    IConditionSerializer<DistanceCondition> DISTANCE = register(Arc.getId("distance"), new DistanceCondition.Serializer());
     IConditionSerializer<EntityTypeCondition> ENTITY_TYPE = register(Arc.getId("entity_type"), new EntityTypeCondition.Serializer());
     IConditionSerializer<EntityTypesCondition> ENTITY_TYPES = register(Arc.getId("entity_types"), new EntityTypesCondition.Serializer());
     IConditionSerializer<DimensionCondition> DIMENSION = register(Arc.getId("dimension"), new DimensionCondition.Serializer());

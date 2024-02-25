@@ -23,7 +23,7 @@ public interface ActionDataType<T> extends IActionDataType<T> {
     IActionDataType<DamageSource> DAMAGE_SOURCE = register(Arc.getId("damage_source"));
     IActionDataType<Entity> ENTITY = register(Arc.getId("entity"));
     IActionDataType<Float> DAMAGE_AMOUNT = register(Arc.getId("damage_amount"));
-    IActionDataType<Integer> DISTANCE_IN_CM = register(Arc.getId("swimming_distance_in_cm"));
+    IActionDataType<Integer> DISTANCE_IN_CM = register(Arc.getId("distance_in_cm"));
     IActionDataType<ItemStack> ITEM_STACK = register(Arc.getId("item_stack"));
     IActionDataType<Item> ITEM = register(Arc.getId("item"));
     IActionDataType<Advancement> ADVANCEMENT = register(Arc.getId("advancement"));

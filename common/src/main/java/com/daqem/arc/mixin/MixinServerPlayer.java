@@ -5,6 +5,7 @@ import com.daqem.arc.api.action.data.type.ActionDataType;
 import com.daqem.arc.api.action.holder.IActionHolder;
 import com.daqem.arc.api.action.result.ActionResult;
 import com.daqem.arc.api.action.type.ActionType;
+import com.daqem.arc.api.condition.ICondition;
 import com.daqem.arc.api.player.ArcPlayer;
 import com.daqem.arc.data.PlayerActionHolderManager;
 import com.daqem.arc.event.triggers.MovementEvents;
@@ -13,7 +14,6 @@ import com.daqem.arc.event.triggers.StatEvents;
 import com.daqem.arc.api.player.ArcServerPlayer;
 import com.daqem.arc.player.stat.StatData;
 import com.mojang.authlib.GameProfile;
-import dev.architectury.event.EventResult;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.server.MinecraftServer;
@@ -25,7 +25,6 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.player.ProfilePublicKey;
 import net.minecraft.world.inventory.GrindstoneMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.AirItem;
@@ -37,45 +36,45 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyArgs;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Mixin(ServerPlayer.class)
 public abstract class MixinServerPlayer extends Player implements ArcServerPlayer {
 
     @Unique
-    private final List<IActionHolder> actionHolders = new ArrayList<>();
+    private final List<IActionHolder> arc$actionHolders = new ArrayList<>();
     @Unique
-    private final NonNullList<StatData> statData = NonNullList.create();
+    private final NonNullList<StatData> arc$statData = NonNullList.create();
     @Unique
-    private boolean isSwimming = false;
+    private final Map<ICondition, Integer> arc$lastDistanceInCm = new HashMap<>();
     @Unique
-    private int swimmingDistanceInCm = 0;
+    private final Map<ICondition, Integer> arc$lastRemainderInCm = new HashMap<>();
     @Unique
-    private boolean isWalking = false;
+    private boolean arc$isSwimming = false;
     @Unique
-    private float walkingDistance = 0;
+    private int arc$swimmingDistanceInCm = 0;
     @Unique
-    private boolean isSprinting = false;
+    private boolean arc$isWalking = false;
     @Unique
-    private float sprintingDistance = 0;
+    private float arc$walkingDistance = 0;
     @Unique
-    private boolean isCrouching = false;
+    private boolean arc$isSprinting = false;
     @Unique
-    private float crouchingDistance = 0;
+    private float arc$sprintingDistance = 0;
     @Unique
-    private boolean isElytraFlying = false;
+    private boolean arc$isCrouching = false;
     @Unique
-    private float elytraFlyingDistance = 0;
+    private float arc$crouchingDistance = 0;
     @Unique
-    private boolean isGrinding = false;
+    private boolean arc$isElytraFlying = false;
+    @Unique
+    private float arc$elytraFlyingDistance = 0;
+    @Unique
+    private boolean arc$isGrinding = false;
 
     public MixinServerPlayer(Level level, BlockPos blockPos, float yaw, GameProfile gameProfile) {
         super(level, blockPos, yaw, gameProfile);
@@ -90,25 +89,25 @@ public abstract class MixinServerPlayer extends Player implements ArcServerPlaye
 
     @Override
     public List<IActionHolder> arc$getActionHolders() {
-        return actionHolders;
+        return arc$actionHolders;
     }
 
     @Override
     public void arc$addActionHolder(IActionHolder actionHolder) {
         if (actionHolder == null) return;
-        this.actionHolders.add(actionHolder);
+        this.arc$actionHolders.add(actionHolder);
     }
 
     @Override
     public void arc$addActionHolders(List<IActionHolder> actionHolders) {
         if (actionHolders == null) return;
         actionHolders.removeIf(Objects::isNull);
-        this.actionHolders.addAll(actionHolders);
+        this.arc$actionHolders.addAll(actionHolders);
     }
 
     @Override
     public void arc$removeActionHolder(IActionHolder actionHolder) {
-        this.actionHolders.remove(actionHolder);
+        this.arc$actionHolders.remove(actionHolder);
     }
 
     @Override
@@ -118,22 +117,44 @@ public abstract class MixinServerPlayer extends Player implements ArcServerPlaye
 
     @Override
     public NonNullList<StatData> arc$getStatData() {
-        return this.statData;
+        return this.arc$statData;
     }
 
     @Override
     public void arc$addStatData(StatData statData) {
-        this.statData.add(statData);
+        this.arc$statData.add(statData);
     }
 
     @Override
     public void arc$setSwimmingDistanceInCm(int swimmingDistanceInCm) {
-        this.swimmingDistanceInCm = swimmingDistanceInCm;
+        this.arc$swimmingDistanceInCm = swimmingDistanceInCm;
     }
 
     @Override
     public void arc$setElytraFlyingDistanceInCm(float flyingDistanceInCm) {
-        this.elytraFlyingDistance = flyingDistanceInCm;
+        this.arc$elytraFlyingDistance = flyingDistanceInCm;
+    }
+
+    @Override
+    public int arc$getLastDistanceInCm(ICondition distanceCondition) {
+        Integer lastDistanceInCm = arc$lastDistanceInCm.get(distanceCondition);
+        return lastDistanceInCm == null ? 0 : lastDistanceInCm;
+    }
+
+    @Override
+    public void arc$setLastDistanceInCm(ICondition distanceCondition, int lastDistanceInCm) {
+        arc$lastDistanceInCm.put(distanceCondition, lastDistanceInCm);
+    }
+
+    @Override
+    public int arc$getLastRemainderInCm(ICondition distanceCondition) {
+        Integer lastRemainderInCm = arc$lastRemainderInCm.get(distanceCondition);
+        return lastRemainderInCm == null ? 0 : lastRemainderInCm;
+    }
+
+    @Override
+    public void arc$setLastRemainderInCm(ICondition distanceCondition, int lastRemainderInCm) {
+        arc$lastRemainderInCm.put(distanceCondition, lastRemainderInCm);
     }
 
     @Override
@@ -164,77 +185,77 @@ public abstract class MixinServerPlayer extends Player implements ArcServerPlaye
 
     @Inject(at = @At("TAIL"), method = "tick()V")
     public void tick(CallbackInfo ci) {
-        if (this.isSwimming && this.isSwimming()) {
-            MovementEvents.onSwim(this, this.swimmingDistanceInCm);
+        if (this.arc$isSwimming && this.isSwimming()) {
+            MovementEvents.onSwim(this, this.arc$swimmingDistanceInCm);
         } else {
-            if (this.isSwimming) {
-                this.isSwimming = false;
+            if (this.arc$isSwimming) {
+                this.arc$isSwimming = false;
                 MovementEvents.onStopSwimming(this);
             } else {
                 if (this.isSwimming()) {
-                    this.isSwimming = true;
+                    this.arc$isSwimming = true;
                     MovementEvents.onStartSwimming(this);
                 }
             }
         }
 
-        boolean isCurrentlyWalking = this.walkDist > this.walkingDistance;
-        float distance = this.walkDist - this.walkingDistance;
-        if (this.isWalking && isCurrentlyWalking) {
-            this.walkingDistance = this.walkDist;
-            MovementEvents.onWalk(this, (int) (this.walkingDistance * 100));
+        boolean isCurrentlyWalking = this.walkDist > this.arc$walkingDistance;
+        float distance = this.walkDist - this.arc$walkingDistance;
+        if (this.arc$isWalking && isCurrentlyWalking) {
+            this.arc$walkingDistance = this.walkDist;
+            MovementEvents.onWalk(this, (int) (this.arc$walkingDistance * 100));
         } else {
-            if (this.isWalking) {
-                this.isWalking = false;
+            if (this.arc$isWalking) {
+                this.arc$isWalking = false;
                 MovementEvents.onStopWalking(this);
             } else if (isCurrentlyWalking) {
-                this.isWalking = true;
+                this.arc$isWalking = true;
                 MovementEvents.onStartWalking(this);
             }
         }
 
-        if (this.isSprinting && this.isSprinting()) {
-            this.sprintingDistance += distance;
-            MovementEvents.onSprint(this, (int) (this.sprintingDistance * 100));
+        if (this.arc$isSprinting && this.isSprinting()) {
+            this.arc$sprintingDistance += distance;
+            MovementEvents.onSprint(this, (int) (this.arc$sprintingDistance * 100));
         } else {
-            if (this.isSprinting) {
-                this.isSprinting = false;
+            if (this.arc$isSprinting) {
+                this.arc$isSprinting = false;
                 MovementEvents.onStopSprinting(this);
             } else if (this.isSprinting()) {
-                this.isSprinting = true;
+                this.arc$isSprinting = true;
                 MovementEvents.onStartSprinting(this);
             }
         }
 
-        if (this.isCrouching && this.isCrouching()) {
-            this.crouchingDistance += distance;
-            MovementEvents.onCrouch(this, (int) (this.crouchingDistance * 100));
+        if (this.arc$isCrouching && this.isCrouching()) {
+            this.arc$crouchingDistance += distance;
+            MovementEvents.onCrouch(this, (int) (this.arc$crouchingDistance * 100));
         } else {
-            if (this.isCrouching) {
-                this.isCrouching = false;
+            if (this.arc$isCrouching) {
+                this.arc$isCrouching = false;
                 MovementEvents.onStopCrouching(this);
             } else if (this.isCrouching()) {
-                this.isCrouching = true;
+                this.arc$isCrouching = true;
                 MovementEvents.onStartCrouching(this);
             }
         }
 
-        if (this.isElytraFlying && this.isFallFlying()) {
-            MovementEvents.onElytraFly(this, (int) this.elytraFlyingDistance);
+        if (this.arc$isElytraFlying && this.isFallFlying()) {
+            MovementEvents.onElytraFly(this, (int) this.arc$elytraFlyingDistance);
         } else {
-            if (this.isElytraFlying) {
-                this.isElytraFlying = false;
+            if (this.arc$isElytraFlying) {
+                this.arc$isElytraFlying = false;
                 MovementEvents.onStopElytraFlying(this);
             } else {
                 if (this.isFallFlying()) {
-                    this.isElytraFlying = true;
+                    this.arc$isElytraFlying = true;
                     MovementEvents.onStartElytraFlying(this);
                 }
             }
         }
 
         if (arc$getServerPlayer().containerMenu instanceof GrindstoneMenu) {
-            if (isGrinding) {
+            if (arc$isGrinding) {
                 boolean firstSlot = false;
                 boolean secondSlot = false;
                 for (Slot slot : containerMenu.slots) {
@@ -265,7 +286,7 @@ public abstract class MixinServerPlayer extends Player implements ArcServerPlaye
                     }
                 }
             }
-            isGrinding = firstSlot && secondSlot;
+            arc$isGrinding = firstSlot && secondSlot;
         }
     }
 

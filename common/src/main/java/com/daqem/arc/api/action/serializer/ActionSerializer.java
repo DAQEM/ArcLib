@@ -80,9 +80,8 @@ public interface ActionSerializer<T extends IAction> extends IActionSerializer<T
         if (jsonObject.has("rewards")) {
             jsonObject.getAsJsonArray("rewards").forEach(jsonElement -> {
                 ResourceLocation type = getResourceLocation(jsonElement.getAsJsonObject(), "type");
-                ArcRegistry.REWARD_SERIALIZER.getOptional(type).ifPresent(serializer -> {
-                    rewards.add(serializer.fromJson(location, jsonElement.getAsJsonObject()));
-                });
+                ArcRegistry.REWARD_SERIALIZER.getOptional(type).ifPresent(serializer ->
+                        rewards.add(serializer.fromJson(location, jsonElement.getAsJsonObject())));
             });
         }
 
@@ -90,9 +89,8 @@ public interface ActionSerializer<T extends IAction> extends IActionSerializer<T
         if (jsonObject.has("conditions")) {
             jsonObject.getAsJsonArray("conditions").forEach(jsonElement -> {
                 ResourceLocation type = getResourceLocation(jsonElement.getAsJsonObject(), "type");
-                ArcRegistry.CONDITION_SERIALIZER.getOptional(type).ifPresent(serializer -> {
-                    conditions.add(serializer.fromJson(location, jsonElement.getAsJsonObject()));
-                });
+                ArcRegistry.CONDITION_SERIALIZER.getOptional(type).ifPresent(serializer ->
+                        conditions.add(serializer.fromJson(location, jsonElement.getAsJsonObject())));
             });
         }
 

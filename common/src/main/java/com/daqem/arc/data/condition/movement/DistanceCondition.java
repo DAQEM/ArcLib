@@ -7,7 +7,8 @@ import com.daqem.arc.api.condition.serializer.ConditionSerializer;
 import com.daqem.arc.api.condition.serializer.IConditionSerializer;
 import com.daqem.arc.api.condition.type.ConditionType;
 import com.daqem.arc.api.condition.type.IConditionType;
-import com.google.gson.*;
+import com.daqem.arc.api.player.ArcServerPlayer;
+import com.google.gson.JsonObject;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -16,7 +17,6 @@ import net.minecraft.util.GsonHelper;
 public class DistanceCondition extends AbstractCondition {
 
     private final int distanceInBlocks;
-    private int lastDistanceInBlocks = 0;
 
     public DistanceCondition(boolean inverted, int distanceInBlocks) {
         super(inverted);
@@ -30,14 +30,20 @@ public class DistanceCondition extends AbstractCondition {
 
     @Override
     public boolean isMet(ActionData actionData) {
-        Integer distanceInCm = actionData.getData(ActionDataType.DISTANCE_IN_CM);
-        if (distanceInCm != null) {
-            int currentDistanceInBlocks = distanceInCm / 100;
-            if (currentDistanceInBlocks != lastDistanceInBlocks) {
-                if (currentDistanceInBlocks % distanceInBlocks == 0) {
-                    lastDistanceInBlocks = currentDistanceInBlocks;
+        if (actionData.getPlayer() instanceof ArcServerPlayer serverPlayer) {
+            Integer totalDistanceMovedInCm = actionData.getData(ActionDataType.DISTANCE_IN_CM);
+            if (totalDistanceMovedInCm != null) {
+                totalDistanceMovedInCm += serverPlayer.arc$getLastRemainderInCm(this);
+
+                double lastTotalDistanceMovedInCm = serverPlayer.arc$getLastDistanceInCm(this);
+                double currentDistanceMovedInCm = totalDistanceMovedInCm - lastTotalDistanceMovedInCm;
+                double currentDistanceMovedInBlocks = currentDistanceMovedInCm / 100.0;
+
+                if (currentDistanceMovedInBlocks >= distanceInBlocks) {
+                    serverPlayer.arc$setLastDistanceInCm(this, totalDistanceMovedInCm);
                     return true;
                 }
+                serverPlayer.arc$setLastRemainderInCm(this, (int) (currentDistanceMovedInBlocks % distanceInBlocks) * 100);
             }
         }
         return false;
