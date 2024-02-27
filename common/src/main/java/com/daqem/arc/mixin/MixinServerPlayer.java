@@ -414,7 +414,7 @@ public abstract class MixinServerPlayer extends Player implements ArcServerPlaye
         }
 
         if (damageSource.getEntity() instanceof ArcServerPlayer arcServerPlayer) {
-            ActionResult actionResult = new ActionDataBuilder(arcServerPlayer, ActionType.HURT_ENTITY)
+            ActionResult actionResult = new ActionDataBuilder(arcServerPlayer, ActionType.HURT_PLAYER)
                     .withData(ActionDataType.ENTITY, entity)
                     .withData(ActionDataType.DAMAGE_AMOUNT, f)
                     .build()

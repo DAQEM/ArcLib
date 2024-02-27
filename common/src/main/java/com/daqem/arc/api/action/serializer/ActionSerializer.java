@@ -48,6 +48,7 @@ public interface ActionSerializer<T extends IAction> extends IActionSerializer<T
     IActionSerializer<GetHurtAction> GET_HURT = register(Arc.getId("on_get_hurt"), new GetHurtAction.Serializer());
     IActionSerializer<KillEntityAction> KILL_ENTITY = register(Arc.getId("on_kill_entity"), new KillEntityAction.Serializer());
     IActionSerializer<HurtEntityAction> HURT_ENTITY = register(Arc.getId("on_hurt_entity"), new HurtEntityAction.Serializer());
+    IActionSerializer<HurtPlayerAction> HURT_PLAYER = register(Arc.getId("on_hurt_player"), new HurtPlayerAction.Serializer());
     IActionSerializer<CraftItemAction> CRAFT_ITEM = register(Arc.getId("on_craft_item"), new CraftItemAction.Serializer());
     IActionSerializer<DropItemAction> DROP_ITEM = register(Arc.getId("on_drop_item"), new DropItemAction.Serializer());
     IActionSerializer<UseItemAction> USE_ITEM = register(Arc.getId("on_use_item"), new UseItemAction.Serializer());

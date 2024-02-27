@@ -63,6 +63,22 @@ public class EntityEvents {
             }
             return EventResult.pass();
         });
+
+        EntityEvent.LIVING_HURT.register((entity, source, amount) -> {
+            if (source.getEntity() instanceof ArcServerPlayer arcServerPlayer) {
+                ActionResult actionResult = new ActionDataBuilder(arcServerPlayer, ActionType.HURT_ENTITY)
+                        .withData(ActionDataType.ENTITY, entity)
+                        .withData(ActionDataType.DAMAGE_SOURCE, source)
+                        .withData(ActionDataType.DAMAGE_AMOUNT, amount)
+                        .build()
+                        .sendToAction();
+
+                if (actionResult.shouldCancelAction()) {
+                    return EventResult.interruptFalse();
+                }
+            }
+            return EventResult.pass();
+        });
     }
 
     public static ActionResult onBreedAnimal(ArcServerPlayer player, Animal animal) {

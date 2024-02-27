@@ -38,6 +38,7 @@ public interface ActionType<T extends IAction> extends IActionType<T> {
     ActionType<GetHurtAction> GET_HURT = register(Arc.getId("on_get_hurt"));
     ActionType<KillEntityAction> KILL_ENTITY = register(Arc.getId("on_kill_entity"));
     ActionType<HurtEntityAction> HURT_ENTITY = register(Arc.getId("on_hurt_entity"));
+    ActionType<HurtPlayerAction> HURT_PLAYER = register(Arc.getId("on_hurt_player"));
     ActionType<CraftItemAction> CRAFT_ITEM = register(Arc.getId("on_craft_item"));
     ActionType<DropItemAction> DROP_ITEM = register(Arc.getId("on_drop_item"));
     ActionType<UseItemAction> USE_ITEM = register(Arc.getId("on_use_item"));
