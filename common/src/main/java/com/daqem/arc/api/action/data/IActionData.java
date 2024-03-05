@@ -5,8 +5,7 @@ import com.daqem.arc.api.action.holder.IActionHolder;
 import com.daqem.arc.api.action.type.IActionType;
 import com.daqem.arc.api.player.ArcPlayer;
 import com.daqem.arc.api.action.result.ActionResult;
-
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 public interface IActionData {
 

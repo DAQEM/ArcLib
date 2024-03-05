@@ -18,6 +18,7 @@
     "MixinLivingEntity",
     "MixinProjectile",
     "MixinServerPlayer",
+    "PlayerListMixin",
     "common.MixinPlayer"
   ],
   "injectors": {
