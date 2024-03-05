@@ -58,7 +58,6 @@ public abstract class ActionManager extends SimpleJsonResourceReloadListener {
         this.byName = tempActions.build();
         Arc.LOGGER.info("Loaded {} actions", this.byName.size());
         this.assignActionsToActionHolders();
-        ActionHolderManager.getInstance();
     }
 
     /**
@@ -138,7 +137,7 @@ public abstract class ActionManager extends SimpleJsonResourceReloadListener {
 
     /**
      * Replaces the existing actions with the given list of actions.
-     * Used to update the actions when a client joins a dedicated server.
+     * Used to update the actions when a client joins a server.
      *
      * @param actions the list of actions to replace the current actions with
      */
