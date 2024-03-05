@@ -31,4 +31,9 @@ public abstract class AbstractCondition implements ICondition {
     public Component getDescription() {
         return getDescription(TranslatableContents.NO_ARGS);
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof ICondition condition && condition.getType().equals(this.getType());
+    }
 }

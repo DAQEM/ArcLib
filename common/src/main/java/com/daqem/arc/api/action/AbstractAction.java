@@ -136,4 +136,9 @@ public abstract class AbstractAction implements IAction {
 
         return new ActionResult();
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof IAction action && action.getLocation().equals(this.getLocation());
+    }
 }
