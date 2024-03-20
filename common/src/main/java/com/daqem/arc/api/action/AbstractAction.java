@@ -7,12 +7,14 @@ import com.daqem.arc.api.action.holder.type.IActionHolderType;
 import com.daqem.arc.api.action.result.ActionResult;
 import com.daqem.arc.api.condition.ICondition;
 import com.daqem.arc.api.reward.IReward;
+import com.daqem.arc.data.ActionManager;
 import com.daqem.arc.event.events.ActionEvent;
 import dev.architectury.event.EventResult;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public abstract class AbstractAction implements IAction {
 
@@ -78,18 +80,17 @@ public abstract class AbstractAction implements IAction {
     }
 
     public ActionResult perform(ActionData actionData) {
-        List<IActionHolder> iActionHolders = actionData.getPlayer().arc$getActionHolders();
-        List<IActionHolder> iActionHoldersWithCorrectType = iActionHolders.stream().filter(actionHolder -> actionHolder.getType() == this.getActionHolderType()).toList();
-        List<IActionHolder> iActionHoldersWithCorrectLocation = iActionHoldersWithCorrectType.stream().filter(actionHolder -> actionHolder.getLocation().equals(this.getActionHolderLocation())).toList();
-
-        IActionHolder sourceActionHolder = iActionHoldersWithCorrectLocation.stream()
-                .findFirst()
-                .orElseThrow(() -> new IllegalStateException("Action holder not found for action " + this.getType().getLocation() + " and action holder " + this.getActionHolderLocation()));
+        IActionHolder sourceActionHolder = actionData.getPlayer().arc$getActionHolders().stream()
+        .filter(actionHolder -> actionHolder.getType() == this.getActionHolderType()
+                && actionHolder.getLocation().equals(this.getActionHolderLocation()))
+        .findFirst()
+        .orElseThrow(() -> new IllegalStateException("Action holder not found for action " + this.getType().getLocation() + " and action holder " + this.getActionHolderLocation()));
 
         actionData.setSourceActionHolder(sourceActionHolder);
 
         ActionResult result = new ActionResult();
 
+        //noinspection resource
         if (actionData.getPlayer().arc$getLevel().isClientSide() && !performOnClient) {
             return result;
         }

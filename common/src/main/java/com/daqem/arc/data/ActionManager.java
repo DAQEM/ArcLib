@@ -10,6 +10,9 @@ import com.daqem.arc.registry.ArcRegistry;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.google.gson.*;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
@@ -141,23 +144,26 @@ public abstract class ActionManager extends SimpleJsonResourceReloadListener {
      *
      * @param actions the list of actions to replace the current actions with
      */
+    @Environment(EnvType.CLIENT)
     public void replaceActions(List<IAction> actions) {
-        HashMap<IActionType<?>, Map<ResourceLocation, IAction>> map = Maps.newHashMap();
-        ImmutableMap.Builder<ResourceLocation, IAction> builder = ImmutableMap.builder();
+        if (!Minecraft.getInstance().isLocalServer()) {
+            HashMap<IActionType<?>, Map<ResourceLocation, IAction>> map = Maps.newHashMap();
+            ImmutableMap.Builder<ResourceLocation, IAction> builder = ImmutableMap.builder();
 
-        actions.forEach(action -> {
-            Map<ResourceLocation, IAction> map2 = map.computeIfAbsent(action.getType(), actionType -> Maps.newHashMap());
-            ResourceLocation resourceLocation = action.getLocation();
-            IAction action2 = map2.put(resourceLocation, action);
-            builder.put(resourceLocation, action);
-            if (action2 != null) {
-                throw new IllegalStateException("Duplicate action ignored with ID " + resourceLocation);
-            }
-        });
+            actions.forEach(action -> {
+                Map<ResourceLocation, IAction> map2 = map.computeIfAbsent(action.getType(), actionType -> Maps.newHashMap());
+                ResourceLocation resourceLocation = action.getLocation();
+                IAction action2 = map2.put(resourceLocation, action);
+                builder.put(resourceLocation, action);
+                if (action2 != null) {
+                    throw new IllegalStateException("Duplicate action ignored with ID " + resourceLocation);
+                }
+            });
 
-        this.actions = ImmutableMap.copyOf(map);
-        this.byName = builder.build();
-        Arc.LOGGER.info("Updated {} actions", map.size());
+            this.actions = ImmutableMap.copyOf(map);
+            this.byName = builder.build();
+            Arc.LOGGER.info("Updated {} actions", map.size());
+        }
     }
 
     public void assignActionsToActionHolders() {

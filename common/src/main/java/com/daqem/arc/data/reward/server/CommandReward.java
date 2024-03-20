@@ -77,7 +77,7 @@ public class CommandReward extends AbstractReward {
 
             MinecraftServer server = serverPlayer.getServer();
             if (server != null) {
-                server.getCommands().performPrefixedCommand(serverPlayer.createCommandSourceStack(), command);
+                server.getCommands().performPrefixedCommand(server.createCommandSourceStack(), command);
             }
         }
         return new ActionResult();
