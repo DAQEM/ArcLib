@@ -16,6 +16,10 @@ public interface IActionHolder {
 
     void addAction(IAction action);
 
+    void removeAction(IAction action);
+
+    void clearActions();
+
     IActionHolderType<?> getType();
 
     default boolean passedHolderCondition(ActionData actionData) {
