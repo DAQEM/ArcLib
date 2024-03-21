@@ -7,9 +7,12 @@ import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class ActionHolderManager {
 
+    private final Map<IActionHolderType<?>, Map<ResourceLocation, IAction>> actions = new HashMap<>();
     private final Map<IActionHolderType<?>, Map<ResourceLocation, IActionHolder>> actionHolders = new HashMap<>();
 
     private static ActionHolderManager instance;
@@ -24,68 +27,93 @@ public class ActionHolderManager {
         return instance;
     }
 
-    /**
-     * Registers an action holder.
-     *
-     * @param actionHolder The action holder to be registered.
-     */
-    public void registerActionHolder(IActionHolder actionHolder) {
-        if (this.actionHolders.containsKey(actionHolder.getType())) {
-            this.actionHolders.get(actionHolder.getType()).put(actionHolder.getLocation(), actionHolder);
-        } else {
-            Map<ResourceLocation, IActionHolder> actionHolders = new HashMap<>();
-            actionHolders.put(actionHolder.getLocation(), actionHolder);
-            this.actionHolders.put(actionHolder.getType(), actionHolders);
+    public void registerActionHolders(List<IActionHolder> actionHolders) {
+        for (IActionHolder actionHolder : actionHolders) {
+            this.actionHolders.computeIfAbsent(actionHolder.getType(), mapFunc -> new HashMap<>())
+                    .put(actionHolder.getLocation(), actionHolder);
+
+            List<IAction> actionsForHolder = getActionsForHolder(actionHolder);
+            actionHolder.clearActions();
+            actionHolder.addActions(actionsForHolder);
         }
-        ActionManager.getInstance().assignActionsToActionHolders();
     }
 
-    /**
-     * Registers an action with the specified action holder.
-     *
-     * @param action The action to be registered.
-     */
-    public void registerAction(IAction action) {
-        IActionHolder actionHolder = getActionHolder(action.getActionHolderType(), action.getActionHolderLocation());
-        if (actionHolder != null) {
-            if (!actionHolder.getActions().contains(action)) {
-                actionHolder.addAction(action);
+    public void registerActions(List<IAction> actions) {
+        for (IAction action : actions) {
+            this.actions.computeIfAbsent(action.getActionHolderType(), mapFunc -> new HashMap<>())
+                    .put(action.getLocation(), action);
+        }
+
+        mapActionsByTheirHolders(actions).forEach((location, actionHolderActions) ->
+                getActionHolder(location).ifPresent(holder -> {
+                    holder.clearActions();
+                    holder.addActions(actionHolderActions);
+                })
+        );
+    }
+
+    public void clearAllActionHoldersForType(IActionHolderType<?> type) {
+        actionHolders.remove(type);
+    }
+
+    public void clearAllActions() {
+        actions.clear();
+        actionHolders.values().forEach(holderMap -> holderMap.values().forEach(IActionHolder::clearActions));
+    }
+
+    public List<IActionHolder> getActionHolders(List<ResourceLocation> actionHolderLocations) {
+        return actionHolderLocations.stream()
+                .map(this::getActionHolder)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.toList());
+    }
+
+    private Map<ResourceLocation, List<IAction>> mapActionsByTheirHolders(List<IAction> actions) {
+        return actions.stream().collect(Collectors.groupingBy(IAction::getActionHolderLocation));
+    }
+
+    private Optional<IActionHolder> getActionHolder(ResourceLocation location) {
+        for (Map<ResourceLocation, IActionHolder> actionHolderMap : actionHolders.values()) {
+            if (actionHolderMap.containsKey(location)) {
+                return Optional.of(actionHolderMap.get(location));
             }
         }
+        return Optional.empty();
     }
 
-    /**
-     * Retrieves a list of action holders for the specified action holder type.
-     *
-     * @param actionHolderType The type of action holder to retrieve.
-     * @return The list of action holders for the specified type, or {@code null} if no action holders were found.
-     */
-    public @Nullable List<IActionHolder> getActionHolders(IActionHolderType<?> actionHolderType) {
-        if (!actionHolders.containsKey(actionHolderType)) return null;
-        return new ArrayList<>(actionHolders.get(actionHolderType).values());
+    private List<IAction> getActionsForHolder(IActionHolder actionHolder) {
+        return actions.getOrDefault(actionHolder.getType(), Collections.emptyMap())
+                .values().stream()
+                .filter(action -> action.getActionHolderLocation().equals(actionHolder.getLocation()))
+                .collect(Collectors.toList());
     }
 
-    /**
-     * Retrieves an action holder for the specified action holder type and location.
-     *
-     * @param actionHolderType The type of action holder to retrieve.
-     * @param actionHolderLocation The location of the action holder to retrieve.
-     * @return The action holder with the specified type and location, or {@code null} if no action holder was found.
-     */
-    public @Nullable IActionHolder getActionHolder(IActionHolderType<?> actionHolderType, ResourceLocation actionHolderLocation) {
-        if (!actionHolders.containsKey(actionHolderType)) return null;
-        return actionHolders.get(actionHolderType).values().stream()
-                .filter(actionHolder -> actionHolder.getLocation().equals(actionHolderLocation))
-                .findFirst()
-                .orElse(null);
+    public Optional<IAction> getAction(ResourceLocation actionLocation) {
+        for (Map<ResourceLocation, IAction> actionMap : actions.values()) {
+            if (actionMap.containsKey(actionLocation)) {
+                return Optional.of(actionMap.get(actionLocation));
+            }
+        }
+        return Optional.empty();
     }
 
-    /**
-     * Removes all action holders of the specified type.
-     *
-     * @param actionHolderType The type of action holder to remove.
-     */
-    public void clearActionHolders(IActionHolderType<?> actionHolderType) {
-        actionHolders.remove(actionHolderType);
+    public List<String> getActionLocationStrings() {
+        return actions.values().stream()
+                .flatMap(map -> map.keySet().stream())
+                .map(ResourceLocation::toString)
+                .collect(Collectors.toList());
+    }
+
+    public List<IAction> getActions() {
+        return actions.values().stream()
+                .flatMap(map -> map.values().stream())
+                .collect(Collectors.toList());
+    }
+
+    public List<IActionHolder> getActionHolders() {
+        return actionHolders.values().stream()
+                .flatMap(map -> map.values().stream())
+                .collect(Collectors.toList());
     }
 }

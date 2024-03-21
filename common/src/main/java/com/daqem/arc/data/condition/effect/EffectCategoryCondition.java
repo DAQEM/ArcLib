@@ -3,7 +3,6 @@ package com.daqem.arc.data.condition.effect;
 import com.daqem.arc.api.action.data.ActionData;
 import com.daqem.arc.api.action.data.type.ActionDataType;
 import com.daqem.arc.api.condition.AbstractCondition;
-import com.daqem.arc.api.condition.serializer.ConditionSerializer;
 import com.daqem.arc.api.condition.serializer.IConditionSerializer;
 import com.daqem.arc.api.condition.type.ConditionType;
 import com.daqem.arc.api.condition.type.IConditionType;
@@ -39,12 +38,7 @@ public class EffectCategoryCondition extends AbstractCondition {
         return ConditionType.EFFECT_CATEGORY;
     }
 
-    @Override
-    public IConditionSerializer<?> getSerializer() {
-        return ConditionSerializer.EFFECT_CATEGORY;
-    }
-
-    public static class Serializer implements ConditionSerializer<EffectCategoryCondition> {
+    public static class Serializer implements IConditionSerializer<EffectCategoryCondition> {
 
         @Override
         public EffectCategoryCondition fromJson(ResourceLocation location, JsonObject jsonObject, boolean inverted) {
@@ -62,7 +56,7 @@ public class EffectCategoryCondition extends AbstractCondition {
 
         @Override
         public void toNetwork(FriendlyByteBuf friendlyByteBuf, EffectCategoryCondition type) {
-            ConditionSerializer.super.toNetwork(friendlyByteBuf, type);
+            IConditionSerializer.super.toNetwork(friendlyByteBuf, type);
             friendlyByteBuf.writeEnum(type.effectCategory);
         }
     }

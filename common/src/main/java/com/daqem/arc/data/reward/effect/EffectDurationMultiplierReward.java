@@ -5,7 +5,6 @@ import com.daqem.arc.api.action.result.ActionResult;
 import com.daqem.arc.api.action.data.type.ActionDataType;
 import com.daqem.arc.api.reward.AbstractReward;
 import com.daqem.arc.api.reward.serializer.IRewardSerializer;
-import com.daqem.arc.api.reward.serializer.RewardSerializer;
 import com.daqem.arc.api.reward.type.IRewardType;
 import com.daqem.arc.api.reward.type.RewardType;
 import com.google.gson.*;
@@ -51,12 +50,7 @@ public class EffectDurationMultiplierReward extends AbstractReward {
         return RewardType.EFFECT_DURATION_MULTIPLIER;
     }
 
-    @Override
-    public IRewardSerializer<?> getSerializer() {
-        return RewardSerializer.EFFECT_DURATION_MULTIPLIER;
-    }
-
-    public static class Serializer implements RewardSerializer<EffectDurationMultiplierReward> {
+    public static class Serializer implements IRewardSerializer<EffectDurationMultiplierReward> {
 
         @Override
         public EffectDurationMultiplierReward fromJson(JsonObject jsonObject, double chance, int priority) {
@@ -76,7 +70,7 @@ public class EffectDurationMultiplierReward extends AbstractReward {
 
         @Override
         public void toNetwork(FriendlyByteBuf friendlyByteBuf, EffectDurationMultiplierReward type) {
-            RewardSerializer.super.toNetwork(friendlyByteBuf, type);
+            IRewardSerializer.super.toNetwork(friendlyByteBuf, type);
             friendlyByteBuf.writeDouble(type.multiplier);
         }
     }

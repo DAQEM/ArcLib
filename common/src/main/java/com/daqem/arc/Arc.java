@@ -1,6 +1,5 @@
 package com.daqem.arc;
 
-import com.daqem.arc.api.player.holder.PlayerRegistryEvent;
 import com.daqem.arc.config.ArcCommonConfig;
 import com.daqem.arc.event.command.EventRegisterCommands;
 import com.daqem.arc.event.triggers.AdvancementEvents;
@@ -30,11 +29,6 @@ public class Arc {
         ItemEvents.registerEvents();
         EntityEvents.registerEvents();
         AdvancementEvents.registerEvents();
-
-        if (isDebugEnvironment()) {
-            PlayerRegistryEvent.registerActionHolderType();
-
-        }
     }
 
     public static ResourceLocation getId(String id) {

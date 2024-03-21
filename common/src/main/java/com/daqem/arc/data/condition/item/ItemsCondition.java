@@ -3,12 +3,10 @@ package com.daqem.arc.data.condition.item;
 import com.daqem.arc.api.action.data.ActionData;
 import com.daqem.arc.api.action.data.type.ActionDataType;
 import com.daqem.arc.api.condition.AbstractCondition;
-import com.daqem.arc.api.condition.serializer.ConditionSerializer;
 import com.daqem.arc.api.condition.serializer.IConditionSerializer;
 import com.daqem.arc.api.condition.type.ConditionType;
 import com.daqem.arc.api.condition.type.IConditionType;
 import com.google.gson.*;
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -54,11 +52,6 @@ public class ItemsCondition extends AbstractCondition {
         return ConditionType.ITEMS;
     }
 
-    @Override
-    public IConditionSerializer<?> getSerializer() {
-        return ConditionSerializer.ITEMS;
-    }
-
     private boolean isItem(ItemStack itemStack) {
         return this.items.contains(itemStack.getItem());
     }
@@ -67,7 +60,7 @@ public class ItemsCondition extends AbstractCondition {
         return this.itemTags.stream().anyMatch(itemStack::is);
     }
 
-    public static class Serializer implements ConditionSerializer<ItemsCondition> {
+    public static class Serializer implements IConditionSerializer<ItemsCondition> {
 
         @Override
         public ItemsCondition fromJson(ResourceLocation location, JsonObject jsonObject, boolean inverted) {
@@ -102,7 +95,7 @@ public class ItemsCondition extends AbstractCondition {
 
         @Override
         public void toNetwork(FriendlyByteBuf friendlyByteBuf, ItemsCondition type) {
-            ConditionSerializer.super.toNetwork(friendlyByteBuf, type);
+            IConditionSerializer.super.toNetwork(friendlyByteBuf, type);
             friendlyByteBuf.writeVarInt(type.items.size());
             friendlyByteBuf.writeVarInt(type.itemTags.size());
             type.items.forEach(item -> friendlyByteBuf.writeId(BuiltInRegistries.ITEM, item));

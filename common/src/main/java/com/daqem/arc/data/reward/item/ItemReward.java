@@ -5,7 +5,6 @@ import com.daqem.arc.api.action.result.ActionResult;
 import com.daqem.arc.api.player.ArcPlayer;
 import com.daqem.arc.api.reward.AbstractReward;
 import com.daqem.arc.api.reward.serializer.IRewardSerializer;
-import com.daqem.arc.api.reward.serializer.RewardSerializer;
 import com.daqem.arc.api.reward.type.IRewardType;
 import com.daqem.arc.api.reward.type.RewardType;
 import com.google.gson.JsonObject;
@@ -43,12 +42,7 @@ public class ItemReward extends AbstractReward {
         return RewardType.ITEM;
     }
 
-    @Override
-    public IRewardSerializer<?> getSerializer() {
-        return RewardSerializer.ITEM;
-    }
-
-    public static class Serializer implements RewardSerializer<ItemReward> {
+    public static class Serializer implements IRewardSerializer<ItemReward> {
 
         @Override
         public ItemReward fromJson(JsonObject jsonObject, double chance, int priority) {
@@ -67,7 +61,7 @@ public class ItemReward extends AbstractReward {
 
         @Override
         public void toNetwork(FriendlyByteBuf friendlyByteBuf, ItemReward type) {
-            RewardSerializer.super.toNetwork(friendlyByteBuf, type);
+            IRewardSerializer.super.toNetwork(friendlyByteBuf, type);
             friendlyByteBuf.writeItem(type.itemStack);
             friendlyByteBuf.writeInt(type.amount);
         }

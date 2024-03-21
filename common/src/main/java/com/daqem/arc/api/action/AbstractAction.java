@@ -2,9 +2,11 @@ package com.daqem.arc.api.action;
 
 import com.daqem.arc.Arc;
 import com.daqem.arc.api.action.data.ActionData;
+import com.daqem.arc.api.action.holder.ActionHolderManager;
 import com.daqem.arc.api.action.holder.IActionHolder;
 import com.daqem.arc.api.action.holder.type.IActionHolderType;
 import com.daqem.arc.api.action.result.ActionResult;
+import com.daqem.arc.api.action.serializer.IActionSerializer;
 import com.daqem.arc.api.condition.ICondition;
 import com.daqem.arc.api.reward.IReward;
 import com.daqem.arc.data.ActionManager;
@@ -52,6 +54,11 @@ public abstract class AbstractAction implements IAction {
     @Override
     public boolean shouldPerformOnClient() {
         return performOnClient;
+    }
+
+    @Override
+    public IActionSerializer<?> getSerializer() {
+        return getType().getSerializer();
     }
 
     @Override

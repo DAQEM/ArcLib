@@ -3,12 +3,10 @@ package com.daqem.arc.data.condition.entity;
 import com.daqem.arc.api.action.data.ActionData;
 import com.daqem.arc.api.action.data.type.ActionDataType;
 import com.daqem.arc.api.condition.AbstractCondition;
-import com.daqem.arc.api.condition.serializer.ConditionSerializer;
 import com.daqem.arc.api.condition.serializer.IConditionSerializer;
 import com.daqem.arc.api.condition.type.ConditionType;
 import com.daqem.arc.api.condition.type.IConditionType;
 import com.google.gson.*;
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -41,12 +39,7 @@ public class EntityTypeCondition extends AbstractCondition {
         return ConditionType.ENTITY_TYPE;
     }
 
-    @Override
-    public IConditionSerializer<?> getSerializer() {
-        return ConditionSerializer.ENTITY_TYPE;
-    }
-
-    public static class Serializer implements ConditionSerializer<EntityTypeCondition> {
+    public static class Serializer implements IConditionSerializer<EntityTypeCondition> {
 
         @Override
         public EntityTypeCondition fromJson(ResourceLocation location, JsonObject jsonObject, boolean inverted) {
@@ -64,7 +57,7 @@ public class EntityTypeCondition extends AbstractCondition {
 
         @Override
         public void toNetwork(FriendlyByteBuf friendlyByteBuf, EntityTypeCondition type) {
-            ConditionSerializer.super.toNetwork(friendlyByteBuf, type);
+            IConditionSerializer.super.toNetwork(friendlyByteBuf, type);
             friendlyByteBuf.writeId(BuiltInRegistries.ENTITY_TYPE, type.entityType);
         }
     }

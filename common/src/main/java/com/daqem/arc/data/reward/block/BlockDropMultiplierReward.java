@@ -5,7 +5,6 @@ import com.daqem.arc.api.action.data.type.ActionDataType;
 import com.daqem.arc.api.action.result.ActionResult;
 import com.daqem.arc.api.reward.AbstractReward;
 import com.daqem.arc.api.reward.serializer.IRewardSerializer;
-import com.daqem.arc.api.reward.serializer.RewardSerializer;
 import com.daqem.arc.api.reward.type.IRewardType;
 import com.daqem.arc.api.reward.type.RewardType;
 import com.google.gson.JsonObject;
@@ -18,7 +17,6 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.Vec3;
@@ -76,12 +74,7 @@ public class BlockDropMultiplierReward extends AbstractReward {
         return RewardType.BLOCK_DROP_MULTIPLIER;
     }
 
-    @Override
-    public IRewardSerializer<?> getSerializer() {
-        return RewardSerializer.BLOCK_DROP_MULTIPLIER;
-    }
-
-    public static class Serializer implements RewardSerializer<BlockDropMultiplierReward> {
+    public static class Serializer implements IRewardSerializer<BlockDropMultiplierReward> {
 
         @Override
         public BlockDropMultiplierReward fromJson(JsonObject jsonObject, double chance, int priority) {
@@ -101,7 +94,7 @@ public class BlockDropMultiplierReward extends AbstractReward {
 
         @Override
         public void toNetwork(FriendlyByteBuf friendlyByteBuf, BlockDropMultiplierReward type) {
-            RewardSerializer.super.toNetwork(friendlyByteBuf, type);
+            IRewardSerializer.super.toNetwork(friendlyByteBuf, type);
             friendlyByteBuf.writeInt(type.multiplier);
         }
     }

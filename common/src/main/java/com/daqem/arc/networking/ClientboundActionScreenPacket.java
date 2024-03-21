@@ -1,7 +1,9 @@
 package com.daqem.arc.networking;
 
 import com.daqem.arc.api.action.IAction;
+import com.daqem.arc.api.action.holder.ActionHolderManager;
 import com.daqem.arc.api.action.serializer.IActionSerializer;
+import com.daqem.arc.client.gui.action.ActionScreen;
 import com.daqem.arc.data.ActionManager;
 import dev.architectury.networking.NetworkManager;
 import dev.architectury.networking.simple.BaseS2CMessage;
@@ -36,7 +38,11 @@ public class ClientboundActionScreenPacket extends BaseS2CMessage {
     @Override
     @Environment(value= EnvType.CLIENT)
     public void handle(NetworkManager.PacketContext context) {
-        Minecraft.getInstance().setScreen(new com.daqem.arc.client.gui.action.ActionScreen(ActionManager.getInstance().getActions(),
-                ActionManager.getInstance().getActions().stream().filter(a -> a.getLocation().equals(action.getLocation())).findFirst().orElse(null)));
+        Minecraft.getInstance().setScreen(new ActionScreen(
+                ActionHolderManager.getInstance().getActions(),
+                ActionHolderManager.getInstance().getActions().stream()
+                        .filter(a -> a.getLocation().equals(action.getLocation()))
+                        .findFirst()
+                        .orElse(null)));
     }
 }

@@ -4,7 +4,6 @@ import com.daqem.arc.api.action.data.ActionData;
 import com.daqem.arc.api.action.result.ActionResult;
 import com.daqem.arc.api.reward.AbstractReward;
 import com.daqem.arc.api.reward.serializer.IRewardSerializer;
-import com.daqem.arc.api.reward.serializer.RewardSerializer;
 import com.daqem.arc.api.reward.type.IRewardType;
 import com.daqem.arc.api.reward.type.RewardType;
 import com.google.gson.JsonObject;
@@ -26,12 +25,7 @@ public class CancelActionReward extends AbstractReward {
         return RewardType.CANCEL_ACTION;
     }
 
-    @Override
-    public IRewardSerializer<?> getSerializer() {
-        return RewardSerializer.CANCEL_ACTION;
-    }
-
-    public static class Serializer implements RewardSerializer<CancelActionReward> {
+    public static class Serializer implements IRewardSerializer<CancelActionReward> {
 
         @Override
         public CancelActionReward fromJson(JsonObject jsonObject, double chance, int priority) {
@@ -45,7 +39,7 @@ public class CancelActionReward extends AbstractReward {
 
         @Override
         public void toNetwork(FriendlyByteBuf friendlyByteBuf, CancelActionReward type) {
-            RewardSerializer.super.toNetwork(friendlyByteBuf, type);
+            IRewardSerializer.super.toNetwork(friendlyByteBuf, type);
         }
     }
 }

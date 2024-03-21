@@ -3,7 +3,6 @@ package com.daqem.arc.data.condition.experience;
 import com.daqem.arc.api.action.data.ActionData;
 import com.daqem.arc.api.action.data.type.ActionDataType;
 import com.daqem.arc.api.condition.AbstractCondition;
-import com.daqem.arc.api.condition.serializer.ConditionSerializer;
 import com.daqem.arc.api.condition.serializer.IConditionSerializer;
 import com.daqem.arc.api.condition.type.ConditionType;
 import com.daqem.arc.api.condition.type.IConditionType;
@@ -38,12 +37,7 @@ public class ExpLevelCondition extends AbstractCondition {
         return ConditionType.EXP_LEVEL;
     }
 
-    @Override
-    public IConditionSerializer<?> getSerializer() {
-        return ConditionSerializer.EXP_LEVEL;
-    }
-
-    public static class Serializer implements ConditionSerializer<ExpLevelCondition> {
+    public static class Serializer implements IConditionSerializer<ExpLevelCondition> {
 
         @Override
         public ExpLevelCondition fromJson(ResourceLocation location, JsonObject jsonObject, boolean inverted) {
@@ -61,7 +55,7 @@ public class ExpLevelCondition extends AbstractCondition {
 
         @Override
         public void toNetwork(FriendlyByteBuf friendlyByteBuf, ExpLevelCondition type) {
-            ConditionSerializer.super.toNetwork(friendlyByteBuf, type);
+            IConditionSerializer.super.toNetwork(friendlyByteBuf, type);
             friendlyByteBuf.writeVarInt(type.level);
         }
     }

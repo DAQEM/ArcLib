@@ -3,13 +3,10 @@ package com.daqem.arc.data.condition.block.ore;
 import com.daqem.arc.api.action.data.ActionData;
 import com.daqem.arc.api.action.data.type.ActionDataType;
 import com.daqem.arc.api.condition.AbstractCondition;
-import com.daqem.arc.api.condition.serializer.ConditionSerializer;
 import com.daqem.arc.api.condition.serializer.IConditionSerializer;
 import com.daqem.arc.api.condition.type.ConditionType;
 import com.daqem.arc.api.condition.type.IConditionType;
 import com.google.gson.*;
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -37,11 +34,6 @@ public class IsOreCondition extends AbstractCondition {
         return ConditionType.IS_ORE;
     }
 
-    @Override
-    public IConditionSerializer<?> getSerializer() {
-        return ConditionSerializer.IS_ORE;
-    }
-
     @SuppressWarnings("deprecation")
     public static boolean isOre(Block block) {
         return ((block instanceof DropExperienceBlock && block != Blocks.SCULK)
@@ -51,7 +43,7 @@ public class IsOreCondition extends AbstractCondition {
                 || block == Blocks.ANCIENT_DEBRIS);
     }
 
-    public static class Serializer implements ConditionSerializer<IsOreCondition> {
+    public static class Serializer implements IConditionSerializer<IsOreCondition> {
 
         @Override
         public IsOreCondition fromJson(ResourceLocation location, JsonObject jsonObject, boolean inverted) {
@@ -65,7 +57,7 @@ public class IsOreCondition extends AbstractCondition {
 
         @Override
         public void toNetwork(FriendlyByteBuf friendlyByteBuf, IsOreCondition type) {
-            ConditionSerializer.super.toNetwork(friendlyByteBuf, type);
+            IConditionSerializer.super.toNetwork(friendlyByteBuf, type);
         }
     }
 }

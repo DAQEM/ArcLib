@@ -5,11 +5,9 @@ import com.daqem.arc.api.player.ArcPlayer;
 import com.daqem.arc.api.action.result.ActionResult;
 import com.daqem.arc.api.reward.AbstractReward;
 import com.daqem.arc.api.reward.serializer.IRewardSerializer;
-import com.daqem.arc.api.reward.serializer.RewardSerializer;
 import com.daqem.arc.api.reward.type.IRewardType;
 import com.daqem.arc.api.reward.type.RewardType;
 import com.google.gson.*;
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -52,12 +50,7 @@ public class EffectReward extends AbstractReward {
         return RewardType.EFFECT;
     }
 
-    @Override
-    public IRewardSerializer<?> getSerializer() {
-        return RewardSerializer.EFFECT;
-    }
-
-    public static class Serializer implements RewardSerializer<EffectReward> {
+    public static class Serializer implements IRewardSerializer<EffectReward> {
 
         @Override
         public EffectReward fromJson(JsonObject jsonObject, double chance, int priority) {
@@ -81,7 +74,7 @@ public class EffectReward extends AbstractReward {
 
         @Override
         public void toNetwork(FriendlyByteBuf friendlyByteBuf, EffectReward type) {
-            RewardSerializer.super.toNetwork(friendlyByteBuf, type);
+            IRewardSerializer.super.toNetwork(friendlyByteBuf, type);
             friendlyByteBuf.writeVarInt(BuiltInRegistries.MOB_EFFECT.getId(type.effect));
             friendlyByteBuf.writeVarInt(type.duration);
             friendlyByteBuf.writeVarInt(type.amplifier);

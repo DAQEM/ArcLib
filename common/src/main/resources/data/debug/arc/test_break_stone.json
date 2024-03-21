@@ -3,17 +3,11 @@
     "type": "arc:player",
     "id": "arc:player"
   },
-  "type": "arc:on_swim",
-  "conditions": [
-    {
-      "type": "arc:distance",
-      "distance_in_blocks": 1
-    }
-  ],
+  "type": "arc:on_get_destroy_speed",
   "rewards": [
     {
-      "type": "arc:item",
-      "item": "minecraft:cobblestone"
+      "type": "arc:destroy_speed_multiplier",
+      "multiplier": 5
     }
   ]
 }

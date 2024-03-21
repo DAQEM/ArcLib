@@ -5,7 +5,6 @@ import com.daqem.arc.api.action.data.type.ActionDataType;
 import com.daqem.arc.api.action.result.ActionResult;
 import com.daqem.arc.api.reward.AbstractReward;
 import com.daqem.arc.api.reward.serializer.IRewardSerializer;
-import com.daqem.arc.api.reward.serializer.RewardSerializer;
 import com.daqem.arc.api.reward.type.IRewardType;
 import com.daqem.arc.api.reward.type.RewardType;
 import com.google.gson.JsonObject;
@@ -45,12 +44,7 @@ public class MoveToEntityReward extends AbstractReward {
         return RewardType.MOVE_TO_ENTITY;
     }
 
-    @Override
-    public IRewardSerializer<?> getSerializer() {
-        return RewardSerializer.MOVE_TO_ENTITY;
-    }
-
-    public static class Serializer implements RewardSerializer<MoveToEntityReward> {
+    public static class Serializer implements IRewardSerializer<MoveToEntityReward> {
 
         @Override
         public MoveToEntityReward fromJson(JsonObject jsonObject, double chance, int priority) {
@@ -70,7 +64,7 @@ public class MoveToEntityReward extends AbstractReward {
 
         @Override
         public void toNetwork(FriendlyByteBuf friendlyByteBuf, MoveToEntityReward type) {
-            RewardSerializer.super.toNetwork(friendlyByteBuf, type);
+            IRewardSerializer.super.toNetwork(friendlyByteBuf, type);
             friendlyByteBuf.writeFloat(type.force);
         }
     }

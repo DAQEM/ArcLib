@@ -5,17 +5,13 @@ import com.daqem.arc.api.player.ArcPlayer;
 import com.daqem.arc.api.action.result.ActionResult;
 import com.daqem.arc.api.reward.AbstractReward;
 import com.daqem.arc.api.reward.serializer.IRewardSerializer;
-import com.daqem.arc.api.reward.serializer.RewardSerializer;
 import com.daqem.arc.api.reward.type.IRewardType;
 import com.daqem.arc.api.reward.type.RewardType;
 import com.google.gson.*;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.GsonHelper;
-
-import java.lang.reflect.Type;
 
 public class ExpReward extends AbstractReward {
 
@@ -43,11 +39,6 @@ public class ExpReward extends AbstractReward {
     }
 
     @Override
-    public IRewardSerializer<?> getSerializer() {
-        return RewardSerializer.EXP;
-    }
-
-    @Override
     public ActionResult apply(ActionData actionData) {
         ArcPlayer player = actionData.getPlayer();
         int exp = ((ServerPlayer) player).getRandom().nextInt(min, max + 1);
@@ -55,7 +46,7 @@ public class ExpReward extends AbstractReward {
         return new ActionResult();
     }
 
-    public static class Serializer implements RewardSerializer<ExpReward> {
+    public static class Serializer implements IRewardSerializer<ExpReward> {
 
         @Override
         public ExpReward fromJson(JsonObject jsonObject, double chance, int priority) {
@@ -77,7 +68,7 @@ public class ExpReward extends AbstractReward {
 
         @Override
         public void toNetwork(FriendlyByteBuf friendlyByteBuf, ExpReward type) {
-            RewardSerializer.super.toNetwork(friendlyByteBuf, type);
+            IRewardSerializer.super.toNetwork(friendlyByteBuf, type);
             friendlyByteBuf.writeInt(type.min);
             friendlyByteBuf.writeInt(type.max);
         }

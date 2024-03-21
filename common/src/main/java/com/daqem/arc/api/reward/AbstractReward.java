@@ -3,6 +3,7 @@ package com.daqem.arc.api.reward;
 import com.daqem.arc.Arc;
 import com.daqem.arc.api.action.data.ActionData;
 import com.daqem.arc.api.action.result.ActionResult;
+import com.daqem.arc.api.reward.serializer.IRewardSerializer;
 import com.daqem.arc.api.reward.type.IRewardType;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.network.chat.Component;
@@ -25,6 +26,11 @@ public abstract class AbstractReward implements IReward {
 
     public int getPriority() {
         return priority;
+    }
+    
+    @Override
+    public IRewardSerializer<? extends IReward> getSerializer() {
+        return this.getType().getSerializer();
     }
 
     public abstract ActionResult apply(ActionData actionData);

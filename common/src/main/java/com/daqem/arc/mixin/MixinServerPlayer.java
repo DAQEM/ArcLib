@@ -12,14 +12,18 @@ import com.daqem.arc.event.triggers.MovementEvents;
 import com.daqem.arc.event.triggers.PlayerEvents;
 import com.daqem.arc.event.triggers.StatEvents;
 import com.daqem.arc.api.player.ArcServerPlayer;
+import com.daqem.arc.networking.ClientboundSyncPlayerActionHoldersPacket;
 import com.daqem.arc.player.stat.StatData;
 import com.mojang.authlib.GameProfile;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.stats.Stat;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -35,6 +39,7 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -46,6 +51,7 @@ import java.util.*;
 @Mixin(ServerPlayer.class)
 public abstract class MixinServerPlayer extends Player implements ArcServerPlayer {
 
+    @Shadow public ServerGamePacketListenerImpl connection;
     @Unique
     private Map<ResourceLocation, IActionHolder> arc$actionHolders = new HashMap<>();
     @Unique
@@ -81,13 +87,6 @@ public abstract class MixinServerPlayer extends Player implements ArcServerPlaye
         super(level, blockPos, yaw, gameProfile);
     }
 
-    @Inject(at = @At("RETURN"), method = "<init>")
-    private void onInit(MinecraftServer minecraftServer, ServerLevel serverLevel, GameProfile gameProfile, CallbackInfo ci) {
-        if (((ServerPlayer) (Object) this) instanceof ArcPlayer arcPlayer) {
-            arcPlayer.arc$addActionHolders(PlayerActionHolderManager.getInstance().getPlayerActionHoldersList());
-        }
-    }
-
     @Override
     public List<IActionHolder> arc$getActionHolders() {
         return new ArrayList<>(arc$actionHolders.values());
@@ -97,20 +96,25 @@ public abstract class MixinServerPlayer extends Player implements ArcServerPlaye
     public void arc$addActionHolder(IActionHolder actionHolder) {
         if (actionHolder == null) return;
         this.arc$actionHolders.put(actionHolder.getLocation(), actionHolder);
+        arc$syncActionHoldersWithClient();
     }
 
     @Override
     public void arc$addActionHolders(List<IActionHolder> actionHolders) {
         if (actionHolders == null) return;
         for (IActionHolder actionHolder : actionHolders) {
-            if (actionHolder == null) continue;
-            this.arc$actionHolders.put(actionHolder.getLocation(), actionHolder);
+            arc$addActionHolder(actionHolder);
         }
     }
 
     @Override
     public void arc$removeActionHolder(IActionHolder actionHolder) {
         this.arc$actionHolders.remove(actionHolder.getLocation());
+    }
+
+    @Override
+    public void arc$clearActionHolders() {
+        this.arc$actionHolders.clear();
     }
 
     @Override
@@ -228,6 +232,12 @@ public abstract class MixinServerPlayer extends Player implements ArcServerPlaye
     @Override
     public boolean arc$isGrinding() {
         return this.arc$isGrinding;
+    }
+
+    @Override
+    public void arc$syncActionHoldersWithClient() {
+        if (this.connection == null) return;
+        new ClientboundSyncPlayerActionHoldersPacket(arc$getActionHolders()).sendTo(arc$getServerPlayer());
     }
 
     @Override
@@ -454,6 +464,13 @@ public abstract class MixinServerPlayer extends Player implements ArcServerPlaye
             this.arc$isElytraFlying = arcServerPlayer.arc$isElytraFlying();
             this.arc$elytraFlyingDistance = arcServerPlayer.arc$getElytraFlyingDistance();
             this.arc$isGrinding = arcServerPlayer.arc$isGrinding();
+        }
+    }
+
+    @Inject(at = @At("TAIL"), method = "readAdditionalSaveData(Lnet/minecraft/nbt/CompoundTag;)V")
+    public void readAdditionalSaveData(CompoundTag compoundTag, CallbackInfo ci) {
+        if (((ServerPlayer) (Object) this) instanceof ArcPlayer arcPlayer) {
+            arcPlayer.arc$addActionHolders(PlayerActionHolderManager.getInstance().getPlayerActionHoldersList());
         }
     }
 }

@@ -3,17 +3,14 @@ package com.daqem.arc.data.reward.experience;
 import com.daqem.arc.api.action.data.ActionData;
 import com.daqem.arc.api.action.data.type.ActionDataType;
 import com.daqem.arc.api.action.result.ActionResult;
-import com.daqem.arc.api.player.ArcPlayer;
 import com.daqem.arc.api.reward.AbstractReward;
 import com.daqem.arc.api.reward.serializer.IRewardSerializer;
-import com.daqem.arc.api.reward.serializer.RewardSerializer;
 import com.daqem.arc.api.reward.type.IRewardType;
 import com.daqem.arc.api.reward.type.RewardType;
 import com.google.gson.JsonObject;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.level.Level;
@@ -56,12 +53,7 @@ public class ExpMultiplierReward extends AbstractReward {
         return RewardType.EXP_MULTIPLIER;
     }
 
-    @Override
-    public IRewardSerializer<?> getSerializer() {
-        return RewardSerializer.EXP_MULTIPLIER;
-    }
-
-    public static class Serializer implements RewardSerializer<ExpMultiplierReward> {
+    public static class Serializer implements IRewardSerializer<ExpMultiplierReward> {
 
         @Override
         public ExpMultiplierReward fromJson(JsonObject jsonObject, double chance, int priority) {
@@ -81,7 +73,7 @@ public class ExpMultiplierReward extends AbstractReward {
 
         @Override
         public void toNetwork(FriendlyByteBuf friendlyByteBuf, ExpMultiplierReward type) {
-            RewardSerializer.super.toNetwork(friendlyByteBuf, type);
+            IRewardSerializer.super.toNetwork(friendlyByteBuf, type);
             friendlyByteBuf.writeInt(type.multiplier);
         }
     }

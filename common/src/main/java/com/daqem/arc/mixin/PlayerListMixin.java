@@ -2,11 +2,15 @@ package com.daqem.arc.mixin;
 
 import com.daqem.arc.Arc;
 import com.daqem.arc.api.action.IAction;
+import com.daqem.arc.api.action.holder.ActionHolderManager;
+import com.daqem.arc.api.action.holder.IActionHolder;
 import com.daqem.arc.api.player.ArcServerPlayer;
 import com.daqem.arc.config.ArcCommonConfig;
 import com.daqem.arc.data.ActionManager;
+import com.daqem.arc.networking.ClientboundUpdateActionHoldersPacket;
 import com.daqem.arc.networking.ClientboundUpdateActionsPacket;
 import net.minecraft.network.Connection;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.PlayerList;
 import org.spongepowered.asm.mixin.Final;
@@ -30,29 +34,22 @@ public abstract class PlayerListMixin {
                 Arc.LOGGER.info("Sending actions to player {}", player.getName().getString());
             }
             if (player instanceof ArcServerPlayer arcServerPlayer) {
-                arcServerPlayer.arc$getActionHolders().forEach(actionHolder -> {
-                    List<IAction> newActions = ActionManager.getInstance().getActions();
-
-                    List<IAction> actionsToRemove = actionHolder.getActions().stream().filter(action ->
-                            newActions.stream().noneMatch(newAction -> newAction.getLocation().equals(action.getLocation()))
-                    ).toList();
-                    actionsToRemove.forEach(actionHolder::removeAction);
-
-                    List<IAction> actionsToAdd = newActions.stream().filter(newAction ->
-                            newAction.getActionHolderLocation().equals(actionHolder.getLocation())
-                    ).toList();
-
-                    actionHolder.clearActions();
-
-                    actionsToAdd.forEach(actionHolder::addAction);
-                });
+                List<ResourceLocation> actionHolderLocations = arcServerPlayer.arc$getActionHolders().stream().map(IActionHolder::getLocation).toList();
+                arcServerPlayer.arc$clearActionHolders();
+                List<IActionHolder> actionHolders = ActionHolderManager.getInstance().getActionHolders(actionHolderLocations);
+                arcServerPlayer.arc$addActionHolders(actionHolders);
             }
-            new ClientboundUpdateActionsPacket(ActionManager.getInstance().getActions()).sendTo(player);
+            new ClientboundUpdateActionsPacket(ActionHolderManager.getInstance().getActions()).sendTo(player);
+            new ClientboundUpdateActionHoldersPacket(ActionHolderManager.getInstance().getActionHolders()).sendTo(player);
         }
     }
 
     @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/server/players/PlayerList;sendPlayerPermissionLevel(Lnet/minecraft/server/level/ServerPlayer;)V", shift = At.Shift.BEFORE), method = "placeNewPlayer")
     private void placeNewPlayer(Connection connection, ServerPlayer serverPlayer, CallbackInfo ci) {
-        new ClientboundUpdateActionsPacket(ActionManager.getInstance().getActions()).sendTo(serverPlayer);
+        new ClientboundUpdateActionsPacket(ActionHolderManager.getInstance().getActions()).sendTo(serverPlayer);
+        new ClientboundUpdateActionHoldersPacket(ActionHolderManager.getInstance().getActionHolders()).sendTo(serverPlayer);
+        if (serverPlayer instanceof ArcServerPlayer arcServerPlayer) {
+            arcServerPlayer.arc$syncActionHoldersWithClient();
+        }
     }
 }

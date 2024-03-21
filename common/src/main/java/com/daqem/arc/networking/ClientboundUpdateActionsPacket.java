@@ -1,11 +1,13 @@
 package com.daqem.arc.networking;
 
 import com.daqem.arc.api.action.IAction;
+import com.daqem.arc.api.action.holder.ActionHolderManager;
 import com.daqem.arc.api.action.serializer.IActionSerializer;
 import com.daqem.arc.data.ActionManager;
 import dev.architectury.networking.NetworkManager;
 import dev.architectury.networking.simple.BaseS2CMessage;
 import dev.architectury.networking.simple.MessageType;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 
 import java.util.List;
@@ -35,6 +37,8 @@ public class ClientboundUpdateActionsPacket extends BaseS2CMessage {
 
     @Override
     public void handle(NetworkManager.PacketContext context) {
-        ActionManager.getInstance().replaceActions(actions);
+        if (!Minecraft.getInstance().isLocalServer()) {
+            ActionHolderManager.getInstance().registerActions(actions);
+        }
     }
 }

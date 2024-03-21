@@ -3,7 +3,6 @@ package com.daqem.arc.data.condition.item;
 import com.daqem.arc.api.action.data.ActionData;
 import com.daqem.arc.api.action.data.type.ActionDataType;
 import com.daqem.arc.api.condition.AbstractCondition;
-import com.daqem.arc.api.condition.serializer.ConditionSerializer;
 import com.daqem.arc.api.condition.serializer.IConditionSerializer;
 import com.daqem.arc.api.condition.type.ConditionType;
 import com.daqem.arc.api.condition.type.IConditionType;
@@ -45,12 +44,7 @@ public class ItemCondition extends AbstractCondition {
         return ConditionType.ITEM;
     }
 
-    @Override
-    public IConditionSerializer<?> getSerializer() {
-        return ConditionSerializer.ITEM;
-    }
-
-    public static class Serializer implements ConditionSerializer<ItemCondition> {
+    public static class Serializer implements IConditionSerializer<ItemCondition> {
 
         @Override
         public ItemCondition fromJson(ResourceLocation location, JsonObject jsonObject, boolean inverted) {
@@ -68,7 +62,7 @@ public class ItemCondition extends AbstractCondition {
 
         @Override
         public void toNetwork(FriendlyByteBuf friendlyByteBuf, ItemCondition type) {
-            ConditionSerializer.super.toNetwork(friendlyByteBuf, type);
+            IConditionSerializer.super.toNetwork(friendlyByteBuf, type);
             friendlyByteBuf.writeItem(type.itemStack);
         }
     }

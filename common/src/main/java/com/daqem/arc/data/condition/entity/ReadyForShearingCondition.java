@@ -3,13 +3,11 @@ package com.daqem.arc.data.condition.entity;
 import com.daqem.arc.api.action.data.ActionData;
 import com.daqem.arc.api.action.data.type.ActionDataType;
 import com.daqem.arc.api.condition.AbstractCondition;
-import com.daqem.arc.api.condition.serializer.ConditionSerializer;
 import com.daqem.arc.api.condition.serializer.IConditionSerializer;
 import com.daqem.arc.api.condition.type.ConditionType;
 import com.daqem.arc.api.condition.type.IConditionType;
 import com.google.gson.*;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Shearable;
@@ -31,12 +29,7 @@ public class ReadyForShearingCondition extends AbstractCondition {
         return ConditionType.READY_FOR_SHEARING;
     }
 
-    @Override
-    public IConditionSerializer<?> getSerializer() {
-        return ConditionSerializer.READY_FOR_SHEARING;
-    }
-
-    public static class Serializer implements ConditionSerializer<ReadyForShearingCondition> {
+    public static class Serializer implements IConditionSerializer<ReadyForShearingCondition> {
 
         @Override
         public ReadyForShearingCondition fromJson(ResourceLocation location, JsonObject jsonObject, boolean inverted) {
@@ -50,7 +43,7 @@ public class ReadyForShearingCondition extends AbstractCondition {
 
         @Override
         public void toNetwork(FriendlyByteBuf friendlyByteBuf, ReadyForShearingCondition type) {
-            ConditionSerializer.super.toNetwork(friendlyByteBuf, type);
+            IConditionSerializer.super.toNetwork(friendlyByteBuf, type);
         }
     }
 }

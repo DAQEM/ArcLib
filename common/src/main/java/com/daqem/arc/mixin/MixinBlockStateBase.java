@@ -41,17 +41,17 @@ public abstract class MixinBlockStateBase {
     @Inject(at = @At("RETURN"), method = "getDestroyProgress(Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/world/level/BlockGetter;Lnet/minecraft/core/BlockPos;)F", cancellable = true)
     public void getDestroyProgress(Player player, BlockGetter blockGetter, BlockPos blockPos, CallbackInfoReturnable<Float> cir) {
         if (player instanceof ArcPlayer arcPlayer) {
-            cir.setReturnValue(
-                    cir.getReturnValue()
-                            * new ActionDataBuilder(arcPlayer, ActionType.GET_DESTROY_SPEED)
-                            .withData(ActionDataType.ITEM_STACK, player.getMainHandItem())
-                            .withData(ActionDataType.ITEM, player.getMainHandItem().getItem())
-                            .withData(ActionDataType.BLOCK_STATE, blockGetter.getBlockState(blockPos))
-                            .withData(ActionDataType.BLOCK_POSITION, blockPos)
-                            .build()
-                            .sendToAction()
-                            .getDestroySpeedModifier()
-            );
+            float destroySpeedModifier = new ActionDataBuilder(arcPlayer, ActionType.GET_DESTROY_SPEED)
+                    .withData(ActionDataType.ITEM_STACK, player.getMainHandItem())
+                    .withData(ActionDataType.ITEM, player.getMainHandItem().getItem())
+                    .withData(ActionDataType.BLOCK_STATE, blockGetter.getBlockState(blockPos))
+                    .withData(ActionDataType.BLOCK_POSITION, blockPos)
+                    .build()
+                    .sendToAction()
+                    .getDestroySpeedModifier();
+            float returnValue = cir.getReturnValue()
+                    * destroySpeedModifier;
+            cir.setReturnValue(returnValue);
         }
     }
 }

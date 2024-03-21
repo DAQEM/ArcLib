@@ -3,12 +3,10 @@ package com.daqem.arc.data.condition.block;
 import com.daqem.arc.api.action.data.ActionData;
 import com.daqem.arc.api.action.data.type.ActionDataType;
 import com.daqem.arc.api.condition.AbstractCondition;
-import com.daqem.arc.api.condition.serializer.ConditionSerializer;
 import com.daqem.arc.api.condition.serializer.IConditionSerializer;
 import com.daqem.arc.api.condition.type.ConditionType;
 import com.daqem.arc.api.condition.type.IConditionType;
 import com.google.gson.*;
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -41,12 +39,7 @@ public class BlockCondition extends AbstractCondition {
         return ConditionType.BLOCK;
     }
 
-    @Override
-    public IConditionSerializer<?> getSerializer() {
-        return ConditionSerializer.BLOCK;
-    }
-
-    public static class Serializer implements ConditionSerializer<BlockCondition> {
+    public static class Serializer implements IConditionSerializer<BlockCondition> {
 
         @Override
         public BlockCondition fromJson(ResourceLocation location, JsonObject jsonObject, boolean inverted) {
@@ -64,7 +57,7 @@ public class BlockCondition extends AbstractCondition {
 
         @Override
         public void toNetwork(FriendlyByteBuf friendlyByteBuf, BlockCondition type) {
-            ConditionSerializer.super.toNetwork(friendlyByteBuf, type);
+            IConditionSerializer.super.toNetwork(friendlyByteBuf, type);
             friendlyByteBuf.writeId(BuiltInRegistries.BLOCK, type.block);
         }
     }

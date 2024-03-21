@@ -2,7 +2,6 @@ package com.daqem.arc.data.condition.team;
 
 import com.daqem.arc.api.action.data.ActionData;
 import com.daqem.arc.api.condition.AbstractCondition;
-import com.daqem.arc.api.condition.serializer.ConditionSerializer;
 import com.daqem.arc.api.condition.serializer.IConditionSerializer;
 import com.daqem.arc.api.condition.type.ConditionType;
 import com.daqem.arc.api.condition.type.IConditionType;
@@ -39,12 +38,7 @@ public class TeamCondition extends AbstractCondition {
         return ConditionType.TEAM;
     }
 
-    @Override
-    public IConditionSerializer<?> getSerializer() {
-        return ConditionSerializer.TEAM;
-    }
-
-    public static class Serializer implements ConditionSerializer<TeamCondition> {
+    public static class Serializer implements IConditionSerializer<TeamCondition> {
 
         @Override
         public TeamCondition fromJson(ResourceLocation location, JsonObject jsonObject, boolean inverted) {
@@ -62,7 +56,7 @@ public class TeamCondition extends AbstractCondition {
 
         @Override
         public void toNetwork(FriendlyByteBuf friendlyByteBuf, TeamCondition type) {
-            ConditionSerializer.super.toNetwork(friendlyByteBuf, type);
+            IConditionSerializer.super.toNetwork(friendlyByteBuf, type);
             friendlyByteBuf.writeUtf(type.team);
         }
     }

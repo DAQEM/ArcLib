@@ -5,17 +5,13 @@ import com.daqem.arc.api.action.data.type.ActionDataType;
 import com.daqem.arc.api.action.result.ActionResult;
 import com.daqem.arc.api.player.ArcPlayer;
 import com.daqem.arc.api.reward.AbstractReward;
-import com.daqem.arc.api.reward.IReward;
 import com.daqem.arc.api.reward.serializer.IRewardSerializer;
-import com.daqem.arc.api.reward.serializer.RewardSerializer;
 import com.daqem.arc.api.reward.type.IRewardType;
 import com.daqem.arc.api.reward.type.RewardType;
 import com.google.gson.JsonObject;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
-import net.minecraft.nbt.TagParser;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -35,11 +31,6 @@ public class CommandReward extends AbstractReward {
     @Override
     public IRewardType<?> getType() {
         return RewardType.COMMAND;
-    }
-
-    @Override
-    public IRewardSerializer<? extends IReward> getSerializer() {
-        return RewardSerializer.COMMAND;
     }
 
     @Override
@@ -83,7 +74,7 @@ public class CommandReward extends AbstractReward {
         return new ActionResult();
     }
 
-    public static class Serializer implements RewardSerializer<CommandReward> {
+    public static class Serializer implements IRewardSerializer<CommandReward> {
 
         @Override
         public CommandReward fromJson(JsonObject jsonObject, double chance, int priority) {
@@ -103,7 +94,7 @@ public class CommandReward extends AbstractReward {
 
         @Override
         public void toNetwork(FriendlyByteBuf friendlyByteBuf, CommandReward type) {
-            RewardSerializer.super.toNetwork(friendlyByteBuf, type);
+            IRewardSerializer.super.toNetwork(friendlyByteBuf, type);
             friendlyByteBuf.writeUtf(type.command);
         }
     }

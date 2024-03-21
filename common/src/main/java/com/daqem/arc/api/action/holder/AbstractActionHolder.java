@@ -1,6 +1,7 @@
 package com.daqem.arc.api.action.holder;
 
 import com.daqem.arc.api.action.IAction;
+import com.daqem.arc.api.action.holder.serializer.IActionHolderSerializer;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
@@ -19,6 +20,11 @@ public abstract class AbstractActionHolder implements IActionHolder {
     }
 
     @Override
+    public IActionHolderSerializer<?> getSerializer() {
+        return getType().getSerializer();
+    }
+
+    @Override
     public ResourceLocation getLocation() {
         return location;
     }
@@ -31,6 +37,11 @@ public abstract class AbstractActionHolder implements IActionHolder {
     @Override
     public void addAction(IAction action) {
         this.actions.put(action.getLocation(), action);
+    }
+
+    @Override
+    public void addActions(List<IAction> actionHolderActions) {
+        actionHolderActions.forEach(this::addAction);
     }
 
     @Override

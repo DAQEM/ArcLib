@@ -3,7 +3,6 @@ package com.daqem.arc.data.condition.movement;
 import com.daqem.arc.api.action.data.ActionData;
 import com.daqem.arc.api.action.data.type.ActionDataType;
 import com.daqem.arc.api.condition.AbstractCondition;
-import com.daqem.arc.api.condition.serializer.ConditionSerializer;
 import com.daqem.arc.api.condition.serializer.IConditionSerializer;
 import com.daqem.arc.api.condition.type.ConditionType;
 import com.daqem.arc.api.condition.type.IConditionType;
@@ -54,12 +53,7 @@ public class DistanceCondition extends AbstractCondition {
         return ConditionType.DISTANCE;
     }
 
-    @Override
-    public IConditionSerializer<?> getSerializer() {
-        return ConditionSerializer.DISTANCE;
-    }
-
-    public static class Serializer implements ConditionSerializer<DistanceCondition> {
+    public static class Serializer implements IConditionSerializer<DistanceCondition> {
 
         @Override
         public DistanceCondition fromJson(ResourceLocation location, JsonObject jsonObject, boolean inverted) {
@@ -77,7 +71,7 @@ public class DistanceCondition extends AbstractCondition {
 
         @Override
         public void toNetwork(FriendlyByteBuf friendlyByteBuf, DistanceCondition type) {
-            ConditionSerializer.super.toNetwork(friendlyByteBuf, type);
+            IConditionSerializer.super.toNetwork(friendlyByteBuf, type);
             friendlyByteBuf.writeVarInt(type.distanceInBlocks);
         }
     }
