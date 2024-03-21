@@ -2,7 +2,6 @@ package com.daqem.arc.data.action.movement;
 
 import com.daqem.arc.api.action.AbstractAction;
 import com.daqem.arc.api.action.holder.type.IActionHolderType;
-import com.daqem.arc.api.action.serializer.ActionSerializer;
 import com.daqem.arc.api.action.serializer.IActionSerializer;
 import com.daqem.arc.api.action.type.ActionType;
 import com.daqem.arc.api.action.type.IActionType;
@@ -25,12 +24,7 @@ public class ElytraFlyStartAction extends AbstractAction {
         return ActionType.ELYTRA_FLY_START;
     }
 
-    @Override
-    public IActionSerializer<?> getSerializer() {
-        return ActionSerializer.ELYTRA_FLY_START;
-    }
-
-    public static class Serializer implements ActionSerializer<ElytraFlyStartAction> {
+    public static class Serializer implements IActionSerializer<ElytraFlyStartAction> {
 
         @Override
         public ElytraFlyStartAction fromJson(ResourceLocation location, JsonObject jsonObject, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
@@ -44,7 +38,7 @@ public class ElytraFlyStartAction extends AbstractAction {
 
         @Override
         public void toNetwork(FriendlyByteBuf friendlyByteBuf, ElytraFlyStartAction type) {
-            ActionSerializer.super.toNetwork(friendlyByteBuf, type);
+            IActionSerializer.super.toNetwork(friendlyByteBuf, type);
         }
     }
 }

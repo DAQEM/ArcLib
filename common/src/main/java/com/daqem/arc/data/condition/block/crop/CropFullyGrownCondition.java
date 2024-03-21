@@ -3,7 +3,6 @@ package com.daqem.arc.data.condition.block.crop;
 import com.daqem.arc.api.action.data.ActionData;
 import com.daqem.arc.api.action.data.type.ActionDataType;
 import com.daqem.arc.api.condition.AbstractCondition;
-import com.daqem.arc.api.condition.serializer.ConditionSerializer;
 import com.daqem.arc.api.condition.serializer.IConditionSerializer;
 import com.daqem.arc.api.condition.type.ConditionType;
 import com.daqem.arc.api.condition.type.IConditionType;
@@ -52,12 +51,7 @@ public class CropFullyGrownCondition extends AbstractCondition {
         return ConditionType.CROP_FULLY_GROWN;
     }
 
-    @Override
-    public IConditionSerializer<?> getSerializer() {
-        return ConditionSerializer.CROP_FULLY_GROWN;
-    }
-
-    public static class Serializer implements ConditionSerializer<CropFullyGrownCondition> {
+    public static class Serializer implements IConditionSerializer<CropFullyGrownCondition> {
 
         @Override
         public CropFullyGrownCondition fromJson(ResourceLocation location, JsonObject jsonObject, boolean inverted) {
@@ -71,7 +65,7 @@ public class CropFullyGrownCondition extends AbstractCondition {
 
         @Override
         public void toNetwork(FriendlyByteBuf friendlyByteBuf, CropFullyGrownCondition type) {
-            ConditionSerializer.super.toNetwork(friendlyByteBuf, type);
+            IConditionSerializer.super.toNetwork(friendlyByteBuf, type);
         }
     }
 }

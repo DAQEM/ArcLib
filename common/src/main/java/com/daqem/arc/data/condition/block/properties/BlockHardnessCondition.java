@@ -3,7 +3,6 @@ package com.daqem.arc.data.condition.block.properties;
 import com.daqem.arc.api.action.data.ActionData;
 import com.daqem.arc.api.action.data.type.ActionDataType;
 import com.daqem.arc.api.condition.AbstractCondition;
-import com.daqem.arc.api.condition.serializer.ConditionSerializer;
 import com.daqem.arc.api.condition.serializer.IConditionSerializer;
 import com.daqem.arc.api.condition.type.ConditionType;
 import com.daqem.arc.api.condition.type.IConditionType;
@@ -49,12 +48,7 @@ public class BlockHardnessCondition extends AbstractCondition {
         return ConditionType.BLOCK_HARDNESS;
     }
 
-    @Override
-    public IConditionSerializer<?> getSerializer() {
-        return ConditionSerializer.BLOCK_HARDNESS;
-    }
-
-    public static class Serializer implements ConditionSerializer<BlockHardnessCondition> {
+    public static class Serializer implements IConditionSerializer<BlockHardnessCondition> {
 
         @Override
         public BlockHardnessCondition fromJson(ResourceLocation location, JsonObject jsonObject, boolean inverted) {
@@ -74,7 +68,7 @@ public class BlockHardnessCondition extends AbstractCondition {
 
         @Override
         public void toNetwork(FriendlyByteBuf friendlyByteBuf, BlockHardnessCondition type) {
-            ConditionSerializer.super.toNetwork(friendlyByteBuf, type);
+            IConditionSerializer.super.toNetwork(friendlyByteBuf, type);
             friendlyByteBuf.writeFloat(type.min);
             friendlyByteBuf.writeFloat(type.max);
         }

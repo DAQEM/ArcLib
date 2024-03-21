@@ -3,8 +3,8 @@ package com.daqem.arc.data;
 import com.daqem.arc.Arc;
 import com.daqem.arc.api.action.holder.ActionHolderManager;
 import com.daqem.arc.api.action.holder.IActionHolder;
+import com.daqem.arc.api.action.holder.type.ActionHolderType;
 import com.daqem.arc.api.player.holder.PlayerActionHolder;
-import com.daqem.arc.api.player.holder.PlayerActionTypes;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -30,21 +30,18 @@ public abstract class PlayerActionHolderManager extends SimpleJsonResourceReload
 
     @Override
     protected void apply(@NotNull Map<ResourceLocation, JsonElement> object, @NotNull ResourceManager resourceManager, @NotNull ProfilerFiller profilerFiller) {
-        ActionHolderManager.getInstance().clearActionHolders(PlayerActionTypes.PLAYER_ACTION_TYPE);
+        ActionHolderManager actionHolderManager = ActionHolderManager.getInstance();
+        actionHolderManager.clearAllActionHoldersForType(ActionHolderType.PLAYER_ACTION_TYPE);
 
         ResourceLocation location = Arc.getId("player");
         IActionHolder playerActionHolder = new PlayerActionHolder(location);
         this.playerActionHolders = ImmutableMap.of(location, playerActionHolder);
 
-        this.playerActionHolders.values().forEach(ActionHolderManager.getInstance()::registerActionHolder);
+        actionHolderManager.registerActionHolders(new ArrayList<>(this.playerActionHolders.values()));
     }
 
     public static PlayerActionHolderManager getInstance() {
         return instance;
-    }
-
-    public ImmutableMap<ResourceLocation, IActionHolder> getPlayerActionHolders() {
-        return this.playerActionHolders;
     }
 
     public List<IActionHolder> getPlayerActionHoldersList() {

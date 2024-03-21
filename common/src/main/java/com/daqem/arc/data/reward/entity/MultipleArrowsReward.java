@@ -1,12 +1,10 @@
 package com.daqem.arc.data.reward.entity;
 
-import com.daqem.arc.Arc;
 import com.daqem.arc.api.action.data.ActionData;
 import com.daqem.arc.api.action.data.type.ActionDataType;
 import com.daqem.arc.api.action.result.ActionResult;
 import com.daqem.arc.api.reward.AbstractReward;
 import com.daqem.arc.api.reward.serializer.IRewardSerializer;
-import com.daqem.arc.api.reward.serializer.RewardSerializer;
 import com.daqem.arc.api.reward.type.IRewardType;
 import com.daqem.arc.api.reward.type.RewardType;
 import com.google.gson.JsonObject;
@@ -49,11 +47,6 @@ public class MultipleArrowsReward extends AbstractReward {
     @Override
     public IRewardType<?> getType() {
         return RewardType.MULTIPLE_ARROWS;
-    }
-
-    @Override
-    public IRewardSerializer<?> getSerializer() {
-        return RewardSerializer.MULTIPLE_ARROWS;
     }
 
     @Override
@@ -157,7 +150,7 @@ public class MultipleArrowsReward extends AbstractReward {
         return 1.0F / (random.nextFloat() * 0.5F + 1.8F) + f;
     }
 
-    public static class Serializer implements RewardSerializer<MultipleArrowsReward> {
+    public static class Serializer implements IRewardSerializer<MultipleArrowsReward> {
 
         @Override
         public MultipleArrowsReward fromJson(JsonObject jsonObject, double chance, int priority) {
@@ -177,7 +170,7 @@ public class MultipleArrowsReward extends AbstractReward {
 
         @Override
         public void toNetwork(FriendlyByteBuf friendlyByteBuf, MultipleArrowsReward type) {
-            RewardSerializer.super.toNetwork(friendlyByteBuf, type);
+            IRewardSerializer.super.toNetwork(friendlyByteBuf, type);
             friendlyByteBuf.writeInt(type.amount);
         }
     }

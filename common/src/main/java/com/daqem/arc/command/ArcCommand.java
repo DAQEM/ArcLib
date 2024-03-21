@@ -1,15 +1,13 @@
 package com.daqem.arc.command;
 
 import com.daqem.arc.api.action.IAction;
+import com.daqem.arc.api.action.holder.ActionHolderManager;
 import com.daqem.arc.command.argument.ActionArgument;
-import com.daqem.arc.data.ActionManager;
 import com.daqem.arc.networking.ClientboundActionScreenPacket;
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.arguments.StringArgumentType;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 
 import java.util.List;
 
@@ -25,7 +23,7 @@ public class ArcCommand {
                                 })
                         )
                 .executes(context -> {
-                    List<IAction> actions = ActionManager.getInstance().getActions();
+                    List<IAction> actions = ActionHolderManager.getInstance().getActions();
                     if (actions.isEmpty()) {
                         context.getSource().sendFailure(Component.literal("No actions found"));
                         return 1;
@@ -41,7 +39,9 @@ public class ArcCommand {
             source.sendFailure(Component.literal("Unknown action"));
             return 0;
         }
+        if (source.getPlayer() != null) {
         new ClientboundActionScreenPacket(action).sendTo(source.getPlayer());
+        }
         return 1;
     }
 }

@@ -25,19 +25,6 @@ public interface RegistryEvent {
      */
     Event<RegisterActionHolderType> REGISTER_ACTION_HOLDER_TYPE = EventFactory.createLoop();
 
-    /**
-     * @see RegisterActionSerializer#registerActionSerializer()
-     */
-    Event<RegisterActionSerializer> REGISTER_ACTION_SERIALIZER = EventFactory.createLoop();
-    /**
-     * @see RegisterRewardSerializer#registerRewardSerializer()
-     */
-    Event<RegisterRewardSerializer> REGISTER_REWARD_SERIALIZER = EventFactory.createLoop();
-    /**
-     * @see RegisterConditionSerializer#registerConditionSerializer()
-     */
-    Event<RegisterConditionSerializer> REGISTER_CONDITION_SERIALIZER = EventFactory.createLoop();
-
     interface RegisterActionType {
         /**
          * Invoked when registering an action type.
@@ -64,26 +51,5 @@ public interface RegistryEvent {
          * Invoked when registering an action holder type.
          */
         void registerActionHolderType();
-    }
-
-    interface RegisterActionSerializer {
-        /**
-         * Invoked when registering an action serializer.
-         */
-        void registerActionSerializer();
-    }
-
-    interface RegisterRewardSerializer {
-        /**
-         * Invoked when registering a reward serializer.
-         */
-        void registerRewardSerializer();
-    }
-
-    interface RegisterConditionSerializer {
-        /**
-         * Invoked when registering a condition serializer.
-         */
-        void registerConditionSerializer();
     }
 }

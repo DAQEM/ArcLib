@@ -3,7 +3,6 @@ package com.daqem.arc.data.condition;
 import com.daqem.arc.api.action.data.ActionData;
 import com.daqem.arc.api.condition.AbstractCondition;
 import com.daqem.arc.api.condition.ICondition;
-import com.daqem.arc.api.condition.serializer.ConditionSerializer;
 import com.daqem.arc.api.condition.serializer.IConditionSerializer;
 import com.daqem.arc.api.condition.type.ConditionType;
 import com.daqem.arc.api.condition.type.IConditionType;
@@ -35,12 +34,7 @@ public class OrCondition extends AbstractCondition {
         return ConditionType.OR;
     }
 
-    @Override
-    public IConditionSerializer<?> getSerializer() {
-        return ConditionSerializer.OR;
-    }
-
-    public static class Serializer implements ConditionSerializer<OrCondition> {
+    public static class Serializer implements IConditionSerializer<OrCondition> {
 
         @Override
         @SuppressWarnings("unchecked")
@@ -50,7 +44,10 @@ public class OrCondition extends AbstractCondition {
             jsonArray.forEach(jsonElement -> {
                 JsonObject conditionObject = jsonElement.getAsJsonObject();
                 ResourceLocation type = getResourceLocation(conditionObject, "type");
-                IConditionSerializer<ICondition> conditionSerializer = (IConditionSerializer<ICondition>) ArcRegistry.CONDITION_SERIALIZER.get(type);
+                IConditionSerializer<ICondition> conditionSerializer = (IConditionSerializer<ICondition>) ArcRegistry.CONDITION
+                        .getOptional(type)
+                        .map(IConditionType::getSerializer)
+                        .orElseThrow(() -> new JsonParseException("Unknown condition type: " + type));
                 if (conditionSerializer == null) {
                     throw new JsonParseException("Unknown condition type: " + type);
                 }
@@ -76,7 +73,7 @@ public class OrCondition extends AbstractCondition {
 
         @Override
         public void toNetwork(FriendlyByteBuf friendlyByteBuf, OrCondition type) {
-            ConditionSerializer.super.toNetwork(friendlyByteBuf, type);
+            IConditionSerializer.super.toNetwork(friendlyByteBuf, type);
             friendlyByteBuf.writeVarInt(type.conditions.size());
             type.conditions.forEach(condition ->
                     IConditionSerializer.toNetwork(condition, friendlyByteBuf, condition.getType().getLocation()));

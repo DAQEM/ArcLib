@@ -3,7 +3,6 @@ package com.daqem.arc.data.condition.entity;
 import com.daqem.arc.api.action.data.ActionData;
 import com.daqem.arc.api.action.data.type.ActionDataType;
 import com.daqem.arc.api.condition.AbstractCondition;
-import com.daqem.arc.api.condition.serializer.ConditionSerializer;
 import com.daqem.arc.api.condition.serializer.IConditionSerializer;
 import com.daqem.arc.api.condition.type.ConditionType;
 import com.daqem.arc.api.condition.type.IConditionType;
@@ -38,12 +37,7 @@ public class DamageSourceCondition extends AbstractCondition {
         return ConditionType.DAMAGE_SOURCE;
     }
 
-    @Override
-    public IConditionSerializer<?> getSerializer() {
-        return ConditionSerializer.DAMAGE_SOURCE;
-    }
-
-    public static class Serializer implements ConditionSerializer<DamageSourceCondition> {
+    public static class Serializer implements IConditionSerializer<DamageSourceCondition> {
 
         @Override
         public DamageSourceCondition fromJson(ResourceLocation location, JsonObject jsonObject, boolean inverted) {
@@ -61,7 +55,7 @@ public class DamageSourceCondition extends AbstractCondition {
 
         @Override
         public void toNetwork(FriendlyByteBuf friendlyByteBuf, DamageSourceCondition type) {
-            ConditionSerializer.super.toNetwork(friendlyByteBuf, type);
+            IConditionSerializer.super.toNetwork(friendlyByteBuf, type);
             friendlyByteBuf.writeUtf(type.source);
         }
     }

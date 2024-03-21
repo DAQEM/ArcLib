@@ -29,30 +29,35 @@ import net.minecraft.resources.ResourceLocation;
 
 public interface RewardType<T extends IReward> extends IRewardType<T> {
 
-    IRewardType<ExpReward> EXP = register(Arc.getId("exp"));
-    IRewardType<ItemReward> ITEM = register(Arc.getId("item"));
-    IRewardType<EffectReward> EFFECT = register(Arc.getId("effect"));
-    IRewardType<EffectDurationMultiplierReward> EFFECT_DURATION_MULTIPLIER = register(Arc.getId("effect_duration_multiplier"));
-    IRewardType<EffectAmplifierAdditionReward> EFFECT_AMPLIFIER_ADDITION = register(Arc.getId("effect_amplifier_addition"));
-    IRewardType<RemoveEffectReward> REMOVE_EFFECT = register(Arc.getId("remove_effect"));
-    IRewardType<CancelActionReward> CANCEL_ACTION = register(Arc.getId("cancel_action"));
-    IRewardType<DestroySpeedMultiplierReward> DESTROY_SPEED_MULTIPLIER = register(Arc.getId("destroy_speed_multiplier"));
-    IRewardType<AttackSpeedMultiplierReward> ATTACK_SPEED_MULTIPLIER = register(Arc.getId("attack_speed_multiplier"));
-    IRewardType<DropItemReward> DROP_ITEM = register(Arc.getId("drop_item"));
-    IRewardType<MultipleArrowsReward> MULTIPLE_ARROWS = register(Arc.getId("multiple_arrows"));
-    IRewardType<EntityOnFireReward> ENTITY_ON_FIRE = register(Arc.getId("entity_on_fire"));
-    IRewardType<BlockDropMultiplierReward> BLOCK_DROP_MULTIPLIER = register(Arc.getId("block_drop_multiplier"));
-    IRewardType<MoveToEntityReward> MOVE_TO_ENTITY = register(Arc.getId("move_to_entity"));
-    IRewardType<ExpMultiplierReward> EXP_MULTIPLIER = register(Arc.getId("exp_multiplier"));
-    IRewardType<DamageMultiplierReward> DAMAGE_MULTIPLIER = register(Arc.getId("damage_multiplier"));
-    IRewardType<CommandReward> COMMAND = register(Arc.getId("command"));
+    IRewardType<ExpReward> EXP = register(Arc.getId("exp"), new ExpReward.Serializer());
+    IRewardType<ItemReward> ITEM = register(Arc.getId("item"), new ItemReward.Serializer());
+    IRewardType<EffectReward> EFFECT = register(Arc.getId("effect"), new EffectReward.Serializer());
+    IRewardType<EffectDurationMultiplierReward> EFFECT_DURATION_MULTIPLIER = register(Arc.getId("effect_duration_multiplier"), new EffectDurationMultiplierReward.Serializer());
+    IRewardType<EffectAmplifierAdditionReward> EFFECT_AMPLIFIER_ADDITION = register(Arc.getId("effect_amplifier_addition"), new EffectAmplifierAdditionReward.Serializer());
+    IRewardType<RemoveEffectReward> REMOVE_EFFECT = register(Arc.getId("remove_effect"), new RemoveEffectReward.Serializer());
+    IRewardType<CancelActionReward> CANCEL_ACTION = register(Arc.getId("cancel_action"), new CancelActionReward.Serializer());
+    IRewardType<DestroySpeedMultiplierReward> DESTROY_SPEED_MULTIPLIER = register(Arc.getId("destroy_speed_multiplier"), new DestroySpeedMultiplierReward.Serializer());
+    IRewardType<AttackSpeedMultiplierReward> ATTACK_SPEED_MULTIPLIER = register(Arc.getId("attack_speed_multiplier"), new AttackSpeedMultiplierReward.Serializer());
+    IRewardType<DropItemReward> DROP_ITEM = register(Arc.getId("drop_item"), new DropItemReward.Serializer());
+    IRewardType<MultipleArrowsReward> MULTIPLE_ARROWS = register(Arc.getId("multiple_arrows"), new MultipleArrowsReward.Serializer());
+    IRewardType<EntityOnFireReward> ENTITY_ON_FIRE = register(Arc.getId("entity_on_fire"), new EntityOnFireReward.Serializer());
+    IRewardType<BlockDropMultiplierReward> BLOCK_DROP_MULTIPLIER = register(Arc.getId("block_drop_multiplier"), new BlockDropMultiplierReward.Serializer());
+    IRewardType<MoveToEntityReward> MOVE_TO_ENTITY = register(Arc.getId("move_to_entity"), new MoveToEntityReward.Serializer());
+    IRewardType<ExpMultiplierReward> EXP_MULTIPLIER = register(Arc.getId("exp_multiplier"), new ExpMultiplierReward.Serializer());
+    IRewardType<DamageMultiplierReward> DAMAGE_MULTIPLIER = register(Arc.getId("damage_multiplier"), new DamageMultiplierReward.Serializer());
+    IRewardType<CommandReward> COMMAND = register(Arc.getId("command"), new CommandReward.Serializer());
 
-    static <T extends IReward> IRewardType<T> register(final ResourceLocation location) {
+    static <T extends IReward> IRewardType<T> register(final ResourceLocation location, final IRewardSerializer<T> serializer) {
         return Registry.register(ArcRegistry.REWARD, location, new RewardType<T>(){
 
             @Override
             public ResourceLocation getLocation() {
                 return location;
+            }
+
+            @Override
+            public IRewardSerializer<T> getSerializer() {
+                return serializer;
             }
 
             @Override

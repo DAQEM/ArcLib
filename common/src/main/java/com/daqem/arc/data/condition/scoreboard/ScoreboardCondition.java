@@ -2,7 +2,6 @@ package com.daqem.arc.data.condition.scoreboard;
 
 import com.daqem.arc.api.action.data.ActionData;
 import com.daqem.arc.api.condition.AbstractCondition;
-import com.daqem.arc.api.condition.serializer.ConditionSerializer;
 import com.daqem.arc.api.condition.serializer.IConditionSerializer;
 import com.daqem.arc.api.condition.type.ConditionType;
 import com.daqem.arc.api.condition.type.IConditionType;
@@ -52,12 +51,7 @@ public class ScoreboardCondition extends AbstractCondition {
         return ConditionType.SCOREBOARD;
     }
 
-    @Override
-    public IConditionSerializer<?> getSerializer() {
-        return ConditionSerializer.SCOREBOARD;
-    }
-
-    public static class Serializer implements ConditionSerializer<ScoreboardCondition> {
+    public static class Serializer implements IConditionSerializer<ScoreboardCondition> {
 
         @Override
         public ScoreboardCondition fromJson(ResourceLocation location, JsonObject jsonObject, boolean inverted) {
@@ -79,7 +73,7 @@ public class ScoreboardCondition extends AbstractCondition {
 
         @Override
         public void toNetwork(FriendlyByteBuf friendlyByteBuf, ScoreboardCondition type) {
-            ConditionSerializer.super.toNetwork(friendlyByteBuf, type);
+            IConditionSerializer.super.toNetwork(friendlyByteBuf, type);
             friendlyByteBuf.writeUtf(type.objective);
             friendlyByteBuf.writeInt(type.min);
             friendlyByteBuf.writeInt(type.max);

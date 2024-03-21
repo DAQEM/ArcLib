@@ -52,6 +52,11 @@ public abstract class MixinLocalPlayer extends AbstractClientPlayer implements A
     }
 
     @Override
+    public void arc$clearActionHolders() {
+        actionHolders.clear();
+    }
+
+    @Override
     public double arc$nextRandomDouble() {
         return arc$getLocalPlayer().getRandom().nextDouble();
     }

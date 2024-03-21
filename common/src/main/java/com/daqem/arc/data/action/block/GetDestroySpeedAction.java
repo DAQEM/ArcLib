@@ -2,7 +2,6 @@ package com.daqem.arc.data.action.block;
 
 import com.daqem.arc.api.action.AbstractAction;
 import com.daqem.arc.api.action.holder.type.IActionHolderType;
-import com.daqem.arc.api.action.serializer.ActionSerializer;
 import com.daqem.arc.api.action.serializer.IActionSerializer;
 import com.daqem.arc.api.action.type.ActionType;
 import com.daqem.arc.api.action.type.IActionType;
@@ -26,12 +25,7 @@ public class GetDestroySpeedAction extends AbstractAction {
         return ActionType.GET_DESTROY_SPEED;
     }
 
-    @Override
-    public IActionSerializer<?> getSerializer() {
-        return ActionSerializer.GET_DESTROY_SPEED;
-    }
-
-    public static class Serializer implements ActionSerializer<GetDestroySpeedAction> {
+    public static class Serializer implements IActionSerializer<GetDestroySpeedAction> {
 
         @Override
         public GetDestroySpeedAction fromJson(ResourceLocation location, JsonObject jsonObject, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
@@ -45,7 +39,7 @@ public class GetDestroySpeedAction extends AbstractAction {
 
         @Override
         public void toNetwork(FriendlyByteBuf friendlyByteBuf, GetDestroySpeedAction type) {
-            ActionSerializer.super.toNetwork(friendlyByteBuf, type);
+            IActionSerializer.super.toNetwork(friendlyByteBuf, type);
         }
     }
 }

@@ -2,7 +2,6 @@ package com.daqem.arc.data.condition.recipe;
 
 import com.daqem.arc.api.action.data.ActionData;
 import com.daqem.arc.api.action.data.type.ActionDataType;
-import com.daqem.arc.api.condition.serializer.ConditionSerializer;
 import com.daqem.arc.api.condition.serializer.IConditionSerializer;
 import com.daqem.arc.api.condition.type.ConditionType;
 import com.daqem.arc.api.condition.type.IConditionType;
@@ -38,12 +37,7 @@ public class IsSmokingRecipeCondition extends IsRecipeCondition<SmokingRecipe> {
         return ConditionType.IS_SMOKING_RECIPE;
     }
 
-    @Override
-    public IConditionSerializer<?> getSerializer() {
-        return ConditionSerializer.IS_SMOKING_RECIPE;
-    }
-
-    public static class Serializer implements ConditionSerializer<IsSmokingRecipeCondition> {
+    public static class Serializer implements IConditionSerializer<IsSmokingRecipeCondition> {
 
         @Override
         public IsSmokingRecipeCondition fromJson(ResourceLocation location, JsonObject jsonObject, boolean inverted) {
@@ -57,7 +51,7 @@ public class IsSmokingRecipeCondition extends IsRecipeCondition<SmokingRecipe> {
 
         @Override
         public void toNetwork(FriendlyByteBuf friendlyByteBuf, IsSmokingRecipeCondition type) {
-            ConditionSerializer.super.toNetwork(friendlyByteBuf, type);
+            IConditionSerializer.super.toNetwork(friendlyByteBuf, type);
         }
     }
 }

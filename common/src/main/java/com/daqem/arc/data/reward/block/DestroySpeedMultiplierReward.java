@@ -4,13 +4,11 @@ import com.daqem.arc.api.action.data.ActionData;
 import com.daqem.arc.api.action.result.ActionResult;
 import com.daqem.arc.api.reward.AbstractReward;
 import com.daqem.arc.api.reward.serializer.IRewardSerializer;
-import com.daqem.arc.api.reward.serializer.RewardSerializer;
 import com.daqem.arc.api.reward.type.IRewardType;
 import com.daqem.arc.api.reward.type.RewardType;
 import com.google.gson.*;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 
 public class DestroySpeedMultiplierReward extends AbstractReward {
@@ -37,12 +35,7 @@ public class DestroySpeedMultiplierReward extends AbstractReward {
         return RewardType.DESTROY_SPEED_MULTIPLIER;
     }
 
-    @Override
-    public IRewardSerializer<?> getSerializer() {
-        return RewardSerializer.DESTROY_SPEED_MULTIPLIER;
-    }
-
-    public static class Serializer implements RewardSerializer<DestroySpeedMultiplierReward> {
+    public static class Serializer implements IRewardSerializer<DestroySpeedMultiplierReward> {
 
         @Override
         public DestroySpeedMultiplierReward fromJson(JsonObject jsonObject, double chance, int priority) {
@@ -62,7 +55,7 @@ public class DestroySpeedMultiplierReward extends AbstractReward {
 
         @Override
         public void toNetwork(FriendlyByteBuf friendlyByteBuf, DestroySpeedMultiplierReward type) {
-            RewardSerializer.super.toNetwork(friendlyByteBuf, type);
+            IRewardSerializer.super.toNetwork(friendlyByteBuf, type);
             friendlyByteBuf.writeFloat(type.multiplier);
         }
     }

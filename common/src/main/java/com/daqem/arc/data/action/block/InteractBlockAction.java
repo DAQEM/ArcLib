@@ -2,7 +2,6 @@ package com.daqem.arc.data.action.block;
 
 import com.daqem.arc.api.action.AbstractAction;
 import com.daqem.arc.api.action.holder.type.IActionHolderType;
-import com.daqem.arc.api.action.serializer.ActionSerializer;
 import com.daqem.arc.api.action.serializer.IActionSerializer;
 import com.daqem.arc.api.action.type.ActionType;
 import com.daqem.arc.api.action.type.IActionType;
@@ -25,12 +24,7 @@ public class InteractBlockAction extends AbstractAction {
         return ActionType.INTERACT_BLOCK;
     }
 
-    @Override
-    public IActionSerializer<?> getSerializer() {
-        return ActionSerializer.INTERACT_BLOCK;
-    }
-
-    public static class Serializer implements ActionSerializer<InteractBlockAction> {
+    public static class Serializer implements IActionSerializer<InteractBlockAction> {
 
         @Override
         public InteractBlockAction fromJson(ResourceLocation location, JsonObject jsonObject, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
@@ -44,7 +38,7 @@ public class InteractBlockAction extends AbstractAction {
 
         @Override
         public void toNetwork(FriendlyByteBuf friendlyByteBuf, InteractBlockAction type) {
-            ActionSerializer.super.toNetwork(friendlyByteBuf, type);
+            IActionSerializer.super.toNetwork(friendlyByteBuf, type);
         }
     }
 }

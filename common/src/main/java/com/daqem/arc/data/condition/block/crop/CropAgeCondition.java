@@ -3,7 +3,6 @@ package com.daqem.arc.data.condition.block.crop;
 import com.daqem.arc.api.action.data.ActionData;
 import com.daqem.arc.api.action.data.type.ActionDataType;
 import com.daqem.arc.api.condition.AbstractCondition;
-import com.daqem.arc.api.condition.serializer.ConditionSerializer;
 import com.daqem.arc.api.condition.serializer.IConditionSerializer;
 import com.daqem.arc.api.condition.type.ConditionType;
 import com.daqem.arc.api.condition.type.IConditionType;
@@ -56,12 +55,7 @@ public class CropAgeCondition extends AbstractCondition {
         return ConditionType.CROP_AGE;
     }
 
-    @Override
-    public IConditionSerializer<?> getSerializer() {
-        return ConditionSerializer.CROP_AGE;
-    }
-
-    public static class Serializer implements ConditionSerializer<CropAgeCondition> {
+    public static class Serializer implements IConditionSerializer<CropAgeCondition> {
 
         @Override
         public CropAgeCondition fromJson(ResourceLocation location, JsonObject jsonObject, boolean inverted) {
@@ -79,7 +73,7 @@ public class CropAgeCondition extends AbstractCondition {
 
         @Override
         public void toNetwork(FriendlyByteBuf friendlyByteBuf, CropAgeCondition type) {
-            ConditionSerializer.super.toNetwork(friendlyByteBuf, type);
+            IConditionSerializer.super.toNetwork(friendlyByteBuf, type);
             friendlyByteBuf.writeInt(type.age);
         }
     }

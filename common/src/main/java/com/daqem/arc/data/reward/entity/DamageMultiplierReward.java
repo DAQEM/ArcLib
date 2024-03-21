@@ -4,7 +4,6 @@ import com.daqem.arc.api.action.data.ActionData;
 import com.daqem.arc.api.action.result.ActionResult;
 import com.daqem.arc.api.reward.AbstractReward;
 import com.daqem.arc.api.reward.serializer.IRewardSerializer;
-import com.daqem.arc.api.reward.serializer.RewardSerializer;
 import com.daqem.arc.api.reward.type.IRewardType;
 import com.daqem.arc.api.reward.type.RewardType;
 import com.google.gson.JsonObject;
@@ -36,12 +35,7 @@ public class DamageMultiplierReward extends AbstractReward {
         return RewardType.DAMAGE_MULTIPLIER;
     }
 
-    @Override
-    public IRewardSerializer<?> getSerializer() {
-        return RewardSerializer.DAMAGE_MULTIPLIER;
-    }
-
-    public static class Serializer implements RewardSerializer<DamageMultiplierReward> {
+    public static class Serializer implements IRewardSerializer<DamageMultiplierReward> {
 
         @Override
         public DamageMultiplierReward fromJson(JsonObject jsonObject, double chance, int priority) {
@@ -61,7 +55,7 @@ public class DamageMultiplierReward extends AbstractReward {
 
         @Override
         public void toNetwork(FriendlyByteBuf friendlyByteBuf, DamageMultiplierReward type) {
-            RewardSerializer.super.toNetwork(friendlyByteBuf, type);
+            IRewardSerializer.super.toNetwork(friendlyByteBuf, type);
             friendlyByteBuf.writeDouble(type.multiplier);
         }
     }

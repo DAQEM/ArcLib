@@ -16,6 +16,8 @@ public interface ArcPlayer {
 
     void arc$removeActionHolder(IActionHolder actionHolder);
 
+    void arc$clearActionHolders();
+
     Level arc$getLevel();
 
     double arc$nextRandomDouble();
