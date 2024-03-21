@@ -3,6 +3,7 @@ package com.daqem.arc.api.condition.type;
 import com.daqem.arc.Arc;
 import com.daqem.arc.api.condition.ICondition;
 import com.daqem.arc.api.condition.serializer.IConditionSerializer;
+import com.daqem.arc.data.condition.NotCondition;
 import com.daqem.arc.data.condition.OrCondition;
 import com.daqem.arc.data.condition.block.BlockCondition;
 import com.daqem.arc.data.condition.block.BlocksCondition;
@@ -30,7 +31,7 @@ import net.minecraft.resources.ResourceLocation;
 public interface ConditionType<T extends ICondition> extends IConditionType<T> {
 
     ConditionType<OrCondition> OR = register(Arc.getId("or"), new OrCondition.Serializer());
-    ConditionType<OrCondition> NOT = register(Arc.getId("not"), new OrCondition.Serializer());
+    ConditionType<NotCondition> NOT = register(Arc.getId("not"), new NotCondition.Serializer());
 
     ConditionType<CropFullyGrownCondition> CROP_FULLY_GROWN = register(Arc.getId("crop_fully_grown"), new CropFullyGrownCondition.Serializer());
     ConditionType<CropAgeCondition> CROP_AGE = register(Arc.getId("crop_age"), new CropAgeCondition.Serializer());
