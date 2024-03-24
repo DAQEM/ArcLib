@@ -12,6 +12,7 @@ public interface ArcNetworking {
     MessageType CLIENTBOUND_UPDATE_ACTION_HOLDERS = NETWORK.registerS2C("clientbound_update_action_holders", ClientboundUpdateActionHoldersPacket::new);
     MessageType CLIENTBOUND_ACTION_SCREEN = NETWORK.registerS2C("clientbound_action_screen", ClientboundActionScreenPacket::new);
     MessageType CLIENTBOUND_SYNC_PLAYER_ACTION_HOLDERS = NETWORK.registerS2C("clientbound_sync_player_action_holders", ClientboundSyncPlayerActionHoldersPacket::new);
+    MessageType CLIENTBOUND_ACTION_HOLDERS_SCREEN_PACKET = NETWORK.registerS2C("clientbound_action_holders_screen_packet", ClientboundActionHoldersScreenPacket::new);
 
     static void init() {
     }

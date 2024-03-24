@@ -2,7 +2,10 @@ package com.daqem.arc.command;
 
 import com.daqem.arc.api.action.IAction;
 import com.daqem.arc.api.action.holder.ActionHolderManager;
+import com.daqem.arc.api.action.holder.IActionHolder;
+import com.daqem.arc.api.player.ArcServerPlayer;
 import com.daqem.arc.command.argument.ActionArgument;
+import com.daqem.arc.networking.ClientboundActionHoldersScreenPacket;
 import com.daqem.arc.networking.ClientboundActionScreenPacket;
 import com.mojang.brigadier.CommandDispatcher;
 import net.minecraft.commands.CommandSourceStack;
@@ -16,21 +19,37 @@ public class ArcCommand {
     public static void registerCommand(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal("arc").requires(source -> source.hasPermission(2))
                 .then(Commands.literal("screen")
-                        .then(Commands.argument("action", ActionArgument.action())
+                        .then(Commands.literal("action")
+                                .then(Commands.argument("action", ActionArgument.action())
+                                        .executes(context -> {
+                                            IAction action = ActionArgument.getAction(context, "action");
+                                            return openActionScreen(context.getSource(), action);
+                                        })
+                                )
                                 .executes(context -> {
-                                    IAction action = ActionArgument.getAction(context, "action");
-                                    return openActionScreen(context.getSource(), action);
+                                    List<IAction> actions = ActionHolderManager.getInstance().getActions();
+                                    if (actions.isEmpty()) {
+                                        context.getSource().sendFailure(Component.literal("No actions found"));
+                                        return 1;
+                                    } else {
+                                        return openActionScreen(context.getSource(), actions.get(0));
+                                    }
+                                }))
+                        .then(Commands.literal("holders")
+                                .executes(context -> {
+                                    if (context.getSource().getPlayer() instanceof ArcServerPlayer arcServerPlayer) {
+                                        List<IActionHolder> actionHolders = arcServerPlayer.arc$getActionHolders();
+                                        if (actionHolders.isEmpty()) {
+                                            context.getSource().sendFailure(Component.literal("No action holders found"));
+                                            return 1;
+                                        } else {
+                                            return openActionHoldersScreen(context.getSource(), actionHolders);
+                                        }
+                                    }
+                                    return 0;
                                 })
                         )
-                .executes(context -> {
-                    List<IAction> actions = ActionHolderManager.getInstance().getActions();
-                    if (actions.isEmpty()) {
-                        context.getSource().sendFailure(Component.literal("No actions found"));
-                        return 1;
-                    } else {
-                        return openActionScreen(context.getSource(), actions.get(0));
-                    }
-                }))
+                )
         );
     }
 
@@ -41,6 +60,13 @@ public class ArcCommand {
         }
         if (source.getPlayer() != null) {
         new ClientboundActionScreenPacket(action).sendTo(source.getPlayer());
+        }
+        return 1;
+    }
+
+    private static int openActionHoldersScreen(CommandSourceStack source, List<IActionHolder> actionHolders) {
+        if (source.getPlayer() != null) {
+            new ClientboundActionHoldersScreenPacket(actionHolders).sendTo(source.getPlayer());
         }
         return 1;
     }
