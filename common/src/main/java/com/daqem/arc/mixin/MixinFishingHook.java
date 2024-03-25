@@ -18,25 +18,9 @@ import java.util.List;
 @Mixin(FishingHook.class)
 public abstract class MixinFishingHook {
 
-    @Unique
-    private Player arc$getPlayer() {
-        return ((FishingHook) (Object) this).getPlayerOwner();
-    }
-
-    @ModifyVariable(method = "retrieve(Lnet/minecraft/world/item/ItemStack;)I", at = @At(value = "INVOKE", target = "Ljava/util/List;iterator()Ljava/util/Iterator;", shift = At.Shift.BEFORE))
-    private List<ItemStack> modifyList(List<ItemStack> list) {
-        Player player = arc$getPlayer();
-        if (player instanceof ArcServerPlayer serverPlayer) {
-            for (ItemStack itemStack : list) {
-                PlayerEvents.onFishedUpItem(serverPlayer, itemStack);
-            }
-        }
-        return list;
-    }
-
-    @Inject(at = @At("HEAD"), method = "retrieve(Lnet/minecraft/world/item/ItemStack;)I", cancellable = true)
+    @Inject(at = @At("HEAD"), method = "retrieve(Lnet/minecraft/world/item/ItemStack;)I")
     private void retrieve(ItemStack itemStack, CallbackInfoReturnable<Integer> info) {
-        Player player = arc$getPlayer();
+        Player player = ((FishingHook) (Object) this).getPlayerOwner();
         if (player instanceof ArcPlayer serverPlayer) {
             PlayerEvents.onRodReelIn(serverPlayer, ((FishingHook) (Object) this));
         }
