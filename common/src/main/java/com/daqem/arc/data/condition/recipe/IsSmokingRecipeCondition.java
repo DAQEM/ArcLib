@@ -1,5 +1,6 @@
 package com.daqem.arc.data.condition.recipe;
 
+import com.daqem.arc.api.IArcAbstractCookingRecipe;
 import com.daqem.arc.api.action.data.ActionData;
 import com.daqem.arc.api.action.data.type.ActionDataType;
 import com.daqem.arc.api.condition.serializer.IConditionSerializer;
@@ -25,7 +26,7 @@ public class IsSmokingRecipeCondition extends IsRecipeCondition<SmokingRecipe> {
             if (recipe instanceof SmokingRecipe) {
                 return true;
             }
-            if (recipe instanceof SmeltingRecipe smeltingRecipe) {
+            if (recipe instanceof IArcAbstractCookingRecipe smeltingRecipe) {
                 return isSmeltingRecipeVersion(actionData, smeltingRecipe, SmokingRecipe.class);
             }
         }

@@ -191,6 +191,8 @@
   "arc.condition.description.entity_in_block": "Is met if the entity is in a %s block.",
   "arc.condition.damage_source": "Damage Source",
   "arc.condition.description.damage_source": "Is met if the damage source is %s.",
+  "arc.condition.not_in_block_pos_cache": "Not In Block Pos Cache",
+  "arc.condition.description.not_in_block_pos_cache": "Is met if the block position is not in the cache.",
   "tag.item.c.armor": "Armor",
   "tag.item.c.boots": "Boots",
   "tag.item.c.chestplates": "Chestplates",

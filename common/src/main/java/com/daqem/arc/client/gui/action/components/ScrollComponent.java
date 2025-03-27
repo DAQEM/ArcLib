@@ -1,6 +1,5 @@
 package com.daqem.arc.client.gui.action.components;
 
-import com.daqem.uilib.api.client.gui.component.IComponent;
 import com.daqem.uilib.api.client.gui.component.scroll.ScrollOrientation;
 import com.daqem.uilib.client.gui.component.AbstractComponent;
 import com.daqem.uilib.client.gui.component.scroll.ScrollBarComponent;
@@ -51,7 +50,7 @@ public class ScrollComponent extends AbstractComponent<ScrollComponent> {
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float delta, int color) {
     }
 
     public List<ScrollItemComponent> getItems() {

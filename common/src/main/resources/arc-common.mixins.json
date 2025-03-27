@@ -7,6 +7,7 @@
     "client.MixinLocalPlayer"
   ],
   "mixins": [
+    "MixinAbstractCookingRecipe",
     "MixinAbstractFurnaceBlockEntity",
     "MixinAnimal",
     "MixinAnvilMenu",
@@ -14,8 +15,10 @@
     "MixinBaseContainerBlockEntity",
     "MixinBlockStateBase",
     "MixinBrewingStandBlockEntity",
+    "MixinConsumable",
     "MixinFishingHook",
     "MixinFishingRodHookedTrigger",
+    "MixinIngredient",
     "MixinItemStack",
     "MixinLivingEntity",
     "MixinProjectile",
