@@ -5,7 +5,7 @@ import com.daqem.arc.api.condition.AbstractCondition;
 import com.daqem.arc.api.condition.serializer.IConditionSerializer;
 import com.daqem.arc.api.condition.type.ConditionType;
 import com.daqem.arc.api.condition.type.IConditionType;
-import com.google.gson.*;
+import com.google.gson.JsonObject;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -29,7 +29,7 @@ public class ItemInInventoryCondition extends AbstractCondition {
     @Override
     public boolean isMet(ActionData actionData) {
         Player player = actionData.getPlayer().arc$getPlayer();
-        return player.getInventory().items.stream().anyMatch(stack -> stack.getItem() == itemStack.getItem());
+        return player.getInventory().getNonEquipmentItems().stream().anyMatch(stack -> stack.getItem() == itemStack.getItem());
     }
 
     @Override

@@ -9,8 +9,12 @@ import com.google.gson.*;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ItemEquippedCondition extends AbstractCondition {
 
@@ -29,7 +33,16 @@ public class ItemEquippedCondition extends AbstractCondition {
     @Override
     public boolean isMet(ActionData actionData) {
         Player player = actionData.getPlayer().arc$getPlayer();
-        return player.getInventory().armor.stream().anyMatch(stack -> stack.getItem() == itemStack.getItem());
+        List<ItemStack> armor = new ArrayList<>();
+        for (EquipmentSlot slot : EquipmentSlot.values()) {
+            if (slot.isArmor()) {
+                ItemStack stack = player.getItemBySlot(slot);
+                if (!stack.isEmpty()) {
+                    armor.add(player.getItemBySlot(slot));
+                }
+            }
+        }
+        return armor.stream().anyMatch(stack -> stack.getItem() == itemStack.getItem());
     }
 
     @Override

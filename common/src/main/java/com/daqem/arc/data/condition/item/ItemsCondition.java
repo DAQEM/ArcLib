@@ -34,7 +34,7 @@ public class ItemsCondition extends AbstractCondition {
 
     @Override
     public Component getDescription() {
-        return getDescription(items.stream().map(Item::getDescription).toArray(Component[]::new), itemTags.stream().map(TagKey::location).toArray(ResourceLocation[]::new));
+        return getDescription(items.stream().map(Item::getName).toArray(Component[]::new), itemTags.stream().map(TagKey::location).toArray(ResourceLocation[]::new));
     }
 
     @Override

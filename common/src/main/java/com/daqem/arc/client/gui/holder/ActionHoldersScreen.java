@@ -60,9 +60,9 @@ public class ActionHoldersScreen extends AbstractScreen {
                                     .toList();
                             Minecraft minecraft = Minecraft.getInstance();
                             if (actions.isEmpty() && minecraft.player != null) {
-                                minecraft.player.sendSystemMessage(Arc.translatable("message.no_actions"));
-                            } else {
-                                minecraft.setScreen(new ActionScreen(actions, actions.get(0)));
+                                minecraft.player.displayClientMessage(Arc.translatable("message.no_actions"), false);
+                            } else if (!actions.isEmpty()) {
+                                minecraft.setScreen(new ActionScreen(actions, actions.getFirst()));
                             }
                             return true;
                         };

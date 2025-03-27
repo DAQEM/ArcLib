@@ -10,32 +10,44 @@ import com.daqem.arc.registry.ArcRegistry;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.google.gson.*;
+import com.mojang.serialization.JsonOps;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.FileToIdConverter;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
+import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeMap;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class ActionManager extends SimpleJsonResourceReloadListener {
-
-    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
-
-    public ActionManager() {
-        super(GSON, "arc");
-    }
+public class ActionManager extends SimplePreparableReloadListener<List<IAction>> {
 
     @Override
-    protected void apply(@NotNull Map<ResourceLocation, JsonElement> map, @NotNull ResourceManager resourceManager, @NotNull ProfilerFiller profilerFiller) {
-        ActionHolderManager actionHolderManager = ActionHolderManager.getInstance();
-        actionHolderManager.clearAllActions();
-
+    protected @NotNull List<IAction> prepare(ResourceManager resourceManager, ProfilerFiller profilerFiller) {
+        Map<ResourceLocation, Resource> resourceMap = resourceManager.listResources("arc", (resourceLocation) -> true);
+        Map<ResourceLocation, JsonElement> map = new HashMap<>();
+        for (Map.Entry<ResourceLocation, Resource> entry : resourceMap.entrySet()) {
+            ResourceLocation location = entry.getKey();
+            try {
+                JsonElement jsonElement = GsonHelper.parse(entry.getValue().openAsReader());
+                map.put(location, jsonElement);
+            }
+            catch (Exception runtimeException) {
+                Arc.LOGGER.error("Parsing error loading action {}", location, runtimeException);
+            }
+        }
         List<IAction> actions = new ArrayList<>();
 
         if (!Arc.isDebugEnvironment()) {
@@ -52,6 +64,14 @@ public class ActionManager extends SimpleJsonResourceReloadListener {
                 Arc.LOGGER.error("Parsing error loading action {}", location, runtimeException);
             }
         }
+
+        return actions;
+    }
+
+    @Override
+    protected void apply(List<IAction> actions, ResourceManager resourceManager, ProfilerFiller profilerFiller) {
+        ActionHolderManager actionHolderManager = ActionHolderManager.getInstance();
+        actionHolderManager.clearAllActions();
         actionHolderManager.registerActions(actions);
         Arc.LOGGER.info("Loaded {} actions", actions.size());
     }

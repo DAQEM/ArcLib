@@ -32,8 +32,8 @@ public class Arc {
         ArcCommonConfig.init();
         ArcNetworking.init();
         registerEvents();
-        ReloadListenerRegistry.register(PackType.SERVER_DATA, new PlayerActionHolderManager());
-        ReloadListenerRegistry.register(PackType.SERVER_DATA, new ActionManager());
+        ReloadListenerRegistry.register(PackType.SERVER_DATA, new PlayerActionHolderManager(), Arc.getId("please_do_not_use_this"));
+        ReloadListenerRegistry.register(PackType.SERVER_DATA, new ActionManager(), Arc.getId("arc"));
     }
 
     private static void registerEvents() {

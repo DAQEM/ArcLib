@@ -7,7 +7,11 @@ import com.daqem.arc.client.gui.icon.ArcIcons;
 import com.daqem.uilib.client.gui.AbstractScreen;
 import com.daqem.uilib.client.gui.background.Backgrounds;
 import com.daqem.uilib.client.gui.component.texture.TextureComponent;
+import com.daqem.uilib.client.gui.texture.icon.IconTexture;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ARGB;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.List;

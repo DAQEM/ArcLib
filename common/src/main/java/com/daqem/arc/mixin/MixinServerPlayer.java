@@ -39,6 +39,7 @@ import net.minecraft.world.inventory.GrindstoneMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.AirItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
@@ -58,6 +59,9 @@ import java.util.*;
 public abstract class MixinServerPlayer extends Player implements ArcServerPlayer {
 
     @Shadow public ServerGamePacketListenerImpl connection;
+
+    @Shadow public abstract ServerLevel serverLevel();
+
     @Unique
     private Map<ResourceLocation, IActionHolder> arc$actionHolders = new HashMap<>();
     @Unique
@@ -263,12 +267,6 @@ public abstract class MixinServerPlayer extends Player implements ArcServerPlaye
     }
 
     @Override
-    public @NotNull ItemStack eat(Level level, ItemStack itemStack, FoodProperties foodProperties) {
-        PlayerEvents.onPlayerEat(this, itemStack);
-        return super.eat(level, itemStack, foodProperties);
-    }
-
-    @Override
     public double arc$nextRandomDouble() {
         return this.arc$getServerPlayer().getRandom().nextDouble();
     }
@@ -304,10 +302,10 @@ public abstract class MixinServerPlayer extends Player implements ArcServerPlaye
             }
         }
 
-        boolean isCurrentlyWalking = this.walkDist > this.arc$walkingDistance;
-        float distance = this.walkDist - this.arc$walkingDistance;
+        boolean isCurrentlyWalking = this.moveDist > this.arc$walkingDistance;
+        float distance = this.moveDist - this.arc$walkingDistance;
         if (this.arc$isWalking && isCurrentlyWalking) {
-            this.arc$walkingDistance = this.walkDist;
+            this.arc$walkingDistance = this.moveDist;
             MovementEvents.onWalk(this, (int) (this.arc$walkingDistance * 100));
         } else {
             if (this.arc$isWalking) {
@@ -333,8 +331,8 @@ public abstract class MixinServerPlayer extends Player implements ArcServerPlaye
         }
 
         if (this.arc$isHorseRiding && this.getRootVehicle() instanceof Horse horse && horse.isSaddled() && horse.isTamed()) {
-            boolean isCurrentlyRiding = horse.walkDist > this.arc$horseRidingDistance;
-            float horseRidingDistance = horse.walkDist - this.arc$horseRidingDistance;
+            boolean isCurrentlyRiding = horse.moveDist > this.arc$horseRidingDistance;
+            float horseRidingDistance = horse.moveDist - this.arc$horseRidingDistance;
             if (isCurrentlyRiding) {
                 this.arc$horseRidingDistance += horseRidingDistance;
                 MovementEvents.onHorseRide(this, (int) (this.arc$horseRidingDistance * 100));
@@ -347,7 +345,7 @@ public abstract class MixinServerPlayer extends Player implements ArcServerPlaye
                 if (this.getRootVehicle() instanceof Horse horse && horse.isSaddled() && horse.isTamed()) {
                     this.arc$isHorseRiding = true;
                     this.arc$horseRidingDistance = 0;
-                    horse.walkDist = 0;
+                    horse.moveDist = 0;
                     MovementEvents.onStartHorseRiding(this);
                 }
             }
@@ -445,11 +443,11 @@ public abstract class MixinServerPlayer extends Player implements ArcServerPlaye
 
     @Inject(at = @At(
             value = "INVOKE",
-            target = "Lnet/minecraft/world/entity/player/Player;hurt(Lnet/minecraft/world/damagesource/DamageSource;F)Z",
+            target = "Lnet/minecraft/world/entity/player/Player;hurtServer(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/damagesource/DamageSource;F)Z",
             shift = At.Shift.BEFORE),
-            method = "hurt(Lnet/minecraft/world/damagesource/DamageSource;F)Z",
+            method = "hurtServer",
             cancellable = true)
-    public void hurt(DamageSource damageSource, float f, CallbackInfoReturnable<Boolean> cir) {
+    public void hurt(ServerLevel serverLevel, DamageSource damageSource, float f, CallbackInfoReturnable<Boolean> cir) {
         Entity entity = this.arc$getPlayer();
         if (entity instanceof ArcServerPlayer arcServerPlayer) {
             ActionResult actionResult = new ActionDataBuilder(arcServerPlayer, ActionType.GET_HURT)
@@ -480,13 +478,13 @@ public abstract class MixinServerPlayer extends Player implements ArcServerPlaye
                 f = f * actionResult.getDamageModifier();
             }
         }
-        cir.setReturnValue(super.hurt(damageSource, f));
+        cir.setReturnValue(super.hurtServer(serverLevel, damageSource, f));
     }
 
     @Inject(at = @At("HEAD"), method = "triggerRecipeCrafted")
     public void mixinTriggerRecipeCrafted(RecipeHolder<?> recipeHolder, List<ItemStack> list, CallbackInfo ci) {
         Level level = level();
-        PlayerEvents.onCraftItem(this, recipeHolder.value(), recipeHolder.value().getResultItem(level.registryAccess()), level);
+        PlayerEvents.onCraftItem(this, recipeHolder.value(), recipeHolder.value().assemble(null, level.registryAccess()), level);
     }
 
     @Inject(at = @At("TAIL"), method = "restoreFrom(Lnet/minecraft/server/level/ServerPlayer;Z)V")

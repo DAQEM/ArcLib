@@ -3,14 +3,12 @@ package com.daqem.arc.mixin;
 import com.daqem.arc.event.triggers.PlayerEvents;
 import com.daqem.arc.api.player.ArcServerPlayer;
 import com.daqem.arc.api.action.result.ActionResult;
-import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.UseAnim;
+import net.minecraft.world.item.ItemUseAnimation;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Mixin;
@@ -27,15 +25,14 @@ import java.util.function.Consumer;
 public abstract class MixinItemStack {
 
     @Shadow
-    public abstract UseAnim getUseAnimation();
-
-    @Shadow
     public abstract Item getItem();
+
+    @Shadow public abstract ItemUseAnimation getUseAnimation();
 
     @Inject(at = @At("HEAD"), method = "finishUsingItem(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/entity/LivingEntity;)Lnet/minecraft/world/item/ItemStack;")
     private void finishUsingItem(Level level, LivingEntity entity, CallbackInfoReturnable<ItemStack> cir) {
         if (entity instanceof ArcServerPlayer player) {
-            if (this.getUseAnimation() == UseAnim.DRINK) {
+            if (this.getUseAnimation() == ItemUseAnimation.DRINK) {
                 PlayerEvents.onPlayerDrink(player, arc$getItemStack());
             }
         }

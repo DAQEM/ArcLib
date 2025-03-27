@@ -45,7 +45,7 @@ public abstract class AbstractTabComponent extends ButtonComponent {
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta, int color) {
         if (isSelected()) {
             setZ(1);
             int targetY = defaultY - 3;
@@ -61,7 +61,7 @@ public abstract class AbstractTabComponent extends ButtonComponent {
             }
         }
 
-        super.render(guiGraphics, mouseX, mouseY, delta);
+        super.render(guiGraphics, mouseX, mouseY, delta, color);
     }
 
     public boolean isSelected() {

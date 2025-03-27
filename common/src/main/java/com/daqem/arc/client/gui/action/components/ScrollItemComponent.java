@@ -34,8 +34,8 @@ public class ScrollItemComponent extends ButtonComponent {
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
-        super.render(guiGraphics, mouseX, mouseY, delta);
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta, int color) {
+        super.render(guiGraphics, mouseX, mouseY, delta, color);
         nameText.renderBase(guiGraphics, mouseX, mouseY, delta);
         descriptionText.renderBase(guiGraphics, mouseX, mouseY, delta);
     }

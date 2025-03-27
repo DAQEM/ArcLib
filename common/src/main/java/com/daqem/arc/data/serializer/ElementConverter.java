@@ -1,5 +1,6 @@
 package com.daqem.arc.data.serializer;
 
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -7,8 +8,10 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -37,7 +40,7 @@ public class ElementConverter<T> {
     }
 
     public T convertToElement(String element) {
-        T type = registry.get(ResourceLocation.parse(element));
+        T type = registry.get(ResourceLocation.parse(element)).map(Holder.Reference::value).orElse(null);
 
         if (type instanceof Block && element.equals("minecraft:air")) {
             return type;
@@ -54,7 +57,7 @@ public class ElementConverter<T> {
 
         // If not found in the registry, it will return the default value for the type.
         // This checks if the element is actually in the registry.
-        else if (type == registry.get(ResourceLocation.parse("x"))) {
+        else if (type == registry.get(ResourceLocation.parse("x")) || type == null) {
             throw new IllegalArgumentException(element + " could not be found in registry " + registry.key().location());
         }
 
@@ -63,7 +66,8 @@ public class ElementConverter<T> {
 
     private Function<String, T> convertToElement() {
         return elementLoc -> registry.get(
-                ResourceLocation.parse(elementLoc));
+                ResourceLocation.parse(elementLoc)).map(Holder.Reference::value).orElseThrow(
+                () -> new IllegalArgumentException(elementLoc + " could not be found in registry " + registry.key().location()));
     }
 
     private Function<String, TagKey<T>> replaceHashAndConvertToTag() {

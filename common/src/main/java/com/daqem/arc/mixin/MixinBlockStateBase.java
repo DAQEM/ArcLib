@@ -11,7 +11,6 @@ import com.daqem.arc.api.action.data.type.ActionDataType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
@@ -28,13 +27,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class MixinBlockStateBase {
 
     @Inject(at = @At("RETURN"), method = "useItemOn", cancellable = true)
-    public void use(ItemStack itemStack, Level level, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult, CallbackInfoReturnable<ItemInteractionResult> cir) {
+    public void use(ItemStack itemStack, Level level, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult, CallbackInfoReturnable<InteractionResult> cir) {
         if (player instanceof ArcServerPlayer arcServerPlayer) {
-            if (cir.getReturnValue() == ItemInteractionResult.CONSUME) {
+            if (cir.getReturnValue() == InteractionResult.CONSUME) {
                 BlockState state = level.getBlockState(blockHitResult.getBlockPos());
                 ActionResult actionResult = BlockEvents.onBlockInteract(arcServerPlayer, state, blockHitResult.getBlockPos(), level);
                 if (actionResult.shouldCancelAction()) {
-                    cir.setReturnValue(ItemInteractionResult.FAIL);
+                    cir.setReturnValue(InteractionResult.FAIL);
                 }
             }
         }
