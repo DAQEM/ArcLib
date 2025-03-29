@@ -1,5 +1,6 @@
 package com.daqem.arc.mixin;
 
+import com.daqem.arc.api.IArcAbstractArrow;
 import com.daqem.arc.event.triggers.ItemEvents;
 import com.daqem.arc.event.triggers.PlayerEvents;
 import com.daqem.arc.api.player.ArcServerPlayer;
@@ -26,7 +27,7 @@ public abstract class MixinProjectile extends Entity {
         if (entity instanceof ArcServerPlayer player) {
             if ((Projectile) (Object) this instanceof ThrowableItemProjectile throwableItemProjectile) {
                 ItemEvents.onThrowItem(player, throwableItemProjectile);
-            } else if ((Projectile) (Object) this instanceof AbstractArrow abstractArrow) {
+            } else if ((Projectile) (Object) this instanceof IArcAbstractArrow abstractArrow) {
                 PlayerEvents.onShootProjectile(player, abstractArrow);
             }
         }
