@@ -1,3 +1,1 @@
 accessWidener   v2  named
-
-accessible method net/minecraft/world/entity/projectile/AbstractArrow getPickupItem ()Lnet/minecraft/world/item/ItemStack;
