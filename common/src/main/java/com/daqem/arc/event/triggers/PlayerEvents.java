@@ -1,6 +1,6 @@
 package com.daqem.arc.event.triggers;
 
-import com.daqem.arc.Arc;
+import com.daqem.arc.api.IArcAbstractArrow;
 import com.daqem.arc.api.action.type.ActionType;
 import com.daqem.arc.api.player.ArcPlayer;
 import com.daqem.arc.api.player.ArcServerPlayer;
@@ -32,10 +32,10 @@ public class PlayerEvents {
                 .sendToAction();
     }
 
-    public static void onShootProjectile(ArcServerPlayer player, AbstractArrow shotArrowEntity) {
+    public static void onShootProjectile(ArcServerPlayer player, IArcAbstractArrow shotArrowEntity) {
         new ActionDataBuilder(player, ActionType.SHOOT_PROJECTILE)
-                .withData(ActionDataType.ITEM_STACK, shotArrowEntity.getPickupItem())
-                .withData(ActionDataType.ENTITY, shotArrowEntity)
+                .withData(ActionDataType.ITEM_STACK, shotArrowEntity.arc$getPickupItem())
+                .withData(ActionDataType.ENTITY, (AbstractArrow) shotArrowEntity)
                 .build()
                 .sendToAction();
     }
