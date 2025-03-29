@@ -33,7 +33,7 @@ public class Arc {
         ArcNetworking.init();
         registerEvents();
         ReloadListenerRegistry.register(PackType.SERVER_DATA, new PlayerActionHolderManager(), Arc.getId("please_do_not_use_this"));
-        ReloadListenerRegistry.register(PackType.SERVER_DATA, new ActionManager(), Arc.getId("arc"));
+        ReloadListenerRegistry.register(PackType.SERVER_DATA, new ActionManager(), Arc.getId(MOD_ID));
     }
 
     private static void registerEvents() {

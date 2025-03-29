@@ -36,7 +36,16 @@ public class ActionManager extends SimplePreparableReloadListener<List<IAction>>
 
     @Override
     protected @NotNull List<IAction> prepare(ResourceManager resourceManager, ProfilerFiller profilerFiller) {
-        Map<ResourceLocation, Resource> resourceMap = resourceManager.listResources("arc", (resourceLocation) -> true);
+        Map<ResourceLocation, Resource> resourceMap = resourceManager.listResources("arc", (resourceLocation) ->
+                        resourceLocation.getPath().endsWith(".json")).entrySet().stream()
+                .collect(Collectors.toMap(entry ->
+                                ResourceLocation.fromNamespaceAndPath(
+                                        entry.getKey().getNamespace(),
+                                        entry.getKey().getPath()
+                                                .substring(0, entry.getKey().getPath().length() - ".json".length())
+                                                .substring("arc/".length())),
+                        Map.Entry::getValue));
+
         Map<ResourceLocation, JsonElement> map = new HashMap<>();
         for (Map.Entry<ResourceLocation, Resource> entry : resourceMap.entrySet()) {
             ResourceLocation location = entry.getKey();
