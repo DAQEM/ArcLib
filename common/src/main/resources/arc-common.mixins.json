@@ -23,7 +23,9 @@
     "MixinItemStack",
     "MixinLivingEntity",
     "MixinProjectile",
+    "MixinResultSlot",
     "MixinServerPlayer",
+    "MixinSmithingMenu",
     "PlayerListMixin",
     "common.MixinPlayer"
   ],
