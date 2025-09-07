@@ -479,12 +479,6 @@ public abstract class MixinServerPlayer extends Player implements ArcServerPlaye
         cir.setReturnValue(super.hurtServer(serverLevel, damageSource, f));
     }
 
-    @Inject(at = @At("HEAD"), method = "triggerRecipeCrafted")
-    public void mixinTriggerRecipeCrafted(RecipeHolder<?> recipeHolder, List<ItemStack> list, CallbackInfo ci) {
-        Level level = level();
-        PlayerEvents.onCraftItem(this, recipeHolder.value(), recipeHolder.value().assemble(null, level.registryAccess()), level);
-    }
-
     @Inject(at = @At("TAIL"), method = "restoreFrom(Lnet/minecraft/server/level/ServerPlayer;Z)V")
     public void restoreFrom(ServerPlayer oldPlayer, boolean alive, CallbackInfo ci) {
         if (oldPlayer instanceof ArcServerPlayer arcServerPlayer) {
