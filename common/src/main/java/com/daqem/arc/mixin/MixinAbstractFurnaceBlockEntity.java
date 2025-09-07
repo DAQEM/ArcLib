@@ -27,7 +27,7 @@ public abstract class MixinAbstractFurnaceBlockEntity {
     @Inject(at = @At("HEAD"), method = "awardUsedRecipesAndPopExperience")
     private void awardUsedRecipesAndPopExperience(ServerPlayer serverPlayer, CallbackInfo ci) {
         if (serverPlayer instanceof ArcServerPlayer arcServerPlayer) {
-            ServerLevel serverLevel = serverPlayer.serverLevel();
+            ServerLevel serverLevel = serverPlayer.level();
             this.recipesUsed.forEach((recipeId, recipeCount) -> serverLevel.recipeAccess().byKey(recipeId).ifPresent((recipe) -> {
                 if (recipe.value() instanceof IArcAbstractCookingRecipe cookingRecipe) {
                     for (int i = 0; i < recipeCount; i++) {

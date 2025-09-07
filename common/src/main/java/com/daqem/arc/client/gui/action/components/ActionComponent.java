@@ -2,85 +2,68 @@ package com.daqem.arc.client.gui.action.components;
 
 import com.daqem.arc.Arc;
 import com.daqem.arc.api.action.IAction;
-import com.daqem.arc.client.gui.icon.ArcIcons;
-import com.daqem.uilib.api.client.gui.texture.ITexture;
-import com.daqem.uilib.client.gui.component.IconComponent;
-import com.daqem.uilib.client.gui.component.SolidColorComponent;
-import com.daqem.uilib.client.gui.component.TextComponent;
-import com.daqem.uilib.client.gui.component.texture.TextureComponent;
-import com.daqem.uilib.client.gui.text.Text;
-import com.daqem.uilib.client.gui.text.TruncatedText;
-import com.daqem.uilib.client.gui.text.multiline.MultiLineText;
-import com.daqem.uilib.client.gui.texture.Texture;
-import net.minecraft.ChatFormatting;
+import com.daqem.uilib.gui.component.color.ColorComponent;
+import com.daqem.uilib.gui.component.sprite.SpriteComponent;
+import com.daqem.uilib.gui.component.text.TextAlign;
+import com.daqem.uilib.gui.component.text.TextComponent;
+import com.daqem.uilib.gui.component.text.TruncatedTextComponent;
+import com.daqem.uilib.gui.component.text.multiline.MultiLineTextComponent;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.network.chat.Style;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class ActionComponent extends TextureComponent {
+public class ActionComponent extends SpriteComponent {
 
-    public static final ITexture BACKGROUND_TEXTURE = new Texture(Arc.getId("textures/gui/action_screen.png"), 0, 0, 326, 166, 362);
-
-    private final Font font;
-    private final int index;
     private final IAction action;
-    private TextComponent titleComponent;
-    private TextComponent indexComponent;
-    private TextComponent descriptionComponent;
-    private SolidColorComponent lineComponent;
-    private ConditionsTabComponent conditionsTabComponent;
-    private RewardsTabComponent rewardsTabComponent;
-    private ScrollComponent scrollComponent;
+    private final ConditionsTabWidget conditionsTabComponent;
+    private final RewardsTabWidget rewardsTabComponent;
+    private final ScrollContainerComponent scrollContainerComponent;
 
-    public ActionComponent(Font font, int index, IAction action) {
-        super(BACKGROUND_TEXTURE, 0, 0, 326, 166);
-        this.font = font;
-        this.index = index;
+    public ActionComponent(int index, IAction action) {
+        super(0, 0, 326, 166, Arc.getId("action_background"));
         this.action = action;
-    }
 
-    @Override
-    public void startRenderable() {
         String indexString = String.valueOf(index + 1);
-        this.titleComponent = new TextComponent(7, 13, new TruncatedText(font, action.getName(), 0, 0, 130 - font.width(indexString), font.lineHeight));
-        this.indexComponent = new TextComponent(140, 13, new Text(font, Arc.literal(indexString), -font.width(indexString), 0));
-        this.descriptionComponent = new TextComponent(7, 13 + 5 + font.lineHeight, new MultiLineText(font, action.getDescription(), 0, 0, 132));
-        this.lineComponent = new SolidColorComponent(7, 13 + font.lineHeight + 1, 132, 1, 0xFFFFFFFF);
-        this.conditionsTabComponent = new ConditionsTabComponent(156, -22, true, new IconComponent(ArcIcons.CONDITION));
-        this.rewardsTabComponent = new RewardsTabComponent(188, -22, false, new IconComponent(ArcIcons.REWARD));
-        this.scrollComponent = new ScrollComponent(150, 0,100, 200, getScrollItemComponents(conditionsTabComponent));
+        Font font = Minecraft.getInstance().font;
+        TruncatedTextComponent titleComponent = new TruncatedTextComponent(7, 13, 130 - font.width(indexString), action.getName().copy().withStyle(Style.EMPTY.withBold(true)), 0xFF333333);
+        TextComponent indexComponent = new TextComponent(140, 13, Arc.literal(indexString), 0xFFAAAAAA);
+        indexComponent.setTextAlign(TextAlign.RIGHT);
+        MultiLineTextComponent descriptionComponent = new MultiLineTextComponent(7, 13 + 5 + font.lineHeight, 132, action.getDescription(), 0xFF555555);
+        ColorComponent lineComponent = new ColorComponent(7, 13 + font.lineHeight + 1, 132, 1, 0xFFFFFFFF);
+        this.conditionsTabComponent = new ConditionsTabWidget(156, -28, true, new SpriteComponent(0, 0, 18, 18, Arc.getId("conditions_icon")), this);
+        this.rewardsTabComponent = new RewardsTabWidget(188, -28, false, new SpriteComponent(0, 0, 18, 18, Arc.getId("rewards_icon")), this);
+        this.scrollContainerComponent = new ScrollContainerComponent(157, 15, 162, 140, getScrollItemComponents(conditionsTabComponent));
 
-        if (titleComponent.getText() != null) {
-            titleComponent.getText().setTextColor(0x333333);
-            titleComponent.getText().setBold(true);
-        }
-        if (indexComponent.getText() != null) {
-            indexComponent.getText().setTextColor(ChatFormatting.GRAY);
-        }
-        if (descriptionComponent.getText() != null) {
-            descriptionComponent.getText().setTextColor(ChatFormatting.DARK_GRAY);
-        }
-
-        addChildren(conditionsTabComponent, rewardsTabComponent,
-                titleComponent, indexComponent, descriptionComponent,
-                lineComponent, scrollComponent);
-
-        super.startRenderable();
+        this.addComponent(titleComponent);
+        this.addComponent(indexComponent);
+        this.addComponent(descriptionComponent);
+        this.addComponent(lineComponent);
+        this.addWidget(conditionsTabComponent);
+        this.addWidget(rewardsTabComponent);
+        this.addComponent(scrollContainerComponent);
     }
 
-    public void selectTab(AbstractTabComponent tabComponent) {
+    public void selectTab(AbstractTabWidget tabComponent) {
         getTabComponents().forEach(t -> t.setSelected(false));
         tabComponent.setSelected(true);
-        scrollComponent.setItems(getScrollItemComponents(tabComponent));
+        scrollContainerComponent.setItems(getScrollItemComponents(tabComponent));
+        scrollContainerComponent.updateParentPosition(
+                getTotalX(),
+                getTotalY(),
+                getWidth(),
+                getHeight()
+        );
     }
 
-    public List<AbstractTabComponent> getTabComponents() {
+    public List<AbstractTabWidget> getTabComponents() {
         return Arrays.asList(conditionsTabComponent, rewardsTabComponent);
     }
 
-    public List<ScrollItemComponent> getScrollItemComponents(AbstractTabComponent activeTabComponent) {
+    public List<ScrollItemComponent> getScrollItemComponents(AbstractTabWidget activeTabComponent) {
         if (action != null) {
             if (activeTabComponent == conditionsTabComponent) {
                 return action.getConditions().stream()

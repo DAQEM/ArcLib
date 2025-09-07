@@ -1,5 +1,11 @@
 {
-  "arc.screen.action": "Action Screen",
+  "arc.screen.action": "Action",
+  "arc.screen.action_holders": "Action Holders",
+  "arc.screen.action.button.previous": "Previous",
+  "arc.screen.action.button.next": "Next",
+  "arc.screen.action.button.conditions": "Conditions",
+  "arc.screen.action.button.rewards": "Rewards",
+  "arc.screen.action_holders.actions_count": "Actions: %s",
   "arc.message.no_actions": "No actions found.",
   "arc.action.on_swim": "On Swim",
   "arc.action.description.on_swim": "Fires when the player is swimming.",

@@ -60,8 +60,6 @@ public abstract class MixinServerPlayer extends Player implements ArcServerPlaye
 
     @Shadow public ServerGamePacketListenerImpl connection;
 
-    @Shadow public abstract ServerLevel serverLevel();
-
     @Unique
     private Map<ResourceLocation, IActionHolder> arc$actionHolders = new HashMap<>();
     @Unique
@@ -99,8 +97,8 @@ public abstract class MixinServerPlayer extends Player implements ArcServerPlaye
     @Unique
     public BlockPosCache arc$blockPosCache = new BlockPosCache();
 
-    public MixinServerPlayer(Level level, BlockPos blockPos, float yaw, GameProfile gameProfile) {
-        super(level, blockPos, yaw, gameProfile);
+    public MixinServerPlayer(Level level, GameProfile gameProfile) {
+        super(level, gameProfile);
     }
 
     @Override

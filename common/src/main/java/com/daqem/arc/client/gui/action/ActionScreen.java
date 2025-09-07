@@ -3,15 +3,9 @@ package com.daqem.arc.client.gui.action;
 import com.daqem.arc.Arc;
 import com.daqem.arc.api.action.IAction;
 import com.daqem.arc.client.gui.action.components.ActionComponent;
-import com.daqem.arc.client.gui.icon.ArcIcons;
-import com.daqem.uilib.client.gui.AbstractScreen;
-import com.daqem.uilib.client.gui.background.Backgrounds;
-import com.daqem.uilib.client.gui.component.texture.TextureComponent;
-import com.daqem.uilib.client.gui.texture.icon.IconTexture;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.ARGB;
+import com.daqem.arc.client.gui.action.widgets.PageSwitchButtonWidget;
+import com.daqem.uilib.gui.AbstractScreen;
+import com.daqem.uilib.gui.background.BlurredBackground;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.List;
@@ -24,60 +18,39 @@ public class ActionScreen extends AbstractScreen {
     private final List<IAction> actions;
     private IAction selectedAction;
     public ActionComponent actionComponent;
-    public TextureComponent arrowLeftComponent;
-    public TextureComponent arrowRightComponent;
+    public PageSwitchButtonWidget arrowLeftComponent;
+    public PageSwitchButtonWidget arrowRightComponent;
 
     public ActionScreen(List<IAction> actions, IAction selectedAction) {
         super(Arc.translatable("screen.action"));
         this.actions = actions;
         this.selectedAction = selectedAction;
+
+        setBackground(new BlurredBackground());
     }
 
     @Override
-    public void startScreen() {
-        this.actionComponent = new ActionComponent(getFont(), getCurrentIndex(), selectedAction);
-        this.arrowLeftComponent = new TextureComponent(ArcIcons.ARROW_LEFT, 0, 0, 20, 20);
-        this.arrowRightComponent = new TextureComponent(ArcIcons.ARROW_RIGHT, 0, 0, 20, 20);
+    public void init() {
+        this.actionComponent = new ActionComponent(getCurrentIndex(), selectedAction);
+        this.actionComponent.center();
 
-        setPauseScreen(false);
-        setBackground(Backgrounds.getDefaultBackground(getWidth(), getHeight()));
+        this.arrowLeftComponent = new PageSwitchButtonWidget(0, 0, Arc.getId("left_button"), button -> moveToPreviousActionComponent(), Arc.translatable("screen.action.button.previous"));
+        this.arrowRightComponent = new PageSwitchButtonWidget(0, 0, Arc.getId("right_button"), button -> moveToNextActionComponent(), Arc.translatable("screen.action.button.next"));
 
-        startComponents();
-    }
+        this.addComponent(actionComponent);
+        this.addWidget(this.arrowLeftComponent);
+        this.addWidget(this.arrowRightComponent);
 
-    @Override
-    public void onResizeScreenRepositionComponents(int width, int height) {
-        super.onResizeScreenRepositionComponents(width, height);
-        positionComponents();
-    }
+        super.init();
 
-    private void startComponents() {
-        arrowLeftComponent.setOnClickEvent((clickedObject, screen, mouseX, mouseY, button) -> {
-            moveToPreviousActionComponent();
-            return true;
-        });
-        arrowRightComponent.setOnClickEvent((clickedObject, screen, mouseX, mouseY, button) -> {
-            moveToNextActionComponent();
-            return true;
-        });
-        addComponents(actionComponent, arrowLeftComponent, arrowRightComponent);
-        positionComponents();
-    }
-
-    private void positionComponents() {
-        actionComponent.center();
-        arrowLeftComponent.setX(actionComponent.getX());
-        arrowLeftComponent.setY(actionComponent.getY() + actionComponent.getHeight() + 5);
-        arrowRightComponent.setX(actionComponent.getX() + actionComponent.getWidth() - arrowRightComponent.getWidth());
-        arrowRightComponent.setY(actionComponent.getY() + actionComponent.getHeight() + 5);
+        this.arrowLeftComponent.setX(this.actionComponent.getX());
+        this.arrowLeftComponent.setY(this.actionComponent.getY() + this.actionComponent.getHeight() + 5);
+        this.arrowRightComponent.setX(this.actionComponent.getX() + this.actionComponent.getWidth() - this.arrowRightComponent.getWidth());
+        this.arrowRightComponent.setY(this.actionComponent.getY() + this.actionComponent.getHeight() + 5);
     }
 
     private int getCurrentIndex() {
         return actions.indexOf(selectedAction);
-    }
-
-    @Override
-    public void onTickScreen(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
     }
 
     @Override
@@ -92,42 +65,43 @@ public class ActionScreen extends AbstractScreen {
         return super.keyPressed(keyCode, scanCode, modifiers);
     }
 
-    private void moveToActionComponent(ActionComponent actionComponent) {
-        actionComponent.center();
-        removeComponent(this.actionComponent);
-        selectedAction = actionComponent.getAction();
-        this.actionComponent = actionComponent;
-        addComponent(this.actionComponent);
-        this.actionComponent.startRenderable();
+    private void moveToActionComponent(IAction action) {
+        this.selectedAction = action;
+        this.repositionElements();
     }
 
-    private ActionComponent getNextActionComponent() {
+    private IAction getNextAction() {
         int nextIndex = getCurrentIndex() + 1;
         if (nextIndex >= actions.size()) {
             nextIndex = 0;
         }
         if (nextIndex == getCurrentIndex()) {
-            return actionComponent;
+            return selectedAction;
         }
-        return new ActionComponent(getFont(), nextIndex, actions.get(nextIndex));
+        return actions.get(nextIndex);
     }
 
-    private ActionComponent getPreviousActionComponent() {
+    private IAction getPreviousAction() {
         int previousIndex = getCurrentIndex() - 1;
         if (previousIndex < 0) {
             previousIndex = actions.size() - 1;
         }
         if (previousIndex == getCurrentIndex()) {
-            return actionComponent;
+            return selectedAction;
         }
-        return new ActionComponent(getFont(), previousIndex, actions.get(previousIndex));
+        return actions.get(previousIndex);
     }
 
     private void moveToPreviousActionComponent() {
-        moveToActionComponent(getPreviousActionComponent());
+        moveToActionComponent(getPreviousAction());
     }
 
     private void moveToNextActionComponent() {
-        moveToActionComponent(getNextActionComponent());
+        moveToActionComponent(getNextAction());
+    }
+
+    @Override
+    public boolean isPauseScreen() {
+        return false;
     }
 }
