@@ -7,7 +7,10 @@ import com.daqem.arc.api.condition.serializer.IConditionSerializer;
 import com.daqem.arc.api.condition.type.ConditionType;
 import com.daqem.arc.api.condition.type.IConditionType;
 import com.google.gson.*;
+import net.minecraft.core.Holder;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -47,6 +50,24 @@ public class BlocksCondition extends AbstractCondition {
         return ConditionType.BLOCKS;
     }
 
+    public List<Block> getBlocks() {
+        return blocks;
+    }
+
+    public List<TagKey<Block>> getBlockTags() {
+        return blockTags;
+    }
+
+    public List<Block> getAllBlocks(RegistryAccess registryAccess) {
+        List<Block> allBlocks = new ArrayList<>(blocks);
+        for (TagKey<Block> tag : blockTags) {
+            registryAccess.lookupOrThrow(Registries.BLOCK)
+                    .get(tag)
+                    .ifPresent(x -> allBlocks.addAll(x.stream().map(Holder::value).toList()));
+        }
+        return allBlocks;
+    }
+
     public static class Serializer implements IConditionSerializer<BlocksCondition> {
 
         @Override
@@ -72,7 +93,6 @@ public class BlocksCondition extends AbstractCondition {
             for (int i = 0; i < tagCount; i++) {
                 blockTags.add(TagKey.create(BuiltInRegistries.BLOCK.key(), friendlyByteBuf.readResourceLocation()));
             }
-
 
             return new BlocksCondition(
                     inverted,

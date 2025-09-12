@@ -50,6 +50,10 @@ public class EffectAmplifierAdditionReward extends AbstractReward {
         return RewardType.EFFECT_AMPLIFIER_ADDITION;
     }
 
+    public int getAddition() {
+        return addition;
+    }
+
     public static class Serializer implements IRewardSerializer<EffectAmplifierAdditionReward> {
 
         @Override

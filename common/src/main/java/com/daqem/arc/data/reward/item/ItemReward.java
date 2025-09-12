@@ -43,6 +43,14 @@ public class ItemReward extends AbstractReward {
         return RewardType.ITEM;
     }
 
+    public ItemStack getItemStack() {
+        return itemStack;
+    }
+
+    public int getAmount() {
+        return amount;
+    }
+
     public static class Serializer implements IRewardSerializer<ItemReward> {
 
         @Override

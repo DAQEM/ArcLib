@@ -37,6 +37,10 @@ public class DamageSourceCondition extends AbstractCondition {
         return ConditionType.DAMAGE_SOURCE;
     }
 
+    public String getSource() {
+        return source;
+    }
+
     public static class Serializer implements IConditionSerializer<DamageSourceCondition> {
 
         @Override

@@ -41,6 +41,10 @@ public class DimensionCondition extends AbstractCondition {
         return ConditionType.DIMENSION;
     }
 
+    public ResourceKey<Level> getDimension() {
+        return dimension;
+    }
+
     public static class Serializer implements IConditionSerializer<DimensionCondition> {
 
         @Override

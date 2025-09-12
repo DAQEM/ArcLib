@@ -51,6 +51,14 @@ public class ItemInHandCondition extends AbstractCondition {
         return ConditionType.ITEM_IN_HAND;
     }
 
+    public ItemStack getItemStack() {
+        return itemStack;
+    }
+
+    public InteractionHand getHand() {
+        return hand;
+    }
+
     public static class Serializer implements IConditionSerializer<ItemInHandCondition> {
 
         @Override
