@@ -128,6 +128,10 @@ public class MultipleArrowsReward extends AbstractReward {
         return 1.0F / (random.nextFloat() * 0.5F + 1.8F) + f;
     }
 
+    public int getAmount() {
+        return amount;
+    }
+
     public static class Serializer implements IRewardSerializer<MultipleArrowsReward> {
 
         @Override

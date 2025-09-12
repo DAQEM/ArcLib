@@ -35,6 +35,10 @@ public class DestroySpeedMultiplierReward extends AbstractReward {
         return RewardType.DESTROY_SPEED_MULTIPLIER;
     }
 
+    public float getMultiplier() {
+        return multiplier;
+    }
+
     public static class Serializer implements IRewardSerializer<DestroySpeedMultiplierReward> {
 
         @Override

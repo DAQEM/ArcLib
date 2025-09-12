@@ -48,6 +48,14 @@ public class BlockHardnessCondition extends AbstractCondition {
         return ConditionType.BLOCK_HARDNESS;
     }
 
+    public float getMin() {
+        return min;
+    }
+
+    public float getMax() {
+        return max;
+    }
+
     public static class Serializer implements IConditionSerializer<BlockHardnessCondition> {
 
         @Override

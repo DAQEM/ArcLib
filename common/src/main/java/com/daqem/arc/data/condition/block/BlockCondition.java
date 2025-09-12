@@ -39,6 +39,10 @@ public class BlockCondition extends AbstractCondition {
         return ConditionType.BLOCK;
     }
 
+    public Block getBlock() {
+        return block;
+    }
+
     public static class Serializer implements IConditionSerializer<BlockCondition> {
 
         @Override

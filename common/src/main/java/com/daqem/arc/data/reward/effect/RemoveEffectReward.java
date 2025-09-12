@@ -14,7 +14,6 @@ import net.minecraft.world.entity.player.Player;
 
 public class RemoveEffectReward extends AbstractReward {
 
-
     public RemoveEffectReward(double chance, int priority) {
         super(chance, priority);
     }

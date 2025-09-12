@@ -52,6 +52,18 @@ public class ScoreboardCondition extends AbstractCondition {
         return ConditionType.SCOREBOARD;
     }
 
+    public String getObjective() {
+        return objective;
+    }
+
+    public int getMin() {
+        return min;
+    }
+
+    public int getMax() {
+        return max;
+    }
+
     public static class Serializer implements IConditionSerializer<ScoreboardCondition> {
 
         @Override

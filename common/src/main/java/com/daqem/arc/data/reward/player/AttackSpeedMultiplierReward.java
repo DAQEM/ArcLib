@@ -35,6 +35,10 @@ public class AttackSpeedMultiplierReward extends AbstractReward {
         return RewardType.ATTACK_SPEED_MULTIPLIER;
     }
 
+    public float getMultiplier() {
+        return multiplier;
+    }
+
     public static class Serializer implements IRewardSerializer<AttackSpeedMultiplierReward> {
 
         @Override

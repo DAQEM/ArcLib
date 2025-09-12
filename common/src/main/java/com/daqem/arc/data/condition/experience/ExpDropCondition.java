@@ -43,6 +43,14 @@ public class ExpDropCondition extends AbstractCondition {
         return ConditionType.EXP_DROP;
     }
 
+    public int getMin() {
+        return min;
+    }
+
+    public int getMax() {
+        return max;
+    }
+
     public static class Serializer implements IConditionSerializer<ExpDropCondition> {
 
         @Override

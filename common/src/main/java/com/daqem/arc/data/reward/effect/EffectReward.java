@@ -52,6 +52,18 @@ public class EffectReward extends AbstractReward {
         return RewardType.EFFECT;
     }
 
+    public MobEffect getEffect() {
+        return effect;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public int getAmplifier() {
+        return amplifier;
+    }
+
     public static class Serializer implements IRewardSerializer<EffectReward> {
 
         @Override

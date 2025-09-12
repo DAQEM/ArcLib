@@ -53,6 +53,10 @@ public class DistanceCondition extends AbstractCondition {
         return ConditionType.DISTANCE;
     }
 
+    public int getDistanceInBlocks() {
+        return distanceInBlocks;
+    }
+
     public static class Serializer implements IConditionSerializer<DistanceCondition> {
 
         @Override

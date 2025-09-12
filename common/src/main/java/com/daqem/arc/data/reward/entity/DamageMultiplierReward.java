@@ -35,6 +35,10 @@ public class DamageMultiplierReward extends AbstractReward {
         return RewardType.DAMAGE_MULTIPLIER;
     }
 
+    public double getMultiplier() {
+        return multiplier;
+    }
+
     public static class Serializer implements IRewardSerializer<DamageMultiplierReward> {
 
         @Override
