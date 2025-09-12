@@ -36,6 +36,10 @@ public class NotCondition extends AbstractCondition {
         return ConditionType.NOT;
     }
 
+    public List<ICondition> getConditions() {
+        return conditions;
+    }
+
     public static class Serializer implements IConditionSerializer<NotCondition> {
 
         @Override

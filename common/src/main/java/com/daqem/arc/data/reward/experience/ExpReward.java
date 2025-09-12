@@ -46,6 +46,14 @@ public class ExpReward extends AbstractReward {
         return new ActionResult();
     }
 
+    public int getMin() {
+        return min;
+    }
+
+    public int getMax() {
+        return max;
+    }
+
     public static class Serializer implements IRewardSerializer<ExpReward> {
 
         @Override

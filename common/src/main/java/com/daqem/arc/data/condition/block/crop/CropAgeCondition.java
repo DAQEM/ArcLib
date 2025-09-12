@@ -55,6 +55,10 @@ public class CropAgeCondition extends AbstractCondition {
         return ConditionType.CROP_AGE;
     }
 
+    public int getAge() {
+        return age;
+    }
+
     public static class Serializer implements IConditionSerializer<CropAgeCondition> {
 
         @Override

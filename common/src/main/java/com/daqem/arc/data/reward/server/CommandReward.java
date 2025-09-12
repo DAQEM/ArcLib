@@ -73,6 +73,10 @@ public class CommandReward extends AbstractReward {
         return new ActionResult();
     }
 
+    public String getCommand() {
+        return command;
+    }
+
     public static class Serializer implements IRewardSerializer<CommandReward> {
 
         @Override

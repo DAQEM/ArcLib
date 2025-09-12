@@ -38,6 +38,10 @@ public class EffectCategoryCondition extends AbstractCondition {
         return ConditionType.EFFECT_CATEGORY;
     }
 
+    public MobEffectCategory getEffectCategory() {
+        return effectCategory;
+    }
+
     public static class Serializer implements IConditionSerializer<EffectCategoryCondition> {
 
         @Override

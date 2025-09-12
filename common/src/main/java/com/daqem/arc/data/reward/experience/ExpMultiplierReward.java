@@ -53,6 +53,10 @@ public class ExpMultiplierReward extends AbstractReward {
         return RewardType.EXP_MULTIPLIER;
     }
 
+    public int getMultiplier() {
+        return multiplier;
+    }
+
     public static class Serializer implements IRewardSerializer<ExpMultiplierReward> {
 
         @Override

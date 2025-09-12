@@ -38,6 +38,10 @@ public class TeamCondition extends AbstractCondition {
         return ConditionType.TEAM;
     }
 
+    public String getTeam() {
+        return team;
+    }
+
     public static class Serializer implements IConditionSerializer<TeamCondition> {
 
         @Override

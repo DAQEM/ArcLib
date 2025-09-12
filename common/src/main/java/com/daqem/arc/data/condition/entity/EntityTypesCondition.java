@@ -42,6 +42,10 @@ public class EntityTypesCondition extends AbstractCondition {
         return ConditionType.ENTITY_TYPES;
     }
 
+    public List<EntityType<?>> getEntityTypes() {
+        return entityTypes;
+    }
+
     public static class Serializer implements IConditionSerializer<EntityTypesCondition> {
 
         @Override

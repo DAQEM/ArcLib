@@ -50,6 +50,10 @@ public class EffectDurationMultiplierReward extends AbstractReward {
         return RewardType.EFFECT_DURATION_MULTIPLIER;
     }
 
+    public double getMultiplier() {
+        return multiplier;
+    }
+
     public static class Serializer implements IRewardSerializer<EffectDurationMultiplierReward> {
 
         @Override

@@ -44,6 +44,10 @@ public class MoveToEntityReward extends AbstractReward {
         return RewardType.MOVE_TO_ENTITY;
     }
 
+    public float getForce() {
+        return force;
+    }
+
     public static class Serializer implements IRewardSerializer<MoveToEntityReward> {
 
         @Override

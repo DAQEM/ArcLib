@@ -39,6 +39,10 @@ public class EntityInBlockCondition extends AbstractCondition {
         return ConditionType.ENTITY_IN_BLOCK;
     }
 
+    public Block getBlock() {
+        return block;
+    }
+
     public static class Serializer implements IConditionSerializer<EntityInBlockCondition> {
 
         @Override
