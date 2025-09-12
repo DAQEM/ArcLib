@@ -50,6 +50,10 @@ public class ItemEquippedCondition extends AbstractCondition {
         return ConditionType.ITEM_EQUIPPED;
     }
 
+    public ItemStack getItemStack() {
+        return itemStack;
+    }
+
     public static class Serializer implements IConditionSerializer<ItemEquippedCondition> {
 
         @Override

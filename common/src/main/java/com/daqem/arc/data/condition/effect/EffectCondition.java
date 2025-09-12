@@ -41,6 +41,10 @@ public class EffectCondition extends AbstractCondition {
         return ConditionType.EFFECT;
     }
 
+    public MobEffect getEffect() {
+        return effect;
+    }
+
     public static class Serializer implements IConditionSerializer<EffectCondition> {
 
         @Override

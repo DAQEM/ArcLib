@@ -37,6 +37,10 @@ public class ExpLevelCondition extends AbstractCondition {
         return ConditionType.EXP_LEVEL;
     }
 
+    public int getLevel() {
+        return level;
+    }
+
     public static class Serializer implements IConditionSerializer<ExpLevelCondition> {
 
         @Override

@@ -56,6 +56,14 @@ public class ItemCondition extends AbstractCondition {
         return ConditionType.ITEM;
     }
 
+    public ItemStack getItemStack() {
+        return itemStack;
+    }
+
+    public boolean isCheckComponents() {
+        return checkComponents;
+    }
+
     public static class Serializer implements IConditionSerializer<ItemCondition> {
 
         @Override

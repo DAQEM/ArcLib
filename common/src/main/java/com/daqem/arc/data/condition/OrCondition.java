@@ -34,6 +34,10 @@ public class OrCondition extends AbstractCondition {
         return ConditionType.OR;
     }
 
+    public List<ICondition> getConditions() {
+        return conditions;
+    }
+
     public static class Serializer implements IConditionSerializer<OrCondition> {
 
         @Override

@@ -92,6 +92,10 @@ public class DropItemReward extends AbstractReward {
         return RewardType.DROP_ITEM;
     }
 
+    public ItemStack getItemStack() {
+        return itemStack;
+    }
+
     public static class Serializer implements IRewardSerializer<DropItemReward> {
 
         @Override

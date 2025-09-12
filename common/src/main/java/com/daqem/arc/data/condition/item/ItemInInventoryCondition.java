@@ -37,6 +37,10 @@ public class ItemInInventoryCondition extends AbstractCondition {
         return ConditionType.ITEM_IN_INVENTORY;
     }
 
+    public ItemStack getItemStack() {
+        return itemStack;
+    }
+
     public static class Serializer implements IConditionSerializer<ItemInInventoryCondition> {
 
         @Override

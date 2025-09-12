@@ -41,6 +41,10 @@ public class EntityOnFireReward extends AbstractReward {
         return new ActionResult();
     }
 
+    public int getFireTicks() {
+        return fireTicks;
+    }
+
     public static class Serializer implements IRewardSerializer<EntityOnFireReward> {
 
         @Override

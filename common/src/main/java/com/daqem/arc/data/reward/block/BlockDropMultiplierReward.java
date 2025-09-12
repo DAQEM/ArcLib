@@ -74,6 +74,10 @@ public class BlockDropMultiplierReward extends AbstractReward {
         return RewardType.BLOCK_DROP_MULTIPLIER;
     }
 
+    public int getMultiplier() {
+        return multiplier;
+    }
+
     public static class Serializer implements IRewardSerializer<BlockDropMultiplierReward> {
 
         @Override
