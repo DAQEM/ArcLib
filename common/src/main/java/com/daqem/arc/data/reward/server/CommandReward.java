@@ -45,8 +45,8 @@ public class CommandReward extends AbstractReward {
         if (player instanceof ServerPlayer serverPlayer) {
 
             String command = this.command
-                    .replace("%player%", serverPlayer.getGameProfile().getName())
-                    .replace("%uuid%", serverPlayer.getGameProfile().getId().toString())
+                    .replace("%player%", serverPlayer.getGameProfile().name())
+                    .replace("%uuid%", serverPlayer.getGameProfile().id().toString())
                     .replace("%world%", serverPlayer.level().dimension().location().toString())
                     .replace("%player_location%", serverPlayer.blockPosition().getX() + " " + serverPlayer.blockPosition().getY() + " " + serverPlayer.blockPosition().getZ());
 
@@ -65,10 +65,8 @@ public class CommandReward extends AbstractReward {
                 command = command.replace("%item_stack%", BuiltInRegistries.ITEM.getKey(itemStack.getItem()).toString());
             }
 
-            MinecraftServer server = serverPlayer.getServer();
-            if (server != null) {
-                server.getCommands().performPrefixedCommand(server.createCommandSourceStack(), command);
-            }
+            MinecraftServer server = serverPlayer.level().getServer();
+            server.getCommands().performPrefixedCommand(server.createCommandSourceStack(), command);
         }
         return new ActionResult();
     }

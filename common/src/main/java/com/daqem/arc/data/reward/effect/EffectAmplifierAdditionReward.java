@@ -39,7 +39,7 @@ public class EffectAmplifierAdditionReward extends AbstractReward {
         if (effect != null) {
             if (actionData.getPlayer().arc$getPlayer() instanceof ServerPlayer player){
                 MobEffectInstance newEffect = new MobEffectInstance(effect.getEffect(), effect.getDuration(), Mth.floor(effect.getAmplifier() + addition), effect.isAmbient(), effect.isVisible());
-                player.addEffect(newEffect, new ServerPlayer(Objects.requireNonNull(player.getServer()), player.level(), new GameProfile(UUID.randomUUID(), "a"), player.clientInformation()));
+                player.addEffect(newEffect, new ServerPlayer(Objects.requireNonNull(player.level().getServer()), player.level(), new GameProfile(UUID.randomUUID(), "a"), player.clientInformation()));
             }
         }
         return new ActionResult();

@@ -18,7 +18,7 @@ public abstract class IsRecipeCondition<T extends Recipe<?>> extends AbstractCon
     }
 
     protected boolean isSmeltingRecipeVersion(ActionData actionData, IArcAbstractCookingRecipe smeltingRecipe, Class<? extends Recipe<?>> recipeClass) {
-        MinecraftServer server = actionData.getPlayer().arc$getPlayer().getServer();
+        MinecraftServer server = actionData.getPlayer().arc$getPlayer().level().getServer();
         if (server != null) {
             List<IArcAbstractCookingRecipe> recipes = server.getRecipeManager().getRecipes().stream()
                     .filter(recipeClass::isInstance)

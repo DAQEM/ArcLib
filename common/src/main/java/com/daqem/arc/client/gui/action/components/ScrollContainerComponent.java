@@ -16,8 +16,8 @@ public class ScrollContainerComponent extends EmptyComponent {
         super(x, y, width, height);
         this.scrollContainerWidget = new ScrollContainerWidget(width, height) {
             @Override
-            protected void renderScrollbar(GuiGraphics guiGraphics) {
-                super.renderScrollbar(guiGraphics);
+            protected void renderScrollbar(GuiGraphics guiGraphics, int i, int j) {
+                super.renderScrollbar(guiGraphics, i, j);
                 if (!this.scrollbarVisible()) {
                     guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, ResourceLocation.withDefaultNamespace("widget/scroller"), this.scrollBarX(), this.getY(), 6, this.getHeight());
                 }

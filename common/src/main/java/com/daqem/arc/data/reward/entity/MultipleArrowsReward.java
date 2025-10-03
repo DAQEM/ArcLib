@@ -112,7 +112,7 @@ public class MultipleArrowsReward extends AbstractReward {
             Vector3f vector3f = vec32.toVector3f().rotate(quaternionf);
             projectile.shoot(vector3f.x(), vector3f.y(), vector3f.z(), power, 1.0F);
 
-            bow.hurtAndBreak(1, player, LivingEntity.getSlotForHand(player.getUsedItemHand()));
+            bow.hurtAndBreak(1, player, player.getUsedItemHand());
             level.addFreshEntity(projectile);
             level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ARROW_SHOOT, SoundSource.PLAYERS, 1.0F, shotPitch);
         }
