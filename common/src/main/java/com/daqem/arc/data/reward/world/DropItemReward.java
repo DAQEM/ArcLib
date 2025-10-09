@@ -1,23 +1,17 @@
 package com.daqem.arc.data.reward.world;
 
 import com.daqem.arc.api.action.data.ActionData;
-import com.daqem.arc.api.action.data.type.ActionDataType;
+import com.daqem.arc.api.action.data.IActionDataType;
 import com.daqem.arc.api.action.result.ActionResult;
 import com.daqem.arc.api.reward.AbstractReward;
-import com.daqem.arc.api.reward.serializer.IRewardSerializer;
-import com.daqem.arc.api.reward.type.IRewardType;
-import com.daqem.arc.api.reward.type.RewardType;
+import com.daqem.arc.api.reward.IRewardSerializer;
+import com.daqem.arc.api.reward.IRewardType;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
-import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -43,9 +37,9 @@ public class DropItemReward extends AbstractReward {
 
     @Override
     public ActionResult apply(ActionData actionData) {
-        BlockPos pos = actionData.getData(ActionDataType.BLOCK_POSITION);
+        BlockPos pos = actionData.getData(IActionDataType.BLOCK_POSITION);
         if (pos != null) {
-            Level level = actionData.getData(ActionDataType.WORLD);
+            Level level = actionData.getData(IActionDataType.WORLD);
             if (level == null) level = actionData.getPlayer().arc$getLevel();
             if (level instanceof ServerLevel serverLevel) {
                 if (!itemStack.isEmpty()) {
@@ -55,12 +49,12 @@ public class DropItemReward extends AbstractReward {
                                 pos.getX(),
                                 pos.getY(),
                                 pos.getZ(),
-                                itemStack.copy());
+                                itemStack.copyWithCount(1));
                         entity.setDefaultPickUpDelay();
                         serverLevel.addFreshEntity(entity);
                     }
                 } else {
-                    BlockState state = actionData.getData(ActionDataType.BLOCK_STATE);
+                    BlockState state = actionData.getData(IActionDataType.BLOCK_STATE);
                     if (state != null) {
                         List<ItemStack> drops = state.getDrops(
                                 new LootParams.Builder(serverLevel)
@@ -89,7 +83,7 @@ public class DropItemReward extends AbstractReward {
 
     @Override
     public IRewardType<?> getType() {
-        return RewardType.DROP_ITEM;
+        return IRewardType.DROP_ITEM;
     }
 
     public ItemStack getItemStack() {
@@ -100,7 +94,7 @@ public class DropItemReward extends AbstractReward {
 
         @Override
         public DropItemReward fromJson(JsonObject jsonObject, double chance, int priority) {
-            return new DropItemReward(chance, priority, getItemStack(jsonObject.get("item")));
+            return new DropItemReward(chance, priority, getItemStack(jsonObject, "item"));
         }
 
         @Override

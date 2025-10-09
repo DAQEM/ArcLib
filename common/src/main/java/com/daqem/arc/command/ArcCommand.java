@@ -1,7 +1,7 @@
 package com.daqem.arc.command;
 
 import com.daqem.arc.api.action.IAction;
-import com.daqem.arc.api.action.holder.ActionHolderManager;
+import com.daqem.arc.data.ActionHolderManager;
 import com.daqem.arc.api.action.holder.IActionHolder;
 import com.daqem.arc.api.player.ArcServerPlayer;
 import com.daqem.arc.command.argument.ActionArgument;
@@ -9,6 +9,7 @@ import com.daqem.arc.networking.ClientboundActionHoldersScreenPacket;
 import com.daqem.arc.networking.ClientboundActionScreenPacket;
 import com.mojang.brigadier.CommandDispatcher;
 import dev.architectury.networking.NetworkManager;
+import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
@@ -17,7 +18,7 @@ import java.util.List;
 
 public class ArcCommand {
 
-    public static void registerCommand(CommandDispatcher<CommandSourceStack> dispatcher) {
+    public static void registerCommand(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext registry, Commands.CommandSelection selection) {
         dispatcher.register(Commands.literal("arc").requires(source -> source.hasPermission(2))
                 .then(Commands.literal("screen")
                         .then(Commands.literal("action")

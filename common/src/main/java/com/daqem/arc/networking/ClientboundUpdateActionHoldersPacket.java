@@ -1,8 +1,8 @@
 package com.daqem.arc.networking;
 
-import com.daqem.arc.api.action.holder.ActionHolderManager;
+import com.daqem.arc.data.ActionHolderManager;
 import com.daqem.arc.api.action.holder.IActionHolder;
-import com.daqem.arc.api.action.holder.serializer.IActionHolderSerializer;
+import com.daqem.arc.api.action.holder.IActionHolderSerializer;
 import dev.architectury.networking.NetworkManager;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

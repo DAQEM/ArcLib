@@ -2,9 +2,8 @@ package com.daqem.arc.data.condition.team;
 
 import com.daqem.arc.api.action.data.ActionData;
 import com.daqem.arc.api.condition.AbstractCondition;
-import com.daqem.arc.api.condition.serializer.IConditionSerializer;
-import com.daqem.arc.api.condition.type.ConditionType;
-import com.daqem.arc.api.condition.type.IConditionType;
+import com.daqem.arc.api.condition.IConditionSerializer;
+import com.daqem.arc.api.condition.IConditionType;
 import com.daqem.arc.api.player.ArcPlayer;
 import com.google.gson.*;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -35,7 +34,7 @@ public class TeamCondition extends AbstractCondition {
 
     @Override
     public IConditionType<?> getType() {
-        return ConditionType.TEAM;
+        return IConditionType.TEAM;
     }
 
     public String getTeam() {

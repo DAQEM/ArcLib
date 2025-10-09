@@ -1,12 +1,9 @@
 package com.daqem.arc.api.condition;
 
 import com.daqem.arc.api.action.data.ActionData;
-import com.daqem.arc.api.condition.serializer.IConditionSerializer;
-import com.daqem.arc.api.condition.type.IConditionType;
-import com.daqem.arc.data.serializer.ArcSerializable;
 import net.minecraft.network.chat.Component;
 
-public interface ICondition extends ArcSerializable {
+public interface ICondition {
 
     IConditionType<? extends ICondition> getType();
 

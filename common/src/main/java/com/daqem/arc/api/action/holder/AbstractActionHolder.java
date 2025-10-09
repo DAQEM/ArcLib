@@ -1,7 +1,6 @@
 package com.daqem.arc.api.action.holder;
 
 import com.daqem.arc.api.action.IAction;
-import com.daqem.arc.api.action.holder.serializer.IActionHolderSerializer;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;

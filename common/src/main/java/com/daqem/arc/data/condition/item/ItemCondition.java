@@ -1,11 +1,10 @@
 package com.daqem.arc.data.condition.item;
 
 import com.daqem.arc.api.action.data.ActionData;
-import com.daqem.arc.api.action.data.type.ActionDataType;
+import com.daqem.arc.api.action.data.IActionDataType;
 import com.daqem.arc.api.condition.AbstractCondition;
-import com.daqem.arc.api.condition.serializer.IConditionSerializer;
-import com.daqem.arc.api.condition.type.ConditionType;
-import com.daqem.arc.api.condition.type.IConditionType;
+import com.daqem.arc.api.condition.IConditionSerializer;
+import com.daqem.arc.api.condition.IConditionType;
 import com.google.gson.*;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -32,8 +31,8 @@ public class ItemCondition extends AbstractCondition {
 
     @Override
     public boolean isMet(ActionData actionData) {
-        Item item = actionData.getData(ActionDataType.ITEM);
-        ItemStack itemStack = actionData.getData(ActionDataType.ITEM_STACK);
+        Item item = actionData.getData(IActionDataType.ITEM);
+        ItemStack itemStack = actionData.getData(IActionDataType.ITEM_STACK);
         boolean hasItem = item != null || itemStack != null;
         boolean passOnItem = item != null && item == this.itemStack.getItem();
         boolean passOnItemStack = itemStack != null && testItemStack(itemStack);
@@ -53,7 +52,7 @@ public class ItemCondition extends AbstractCondition {
 
     @Override
     public IConditionType<?> getType() {
-        return ConditionType.ITEM;
+        return IConditionType.ITEM;
     }
 
     public ItemStack getItemStack() {
@@ -70,7 +69,7 @@ public class ItemCondition extends AbstractCondition {
         public ItemCondition fromJson(ResourceLocation location, JsonObject jsonObject, boolean inverted) {
             return new ItemCondition(
                     inverted,
-                    getItemStack(jsonObject.get("item")),
+                    getItemStack(jsonObject, "item"),
                     GsonHelper.getAsBoolean(jsonObject, "check_components", true));
         }
 

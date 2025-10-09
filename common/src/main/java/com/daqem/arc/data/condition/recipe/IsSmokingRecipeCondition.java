@@ -2,15 +2,13 @@ package com.daqem.arc.data.condition.recipe;
 
 import com.daqem.arc.api.IArcAbstractCookingRecipe;
 import com.daqem.arc.api.action.data.ActionData;
-import com.daqem.arc.api.action.data.type.ActionDataType;
-import com.daqem.arc.api.condition.serializer.IConditionSerializer;
-import com.daqem.arc.api.condition.type.ConditionType;
-import com.daqem.arc.api.condition.type.IConditionType;
+import com.daqem.arc.api.action.data.IActionDataType;
+import com.daqem.arc.api.condition.IConditionSerializer;
+import com.daqem.arc.api.condition.IConditionType;
 import com.google.gson.*;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.item.crafting.SmokingRecipe;
 
 public class IsSmokingRecipeCondition extends IsRecipeCondition<SmokingRecipe> {
@@ -21,7 +19,7 @@ public class IsSmokingRecipeCondition extends IsRecipeCondition<SmokingRecipe> {
 
     @Override
     public boolean isMet(ActionData actionData) {
-        Recipe<?> recipe = actionData.getData(ActionDataType.RECIPE);
+        Recipe<?> recipe = actionData.getData(IActionDataType.RECIPE);
         if (recipe != null) {
             if (recipe instanceof SmokingRecipe) {
                 return true;
@@ -35,7 +33,7 @@ public class IsSmokingRecipeCondition extends IsRecipeCondition<SmokingRecipe> {
 
     @Override
     public IConditionType<?> getType() {
-        return ConditionType.IS_SMOKING_RECIPE;
+        return IConditionType.IS_SMOKING_RECIPE;
     }
 
     public static class Serializer implements IConditionSerializer<IsSmokingRecipeCondition> {

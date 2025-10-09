@@ -1,7 +1,7 @@
 package com.daqem.arc.mixin;
 
 import com.daqem.arc.api.action.result.ActionResult;
-import com.daqem.arc.event.triggers.EntityEvents;
+import com.daqem.arc.event.EntityEvents;
 import com.daqem.arc.api.player.ArcServerPlayer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;

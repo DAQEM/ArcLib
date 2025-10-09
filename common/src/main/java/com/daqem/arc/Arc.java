@@ -1,16 +1,19 @@
 package com.daqem.arc;
 
+import com.daqem.arc.api.IArcRegistryAccessor;
+import com.daqem.arc.command.ArcCommand;
 import com.daqem.arc.config.ArcCommonConfig;
+import com.daqem.arc.data.ActionHolderManager;
 import com.daqem.arc.data.ActionManager;
 import com.daqem.arc.data.PlayerActionHolderManager;
-import com.daqem.arc.event.command.EventRegisterCommands;
-import com.daqem.arc.event.triggers.AdvancementEvents;
-import com.daqem.arc.event.triggers.BlockEvents;
-import com.daqem.arc.event.triggers.EntityEvents;
-import com.daqem.arc.event.triggers.ItemEvents;
+import com.daqem.arc.event.AdvancementEvents;
+import com.daqem.arc.event.BlockEvents;
+import com.daqem.arc.event.EntityEvents;
+import com.daqem.arc.event.ItemEvents;
 import com.daqem.arc.networking.ArcNetworking;
 import com.daqem.arc.player.brewing.BrewingStandData;
 import com.mojang.logging.LogUtils;
+import dev.architectury.event.events.common.CommandRegistrationEvent;
 import dev.architectury.registry.ReloadListenerRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -37,7 +40,7 @@ public class Arc {
     }
 
     private static void registerEvents() {
-        EventRegisterCommands.registerEvent();
+        CommandRegistrationEvent.EVENT.register(ArcCommand::registerCommand);
 
         BlockEvents.registerEvents();
         ItemEvents.registerEvents();
@@ -63,5 +66,10 @@ public class Arc {
 
     public static boolean isDebugEnvironment() {
         return ArcCommonConfig.isDebug.get();
+    }
+
+    @SuppressWarnings("unused")
+    public static IArcRegistryAccessor getRegistryAccessor() {
+        return ActionHolderManager.getInstance();
     }
 }

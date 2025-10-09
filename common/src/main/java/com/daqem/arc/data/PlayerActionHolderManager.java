@@ -1,9 +1,8 @@
 package com.daqem.arc.data;
 
 import com.daqem.arc.Arc;
-import com.daqem.arc.api.action.holder.ActionHolderManager;
 import com.daqem.arc.api.action.holder.IActionHolder;
-import com.daqem.arc.api.action.holder.type.ActionHolderType;
+import com.daqem.arc.api.action.holder.IActionHolderType;
 import com.daqem.arc.api.player.holder.PlayerActionHolder;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.resources.ResourceLocation;
@@ -33,7 +32,7 @@ public class PlayerActionHolderManager extends SimplePreparableReloadListener<IA
     @Override
     protected void apply(IActionHolder actionHolder, ResourceManager resourceManager, ProfilerFiller profilerFiller) {
         ActionHolderManager actionHolderManager = ActionHolderManager.getInstance();
-        actionHolderManager.clearAllActionHoldersForType(ActionHolderType.PLAYER_ACTION_TYPE);
+        actionHolderManager.clearAllActionHoldersForType(IActionHolderType.PLAYER_ACTION_TYPE);
 
 
         this.playerActionHolders = ImmutableMap.of(actionHolder.getLocation(), actionHolder);

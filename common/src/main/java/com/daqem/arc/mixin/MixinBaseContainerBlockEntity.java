@@ -23,7 +23,7 @@ public class MixinBaseContainerBlockEntity {
                 if (Arc.BREWING_STANDS.containsKey(blockPos)) {
                     Arc.BREWING_STANDS.get(blockPos).setLastPlayerToInteract(arcServerPlayer);
                 } else {
-                    Arc.BREWING_STANDS.put(blockPos, new BrewingStandData(brewingStand));
+                    Arc.BREWING_STANDS.put(blockPos, new BrewingStandData());
                 }
             }
         }

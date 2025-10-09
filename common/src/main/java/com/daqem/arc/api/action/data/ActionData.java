@@ -1,13 +1,11 @@
 package com.daqem.arc.api.action.data;
 
 import com.daqem.arc.api.action.IAction;
-import com.daqem.arc.api.action.data.type.IActionDataType;
 import com.daqem.arc.api.action.holder.IActionHolder;
-import com.daqem.arc.api.action.type.ActionType;
-import com.daqem.arc.api.action.type.IActionType;
+import com.daqem.arc.api.action.IActionType;
 import com.daqem.arc.api.player.ArcPlayer;
 import com.daqem.arc.api.action.result.ActionResult;
-import com.daqem.arc.event.events.ActionEvent;
+import com.daqem.arc.api.event.ActionEvent;
 import dev.architectury.event.EventResult;
 import org.jetbrains.annotations.Nullable;
 
@@ -16,14 +14,14 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class ActionData implements IActionData {
+public final class ActionData implements IActionData {
 
     private final ArcPlayer player;
-    private final ActionType<?> actionType;
+    private final IActionType<?> actionType;
     private final Map<IActionDataType<?>, Object> actionData;
     private IActionHolder sourceActionHolder;
 
-    public ActionData(ArcPlayer player, ActionType<?> actionType, Map<IActionDataType<?>, Object> actionData) {
+    public ActionData(ArcPlayer player, IActionType<?> actionType, Map<IActionDataType<?>, Object> actionData) {
         this.player = player;
         this.actionType = actionType;
         this.actionData = actionData;

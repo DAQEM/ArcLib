@@ -46,4 +46,7 @@ public interface ArcServerPlayer extends ArcPlayer {
     void arc$syncActionHoldersWithClient();
 
     BlockPosCache arc$getBlockPosCache();
+
+    boolean arc$isApplyingRewardEffect();
+    void arc$setApplyingRewardEffect(boolean isApplying);
 }

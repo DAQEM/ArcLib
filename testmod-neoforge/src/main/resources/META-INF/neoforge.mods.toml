@@ -1,0 +1,13 @@
+modLoader = "javafml"
+loaderVersion = "[1,)"
+license = "Apache-2.0"
+
+[[mods]]
+modId = "arc_test"
+version = "${file.jarVersion}"
+displayName = "Arc Test"
+authors = "DAQEM"
+description = '''
+A test mod for the Arc library.
+'''
+license = "Apache-2.0"

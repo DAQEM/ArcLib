@@ -2,9 +2,8 @@ package com.daqem.arc.data.condition.scoreboard;
 
 import com.daqem.arc.api.action.data.ActionData;
 import com.daqem.arc.api.condition.AbstractCondition;
-import com.daqem.arc.api.condition.serializer.IConditionSerializer;
-import com.daqem.arc.api.condition.type.ConditionType;
-import com.daqem.arc.api.condition.type.IConditionType;
+import com.daqem.arc.api.condition.IConditionSerializer;
+import com.daqem.arc.api.condition.IConditionType;
 import com.google.gson.*;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -49,7 +48,7 @@ public class ScoreboardCondition extends AbstractCondition {
 
     @Override
     public IConditionType<?> getType() {
-        return ConditionType.SCOREBOARD;
+        return IConditionType.SCOREBOARD;
     }
 
     public String getObjective() {

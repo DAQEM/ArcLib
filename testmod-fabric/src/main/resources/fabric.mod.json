@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "arc-test",
+  "version": "${version}",
+  "name": "Arc Lib Test",
+  "description": "A test mod for the Arc library.",
+  "authors": [
+    "DAQEM"
+  ],
+  "license": "Apache-2.0",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.daqem.arc.test.TestMod::init"
+    ]
+  }
+}

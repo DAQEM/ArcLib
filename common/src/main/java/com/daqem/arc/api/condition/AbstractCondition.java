@@ -1,7 +1,6 @@
 package com.daqem.arc.api.condition;
 
 import com.daqem.arc.Arc;
-import com.daqem.arc.api.condition.serializer.IConditionSerializer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.contents.TranslatableContents;
 

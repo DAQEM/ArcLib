@@ -1,11 +1,10 @@
 package com.daqem.arc.data.condition.effect;
 
 import com.daqem.arc.api.action.data.ActionData;
-import com.daqem.arc.api.action.data.type.ActionDataType;
+import com.daqem.arc.api.action.data.IActionDataType;
 import com.daqem.arc.api.condition.AbstractCondition;
-import com.daqem.arc.api.condition.serializer.IConditionSerializer;
-import com.daqem.arc.api.condition.type.ConditionType;
-import com.daqem.arc.api.condition.type.IConditionType;
+import com.daqem.arc.api.condition.IConditionSerializer;
+import com.daqem.arc.api.condition.IConditionType;
 import com.google.gson.*;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -29,13 +28,13 @@ public class EffectCategoryCondition extends AbstractCondition {
 
     @Override
     public boolean isMet(ActionData actionData) {
-        MobEffectInstance effectInstance = actionData.getData(ActionDataType.MOB_EFFECT_INSTANCE);
+        MobEffectInstance effectInstance = actionData.getData(IActionDataType.MOB_EFFECT_INSTANCE);
         return effectInstance != null && effectInstance.getEffect().value().getCategory() == this.effectCategory;
     }
 
     @Override
     public IConditionType<?> getType() {
-        return ConditionType.EFFECT_CATEGORY;
+        return IConditionType.EFFECT_CATEGORY;
     }
 
     public MobEffectCategory getEffectCategory() {

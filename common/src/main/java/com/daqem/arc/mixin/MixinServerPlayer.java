@@ -1,26 +1,23 @@
 package com.daqem.arc.mixin;
 
 import com.daqem.arc.api.action.data.ActionDataBuilder;
-import com.daqem.arc.api.action.data.type.ActionDataType;
+import com.daqem.arc.api.action.data.IActionDataType;
 import com.daqem.arc.api.action.holder.IActionHolder;
 import com.daqem.arc.api.action.result.ActionResult;
-import com.daqem.arc.api.action.type.ActionType;
+import com.daqem.arc.api.action.IActionType;
 import com.daqem.arc.api.condition.ICondition;
 import com.daqem.arc.api.player.ArcPlayer;
 import com.daqem.arc.data.PlayerActionHolderManager;
-import com.daqem.arc.event.triggers.MovementEvents;
-import com.daqem.arc.event.triggers.PlayerEvents;
-import com.daqem.arc.event.triggers.StatEvents;
+import com.daqem.arc.event.MovementEvents;
+import com.daqem.arc.event.PlayerEvents;
+import com.daqem.arc.event.StatEvents;
 import com.daqem.arc.api.player.ArcServerPlayer;
 import com.daqem.arc.networking.ClientboundSyncPlayerActionHoldersPacket;
 import com.daqem.arc.player.BlockPosCache;
 import com.daqem.arc.player.stat.StatData;
 import com.mojang.authlib.GameProfile;
 import dev.architectury.networking.NetworkManager;
-import net.minecraft.client.Minecraft;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ClientInformation;
@@ -34,14 +31,10 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.animal.horse.Horse;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.inventory.GrindstoneMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.AirItem;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingInput;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -96,6 +89,8 @@ public abstract class MixinServerPlayer extends Player implements ArcServerPlaye
     public float arc$horseRidingDistance = 0;
     @Unique
     public BlockPosCache arc$blockPosCache = new BlockPosCache();
+    @Unique
+    private boolean arc$isApplyingRewardEffect = false;
 
     public MixinServerPlayer(Level level, GameProfile gameProfile) {
         super(level, gameProfile);
@@ -262,6 +257,16 @@ public abstract class MixinServerPlayer extends Player implements ArcServerPlaye
     @Override
     public BlockPosCache arc$getBlockPosCache() {
         return this.arc$blockPosCache;
+    }
+
+    @Override
+    public boolean arc$isApplyingRewardEffect() {
+        return this.arc$isApplyingRewardEffect;
+    }
+
+    @Override
+    public void arc$setApplyingRewardEffect(boolean isApplying) {
+        this.arc$isApplyingRewardEffect = isApplying;
     }
 
     @Override
@@ -448,9 +453,9 @@ public abstract class MixinServerPlayer extends Player implements ArcServerPlaye
     public void hurt(ServerLevel serverLevel, DamageSource damageSource, float f, CallbackInfoReturnable<Boolean> cir) {
         Entity entity = this.arc$getPlayer();
         if (entity instanceof ArcServerPlayer arcServerPlayer) {
-            ActionResult actionResult = new ActionDataBuilder(arcServerPlayer, ActionType.GET_HURT)
-                    .withData(ActionDataType.DAMAGE_SOURCE, damageSource)
-                    .withData(ActionDataType.DAMAGE_AMOUNT, f)
+            ActionResult actionResult = new ActionDataBuilder(arcServerPlayer, IActionType.GET_HURT)
+                    .withData(IActionDataType.DAMAGE_SOURCE, damageSource)
+                    .withData(IActionDataType.DAMAGE_AMOUNT, f)
                     .build()
                     .sendToAction();
 
@@ -463,9 +468,9 @@ public abstract class MixinServerPlayer extends Player implements ArcServerPlaye
         }
 
         if (damageSource.getEntity() instanceof ArcServerPlayer arcServerPlayer) {
-            ActionResult actionResult = new ActionDataBuilder(arcServerPlayer, ActionType.HURT_PLAYER)
-                    .withData(ActionDataType.ENTITY, entity)
-                    .withData(ActionDataType.DAMAGE_AMOUNT, f)
+            ActionResult actionResult = new ActionDataBuilder(arcServerPlayer, IActionType.HURT_PLAYER)
+                    .withData(IActionDataType.ENTITY, entity)
+                    .withData(IActionDataType.DAMAGE_AMOUNT, f)
                     .build()
                     .sendToAction();
 

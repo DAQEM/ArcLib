@@ -1,8 +1,8 @@
 package com.daqem.arc.mixin.common;
 
 import com.daqem.arc.api.action.data.ActionDataBuilder;
-import com.daqem.arc.api.action.data.type.ActionDataType;
-import com.daqem.arc.api.action.type.ActionType;
+import com.daqem.arc.api.action.data.IActionDataType;
+import com.daqem.arc.api.action.IActionType;
 import com.daqem.arc.api.player.ArcPlayer;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -25,9 +25,9 @@ public abstract class MixinPlayer extends LivingEntity {
         if (this instanceof ArcPlayer arcPlayer) {
             cir.setReturnValue(
                     cir.getReturnValue()
-                            * new ActionDataBuilder(arcPlayer, ActionType.GET_ATTACK_SPEED)
-                            .withData(ActionDataType.ITEM_STACK, this.getMainHandItem())
-                            .withData(ActionDataType.ITEM, this.getMainHandItem().getItem())
+                            * new ActionDataBuilder(arcPlayer, IActionType.GET_ATTACK_SPEED)
+                            .withData(IActionDataType.ITEM_STACK, this.getMainHandItem())
+                            .withData(IActionDataType.ITEM, this.getMainHandItem().getItem())
                             .build()
                             .sendToAction()
                             .getAttackSpeedModifier()

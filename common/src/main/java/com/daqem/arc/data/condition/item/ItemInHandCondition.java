@@ -1,10 +1,10 @@
 package com.daqem.arc.data.condition.item;
 
+import com.daqem.arc.Arc;
 import com.daqem.arc.api.action.data.ActionData;
 import com.daqem.arc.api.condition.AbstractCondition;
-import com.daqem.arc.api.condition.serializer.IConditionSerializer;
-import com.daqem.arc.api.condition.type.ConditionType;
-import com.daqem.arc.api.condition.type.IConditionType;
+import com.daqem.arc.api.condition.IConditionSerializer;
+import com.daqem.arc.api.condition.IConditionType;
 import com.google.gson.*;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -13,13 +13,15 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 public class ItemInHandCondition extends AbstractCondition {
 
     private final ItemStack itemStack;
+    @Nullable
     private final InteractionHand hand;
 
-    public ItemInHandCondition(boolean inverted, ItemStack itemStack, InteractionHand hand) {
+    public ItemInHandCondition(boolean inverted, ItemStack itemStack, @Nullable InteractionHand hand) {
         super(inverted);
         this.itemStack = itemStack;
         this.hand = hand;
@@ -27,7 +29,7 @@ public class ItemInHandCondition extends AbstractCondition {
 
     @Override
     public Component getDescription() {
-        return getDescription(itemStack.getHoverName(), hand.name().toLowerCase().replace("_", " "));
+        return getDescription(itemStack.getHoverName(), hand == null ? Arc.translatable("hand.any") : Arc.translatable("hand." + hand.name().toLowerCase()));
     }
 
     @Override
@@ -45,16 +47,16 @@ public class ItemInHandCondition extends AbstractCondition {
         return player.getItemInHand(hand).getItem() == targetItem;
     }
 
-
     @Override
     public IConditionType<?> getType() {
-        return ConditionType.ITEM_IN_HAND;
+        return IConditionType.ITEM_IN_HAND;
     }
 
     public ItemStack getItemStack() {
         return itemStack;
     }
 
+    @Nullable
     public InteractionHand getHand() {
         return hand;
     }
@@ -65,7 +67,7 @@ public class ItemInHandCondition extends AbstractCondition {
         public ItemInHandCondition fromJson(ResourceLocation location, JsonObject jsonObject, boolean inverted) {
             return new ItemInHandCondition(
                     inverted,
-                    getItemStack(jsonObject.get("item")),
+                    getItemStack(jsonObject,"item"),
                     getOptionalHand(jsonObject, "hand")
             );
         }

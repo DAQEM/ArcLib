@@ -1,12 +1,11 @@
 package com.daqem.arc.data.reward.entity;
 
 import com.daqem.arc.api.action.data.ActionData;
-import com.daqem.arc.api.action.data.type.ActionDataType;
+import com.daqem.arc.api.action.data.IActionDataType;
 import com.daqem.arc.api.action.result.ActionResult;
 import com.daqem.arc.api.reward.AbstractReward;
-import com.daqem.arc.api.reward.serializer.IRewardSerializer;
-import com.daqem.arc.api.reward.type.IRewardType;
-import com.daqem.arc.api.reward.type.RewardType;
+import com.daqem.arc.api.reward.IRewardSerializer;
+import com.daqem.arc.api.reward.IRewardType;
 import com.google.gson.JsonObject;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -19,8 +18,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.*;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
-import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
@@ -46,12 +43,12 @@ public class MultipleArrowsReward extends AbstractReward {
 
     @Override
     public IRewardType<?> getType() {
-        return RewardType.MULTIPLE_ARROWS;
+        return IRewardType.MULTIPLE_ARROWS;
     }
 
     @Override
     public ActionResult apply(ActionData actionData) {
-        Entity entity = actionData.getData(ActionDataType.ENTITY);
+        Entity entity = actionData.getData(IActionDataType.ENTITY);
         if (entity instanceof AbstractArrow shotArrow) {
             Player player = actionData.getPlayer().arc$getPlayer();
             ItemStack bow;

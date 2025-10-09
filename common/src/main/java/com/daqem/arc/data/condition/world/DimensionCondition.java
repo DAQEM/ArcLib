@@ -1,11 +1,10 @@
 package com.daqem.arc.data.condition.world;
 
 import com.daqem.arc.api.action.data.ActionData;
-import com.daqem.arc.api.action.data.type.ActionDataType;
+import com.daqem.arc.api.action.data.IActionDataType;
 import com.daqem.arc.api.condition.AbstractCondition;
-import com.daqem.arc.api.condition.serializer.IConditionSerializer;
-import com.daqem.arc.api.condition.type.ConditionType;
-import com.daqem.arc.api.condition.type.IConditionType;
+import com.daqem.arc.api.condition.IConditionSerializer;
+import com.daqem.arc.api.condition.IConditionType;
 import com.google.gson.JsonObject;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -30,7 +29,7 @@ public class DimensionCondition extends AbstractCondition {
 
     @Override
     public boolean isMet(ActionData actionData) {
-        Level world = actionData.getData(ActionDataType.WORLD);
+        Level world = actionData.getData(IActionDataType.WORLD);
         if (world == null)
             world = actionData.getPlayer().arc$getLevel();
         return world.dimension().location().equals(dimension.location());
@@ -38,7 +37,7 @@ public class DimensionCondition extends AbstractCondition {
 
     @Override
     public IConditionType<?> getType() {
-        return ConditionType.DIMENSION;
+        return IConditionType.DIMENSION;
     }
 
     public ResourceKey<Level> getDimension() {

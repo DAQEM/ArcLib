@@ -2,7 +2,7 @@ package com.daqem.arc.mixin;
 
 import com.daqem.arc.api.IArcAbstractCookingRecipe;
 import com.daqem.arc.api.player.ArcServerPlayer;
-import com.daqem.arc.event.triggers.PlayerEvents;
+import com.daqem.arc.event.PlayerEvents;
 import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;

@@ -1,11 +1,10 @@
 package com.daqem.arc.data.condition.block.crop;
 
 import com.daqem.arc.api.action.data.ActionData;
-import com.daqem.arc.api.action.data.type.ActionDataType;
+import com.daqem.arc.api.action.data.IActionDataType;
 import com.daqem.arc.api.condition.AbstractCondition;
-import com.daqem.arc.api.condition.serializer.IConditionSerializer;
-import com.daqem.arc.api.condition.type.ConditionType;
-import com.daqem.arc.api.condition.type.IConditionType;
+import com.daqem.arc.api.condition.IConditionSerializer;
+import com.daqem.arc.api.condition.IConditionType;
 import com.google.gson.*;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -24,7 +23,7 @@ public class CropFullyGrownCondition extends AbstractCondition {
 
     @Override
     public boolean isMet(ActionData actionData) {
-        BlockState blockState = actionData.getData(ActionDataType.BLOCK_STATE);
+        BlockState blockState = actionData.getData(IActionDataType.BLOCK_STATE);
         if (blockState != null) {
             Collection<Property<?>> properties = blockState.getProperties();
             Optional<Property<?>> optionalAgeProperty = properties.stream()
@@ -48,7 +47,7 @@ public class CropFullyGrownCondition extends AbstractCondition {
 
     @Override
     public IConditionType<?> getType() {
-        return ConditionType.CROP_FULLY_GROWN;
+        return IConditionType.CROP_FULLY_GROWN;
     }
 
     public static class Serializer implements IConditionSerializer<CropFullyGrownCondition> {

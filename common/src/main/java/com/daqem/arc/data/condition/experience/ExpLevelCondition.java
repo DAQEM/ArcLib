@@ -1,11 +1,10 @@
 package com.daqem.arc.data.condition.experience;
 
 import com.daqem.arc.api.action.data.ActionData;
-import com.daqem.arc.api.action.data.type.ActionDataType;
+import com.daqem.arc.api.action.data.IActionDataType;
 import com.daqem.arc.api.condition.AbstractCondition;
-import com.daqem.arc.api.condition.serializer.IConditionSerializer;
-import com.daqem.arc.api.condition.type.ConditionType;
-import com.daqem.arc.api.condition.type.IConditionType;
+import com.daqem.arc.api.condition.IConditionSerializer;
+import com.daqem.arc.api.condition.IConditionType;
 import com.google.gson.*;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -28,13 +27,13 @@ public class ExpLevelCondition extends AbstractCondition {
 
     @Override
     public boolean isMet(ActionData actionData) {
-        Integer expLevel = actionData.getData(ActionDataType.EXP_LEVEL);
+        Integer expLevel = actionData.getData(IActionDataType.EXP_LEVEL);
         return expLevel != null && expLevel == this.level;
     }
 
     @Override
     public IConditionType<?> getType() {
-        return ConditionType.EXP_LEVEL;
+        return IConditionType.EXP_LEVEL;
     }
 
     public int getLevel() {

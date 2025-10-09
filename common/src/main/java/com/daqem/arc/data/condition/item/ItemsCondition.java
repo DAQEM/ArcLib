@@ -1,11 +1,10 @@
 package com.daqem.arc.data.condition.item;
 
 import com.daqem.arc.api.action.data.ActionData;
-import com.daqem.arc.api.action.data.type.ActionDataType;
+import com.daqem.arc.api.action.data.IActionDataType;
 import com.daqem.arc.api.condition.AbstractCondition;
-import com.daqem.arc.api.condition.serializer.IConditionSerializer;
-import com.daqem.arc.api.condition.type.ConditionType;
-import com.daqem.arc.api.condition.type.IConditionType;
+import com.daqem.arc.api.condition.IConditionSerializer;
+import com.daqem.arc.api.condition.IConditionType;
 import com.google.gson.*;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -40,9 +39,9 @@ public class ItemsCondition extends AbstractCondition {
 
     @Override
     public boolean isMet(ActionData actionData) {
-        ItemStack itemStack = actionData.getData(ActionDataType.ITEM_STACK);
+        ItemStack itemStack = actionData.getData(IActionDataType.ITEM_STACK);
         if (itemStack == null) {
-            Item item = actionData.getData(ActionDataType.ITEM);
+            Item item = actionData.getData(IActionDataType.ITEM);
             if (item != null) {
                 itemStack = item.getDefaultInstance();
             }
@@ -52,7 +51,7 @@ public class ItemsCondition extends AbstractCondition {
 
     @Override
     public IConditionType<?> getType() {
-        return ConditionType.ITEMS;
+        return IConditionType.ITEMS;
     }
 
     private boolean isItem(ItemStack itemStack) {

@@ -1,11 +1,10 @@
 package com.daqem.arc.data.condition.block.properties;
 
 import com.daqem.arc.api.action.data.ActionData;
-import com.daqem.arc.api.action.data.type.ActionDataType;
+import com.daqem.arc.api.action.data.IActionDataType;
 import com.daqem.arc.api.condition.AbstractCondition;
-import com.daqem.arc.api.condition.serializer.IConditionSerializer;
-import com.daqem.arc.api.condition.type.ConditionType;
-import com.daqem.arc.api.condition.type.IConditionType;
+import com.daqem.arc.api.condition.IConditionSerializer;
+import com.daqem.arc.api.condition.IConditionType;
 import com.google.gson.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -36,8 +35,8 @@ public class BlockHardnessCondition extends AbstractCondition {
 
     @Override
     public boolean isMet(ActionData actionData) {
-        BlockState blockState = actionData.getData(ActionDataType.BLOCK_STATE);
-        BlockPos blockPos = actionData.getData(ActionDataType.BLOCK_POSITION);
+        BlockState blockState = actionData.getData(IActionDataType.BLOCK_STATE);
+        BlockPos blockPos = actionData.getData(IActionDataType.BLOCK_POSITION);
         if (blockState == null || blockPos == null) return false;
         float hardness = blockState.getDestroySpeed(actionData.getPlayer().arc$getLevel(), blockPos);
         return hardness >= min && hardness <= max;
@@ -45,7 +44,7 @@ public class BlockHardnessCondition extends AbstractCondition {
 
     @Override
     public IConditionType<?> getType() {
-        return ConditionType.BLOCK_HARDNESS;
+        return IConditionType.BLOCK_HARDNESS;
     }
 
     public float getMin() {

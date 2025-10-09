@@ -1,17 +1,15 @@
 package com.daqem.arc.data.reward.server;
 
 import com.daqem.arc.api.action.data.ActionData;
-import com.daqem.arc.api.action.data.type.ActionDataType;
+import com.daqem.arc.api.action.data.IActionDataType;
 import com.daqem.arc.api.action.result.ActionResult;
 import com.daqem.arc.api.player.ArcPlayer;
 import com.daqem.arc.api.reward.AbstractReward;
-import com.daqem.arc.api.reward.serializer.IRewardSerializer;
-import com.daqem.arc.api.reward.type.IRewardType;
-import com.daqem.arc.api.reward.type.RewardType;
+import com.daqem.arc.api.reward.IRewardSerializer;
+import com.daqem.arc.api.reward.IRewardType;
 import com.google.gson.JsonObject;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
@@ -31,7 +29,7 @@ public class CommandReward extends AbstractReward {
 
     @Override
     public IRewardType<?> getType() {
-        return RewardType.COMMAND;
+        return IRewardType.COMMAND;
     }
 
     @Override
@@ -50,17 +48,17 @@ public class CommandReward extends AbstractReward {
                     .replace("%world%", serverPlayer.level().dimension().location().toString())
                     .replace("%player_location%", serverPlayer.blockPosition().getX() + " " + serverPlayer.blockPosition().getY() + " " + serverPlayer.blockPosition().getZ());
 
-            BlockPos blockPos = actionData.getData(ActionDataType.BLOCK_POSITION);
+            BlockPos blockPos = actionData.getData(IActionDataType.BLOCK_POSITION);
             if (blockPos != null) {
                 command = command.replace("%block_location%", blockPos.getX() + " " + blockPos.getY() + " " + blockPos.getZ());
             }
 
-            Item item = actionData.getData(ActionDataType.ITEM);
+            Item item = actionData.getData(IActionDataType.ITEM);
             if (item != null) {
                 command = command.replace("%item%", BuiltInRegistries.ITEM.getKey(item).toString());
             }
 
-            ItemStack itemStack = actionData.getData(ActionDataType.ITEM_STACK);
+            ItemStack itemStack = actionData.getData(IActionDataType.ITEM_STACK);
             if (itemStack != null) {
                 command = command.replace("%item_stack%", BuiltInRegistries.ITEM.getKey(itemStack.getItem()).toString());
             }

@@ -1,11 +1,10 @@
 package com.daqem.arc.data.condition.entity;
 
 import com.daqem.arc.api.action.data.ActionData;
-import com.daqem.arc.api.action.data.type.ActionDataType;
+import com.daqem.arc.api.action.data.IActionDataType;
 import com.daqem.arc.api.condition.AbstractCondition;
-import com.daqem.arc.api.condition.serializer.IConditionSerializer;
-import com.daqem.arc.api.condition.type.ConditionType;
-import com.daqem.arc.api.condition.type.IConditionType;
+import com.daqem.arc.api.condition.IConditionSerializer;
+import com.daqem.arc.api.condition.IConditionType;
 import com.google.gson.*;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -33,13 +32,13 @@ public class EntityTypesCondition extends AbstractCondition {
 
     @Override
     public boolean isMet(ActionData actionData) {
-        Entity entity = actionData.getData(ActionDataType.ENTITY);
+        Entity entity = actionData.getData(IActionDataType.ENTITY);
         return entity != null && entityTypes.contains(entity.getType());
     }
 
     @Override
     public IConditionType<?> getType() {
-        return ConditionType.ENTITY_TYPES;
+        return IConditionType.ENTITY_TYPES;
     }
 
     public List<EntityType<?>> getEntityTypes() {

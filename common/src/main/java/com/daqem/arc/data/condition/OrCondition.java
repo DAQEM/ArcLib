@@ -3,9 +3,8 @@ package com.daqem.arc.data.condition;
 import com.daqem.arc.api.action.data.ActionData;
 import com.daqem.arc.api.condition.AbstractCondition;
 import com.daqem.arc.api.condition.ICondition;
-import com.daqem.arc.api.condition.serializer.IConditionSerializer;
-import com.daqem.arc.api.condition.type.ConditionType;
-import com.daqem.arc.api.condition.type.IConditionType;
+import com.daqem.arc.api.condition.IConditionSerializer;
+import com.daqem.arc.api.condition.IConditionType;
 import com.daqem.arc.registry.ArcRegistry;
 import com.google.gson.*;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -31,7 +30,7 @@ public class OrCondition extends AbstractCondition {
 
     @Override
     public IConditionType<?> getType() {
-        return ConditionType.OR;
+        return IConditionType.OR;
     }
 
     public List<ICondition> getConditions() {

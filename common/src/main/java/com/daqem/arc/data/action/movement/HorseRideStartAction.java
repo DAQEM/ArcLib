@@ -1,10 +1,9 @@
 package com.daqem.arc.data.action.movement;
 
 import com.daqem.arc.api.action.AbstractAction;
-import com.daqem.arc.api.action.holder.type.IActionHolderType;
-import com.daqem.arc.api.action.serializer.IActionSerializer;
-import com.daqem.arc.api.action.type.ActionType;
-import com.daqem.arc.api.action.type.IActionType;
+import com.daqem.arc.api.action.IActionSerializer;
+import com.daqem.arc.api.action.IActionType;
+import com.daqem.arc.api.action.holder.IActionHolderType;
 import com.daqem.arc.api.condition.ICondition;
 import com.daqem.arc.api.reward.IReward;
 import com.google.gson.JsonObject;
@@ -21,7 +20,7 @@ public class HorseRideStartAction extends AbstractAction {
 
     @Override
     public IActionType<?> getType() {
-        return ActionType.HORSE_RIDE_START;
+        return IActionType.HORSE_RIDE_START;
     }
 
     public static class Serializer implements IActionSerializer<HorseRideStartAction> {

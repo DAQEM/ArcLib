@@ -1,11 +1,10 @@
 package com.daqem.arc.data.condition.entity;
 
 import com.daqem.arc.api.action.data.ActionData;
-import com.daqem.arc.api.action.data.type.ActionDataType;
+import com.daqem.arc.api.action.data.IActionDataType;
 import com.daqem.arc.api.condition.AbstractCondition;
-import com.daqem.arc.api.condition.serializer.IConditionSerializer;
-import com.daqem.arc.api.condition.type.ConditionType;
-import com.daqem.arc.api.condition.type.IConditionType;
+import com.daqem.arc.api.condition.IConditionSerializer;
+import com.daqem.arc.api.condition.IConditionType;
 import com.google.gson.*;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -20,13 +19,13 @@ public class ReadyForShearingCondition extends AbstractCondition {
 
     @Override
     public boolean isMet(ActionData actionData) {
-        Entity entity = actionData.getData(ActionDataType.ENTITY);
+        Entity entity = actionData.getData(IActionDataType.ENTITY);
         return entity instanceof Shearable shearable && shearable.readyForShearing();
     }
 
     @Override
     public IConditionType<?> getType() {
-        return ConditionType.READY_FOR_SHEARING;
+        return IConditionType.READY_FOR_SHEARING;
     }
 
     public static class Serializer implements IConditionSerializer<ReadyForShearingCondition> {

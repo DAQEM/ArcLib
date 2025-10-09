@@ -2,9 +2,8 @@ package com.daqem.arc.data.condition.item;
 
 import com.daqem.arc.api.action.data.ActionData;
 import com.daqem.arc.api.condition.AbstractCondition;
-import com.daqem.arc.api.condition.serializer.IConditionSerializer;
-import com.daqem.arc.api.condition.type.ConditionType;
-import com.daqem.arc.api.condition.type.IConditionType;
+import com.daqem.arc.api.condition.IConditionSerializer;
+import com.daqem.arc.api.condition.IConditionType;
 import com.google.gson.*;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -47,7 +46,7 @@ public class ItemEquippedCondition extends AbstractCondition {
 
     @Override
     public IConditionType<?> getType() {
-        return ConditionType.ITEM_EQUIPPED;
+        return IConditionType.ITEM_EQUIPPED;
     }
 
     public ItemStack getItemStack() {
@@ -60,7 +59,7 @@ public class ItemEquippedCondition extends AbstractCondition {
         public ItemEquippedCondition fromJson(ResourceLocation location, JsonObject jsonObject, boolean inverted) {
             return new ItemEquippedCondition(
                     inverted,
-                    getItemStack(jsonObject.get("item")));
+                    getItemStack(jsonObject, "item"));
         }
 
         @Override

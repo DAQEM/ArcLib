@@ -2,7 +2,7 @@ package com.daqem.arc.mixin;
 
 import com.daqem.arc.api.action.result.ActionResult;
 import com.daqem.arc.api.player.ArcServerPlayer;
-import com.daqem.arc.event.triggers.PlayerEvents;
+import com.daqem.arc.event.PlayerEvents;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
@@ -25,13 +25,12 @@ public abstract class MixinLivingEntity extends Entity {
     private void addEffect(MobEffectInstance effect, Entity entity, CallbackInfoReturnable<Boolean> cir) {
         final LivingEntity self = (LivingEntity) (Object) this;
         if (self instanceof ArcServerPlayer serverPlayer) {
-            if (self.getActiveEffectsMap().containsKey(effect.getEffect())) {
-                if (entity instanceof ServerPlayer source) {
-                    if (source.getName().getString().equals("a")) {
-                        return;
-                    }
-                }
+
+            // RECURSION GUARD
+            if (serverPlayer.arc$isApplyingRewardEffect()) {
+                return;
             }
+
             ActionResult actionResult = PlayerEvents.onEffectAdded(serverPlayer, effect, entity);
             if (actionResult.shouldCancelAction()) {
                 self.removeEffect(effect.getEffect());

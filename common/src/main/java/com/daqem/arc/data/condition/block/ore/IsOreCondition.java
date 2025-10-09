@@ -1,11 +1,10 @@
 package com.daqem.arc.data.condition.block.ore;
 
 import com.daqem.arc.api.action.data.ActionData;
-import com.daqem.arc.api.action.data.type.ActionDataType;
+import com.daqem.arc.api.action.data.IActionDataType;
 import com.daqem.arc.api.condition.AbstractCondition;
-import com.daqem.arc.api.condition.serializer.IConditionSerializer;
-import com.daqem.arc.api.condition.type.ConditionType;
-import com.daqem.arc.api.condition.type.IConditionType;
+import com.daqem.arc.api.condition.IConditionSerializer;
+import com.daqem.arc.api.condition.IConditionType;
 import com.google.gson.*;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -25,13 +24,13 @@ public class IsOreCondition extends AbstractCondition {
 
     @Override
     public boolean isMet(ActionData actionData) {
-        BlockState blockState = actionData.getData(ActionDataType.BLOCK_STATE);
+        BlockState blockState = actionData.getData(IActionDataType.BLOCK_STATE);
         return blockState != null && isOre(blockState.getBlock());
     }
 
     @Override
     public IConditionType<?> getType() {
-        return ConditionType.IS_ORE;
+        return IConditionType.IS_ORE;
     }
 
     @SuppressWarnings("deprecation")

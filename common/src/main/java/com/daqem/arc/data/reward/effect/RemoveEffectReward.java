@@ -2,11 +2,10 @@ package com.daqem.arc.data.reward.effect;
 
 import com.daqem.arc.api.action.data.ActionData;
 import com.daqem.arc.api.action.result.ActionResult;
-import com.daqem.arc.api.action.data.type.ActionDataType;
+import com.daqem.arc.api.action.data.IActionDataType;
 import com.daqem.arc.api.reward.AbstractReward;
-import com.daqem.arc.api.reward.serializer.IRewardSerializer;
-import com.daqem.arc.api.reward.type.IRewardType;
-import com.daqem.arc.api.reward.type.RewardType;
+import com.daqem.arc.api.reward.IRewardSerializer;
+import com.daqem.arc.api.reward.IRewardType;
 import com.google.gson.*;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -20,7 +19,7 @@ public class RemoveEffectReward extends AbstractReward {
 
     @Override
     public ActionResult apply(ActionData actionData) {
-        MobEffectInstance effect = actionData.getData(ActionDataType.MOB_EFFECT_INSTANCE);
+        MobEffectInstance effect = actionData.getData(IActionDataType.MOB_EFFECT_INSTANCE);
         if (effect != null) {
             Player player = actionData.getPlayer().arc$getPlayer();
             player.getActiveEffectsMap().keySet()
@@ -35,7 +34,7 @@ public class RemoveEffectReward extends AbstractReward {
 
     @Override
     public IRewardType<?> getType() {
-        return RewardType.REMOVE_EFFECT;
+        return IRewardType.REMOVE_EFFECT;
     }
 
     public static class Serializer implements IRewardSerializer<RemoveEffectReward> {

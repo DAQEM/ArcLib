@@ -1,12 +1,11 @@
 package com.daqem.arc.data.reward.block;
 
 import com.daqem.arc.api.action.data.ActionData;
-import com.daqem.arc.api.action.data.type.ActionDataType;
+import com.daqem.arc.api.action.data.IActionDataType;
 import com.daqem.arc.api.action.result.ActionResult;
 import com.daqem.arc.api.reward.AbstractReward;
-import com.daqem.arc.api.reward.serializer.IRewardSerializer;
-import com.daqem.arc.api.reward.type.IRewardType;
-import com.daqem.arc.api.reward.type.RewardType;
+import com.daqem.arc.api.reward.IRewardSerializer;
+import com.daqem.arc.api.reward.IRewardType;
 import com.google.gson.JsonObject;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -39,11 +38,11 @@ public class BlockDropMultiplierReward extends AbstractReward {
 
     @Override
     public ActionResult apply(ActionData actionData) {
-        BlockState blockState = actionData.getData(ActionDataType.BLOCK_STATE);
+        BlockState blockState = actionData.getData(IActionDataType.BLOCK_STATE);
         if (blockState != null) {
-            BlockPos blockPos = actionData.getData(ActionDataType.BLOCK_POSITION);
+            BlockPos blockPos = actionData.getData(IActionDataType.BLOCK_POSITION);
             if (blockPos != null) {
-                Level level = actionData.getData(ActionDataType.WORLD);
+                Level level = actionData.getData(IActionDataType.WORLD);
                 if (level == null) {
                     level = actionData.getPlayer().arc$getLevel();
                 }
@@ -71,7 +70,7 @@ public class BlockDropMultiplierReward extends AbstractReward {
 
     @Override
     public IRewardType<?> getType() {
-        return RewardType.BLOCK_DROP_MULTIPLIER;
+        return IRewardType.BLOCK_DROP_MULTIPLIER;
     }
 
     public int getMultiplier() {

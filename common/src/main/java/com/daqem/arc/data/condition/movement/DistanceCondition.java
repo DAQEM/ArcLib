@@ -1,11 +1,10 @@
 package com.daqem.arc.data.condition.movement;
 
 import com.daqem.arc.api.action.data.ActionData;
-import com.daqem.arc.api.action.data.type.ActionDataType;
+import com.daqem.arc.api.action.data.IActionDataType;
 import com.daqem.arc.api.condition.AbstractCondition;
-import com.daqem.arc.api.condition.serializer.IConditionSerializer;
-import com.daqem.arc.api.condition.type.ConditionType;
-import com.daqem.arc.api.condition.type.IConditionType;
+import com.daqem.arc.api.condition.IConditionSerializer;
+import com.daqem.arc.api.condition.IConditionType;
 import com.daqem.arc.api.player.ArcServerPlayer;
 import com.google.gson.JsonObject;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -30,7 +29,7 @@ public class DistanceCondition extends AbstractCondition {
     @Override
     public boolean isMet(ActionData actionData) {
         if (actionData.getPlayer() instanceof ArcServerPlayer serverPlayer) {
-            Integer totalDistanceMovedInCm = actionData.getData(ActionDataType.DISTANCE_IN_CM);
+            Integer totalDistanceMovedInCm = actionData.getData(IActionDataType.DISTANCE_IN_CM);
             if (totalDistanceMovedInCm != null) {
                 totalDistanceMovedInCm += serverPlayer.arc$getLastRemainderInCm(this);
 
@@ -50,7 +49,7 @@ public class DistanceCondition extends AbstractCondition {
 
     @Override
     public IConditionType<?> getType() {
-        return ConditionType.DISTANCE;
+        return IConditionType.DISTANCE;
     }
 
     public int getDistanceInBlocks() {

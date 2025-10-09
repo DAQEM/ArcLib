@@ -1,12 +1,11 @@
 package com.daqem.arc.data.condition.block;
 
 import com.daqem.arc.api.action.data.ActionData;
-import com.daqem.arc.api.action.data.type.ActionDataType;
+import com.daqem.arc.api.action.data.IActionDataType;
 import com.daqem.arc.api.condition.AbstractCondition;
 import com.daqem.arc.api.condition.ICondition;
-import com.daqem.arc.api.condition.serializer.IConditionSerializer;
-import com.daqem.arc.api.condition.type.ConditionType;
-import com.daqem.arc.api.condition.type.IConditionType;
+import com.daqem.arc.api.condition.IConditionSerializer;
+import com.daqem.arc.api.condition.IConditionType;
 import com.daqem.arc.api.player.ArcServerPlayer;
 import com.daqem.arc.player.BlockPosCache;
 import com.google.gson.JsonObject;
@@ -23,7 +22,7 @@ public class NotInBlockPosCacheCondition  extends AbstractCondition {
     @Override
     public boolean isMet(ActionData actionData) {
         if (actionData.getPlayer() instanceof ArcServerPlayer serverPlayer) {
-            BlockPos blockPos = actionData.getData(ActionDataType.BLOCK_POSITION);
+            BlockPos blockPos = actionData.getData(IActionDataType.BLOCK_POSITION);
             if (blockPos != null) {
                 BlockPosCache blockPosCache = serverPlayer.arc$getBlockPosCache();
                 return !blockPosCache.contains(blockPos);
@@ -34,7 +33,7 @@ public class NotInBlockPosCacheCondition  extends AbstractCondition {
 
     @Override
     public IConditionType<? extends ICondition> getType() {
-        return ConditionType.NOT_IN_BLOCK_POS_CACHE;
+        return IConditionType.NOT_IN_BLOCK_POS_CACHE;
     }
 
     public static class Serializer implements IConditionSerializer<NotInBlockPosCacheCondition> {

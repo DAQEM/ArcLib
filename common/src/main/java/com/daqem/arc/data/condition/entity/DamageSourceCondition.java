@@ -1,24 +1,34 @@
 package com.daqem.arc.data.condition.entity;
 
 import com.daqem.arc.api.action.data.ActionData;
-import com.daqem.arc.api.action.data.type.ActionDataType;
+import com.daqem.arc.api.action.data.IActionDataType;
 import com.daqem.arc.api.condition.AbstractCondition;
-import com.daqem.arc.api.condition.serializer.IConditionSerializer;
-import com.daqem.arc.api.condition.type.ConditionType;
-import com.daqem.arc.api.condition.type.IConditionType;
+import com.daqem.arc.api.condition.IConditionSerializer;
+import com.daqem.arc.api.condition.IConditionType;
 import com.google.gson.JsonObject;
+import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.JsonOps;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EntityType;
+import org.jetbrains.annotations.Nullable;
 
 public class DamageSourceCondition extends AbstractCondition {
 
     private final String source;
+    @Nullable
+    private final EntityType<?> directEntityType;
+    @Nullable
+    private final EntityType<?> causingEntityType;
 
-    public DamageSourceCondition(boolean inverted, String source) {
+    public DamageSourceCondition(boolean inverted, String source, @Nullable EntityType<?> directEntityType, @Nullable EntityType<?> causingEntityType) {
         super(inverted);
         this.source = source;
+        this.directEntityType = directEntityType;
+        this.causingEntityType = causingEntityType;
     }
 
     @Override
@@ -28,17 +38,39 @@ public class DamageSourceCondition extends AbstractCondition {
 
     @Override
     public boolean isMet(ActionData actionData) {
-        DamageSource damageSource = actionData.getData(ActionDataType.DAMAGE_SOURCE);
-        return damageSource != null && damageSource.getMsgId().equals(source);
+        DamageSource damageSource = actionData.getData(IActionDataType.DAMAGE_SOURCE);
+        if (damageSource != null) {
+            if (!source.equals("any") && !damageSource.getMsgId().equals(source)) {
+                return false;
+            }
+            if (directEntityType != null && (damageSource.getDirectEntity() == null || damageSource.getDirectEntity().getType() != directEntityType)) {
+                return false;
+            }
+            if (causingEntityType != null && (damageSource.getEntity() == null || damageSource.getEntity().getType() != causingEntityType)) {
+                return false;
+            }
+            return true;
+        }
+        return false;
     }
 
     @Override
     public IConditionType<?> getType() {
-        return ConditionType.DAMAGE_SOURCE;
+        return IConditionType.DAMAGE_SOURCE;
     }
 
     public String getSource() {
         return source;
+    }
+
+    @Nullable
+    public EntityType<?> getDirectEntityType() {
+        return directEntityType;
+    }
+
+    @Nullable
+    public EntityType<?> getCausingEntityType() {
+        return causingEntityType;
     }
 
     public static class Serializer implements IConditionSerializer<DamageSourceCondition> {
@@ -47,20 +79,34 @@ public class DamageSourceCondition extends AbstractCondition {
         public DamageSourceCondition fromJson(ResourceLocation location, JsonObject jsonObject, boolean inverted) {
             return new DamageSourceCondition(
                     inverted,
-                    getString(jsonObject, "source"));
+                    GsonHelper.getAsString(jsonObject, "source", "any"),
+                    EntityType.CODEC.decode(JsonOps.INSTANCE, jsonObject.get("direct_entity_type")).result().orElse(new Pair<>(null, null)).getFirst(),
+                    EntityType.CODEC.decode(JsonOps.INSTANCE, jsonObject.get("causing_entity_type")).result().orElse(new Pair<>(null, null)).getFirst()
+            );
         }
 
         @Override
         public DamageSourceCondition fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
             return new DamageSourceCondition(
                     inverted,
-                    friendlyByteBuf.readUtf());
+                    friendlyByteBuf.readUtf(),
+                    friendlyByteBuf.readBoolean() ? EntityType.STREAM_CODEC.decode(friendlyByteBuf) : null,
+                    friendlyByteBuf.readBoolean() ? EntityType.STREAM_CODEC.decode(friendlyByteBuf) : null
+            );
         }
 
         @Override
         public void toNetwork(RegistryFriendlyByteBuf friendlyByteBuf, DamageSourceCondition type) {
             IConditionSerializer.super.toNetwork(friendlyByteBuf, type);
             friendlyByteBuf.writeUtf(type.source);
+            friendlyByteBuf.writeBoolean(type.directEntityType != null);
+            if (type.directEntityType != null) {
+                EntityType.STREAM_CODEC.encode(friendlyByteBuf, type.directEntityType);
+            }
+            friendlyByteBuf.writeBoolean(type.causingEntityType != null);
+            if (type.causingEntityType != null) {
+                EntityType.STREAM_CODEC.encode(friendlyByteBuf, type.causingEntityType);
+            }
         }
     }
 }

@@ -1,6 +1,6 @@
 package com.daqem.arc.api.action.result;
 
-public class ActionResult {
+public final class ActionResult {
 
     private boolean cancelAction = false;
     private float destroySpeedModifier = 1.0F;

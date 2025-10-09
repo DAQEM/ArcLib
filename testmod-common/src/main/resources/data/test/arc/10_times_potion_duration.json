@@ -1,0 +1,17 @@
+{
+  "holder": {
+    "type": "arc:player",
+    "id": "arc:player"
+  },
+  "type": "arc:on_effect_added",
+  "rewards": [
+    {
+      "type": "arc:effect_duration_multiplier",
+      "multiplier": 10
+    },
+    {
+      "type": "arc:effect_amplifier_addition",
+      "addition": 2
+    }
+  ]
+}
