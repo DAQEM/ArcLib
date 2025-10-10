@@ -53,11 +53,7 @@ public class ClientboundSyncPlayerActionHoldersPacket implements CustomPacketPay
         return ArcNetworking.CLIENTBOUND_SYNC_PLAYER_ACTION_HOLDERS;
     }
 
-    @Environment(EnvType.CLIENT)
-    public static void handleClientSide(ClientboundSyncPlayerActionHoldersPacket packet, NetworkManager.PacketContext context) {
-        if (Minecraft.getInstance().player instanceof ArcClientPlayer arcClientPlayer) {
-            arcClientPlayer.arc$clearActionHolders();
-            arcClientPlayer.arc$addActionHolders(packet.actionHolders);
-        }
+    public List<IActionHolder> getActionHolders() {
+        return actionHolders;
     }
 }
