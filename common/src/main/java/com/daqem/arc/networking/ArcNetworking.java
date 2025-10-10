@@ -2,6 +2,7 @@ package com.daqem.arc.networking;
 
 import com.daqem.arc.Arc;
 
+import com.daqem.arc.client.networking.*;
 import dev.architectury.networking.NetworkManager;
 import dev.architectury.utils.Env;
 import dev.architectury.utils.EnvExecutor;
@@ -16,11 +17,11 @@ public interface ArcNetworking {
     CustomPacketPayload.Type<ClientboundActionHoldersScreenPacket> CLIENTBOUND_ACTION_HOLDERS_SCREEN_PACKET = new CustomPacketPayload.Type<>(Arc.getId("clientbound_action_holders_screen_packet"));
 
     static void initClient() {
-        NetworkManager.registerReceiver(NetworkManager.Side.S2C, CLIENTBOUND_UPDATE_ACTIONS, ClientboundUpdateActionsPacket.STREAM_CODEC, ClientboundUpdateActionsPacket::handleClientSide);
-        NetworkManager.registerReceiver(NetworkManager.Side.S2C, CLIENTBOUND_UPDATE_ACTION_HOLDERS, ClientboundUpdateActionHoldersPacket.STREAM_CODEC, ClientboundUpdateActionHoldersPacket::handleClientSide);
-        NetworkManager.registerReceiver(NetworkManager.Side.S2C, CLIENTBOUND_ACTION_SCREEN, ClientboundActionScreenPacket.STREAM_CODEC, ClientboundActionScreenPacket::handleClientSide);
-        NetworkManager.registerReceiver(NetworkManager.Side.S2C, CLIENTBOUND_SYNC_PLAYER_ACTION_HOLDERS, ClientboundSyncPlayerActionHoldersPacket.STREAM_CODEC, ClientboundSyncPlayerActionHoldersPacket::handleClientSide);
-        NetworkManager.registerReceiver(NetworkManager.Side.S2C, CLIENTBOUND_ACTION_HOLDERS_SCREEN_PACKET, ClientboundActionHoldersScreenPacket.STREAM_CODEC, ClientboundActionHoldersScreenPacket::handleClientSide);
+        NetworkManager.registerReceiver(NetworkManager.Side.S2C, CLIENTBOUND_UPDATE_ACTIONS, ClientboundUpdateActionsPacket.STREAM_CODEC, ClientboundUpdateActionsPacketHandler::handleClientSide);
+        NetworkManager.registerReceiver(NetworkManager.Side.S2C, CLIENTBOUND_UPDATE_ACTION_HOLDERS, ClientboundUpdateActionHoldersPacket.STREAM_CODEC, ClientboundUpdateActionHoldersPacketHandler::handleClientSide);
+        NetworkManager.registerReceiver(NetworkManager.Side.S2C, CLIENTBOUND_ACTION_SCREEN, ClientboundActionScreenPacket.STREAM_CODEC, ClientboundActionScreenPacketHandler::handleClientSide);
+        NetworkManager.registerReceiver(NetworkManager.Side.S2C, CLIENTBOUND_SYNC_PLAYER_ACTION_HOLDERS, ClientboundSyncPlayerActionHoldersPacket.STREAM_CODEC, ClientboundSyncPlayerActionHoldersPacketHandler::handleClientSide);
+        NetworkManager.registerReceiver(NetworkManager.Side.S2C, CLIENTBOUND_ACTION_HOLDERS_SCREEN_PACKET, ClientboundActionHoldersScreenPacket.STREAM_CODEC, ClientboundActionHoldersScreenPacketHandler::handleClientSide);
     }
 
     static void initServer() {
