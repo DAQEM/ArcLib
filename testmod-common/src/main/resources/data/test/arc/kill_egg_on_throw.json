@@ -1,0 +1,20 @@
+{
+  "holder": {
+    "type": "arc:player",
+    "id": "arc:player"
+  },
+  "type": "arc:on_use_item",
+  "rewards": [
+    {
+      "type": "arc:cancel_action"
+    }
+  ],
+  "conditions": [
+    {
+      "type": "arc:item",
+      "item": {
+        "id": "minecraft:egg"
+      }
+    }
+  ]
+}

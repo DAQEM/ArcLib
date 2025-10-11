@@ -4,6 +4,7 @@ import com.daqem.arc.Arc;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
@@ -23,12 +24,13 @@ public interface IActionDataType<T> {
     IActionDataType<DamageSource> DAMAGE_SOURCE = register(Arc.getId("damage_source"));
     IActionDataType<Entity> ENTITY = register(Arc.getId("entity"));
     IActionDataType<Float> DAMAGE_AMOUNT = register(Arc.getId("damage_amount"));
-    IActionDataType<Integer> DISTANCE_IN_CM = register(Arc.getId("distance_in_cm"));
+    IActionDataType<Double> DISTANCE_IN_CM = register(Arc.getId("distance_in_cm"));
     IActionDataType<ItemStack> ITEM_STACK = register(Arc.getId("item_stack"));
     IActionDataType<Item> ITEM = register(Arc.getId("item"));
     IActionDataType<AdvancementHolder> ADVANCEMENT = register(Arc.getId("advancement"));
     IActionDataType<MobEffectInstance> MOB_EFFECT_INSTANCE = register(Arc.getId("mob_effect_instance"));
     IActionDataType<Recipe<?>> RECIPE = register(Arc.getId("recipe"));
+    IActionDataType<InteractionHand> HAND = register(Arc.getId("hand"));
 
     static <T> IActionDataType<T> register(ResourceLocation location) {
         return () -> location;

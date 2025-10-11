@@ -7,6 +7,8 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 
+import java.util.Objects;
+
 public interface IRewardSerializer<T extends IReward> extends ArcSerializer {
 
     T fromJson(JsonObject jsonObject, double chance, int priority);
@@ -21,8 +23,9 @@ public interface IRewardSerializer<T extends IReward> extends ArcSerializer {
         ).getSerializer().fromNetwork(resourceLocation2, friendlyByteBuf);
     }
 
+    @SuppressWarnings("unchecked")
     static <T extends IReward> void toNetwork(T reward, RegistryFriendlyByteBuf friendlyByteBuf, ResourceLocation location) {
-        friendlyByteBuf.writeResourceLocation(ArcRegistry.REWARD.getKey(reward.getType()));
+        friendlyByteBuf.writeResourceLocation(Objects.requireNonNull(ArcRegistry.REWARD.getKey(reward.getType())));
         friendlyByteBuf.writeResourceLocation(location);
         ((IRewardSerializer<T>)reward.getSerializer()).toNetwork(friendlyByteBuf, reward);
 

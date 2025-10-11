@@ -1,7 +1,9 @@
 package com.daqem.arc.mixin;
 
+import com.daqem.arc.api.event.ArcItemEvent;
 import com.daqem.arc.api.player.ArcServerPlayer;
 import com.daqem.arc.event.PlayerEvents;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.RecipeCraftingHolder;
 import net.minecraft.world.inventory.ResultSlot;
@@ -23,11 +25,11 @@ public abstract class MixinResultSlot {
     private Player player;
 
     @Inject(method = "checkTakeAchievements", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/inventory/RecipeCraftingHolder;awardUsedRecipes(Lnet/minecraft/world/entity/player/Player;Ljava/util/List;)V"))
-    public void arc$onRecipeCrafted(ItemStack stack, CallbackInfo ci) {
-        if (this.player instanceof ArcServerPlayer arcServerPlayer) {
+    public void arc$onRecipeCrafted(ItemStack itemStack, CallbackInfo ci) {
+        if (this.player instanceof ServerPlayer serverPlayer) {
             if (((Slot) (Object) this).container instanceof RecipeCraftingHolder recipeCraftingHolder) {
                 if (recipeCraftingHolder.getRecipeUsed() instanceof RecipeHolder<?> recipeHolder) {
-                    PlayerEvents.onCraftItem(arcServerPlayer, recipeHolder.value(), stack, arcServerPlayer.arc$getLevel());
+                    ArcItemEvent.CRAFT_ITEM.invoker().onCraftItem(serverPlayer, recipeHolder.value(), itemStack);
                 }
             }
         }

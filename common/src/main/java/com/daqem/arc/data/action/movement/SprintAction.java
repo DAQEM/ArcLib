@@ -14,8 +14,8 @@ import java.util.List;
 
 public class SprintAction extends AbstractAction {
 
-    public SprintAction(ResourceLocation location, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-        super(location, actionHolderLocation, actionHolderType, performOnClient, rewards, conditions);
+    public SprintAction(ResourceLocation location, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+        super(location, actionHolderLocation, actionHolderType, rewards, conditions);
     }
 
     @Override
@@ -26,13 +26,13 @@ public class SprintAction extends AbstractAction {
     public static class Serializer implements IActionSerializer<SprintAction> {
 
         @Override
-        public SprintAction fromJson(ResourceLocation location, JsonObject jsonObject, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-            return new SprintAction(location, actionHolderLocation, actionHolderType, performOnClient, rewards, conditions);
+        public SprintAction fromJson(ResourceLocation location, JsonObject jsonObject, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+            return new SprintAction(location, actionHolderLocation, actionHolderType, rewards, conditions);
         }
 
         @Override
-        public SprintAction fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-            return new SprintAction(location, actionHolderLocation, actionHolderType, performOnClient, rewards, conditions);
+        public SprintAction fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+            return new SprintAction(location, actionHolderLocation, actionHolderType, rewards, conditions);
         }
 
         @Override

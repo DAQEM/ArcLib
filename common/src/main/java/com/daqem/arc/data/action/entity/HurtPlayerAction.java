@@ -14,8 +14,8 @@ import java.util.List;
 
 public class HurtPlayerAction extends AbstractAction {
 
-    public HurtPlayerAction(ResourceLocation location, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-        super(location, actionHolderLocation, actionHolderType, performOnClient, rewards, conditions);
+    public HurtPlayerAction(ResourceLocation location, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+        super(location, actionHolderLocation, actionHolderType, rewards, conditions);
     }
 
     @Override
@@ -26,13 +26,13 @@ public class HurtPlayerAction extends AbstractAction {
     public static class Serializer implements IActionSerializer<HurtPlayerAction> {
 
         @Override
-        public HurtPlayerAction fromJson(ResourceLocation location, JsonObject jsonObject, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-            return new HurtPlayerAction(location, actionHolderLocation, actionHolderType, performOnClient, rewards, conditions);
+        public HurtPlayerAction fromJson(ResourceLocation location, JsonObject jsonObject, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+            return new HurtPlayerAction(location, actionHolderLocation, actionHolderType, rewards, conditions);
         }
 
         @Override
-        public HurtPlayerAction fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-            return new HurtPlayerAction(location, actionHolderLocation, actionHolderType, performOnClient, rewards, conditions);
+        public HurtPlayerAction fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+            return new HurtPlayerAction(location, actionHolderLocation, actionHolderType, rewards, conditions);
         }
 
         @Override

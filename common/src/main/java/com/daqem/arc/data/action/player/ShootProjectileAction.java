@@ -14,8 +14,8 @@ import java.util.List;
 
 public class ShootProjectileAction extends AbstractAction {
 
-    public ShootProjectileAction(ResourceLocation location, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-        super(location, actionHolderLocation, actionHolderType, performOnClient, rewards, conditions);
+    public ShootProjectileAction(ResourceLocation location, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+        super(location, actionHolderLocation, actionHolderType, rewards, conditions);
     }
 
     @Override
@@ -26,13 +26,13 @@ public class ShootProjectileAction extends AbstractAction {
     public static class Serializer implements IActionSerializer<ShootProjectileAction> {
 
         @Override
-        public ShootProjectileAction fromJson(ResourceLocation location, JsonObject jsonObject, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-            return new ShootProjectileAction(location, actionHolderLocation, actionHolderType, performOnClient, rewards, conditions);
+        public ShootProjectileAction fromJson(ResourceLocation location, JsonObject jsonObject, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+            return new ShootProjectileAction(location, actionHolderLocation, actionHolderType, rewards, conditions);
         }
 
         @Override
-        public ShootProjectileAction fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-            return new ShootProjectileAction(location, actionHolderLocation, actionHolderType, performOnClient, rewards, conditions);
+        public ShootProjectileAction fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+            return new ShootProjectileAction(location, actionHolderLocation, actionHolderType, rewards, conditions);
         }
 
         @Override

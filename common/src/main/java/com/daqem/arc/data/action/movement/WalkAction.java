@@ -14,8 +14,8 @@ import java.util.List;
 
 public class WalkAction extends AbstractAction {
 
-    public WalkAction(ResourceLocation location, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-        super(location, actionHolderLocation, actionHolderType, performOnClient, rewards, conditions);
+    public WalkAction(ResourceLocation location, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+        super(location, actionHolderLocation, actionHolderType, rewards, conditions);
     }
 
     @Override
@@ -26,13 +26,13 @@ public class WalkAction extends AbstractAction {
     public static class Serializer implements IActionSerializer<WalkAction> {
 
         @Override
-        public WalkAction fromJson(ResourceLocation location, JsonObject jsonObject, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-            return new WalkAction(location, actionHolderLocation, actionHolderType, performOnClient, rewards, conditions);
+        public WalkAction fromJson(ResourceLocation location, JsonObject jsonObject, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+            return new WalkAction(location, actionHolderLocation, actionHolderType, rewards, conditions);
         }
 
         @Override
-        public WalkAction fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-            return new WalkAction(location, actionHolderLocation, actionHolderType, performOnClient, rewards, conditions);
+        public WalkAction fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+            return new WalkAction(location, actionHolderLocation, actionHolderType, rewards, conditions);
         }
 
         @Override

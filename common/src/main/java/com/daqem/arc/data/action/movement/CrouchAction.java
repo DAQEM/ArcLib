@@ -14,8 +14,8 @@ import java.util.List;
 
 public class CrouchAction extends AbstractAction {
 
-    public CrouchAction(ResourceLocation location, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-        super(location, actionHolderLocation, actionHolderType, performOnClient, rewards, conditions);
+    public CrouchAction(ResourceLocation location, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+        super(location, actionHolderLocation, actionHolderType, rewards, conditions);
     }
 
     @Override
@@ -26,13 +26,13 @@ public class CrouchAction extends AbstractAction {
     public static class Serializer implements IActionSerializer<CrouchAction> {
 
         @Override
-        public CrouchAction fromJson(ResourceLocation location, JsonObject jsonObject, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-            return new CrouchAction(location, actionHolderLocation, actionHolderType, performOnClient, rewards, conditions);
+        public CrouchAction fromJson(ResourceLocation location, JsonObject jsonObject, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+            return new CrouchAction(location, actionHolderLocation, actionHolderType, rewards, conditions);
         }
 
         @Override
-        public CrouchAction fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-            return new CrouchAction(location, actionHolderLocation, actionHolderType, performOnClient, rewards, conditions);
+        public CrouchAction fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+            return new CrouchAction(location, actionHolderLocation, actionHolderType, rewards, conditions);
         }
 
         @Override

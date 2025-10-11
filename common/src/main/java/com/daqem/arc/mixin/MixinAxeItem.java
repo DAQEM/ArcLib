@@ -1,9 +1,13 @@
 package com.daqem.arc.mixin;
 
+import com.daqem.arc.api.event.ArcPlayerEvent;
+import com.daqem.arc.api.event.EventResult;
 import com.daqem.arc.event.PlayerEvents;
 import com.daqem.arc.api.player.ArcServerPlayer;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.context.UseOnContext;
@@ -25,14 +29,16 @@ public abstract class MixinAxeItem extends Item {
         super(properties);
     }
 
-    @Inject(at = @At("HEAD"), method = "useOn(Lnet/minecraft/world/item/context/UseOnContext;)Lnet/minecraft/world/InteractionResult;")
+    @Inject(at = @At("HEAD"), method = "useOn(Lnet/minecraft/world/item/context/UseOnContext;)Lnet/minecraft/world/InteractionResult;", cancellable = true)
     public void useOn(UseOnContext useOnContext, CallbackInfoReturnable<InteractionResult> cir) {
-        if (useOnContext.getPlayer() instanceof ArcServerPlayer serverPlayer) {
+        if (useOnContext.getPlayer() instanceof Player player) {
             BlockPos clickedPos = useOnContext.getClickedPos();
-            BlockState blockState = serverPlayer.arc$getLevel().getBlockState(clickedPos);
+            BlockState blockState = useOnContext.getLevel().getBlockState(clickedPos);
             if (this.getStripped(blockState).isPresent()) {
-                PlayerEvents.onStripLog(serverPlayer, clickedPos, useOnContext.getLevel());
-
+                EventResult eventResult = ArcPlayerEvent.STRIP_LOG.invoker().onStripLog(player, useOnContext.getHand(), useOnContext.getItemInHand(), clickedPos, blockState, useOnContext.getLevel());
+                if (eventResult.cancelsEvent()) {
+                    cir.setReturnValue(InteractionResult.FAIL);
+                }
             }
         }
     }

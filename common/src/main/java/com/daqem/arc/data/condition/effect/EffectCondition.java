@@ -1,7 +1,7 @@
 package com.daqem.arc.data.condition.effect;
 
 import com.daqem.arc.api.ComparisonType;
-import com.daqem.arc.api.action.data.ActionData;
+import com.daqem.arc.data.ActionData;
 import com.daqem.arc.api.action.data.IActionDataType;
 import com.daqem.arc.api.condition.AbstractCondition;
 import com.daqem.arc.api.condition.IConditionSerializer;

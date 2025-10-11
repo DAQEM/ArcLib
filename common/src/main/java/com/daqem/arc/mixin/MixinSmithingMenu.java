@@ -1,7 +1,10 @@
 package com.daqem.arc.mixin;
 
+import com.daqem.arc.api.event.ArcItemEvent;
+import com.daqem.arc.api.event.EventResult;
 import com.daqem.arc.api.player.ArcServerPlayer;
 import com.daqem.arc.event.PlayerEvents;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.*;
@@ -22,10 +25,9 @@ public abstract class MixinSmithingMenu extends ItemCombinerMenu {
 
     @Inject( method = "onTake", at = @At("HEAD"))
     private void arc$onRecipeCrafted(Player player, ItemStack itemStack, CallbackInfo ci) {
-        if (player instanceof ArcServerPlayer arcServerPlayer) {
+        if (player instanceof ServerPlayer serverPlayer) {
             if (this.resultSlots.getRecipeUsed() instanceof RecipeHolder<?> recipeHolder) {
-                PlayerEvents.onCraftItem(arcServerPlayer, recipeHolder.value(), itemStack, arcServerPlayer.arc$getLevel());
-
+                ArcItemEvent.CRAFT_ITEM.invoker().onCraftItem(serverPlayer, recipeHolder.value(), itemStack);
             }
         }
     }

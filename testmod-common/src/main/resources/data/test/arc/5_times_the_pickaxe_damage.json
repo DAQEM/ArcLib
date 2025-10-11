@@ -1,0 +1,21 @@
+{
+  "holder": {
+    "type": "arc:player",
+    "id": "arc:player"
+  },
+  "type": "arc:on_hurt_item",
+  "rewards": [
+    {
+      "type": "arc:damage_multiplier",
+      "multiplier" : 5
+    }
+  ],
+  "conditions": [
+    {
+      "type": "arc:items",
+      "items": [
+        "#minecraft:pickaxes"
+      ]
+    }
+  ]
+}

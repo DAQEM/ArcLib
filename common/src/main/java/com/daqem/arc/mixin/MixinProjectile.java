@@ -1,9 +1,13 @@
 package com.daqem.arc.mixin;
 
 import com.daqem.arc.api.IArcAbstractArrow;
+import com.daqem.arc.api.event.ArcItemEvent;
+import com.daqem.arc.api.event.ArcPlayerEvent;
+import com.daqem.arc.api.event.EventResult;
 import com.daqem.arc.event.ItemEvents;
 import com.daqem.arc.event.PlayerEvents;
 import com.daqem.arc.api.player.ArcServerPlayer;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.projectile.Projectile;
@@ -23,11 +27,12 @@ public abstract class MixinProjectile extends Entity {
 
     @Inject(at = @At("HEAD"), method = "shootFromRotation(Lnet/minecraft/world/entity/Entity;FFFFF)V")
     private void shootFromRotation(Entity entity, float f, float g, float h, float i, float j, CallbackInfo ci) {
-        if (entity instanceof ArcServerPlayer player) {
-            if ((Projectile) (Object) this instanceof ThrowableItemProjectile throwableItemProjectile) {
-                ItemEvents.onThrowItem(player, throwableItemProjectile);
-            } else if ((Projectile) (Object) this instanceof IArcAbstractArrow abstractArrow) {
-                PlayerEvents.onShootProjectile(player, abstractArrow);
+        if (entity instanceof ServerPlayer serverPlayer) {
+            Projectile projectile = (Projectile) (Object) this;
+            if (projectile instanceof ThrowableItemProjectile throwableItemProjectile) {
+                ArcItemEvent.THROW_ITEM.invoker().onThrowItem(serverPlayer, throwableItemProjectile);
+            } else if (projectile instanceof IArcAbstractArrow abstractArrow) {
+                ArcPlayerEvent.SHOOT_PROJECTILE.invoker().onShootProjectile(serverPlayer, abstractArrow);
             }
         }
     }

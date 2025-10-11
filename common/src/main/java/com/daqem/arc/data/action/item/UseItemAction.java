@@ -14,8 +14,13 @@ import java.util.List;
 
 public class UseItemAction extends AbstractAction {
 
-    public UseItemAction(ResourceLocation location, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-        super(location, actionHolderLocation, actionHolderType, performOnClient, rewards, conditions);
+    public UseItemAction(ResourceLocation location, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+        super(location, actionHolderLocation, actionHolderType, rewards, conditions);
+    }
+
+    @Override
+    public boolean shouldPerformOnClient() {
+        return true;
     }
 
     @Override
@@ -26,13 +31,13 @@ public class UseItemAction extends AbstractAction {
     public static class Serializer implements IActionSerializer<UseItemAction> {
 
         @Override
-        public UseItemAction fromJson(ResourceLocation location, JsonObject jsonObject, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-            return new UseItemAction(location, actionHolderLocation, actionHolderType, performOnClient, rewards, conditions);
+        public UseItemAction fromJson(ResourceLocation location, JsonObject jsonObject, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+            return new UseItemAction(location, actionHolderLocation, actionHolderType, rewards, conditions);
         }
 
         @Override
-        public UseItemAction fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-            return new UseItemAction(location, actionHolderLocation, actionHolderType, performOnClient, rewards, conditions);
+        public UseItemAction fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+            return new UseItemAction(location, actionHolderLocation, actionHolderType, rewards, conditions);
         }
 
         @Override

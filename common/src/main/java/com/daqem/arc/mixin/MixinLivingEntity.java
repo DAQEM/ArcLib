@@ -1,9 +1,8 @@
 package com.daqem.arc.mixin;
 
-import com.daqem.arc.api.action.result.ActionResult;
+import com.daqem.arc.api.event.ArcPlayerEvent;
+import com.daqem.arc.api.event.EventResult;
 import com.daqem.arc.api.player.ArcServerPlayer;
-import com.daqem.arc.event.PlayerEvents;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -31,8 +30,8 @@ public abstract class MixinLivingEntity extends Entity {
                 return;
             }
 
-            ActionResult actionResult = PlayerEvents.onEffectAdded(serverPlayer, effect, entity);
-            if (actionResult.shouldCancelAction()) {
+            EventResult eventResult = ArcPlayerEvent.EFFECT_ADDED.invoker().onEffectAdded(serverPlayer.arc$getServerPlayer(), effect, entity);
+            if (eventResult.cancelsEvent()) {
                 self.removeEffect(effect.getEffect());
             }
         }

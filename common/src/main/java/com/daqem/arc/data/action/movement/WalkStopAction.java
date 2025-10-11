@@ -14,8 +14,8 @@ import java.util.List;
 
 public class WalkStopAction extends AbstractAction {
 
-    public WalkStopAction(ResourceLocation location, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-        super(location, actionHolderLocation, actionHolderType, performOnClient, rewards, conditions);
+    public WalkStopAction(ResourceLocation location, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+        super(location, actionHolderLocation, actionHolderType, rewards, conditions);
     }
 
     @Override
@@ -26,13 +26,13 @@ public class WalkStopAction extends AbstractAction {
     public static class Serializer implements IActionSerializer<WalkStopAction> {
 
         @Override
-        public WalkStopAction fromJson(ResourceLocation location, JsonObject jsonObject, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-            return new WalkStopAction(location, actionHolderLocation, actionHolderType, performOnClient, rewards, conditions);
+        public WalkStopAction fromJson(ResourceLocation location, JsonObject jsonObject, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+            return new WalkStopAction(location, actionHolderLocation, actionHolderType, rewards, conditions);
         }
 
         @Override
-        public WalkStopAction fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-            return new WalkStopAction(location, actionHolderLocation, actionHolderType, performOnClient, rewards, conditions);
+        public WalkStopAction fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+            return new WalkStopAction(location, actionHolderLocation, actionHolderType, rewards, conditions);
         }
 
         @Override

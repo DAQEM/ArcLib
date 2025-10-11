@@ -14,8 +14,8 @@ import java.util.List;
 
 public class SwimStartAction extends AbstractAction {
 
-    public SwimStartAction(ResourceLocation location, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-        super(location, actionHolderLocation, actionHolderType, performOnClient, rewards, conditions);
+    public SwimStartAction(ResourceLocation location, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+        super(location, actionHolderLocation, actionHolderType, rewards, conditions);
     }
 
     @Override
@@ -26,13 +26,13 @@ public class SwimStartAction extends AbstractAction {
     public static class Serializer implements IActionSerializer<SwimStartAction> {
 
         @Override
-        public SwimStartAction fromJson(ResourceLocation location, JsonObject jsonObject, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-            return new SwimStartAction(location, actionHolderLocation, actionHolderType, performOnClient, rewards, conditions);
+        public SwimStartAction fromJson(ResourceLocation location, JsonObject jsonObject, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+            return new SwimStartAction(location, actionHolderLocation, actionHolderType, rewards, conditions);
         }
 
         @Override
-        public SwimStartAction fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-            return new SwimStartAction(location, actionHolderLocation, actionHolderType, performOnClient, rewards, conditions);
+        public SwimStartAction fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+            return new SwimStartAction(location, actionHolderLocation, actionHolderType, rewards, conditions);
         }
 
         @Override

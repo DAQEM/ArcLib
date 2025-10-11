@@ -14,8 +14,8 @@ import java.util.List;
 
 public class CrouchStartAction extends AbstractAction {
 
-    public CrouchStartAction(ResourceLocation location, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-        super(location, actionHolderLocation, actionHolderType, performOnClient, rewards, conditions);
+    public CrouchStartAction(ResourceLocation location, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+        super(location, actionHolderLocation, actionHolderType, rewards, conditions);
     }
 
     @Override
@@ -26,13 +26,13 @@ public class CrouchStartAction extends AbstractAction {
     public static class Serializer implements IActionSerializer<CrouchStartAction> {
 
         @Override
-        public CrouchStartAction fromJson(ResourceLocation location, JsonObject jsonObject, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-            return new CrouchStartAction(location, actionHolderLocation, actionHolderType, performOnClient, rewards, conditions);
+        public CrouchStartAction fromJson(ResourceLocation location, JsonObject jsonObject, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+            return new CrouchStartAction(location, actionHolderLocation, actionHolderType, rewards, conditions);
         }
 
         @Override
-        public CrouchStartAction fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-            return new CrouchStartAction(location, actionHolderLocation, actionHolderType, performOnClient, rewards, conditions);
+        public CrouchStartAction fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+            return new CrouchStartAction(location, actionHolderLocation, actionHolderType, rewards, conditions);
         }
 
         @Override

@@ -14,8 +14,8 @@ import java.util.List;
 
 public class BreedAnimalAction extends AbstractAction {
 
-    public BreedAnimalAction(ResourceLocation location, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-        super(location, actionHolderLocation, actionHolderType, performOnClient, rewards, conditions);
+    public BreedAnimalAction(ResourceLocation location, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+        super(location, actionHolderLocation, actionHolderType, rewards, conditions);
     }
 
     @Override
@@ -26,13 +26,13 @@ public class BreedAnimalAction extends AbstractAction {
     public static class Serializer implements IActionSerializer<BreedAnimalAction> {
 
         @Override
-        public BreedAnimalAction fromJson(ResourceLocation location, JsonObject jsonObject, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-            return new BreedAnimalAction(location, actionHolderLocation, actionHolderType, performOnClient, rewards, conditions);
+        public BreedAnimalAction fromJson(ResourceLocation location, JsonObject jsonObject, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+            return new BreedAnimalAction(location, actionHolderLocation, actionHolderType, rewards, conditions);
         }
 
         @Override
-        public BreedAnimalAction fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-            return new BreedAnimalAction(location, actionHolderLocation, actionHolderType, performOnClient, rewards, conditions);
+        public BreedAnimalAction fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+            return new BreedAnimalAction(location, actionHolderLocation, actionHolderType, rewards, conditions);
         }
 
         @Override

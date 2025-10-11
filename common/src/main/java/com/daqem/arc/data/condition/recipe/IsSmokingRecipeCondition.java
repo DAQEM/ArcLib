@@ -1,7 +1,7 @@
 package com.daqem.arc.data.condition.recipe;
 
 import com.daqem.arc.api.IArcAbstractCookingRecipe;
-import com.daqem.arc.api.action.data.ActionData;
+import com.daqem.arc.data.ActionData;
 import com.daqem.arc.api.action.data.IActionDataType;
 import com.daqem.arc.api.condition.IConditionSerializer;
 import com.daqem.arc.api.condition.IConditionType;

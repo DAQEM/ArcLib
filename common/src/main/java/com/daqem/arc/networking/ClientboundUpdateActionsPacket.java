@@ -44,10 +44,7 @@ public class ClientboundUpdateActionsPacket implements CustomPacketPayload {
         return ArcNetworking.CLIENTBOUND_UPDATE_ACTIONS;
     }
 
-    @Environment(EnvType.CLIENT)
-    public static void handleClientSide(ClientboundUpdateActionsPacket packet, NetworkManager.PacketContext context) {
-        if (!Minecraft.getInstance().isLocalServer()) {
-            ActionHolderManager.getInstance().registerActions(packet.actions);
-        }
+    public List<IAction> getActions() {
+        return actions;
     }
 }

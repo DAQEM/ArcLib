@@ -14,8 +14,13 @@ import java.util.List;
 
 public class EatAction extends AbstractAction {
 
-    public EatAction(ResourceLocation location, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-        super(location, actionHolderLocation, actionHolderType, performOnClient, rewards, conditions);
+    public EatAction(ResourceLocation location, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+        super(location, actionHolderLocation, actionHolderType, rewards, conditions);
+    }
+
+    @Override
+    public boolean shouldPerformOnClient() {
+        return true;
     }
 
     @Override
@@ -26,13 +31,13 @@ public class EatAction extends AbstractAction {
     public static class Serializer implements IActionSerializer<EatAction> {
 
         @Override
-        public EatAction fromJson(ResourceLocation location, JsonObject jsonObject, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-            return new EatAction(location, actionHolderLocation, actionHolderType, performOnClient, rewards, conditions);
+        public EatAction fromJson(ResourceLocation location, JsonObject jsonObject, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+            return new EatAction(location, actionHolderLocation, actionHolderType, rewards, conditions);
         }
 
         @Override
-        public EatAction fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-            return new EatAction(location, actionHolderLocation, actionHolderType, performOnClient, rewards, conditions);
+        public EatAction fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+            return new EatAction(location, actionHolderLocation, actionHolderType, rewards, conditions);
         }
 
         @Override

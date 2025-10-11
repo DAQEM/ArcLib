@@ -14,8 +14,8 @@ import java.util.List;
 
 public class FishedUpItemAction extends AbstractAction {
 
-    public FishedUpItemAction(ResourceLocation location, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-        super(location, actionHolderLocation, actionHolderType, performOnClient, rewards, conditions);
+    public FishedUpItemAction(ResourceLocation location, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+        super(location, actionHolderLocation, actionHolderType, rewards, conditions);
     }
 
     @Override
@@ -26,13 +26,13 @@ public class FishedUpItemAction extends AbstractAction {
     public static class Serializer implements IActionSerializer<FishedUpItemAction> {
 
         @Override
-        public FishedUpItemAction fromJson(ResourceLocation location, JsonObject jsonObject, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-            return new FishedUpItemAction(location, actionHolderLocation, actionHolderType, performOnClient, rewards, conditions);
+        public FishedUpItemAction fromJson(ResourceLocation location, JsonObject jsonObject, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+            return new FishedUpItemAction(location, actionHolderLocation, actionHolderType, rewards, conditions);
         }
 
         @Override
-        public FishedUpItemAction fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-            return new FishedUpItemAction(location, actionHolderLocation, actionHolderType, performOnClient, rewards, conditions);
+        public FishedUpItemAction fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+            return new FishedUpItemAction(location, actionHolderLocation, actionHolderType, rewards, conditions);
         }
 
         @Override

@@ -11,7 +11,7 @@ public class ArcFabric implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        Arc.initCommon();
+        Arc.init();
         ArcRegistry.init();
         registerCommandArgumentTypes();
     }

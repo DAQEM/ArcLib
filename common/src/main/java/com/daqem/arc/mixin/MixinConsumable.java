@@ -1,8 +1,12 @@
 package com.daqem.arc.mixin;
 
+import com.daqem.arc.api.event.ArcPlayerEvent;
+import com.daqem.arc.api.event.EventResult;
 import com.daqem.arc.api.player.ArcServerPlayer;
 import com.daqem.arc.event.PlayerEvents;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUseAnimation;
 import net.minecraft.world.item.component.Consumable;
@@ -18,11 +22,20 @@ public abstract class MixinConsumable {
 
     @Shadow public abstract ItemUseAnimation animation();
 
-    @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;consume(ILnet/minecraft/world/entity/LivingEntity;)V"), method = "onConsume")
+    @Inject(at = @At("HEAD"), method = "onConsume", cancellable = true)
     private void onConsume(Level level, LivingEntity livingEntity, ItemStack itemStack, CallbackInfoReturnable<ItemStack> cir) {
-        if (livingEntity instanceof ArcServerPlayer serverPlayer) {
-            if (this.animation() != ItemUseAnimation.DRINK) {
-                PlayerEvents.onPlayerEat(serverPlayer, itemStack);
+        if (livingEntity instanceof Player player) {
+            if (this.animation() == ItemUseAnimation.EAT) {
+                EventResult eventResult = ArcPlayerEvent.EAT.invoker().onEat(player, itemStack);
+                if (eventResult.cancelsEvent()) {
+                    cir.setReturnValue(itemStack);
+                }
+            }
+            if (this.animation() == ItemUseAnimation.DRINK) {
+                EventResult eventResult = ArcPlayerEvent.DRINK.invoker().onDrink(player, itemStack);
+                if (eventResult.cancelsEvent()) {
+                    cir.setReturnValue(itemStack);
+                }
             }
         }
     }

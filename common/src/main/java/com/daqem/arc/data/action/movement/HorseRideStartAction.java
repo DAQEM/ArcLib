@@ -14,8 +14,8 @@ import java.util.List;
 
 public class HorseRideStartAction extends AbstractAction {
 
-    public HorseRideStartAction(ResourceLocation location, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-        super(location, actionHolderLocation, actionHolderType, performOnClient, rewards, conditions);
+    public HorseRideStartAction(ResourceLocation location, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+        super(location, actionHolderLocation, actionHolderType, rewards, conditions);
     }
 
     @Override
@@ -26,13 +26,13 @@ public class HorseRideStartAction extends AbstractAction {
     public static class Serializer implements IActionSerializer<HorseRideStartAction> {
 
         @Override
-        public HorseRideStartAction fromJson(ResourceLocation location, JsonObject jsonObject, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-            return new HorseRideStartAction(location, actionHolderLocation, actionHolderType, performOnClient, rewards, conditions);
+        public HorseRideStartAction fromJson(ResourceLocation location, JsonObject jsonObject, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+            return new HorseRideStartAction(location, actionHolderLocation, actionHolderType, rewards, conditions);
         }
 
         @Override
-        public HorseRideStartAction fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-            return new HorseRideStartAction(location, actionHolderLocation, actionHolderType, performOnClient, rewards, conditions);
+        public HorseRideStartAction fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+            return new HorseRideStartAction(location, actionHolderLocation, actionHolderType, rewards, conditions);
         }
 
         @Override

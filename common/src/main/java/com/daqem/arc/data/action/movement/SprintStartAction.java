@@ -14,8 +14,8 @@ import java.util.List;
 
 public class SprintStartAction extends AbstractAction {
 
-    public SprintStartAction(ResourceLocation location, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-        super(location, actionHolderLocation, actionHolderType, performOnClient, rewards, conditions);
+    public SprintStartAction(ResourceLocation location, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+        super(location, actionHolderLocation, actionHolderType, rewards, conditions);
     }
 
     @Override
@@ -26,13 +26,13 @@ public class SprintStartAction extends AbstractAction {
     public static class Serializer implements IActionSerializer<SprintStartAction> {
 
         @Override
-        public SprintStartAction fromJson(ResourceLocation location, JsonObject jsonObject, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-            return new SprintStartAction(location, actionHolderLocation, actionHolderType, performOnClient, rewards, conditions);
+        public SprintStartAction fromJson(ResourceLocation location, JsonObject jsonObject, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+            return new SprintStartAction(location, actionHolderLocation, actionHolderType, rewards, conditions);
         }
 
         @Override
-        public SprintStartAction fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-            return new SprintStartAction(location, actionHolderLocation, actionHolderType, performOnClient, rewards, conditions);
+        public SprintStartAction fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+            return new SprintStartAction(location, actionHolderLocation, actionHolderType, rewards, conditions);
         }
 
         @Override

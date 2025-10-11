@@ -1,0 +1,16 @@
+{
+  "holder": {
+    "type": "arc:player",
+    "id": "arc:player"
+  },
+  "type": "arc:on_brew_potion",
+  "rewards": [
+    {
+      "type": "arc:item",
+        "item": {
+            "id": "minecraft:diamond",
+            "count": 1
+        }
+    }
+  ]
+}

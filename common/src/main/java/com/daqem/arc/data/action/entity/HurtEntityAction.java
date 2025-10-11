@@ -14,8 +14,8 @@ import java.util.List;
 
 public class HurtEntityAction extends AbstractAction {
 
-    public HurtEntityAction(ResourceLocation location, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-        super(location, actionHolderLocation, actionHolderType, performOnClient, rewards, conditions);
+    public HurtEntityAction(ResourceLocation location, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+        super(location, actionHolderLocation, actionHolderType, rewards, conditions);
     }
 
     @Override
@@ -26,13 +26,13 @@ public class HurtEntityAction extends AbstractAction {
     public static class Serializer implements IActionSerializer<HurtEntityAction> {
 
         @Override
-        public HurtEntityAction fromJson(ResourceLocation location, JsonObject jsonObject, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-            return new HurtEntityAction(location, actionHolderLocation, actionHolderType, performOnClient, rewards, conditions);
+        public HurtEntityAction fromJson(ResourceLocation location, JsonObject jsonObject, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+            return new HurtEntityAction(location, actionHolderLocation, actionHolderType, rewards, conditions);
         }
 
         @Override
-        public HurtEntityAction fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-            return new HurtEntityAction(location, actionHolderLocation, actionHolderType, performOnClient, rewards, conditions);
+        public HurtEntityAction fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+            return new HurtEntityAction(location, actionHolderLocation, actionHolderType, rewards, conditions);
         }
 
         @Override

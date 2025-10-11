@@ -2,6 +2,7 @@ package com.daqem.arc.api.action.data;
 
 import com.daqem.arc.api.action.IActionType;
 import com.daqem.arc.api.player.ArcPlayer;
+import com.daqem.arc.data.ActionData;
 
 import java.util.HashMap;
 import java.util.Map;

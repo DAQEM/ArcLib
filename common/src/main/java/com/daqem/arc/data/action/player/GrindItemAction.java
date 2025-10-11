@@ -14,8 +14,8 @@ import java.util.List;
 
 public class GrindItemAction extends AbstractAction {
 
-    public GrindItemAction(ResourceLocation location, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-        super(location, actionHolderLocation, actionHolderType, performOnClient, rewards, conditions);
+    public GrindItemAction(ResourceLocation location, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+        super(location, actionHolderLocation, actionHolderType, rewards, conditions);
     }
 
     @Override
@@ -26,13 +26,13 @@ public class GrindItemAction extends AbstractAction {
     public static class Serializer implements IActionSerializer<GrindItemAction> {
 
         @Override
-        public GrindItemAction fromJson(ResourceLocation location, JsonObject jsonObject, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-            return new GrindItemAction(location, actionHolderLocation, actionHolderType, performOnClient, rewards, conditions);
+        public GrindItemAction fromJson(ResourceLocation location, JsonObject jsonObject, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+            return new GrindItemAction(location, actionHolderLocation, actionHolderType, rewards, conditions);
         }
 
         @Override
-        public GrindItemAction fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-            return new GrindItemAction(location, actionHolderLocation, actionHolderType, performOnClient, rewards, conditions);
+        public GrindItemAction fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+            return new GrindItemAction(location, actionHolderLocation, actionHolderType, rewards, conditions);
         }
 
         @Override

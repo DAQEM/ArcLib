@@ -1,10 +1,7 @@
 package com.daqem.arc.data.serializer;
 
 import com.daqem.arc.api.ComparisonType;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
+import com.google.gson.*;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.JsonOps;
 import net.minecraft.core.Holder;
@@ -149,8 +146,10 @@ public interface ArcSerializer {
             for (JsonElement itemTagElement : jsonArray) {
                 String itemTagName = itemTagElement.getAsString();
                 if (itemTagName != null && itemTagName.startsWith("#")) {
-                    ResourceLocation resourceLocation = ResourceLocation.CODEC.decode(JsonOps.INSTANCE, itemTagElement).result()
-                            .orElseThrow(() -> new JsonParseException("Expected '" + key + "' to be a list of item tags, but one of the item tags was invalid: " + itemTagName))
+                    itemTagName = itemTagName.substring(1);
+                    String finalItemTagName = itemTagName;
+                    ResourceLocation resourceLocation = ResourceLocation.CODEC.decode(JsonOps.INSTANCE, new JsonPrimitive(finalItemTagName)).result()
+                            .orElseThrow(() -> new JsonParseException("Expected '" + key + "' to be a list of item tags, but one of the item tags was invalid: " + finalItemTagName))
                             .getFirst();
                     TagKey<Item> itemTag = TagKey.create(BuiltInRegistries.ITEM.key(), resourceLocation);
                     itemTags.add(itemTag);

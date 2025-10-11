@@ -1,0 +1,23 @@
+{
+  "holder": {
+    "type": "arc:player",
+    "id": "arc:player"
+  },
+  "type": "arc:on_swim",
+  "conditions": [
+    {
+      "type": "arc:distance",
+      "distance_in_blocks": 10
+
+    }
+  ],
+  "rewards": [
+    {
+      "type": "arc:item",
+      "item": {
+        "id": "minecraft:iron_ingot",
+        "count": 1
+      }
+    }
+  ]
+}

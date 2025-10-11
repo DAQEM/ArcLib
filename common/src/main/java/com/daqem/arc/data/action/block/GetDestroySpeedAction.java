@@ -15,8 +15,13 @@ import java.util.List;
 
 public class GetDestroySpeedAction extends AbstractAction {
 
-    public GetDestroySpeedAction(ResourceLocation location, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-        super(location, actionHolderLocation, actionHolderType, performOnClient, rewards, conditions);
+    public GetDestroySpeedAction(ResourceLocation location, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+        super(location, actionHolderLocation, actionHolderType, rewards, conditions);
+    }
+
+    @Override
+    public boolean shouldPerformOnClient() {
+        return true;
     }
 
     @Override
@@ -27,13 +32,13 @@ public class GetDestroySpeedAction extends AbstractAction {
     public static class Serializer implements IActionSerializer<GetDestroySpeedAction> {
 
         @Override
-        public GetDestroySpeedAction fromJson(ResourceLocation location, JsonObject jsonObject, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-            return new GetDestroySpeedAction(location, actionHolderLocation, actionHolderType, true, rewards, conditions);
+        public GetDestroySpeedAction fromJson(ResourceLocation location, JsonObject jsonObject, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+            return new GetDestroySpeedAction(location, actionHolderLocation, actionHolderType, rewards, conditions);
         }
 
         @Override
-        public GetDestroySpeedAction fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-            return new GetDestroySpeedAction(location, actionHolderLocation, actionHolderType, true, rewards, conditions);
+        public GetDestroySpeedAction fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+            return new GetDestroySpeedAction(location, actionHolderLocation, actionHolderType, rewards, conditions);
         }
 
         @Override

@@ -49,3 +49,6 @@ side = "BOTH"
 
 [[mixins]]
 config = "arc-common.mixins.json"
+
+[[mixins]]
+config = "arc.mixins.json"

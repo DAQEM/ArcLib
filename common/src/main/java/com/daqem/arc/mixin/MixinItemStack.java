@@ -1,68 +1,25 @@
 package com.daqem.arc.mixin;
 
-import com.daqem.arc.api.action.result.ActionResult;
-import com.daqem.arc.api.player.ArcServerPlayer;
-import com.daqem.arc.event.PlayerEvents;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.Item;
+import com.daqem.arc.api.event.ArcItemEvent;
+import com.daqem.arc.api.event.EventResult;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ItemUseAnimation;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-
-import java.util.function.Consumer;
 
 @Mixin(ItemStack.class)
 public abstract class MixinItemStack {
 
-    @Shadow
-    public abstract Item getItem();
-
-    @Shadow
-    public abstract ItemUseAnimation getUseAnimation();
-
-    @Inject(at = @At("HEAD"), method = "finishUsingItem(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/entity/LivingEntity;)Lnet/minecraft/world/item/ItemStack;")
-    private void finishUsingItem(Level level, LivingEntity entity, CallbackInfoReturnable<ItemStack> cir) {
-        if (entity instanceof ArcServerPlayer player) {
-            if (this.getUseAnimation() == ItemUseAnimation.DRINK) {
-                PlayerEvents.onPlayerDrink(player, arc$getItemStack());
-            }
+    @Inject(at = @At("HEAD"), method = "use", cancellable = true)
+    private void use(Level level, Player player, InteractionHand interactionHand, CallbackInfoReturnable<InteractionResult> cir) {
+        EventResult eventResult = ArcItemEvent.USE_ITEM.invoker().onUseItem(level, player, interactionHand, (ItemStack) (Object) this);
+        if (eventResult.cancelsEvent()) {
+            cir.setReturnValue(InteractionResult.FAIL);
         }
-    }
-
-    @Inject(at = @At(value = "HEAD"), method = "hurtAndBreak(ILnet/minecraft/server/level/ServerLevel;Lnet/minecraft/server/level/ServerPlayer;Ljava/util/function/Consumer;)V", cancellable = true)
-    private void hurtAndBreak(int damage, ServerLevel serverLevel, ServerPlayer serverPlayer, Consumer<Item> consumer, CallbackInfo ci) {
-        if (serverPlayer instanceof ArcServerPlayer player) {
-            ItemStack copy = arc$getItemStack().copy();
-            if (copy.isDamageableItem()) {
-                if (!serverPlayer.hasInfiniteMaterials()) {
-                    if (damage > 0) {
-                        damage = EnchantmentHelper.processDurabilityChange(serverLevel, copy, damage);
-                        if (damage <= 0) {
-                            return;
-                        }
-                    }
-
-                    ActionResult actionResult = PlayerEvents.onPlayerHurtItem(player, arc$getItemStack());
-                    if (actionResult.shouldCancelAction()) {
-                        ci.cancel();
-                    }
-                }
-            }
-        }
-    }
-
-    @Unique
-    private ItemStack arc$getItemStack() {
-        return (ItemStack) (Object) this;
     }
 }

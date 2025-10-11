@@ -37,18 +37,12 @@ public class ClientboundActionScreenPacket implements CustomPacketPayload {
         this.action = IActionSerializer.fromNetwork(friendlyByteBuf);
     }
 
-    @Environment(EnvType.CLIENT)
-    public static void handleClientSide(ClientboundActionScreenPacket packet, NetworkManager.PacketContext context) {
-        Minecraft.getInstance().setScreen(new ActionScreen(
-                ActionHolderManager.getInstance().getActions(),
-                ActionHolderManager.getInstance().getActions().stream()
-                        .filter(a -> a.getLocation().equals(packet.action.getLocation()))
-                        .findFirst()
-                        .orElse(null)));
-    }
-
     @Override
     public @NotNull Type<? extends CustomPacketPayload> type() {
         return ArcNetworking.CLIENTBOUND_ACTION_SCREEN;
+    }
+
+    public IAction getAction() {
+        return action;
     }
 }

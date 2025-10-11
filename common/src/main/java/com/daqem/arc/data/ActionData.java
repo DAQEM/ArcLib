@@ -1,12 +1,12 @@
-package com.daqem.arc.api.action.data;
+package com.daqem.arc.data;
 
 import com.daqem.arc.api.action.IAction;
+import com.daqem.arc.api.action.data.IActionData;
+import com.daqem.arc.api.action.data.IActionDataType;
 import com.daqem.arc.api.action.holder.IActionHolder;
 import com.daqem.arc.api.action.IActionType;
 import com.daqem.arc.api.player.ArcPlayer;
 import com.daqem.arc.api.action.result.ActionResult;
-import com.daqem.arc.api.event.ActionEvent;
-import dev.architectury.event.EventResult;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public final class ActionData implements IActionData {
+public class ActionData implements IActionData {
 
     private final ArcPlayer player;
     private final IActionType<?> actionType;
@@ -45,11 +45,6 @@ public final class ActionData implements IActionData {
 
     @Override
     public ActionResult sendToAction() {
-        EventResult result = ActionEvent.BEFORE_ACTION.invoker().registerBeforeAction(this);
-        if (result != null && result.interruptsFurtherEvaluation()) {
-            return new ActionResult().withCancelAction(true);
-        }
-
         List<IAction> allPlayerActions = getPlayerActions();
         List<IAction> correctPlayerActions = allPlayerActions.stream()
                 .filter(this::isTypeOfCurrentAction)
@@ -81,6 +76,6 @@ public final class ActionData implements IActionData {
     }
 
     private ActionResult performCurrentAction(IAction action) {
-        return action.perform(this);
+        return ActionProcessor.getInstance().process(action, this);
     }
 }

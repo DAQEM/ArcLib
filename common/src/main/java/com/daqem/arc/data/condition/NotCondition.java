@@ -1,6 +1,6 @@
 package com.daqem.arc.data.condition;
 
-import com.daqem.arc.api.action.data.ActionData;
+import com.daqem.arc.data.ActionData;
 import com.daqem.arc.api.condition.AbstractCondition;
 import com.daqem.arc.api.condition.ICondition;
 import com.daqem.arc.api.condition.IConditionSerializer;

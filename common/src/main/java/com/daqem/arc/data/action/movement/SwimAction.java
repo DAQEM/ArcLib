@@ -14,8 +14,8 @@ import java.util.List;
 
 public class SwimAction extends AbstractAction {
 
-    public SwimAction(ResourceLocation location, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-        super(location, actionHolderLocation, actionHolderType, performOnClient, rewards, conditions);
+    public SwimAction(ResourceLocation location, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+        super(location, actionHolderLocation, actionHolderType, rewards, conditions);
     }
 
     @Override
@@ -26,13 +26,13 @@ public class SwimAction extends AbstractAction {
     public static class Serializer implements IActionSerializer<SwimAction> {
 
         @Override
-        public SwimAction fromJson(ResourceLocation location, JsonObject jsonObject, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-            return new SwimAction(location, actionHolderLocation, actionHolderType, performOnClient, rewards, conditions);
+        public SwimAction fromJson(ResourceLocation location, JsonObject jsonObject, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+            return new SwimAction(location, actionHolderLocation, actionHolderType, rewards, conditions);
         }
 
         @Override
-        public SwimAction fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-            return new SwimAction(location, actionHolderLocation, actionHolderType, performOnClient, rewards, conditions);
+        public SwimAction fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+            return new SwimAction(location, actionHolderLocation, actionHolderType, rewards, conditions);
         }
 
         @Override

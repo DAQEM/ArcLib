@@ -1,6 +1,6 @@
 package com.daqem.arc.data.reward.entity;
 
-import com.daqem.arc.api.action.data.ActionData;
+import com.daqem.arc.data.ActionData;
 import com.daqem.arc.api.action.result.ActionResult;
 import com.daqem.arc.api.reward.AbstractReward;
 import com.daqem.arc.api.reward.IRewardSerializer;

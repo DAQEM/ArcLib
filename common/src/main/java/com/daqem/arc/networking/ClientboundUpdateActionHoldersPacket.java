@@ -39,15 +39,12 @@ public class ClientboundUpdateActionHoldersPacket implements CustomPacketPayload
         this.actionHolders = friendlyByteBuf.readList(friendlyByteBuf1 -> IActionHolderSerializer.fromNetwork((RegistryFriendlyByteBuf) friendlyByteBuf1));
     }
 
-    @Environment(EnvType.CLIENT)
-    public static void handleClientSide(ClientboundUpdateActionHoldersPacket packet, NetworkManager.PacketContext context) {
-        if (!Minecraft.getInstance().isLocalServer()) {
-            ActionHolderManager.getInstance().registerActionHolders(packet.actionHolders);
-        }
-    }
-
     @Override
     public @NotNull Type<? extends CustomPacketPayload> type() {
         return ArcNetworking.CLIENTBOUND_UPDATE_ACTION_HOLDERS;
+    }
+
+    public List<IActionHolder> getActionHolders() {
+        return actionHolders;
     }
 }

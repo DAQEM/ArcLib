@@ -1,39 +1,26 @@
 package com.daqem.arc.mixin;
 
-import com.daqem.arc.api.action.data.ActionDataBuilder;
-import com.daqem.arc.api.action.data.IActionDataType;
+import com.daqem.arc.api.MovementType;
 import com.daqem.arc.api.action.holder.IActionHolder;
-import com.daqem.arc.api.action.result.ActionResult;
-import com.daqem.arc.api.action.IActionType;
-import com.daqem.arc.api.condition.ICondition;
+import com.daqem.arc.api.event.ArcMovementEvent;
+import com.daqem.arc.api.event.ArcPlayerEvent;
 import com.daqem.arc.api.player.ArcPlayer;
-import com.daqem.arc.data.PlayerActionHolderManager;
-import com.daqem.arc.event.MovementEvents;
-import com.daqem.arc.event.PlayerEvents;
-import com.daqem.arc.event.StatEvents;
 import com.daqem.arc.api.player.ArcServerPlayer;
+import com.daqem.arc.data.PlayerActionHolderManager;
 import com.daqem.arc.networking.ClientboundSyncPlayerActionHoldersPacket;
 import com.daqem.arc.player.BlockPosCache;
-import com.daqem.arc.player.stat.StatData;
 import com.mojang.authlib.GameProfile;
 import dev.architectury.networking.NetworkManager;
-import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ClientInformation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
-import net.minecraft.stats.Stat;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.animal.horse.Horse;
-import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.animal.horse.AbstractHorse;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.GrindstoneMenu;
-import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.AirItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
@@ -44,49 +31,35 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Mixin(ServerPlayer.class)
 public abstract class MixinServerPlayer extends Player implements ArcServerPlayer {
 
-    @Shadow public ServerGamePacketListenerImpl connection;
-
+    @Shadow
+    public ServerGamePacketListenerImpl connection;
     @Unique
-    private Map<ResourceLocation, IActionHolder> arc$actionHolders = new HashMap<>();
+    private final Map<ResourceLocation, IActionHolder> arc$actionHolders = new HashMap<>();
     @Unique
-    private NonNullList<StatData> arc$statData = NonNullList.create();
+    private MovementType arc$previousMovementType = MovementType.IDLE;
     @Unique
-    private Map<ICondition, Integer> arc$lastDistanceInCm = new HashMap<>();
+    private double arc$totalWalkedCm = 0;
     @Unique
-    private Map<ICondition, Integer> arc$lastRemainderInCm = new HashMap<>();
+    private double arc$totalSprintedCm = 0;
     @Unique
-    private boolean arc$isSwimming = false;
+    private double arc$totalSwamCm = 0;
     @Unique
-    private int arc$swimmingDistanceInCm = 0;
+    private double arc$totalCrouchedCm = 0;
     @Unique
-    private boolean arc$isWalking = false;
+    private double arc$totalElytraFlyCm = 0;
     @Unique
-    private float arc$walkingDistance = 0;
+    private double arc$totalHorseRideCm = 0;
     @Unique
-    private boolean arc$isSprinting = false;
-    @Unique
-    private float arc$sprintingDistance = 0;
-    @Unique
-    private boolean arc$isCrouching = false;
-    @Unique
-    private float arc$crouchingDistance = 0;
-    @Unique
-    private boolean arc$isElytraFlying = false;
-    @Unique
-    private float arc$elytraFlyingDistance = 0;
-    @Unique
-    private boolean arc$isGrinding = false;
-    @Unique
-    public boolean arc$isHorseRiding = false;
-    @Unique
-    public float arc$horseRidingDistance = 0;
+    private final Map<Object, Double> arc$actionLastMetDistances = new HashMap<>();
     @Unique
     public BlockPosCache arc$blockPosCache = new BlockPosCache();
     @Unique
@@ -132,120 +105,43 @@ public abstract class MixinServerPlayer extends Player implements ArcServerPlaye
     }
 
     @Override
-    public NonNullList<StatData> arc$getStatData() {
-        return this.arc$statData;
+    public double arc$getTotalWalkedCm() {
+        return this.arc$totalWalkedCm;
     }
 
     @Override
-    public void arc$addStatData(StatData statData) {
-        this.arc$statData.add(statData);
+    public double arc$getTotalSprintedCm() {
+        return this.arc$totalSprintedCm;
     }
 
     @Override
-    public void arc$setSwimmingDistanceInCm(int swimmingDistanceInCm) {
-        this.arc$swimmingDistanceInCm = swimmingDistanceInCm;
+    public double arc$getTotalSwamCm() {
+        return this.arc$totalSwamCm;
     }
 
     @Override
-    public void arc$setElytraFlyingDistanceInCm(float flyingDistanceInCm) {
-        this.arc$elytraFlyingDistance = flyingDistanceInCm;
+    public double arc$getTotalCrouchedCm() {
+        return this.arc$totalCrouchedCm;
     }
 
     @Override
-    public int arc$getLastDistanceInCm(ICondition distanceCondition) {
-        Integer lastDistanceInCm = arc$lastDistanceInCm.get(distanceCondition);
-        return lastDistanceInCm == null ? 0 : lastDistanceInCm;
+    public double arc$getTotalElytraFlyCm() {
+        return this.arc$totalElytraFlyCm;
     }
 
     @Override
-    public void arc$setLastDistanceInCm(ICondition distanceCondition, int lastDistanceInCm) {
-        arc$lastDistanceInCm.put(distanceCondition, lastDistanceInCm);
+    public double arc$getTotalHorseRideCm() {
+        return this.arc$totalHorseRideCm;
     }
 
     @Override
-    public int arc$getLastRemainderInCm(ICondition distanceCondition) {
-        Integer lastRemainderInCm = arc$lastRemainderInCm.get(distanceCondition);
-        return lastRemainderInCm == null ? 0 : lastRemainderInCm;
+    public Map<Object, Double> arc$getActionLastMetDistances() {
+        return this.arc$actionLastMetDistances;
     }
 
     @Override
-    public void arc$setLastRemainderInCm(ICondition distanceCondition, int lastRemainderInCm) {
-        arc$lastRemainderInCm.put(distanceCondition, lastRemainderInCm);
-    }
-
-    @Override
-    public Map<ResourceLocation, IActionHolder> arc$getActionHoldersMap() {
-        return this.arc$actionHolders;
-    }
-
-    @Override
-    public Map<ICondition, Integer> arc$getLastDistancesInCm() {
-        return this.arc$lastDistanceInCm;
-    }
-
-    @Override
-    public Map<ICondition, Integer> arc$getLastRemaindersInCm() {
-        return this.arc$lastRemainderInCm;
-    }
-
-    @Override
-    public boolean arc$isSwimming() {
-        return this.arc$isSwimming;
-    }
-
-    @Override
-    public int arc$getSwimmingDistanceInCm() {
-        return this.arc$swimmingDistanceInCm;
-    }
-
-    @Override
-    public boolean arc$isWalking() {
-        return this.arc$isWalking;
-    }
-
-    @Override
-    public float arc$getWalkingDistance() {
-        return this.arc$walkingDistance;
-    }
-
-    @Override
-    public boolean arc$isSprinting() {
-        return this.arc$isSprinting;
-    }
-
-    @Override
-    public float arc$getSprintingDistance() {
-        return this.arc$sprintingDistance;
-    }
-
-    @Override
-    public boolean arc$isCrouching() {
-        return this.arc$isCrouching;
-    }
-
-    @Override
-    public float arc$getCrouchingDistance() {
-        return this.arc$crouchingDistance;
-    }
-
-    @Override
-    public boolean arc$isElytraFlying() {
-        return this.arc$isElytraFlying;
-    }
-
-    @Override
-    public float arc$getElytraFlyingDistance() {
-        return this.arc$elytraFlyingDistance;
-    }
-
-    @Override
-    public boolean arc$isGrinding() {
-        return this.arc$isGrinding;
-    }
-
-    @Override
-    public boolean arc$isHorseRiding() {
-        return this.arc$isHorseRiding;
+    public void arc$setActionLastMetDistance(Object action, double distance) {
+        this.arc$actionLastMetDistances.put(action, distance);
     }
 
     @Override
@@ -289,150 +185,120 @@ public abstract class MixinServerPlayer extends Player implements ArcServerPlaye
         return arc$getServerPlayer();
     }
 
-    @Inject(at = @At("TAIL"), method = "tick()V")
-    public void tick(CallbackInfo ci) {
-        if (this.arc$isSwimming && this.isSwimming()) {
-            MovementEvents.onSwim(this, this.arc$swimmingDistanceInCm);
-        } else {
-            if (this.arc$isSwimming) {
-                this.arc$isSwimming = false;
-                MovementEvents.onStopSwimming(this);
-            } else {
-                if (this.isSwimming()) {
-                    this.arc$isSwimming = true;
-                    MovementEvents.onStartSwimming(this);
-                }
-            }
-        }
+    @Inject(method = "checkMovementStatistics", at = @At("HEAD"))
+    public void onCheckMovementStatistics(double movedX, double movedY, double movedZ, CallbackInfo ci) {
+        MovementType currentMovementType = MovementType.IDLE;
+        int distanceInCm = 0;
 
-        boolean isCurrentlyWalking = this.moveDist > this.arc$walkingDistance;
-        float distance = this.moveDist - this.arc$walkingDistance;
-        if (this.arc$isWalking && isCurrentlyWalking) {
-            this.arc$walkingDistance = this.moveDist;
-            MovementEvents.onWalk(this, (int) (this.arc$walkingDistance * 100));
-        } else {
-            if (this.arc$isWalking) {
-                this.arc$isWalking = false;
-                MovementEvents.onStopWalking(this);
-            } else if (isCurrentlyWalking) {
-                this.arc$isWalking = true;
-                MovementEvents.onStartWalking(this);
-            }
-        }
-
-        if (this.arc$isSprinting && this.isSprinting()) {
-            this.arc$sprintingDistance += distance;
-            MovementEvents.onSprint(this, (int) (this.arc$sprintingDistance * 100));
-        } else {
-            if (this.arc$isSprinting) {
-                this.arc$isSprinting = false;
-                MovementEvents.onStopSprinting(this);
-            } else if (this.isSprinting()) {
-                this.arc$isSprinting = true;
-                MovementEvents.onStartSprinting(this);
-            }
-        }
-
-        if (this.arc$isHorseRiding && this.getRootVehicle() instanceof Horse horse && horse.isSaddled() && horse.isTamed()) {
-            boolean isCurrentlyRiding = horse.moveDist > this.arc$horseRidingDistance;
-            float horseRidingDistance = horse.moveDist - this.arc$horseRidingDistance;
-            if (isCurrentlyRiding) {
-                this.arc$horseRidingDistance += horseRidingDistance;
-                MovementEvents.onHorseRide(this, (int) (this.arc$horseRidingDistance * 100));
-            }
-        } else {
-            if (this.arc$isHorseRiding) {
-                this.arc$isHorseRiding = false;
-                MovementEvents.onStopHorseRiding(this);
-            } else {
-                if (this.getRootVehicle() instanceof Horse horse && horse.isSaddled() && horse.isTamed()) {
-                    this.arc$isHorseRiding = true;
-                    this.arc$horseRidingDistance = 0;
-                    horse.moveDist = 0;
-                    MovementEvents.onStartHorseRiding(this);
-                }
-            }
-        }
-
-        if (this.arc$isCrouching && this.isCrouching()) {
-            this.arc$crouchingDistance += distance;
-            MovementEvents.onCrouch(this, (int) (this.arc$crouchingDistance * 100));
-        } else {
-            if (this.arc$isCrouching) {
-                this.arc$isCrouching = false;
-                MovementEvents.onStopCrouching(this);
+        if (this.isPassenger() && this.getRootVehicle() instanceof AbstractHorse horse && horse.isSaddled()) {
+            currentMovementType = MovementType.HORSE_RIDING;
+            distanceInCm = Math.round((float) Math.sqrt(movedX * movedX + movedZ * movedZ) * 100.0F);
+        } else if (this.isSwimming()) {
+            currentMovementType = MovementType.SWIMMING;
+            distanceInCm = Math.round((float) Math.sqrt(movedX * movedX + movedY * movedY + movedZ * movedZ) * 100.0F);
+        } else if (this.onGround()) {
+            distanceInCm = Math.round((float) Math.sqrt(movedX * movedX + movedZ * movedZ) * 100.0F);
+            if (this.isSprinting()) {
+                currentMovementType = MovementType.SPRINTING;
             } else if (this.isCrouching()) {
-                this.arc$isCrouching = true;
-                MovementEvents.onStartCrouching(this);
-            }
-        }
-
-        if (this.arc$isElytraFlying && this.isFallFlying()) {
-            MovementEvents.onElytraFly(this, (int) this.arc$elytraFlyingDistance);
-        } else {
-            if (this.arc$isElytraFlying) {
-                this.arc$isElytraFlying = false;
-                MovementEvents.onStopElytraFlying(this);
+                currentMovementType = MovementType.CROUCHING;
             } else {
-                if (this.isFallFlying()) {
-                    this.arc$isElytraFlying = true;
-                    MovementEvents.onStartElytraFlying(this);
-                }
+                currentMovementType = MovementType.WALKING;
             }
+        } else if (this.isFallFlying()) {
+            currentMovementType = MovementType.ELYTRA_FLYING;
+            distanceInCm = Math.round((float) Math.sqrt(movedX * movedX + movedY * movedY + movedZ * movedZ) * 100.0F);
         }
 
-        if (arc$getServerPlayer().containerMenu instanceof GrindstoneMenu) {
-            if (arc$isGrinding) {
-                boolean firstSlot = false;
-                boolean secondSlot = false;
-                for (Slot slot : containerMenu.slots) {
-                    if (!(slot.getItem().getItem() instanceof AirItem || slot.container instanceof Inventory)) {
+        if (distanceInCm <= 0) {
+            currentMovementType = MovementType.IDLE;
+        }
 
-                        if (slot.getContainerSlot() == 0) {
-                            firstSlot = true;
-                        }
-                        if (slot.getContainerSlot() == 1) {
-                            secondSlot = true;
-                        }
-                    }
-                }
-                if (!firstSlot && !secondSlot) {
-                    PlayerEvents.onGrindItem(this);
-                }
-            }
-            boolean firstSlot = false;
-            boolean secondSlot = false;
-            for (Slot slot : containerMenu.slots) {
-                if (!(slot.getItem().getItem() instanceof AirItem || slot.container instanceof Inventory)) {
+        if (currentMovementType != this.arc$previousMovementType) {
+            // Fire the STOP event for the old state
+            arc$fireStopEvent(this.arc$previousMovementType, this.arc$getServerPlayer());
+            // Fire the START event for the new state
+            arc$fireStartEvent(currentMovementType, this.arc$getServerPlayer());
+            // Update the state for the next tick
+            this.arc$previousMovementType = currentMovementType;
+        }
 
-                    if (slot.getContainerSlot() == 0) {
-                        firstSlot = true;
-                    }
-                    if (slot.getContainerSlot() == 1) {
-                        secondSlot = true;
-                    }
-                }
+        if (distanceInCm > 0) {
+            switch (currentMovementType) {
+                case WALKING:
+                    this.arc$totalWalkedCm += distanceInCm;
+                    ArcMovementEvent.WALK.invoker().onWalk(this.arc$getServerPlayer(), this.arc$totalWalkedCm);
+                    break;
+                case SPRINTING:
+                    this.arc$totalSprintedCm += distanceInCm;
+                    ArcMovementEvent.SPRINT.invoker().onSprint(this.arc$getServerPlayer(), this.arc$totalSprintedCm);
+                    break;
+                case SWIMMING:
+                    this.arc$totalSwamCm += distanceInCm;
+                    ArcMovementEvent.SWIM.invoker().onSwim(this.arc$getServerPlayer(), this.arc$totalSwamCm);
+                    break;
+                case CROUCHING:
+                    this.arc$totalCrouchedCm += distanceInCm;
+                    ArcMovementEvent.CROUCH.invoker().onCrouch(this.arc$getServerPlayer(), this.arc$totalCrouchedCm);
+                    break;
+                case ELYTRA_FLYING:
+                    this.arc$totalElytraFlyCm += distanceInCm;
+                    ArcMovementEvent.ELYTRA_FLY.invoker().onElytraFly(this.arc$getServerPlayer(), this.arc$totalElytraFlyCm);
+                    break;
+                case HORSE_RIDING:
+                    this.arc$totalHorseRideCm += distanceInCm;
+                    ArcMovementEvent.HORSE_RIDE.invoker().onHorseRide(this.arc$getServerPlayer(), this.arc$totalHorseRideCm);
+                    break;
             }
-            arc$isGrinding = firstSlot && secondSlot;
         }
     }
 
-    @Inject(at = @At("TAIL"), method = "awardStat(Lnet/minecraft/stats/Stat;I)V")
-    public void awardStat(Stat<?> stat, int amount, CallbackInfo ci) {
-        int previousAmount = 0;
-        boolean found = false;
-        for (StatData statData : arc$getStatData()) {
-            if (statData.getStat().equals(stat)) {
-                previousAmount = statData.getAmount();
-                statData.addAmount(amount);
-                found = true;
+    @Unique
+    private void arc$fireStartEvent(MovementType type, ServerPlayer player) {
+        switch (type) {
+            case WALKING:
+                ArcMovementEvent.START_WALK.invoker().onStartWalk(player);
                 break;
-            }
+            case SPRINTING:
+                ArcMovementEvent.START_SPRINT.invoker().onStartSprint(player);
+                break;
+            case SWIMMING:
+                ArcMovementEvent.START_SWIM.invoker().onStartSwim(player);
+                break;
+            case CROUCHING:
+                ArcMovementEvent.START_CROUCH.invoker().onStartCrouch(player);
+                break;
+            case ELYTRA_FLYING:
+                ArcMovementEvent.START_ELYTRA_FLY.invoker().onStartElytraFly(player);
+                break;
+            case HORSE_RIDING:
+                ArcMovementEvent.START_HORSE_RIDE.invoker().onStartHorseRide(player);
+                break;
         }
-        if (!found) {
-            arc$addStatData(new StatData(stat, amount));
+    }
+
+    @Unique
+    private void arc$fireStopEvent(MovementType type, ServerPlayer player) {
+        switch (type) {
+            case WALKING:
+                ArcMovementEvent.STOP_WALK.invoker().onStopWalk(player);
+                break;
+            case SPRINTING:
+                ArcMovementEvent.STOP_SPRINT.invoker().onStopSprint(player);
+                break;
+            case SWIMMING:
+                ArcMovementEvent.STOP_SWIM.invoker().onStopSwim(player);
+                break;
+            case CROUCHING:
+                ArcMovementEvent.STOP_CROUCH.invoker().onStopCrouch(player);
+                break;
+            case ELYTRA_FLYING:
+                ArcMovementEvent.STOP_ELYTRA_FLY.invoker().onStopElytraFly(player);
+                break;
+            case HORSE_RIDING:
+                ArcMovementEvent.STOP_HORSE_RIDE.invoker().onStopHorseRide(player);
+                break;
         }
-        StatEvents.onAwardStat(this, stat, previousAmount, previousAmount + amount);
     }
 
     @Inject(at = @At("TAIL"), method = "onEffectAdded(Lnet/minecraft/world/effect/MobEffectInstance;Lnet/minecraft/world/entity/Entity;)V")
@@ -441,68 +307,20 @@ public abstract class MixinServerPlayer extends Player implements ArcServerPlaye
 
     @Inject(at = @At("TAIL"), method = "onEnchantmentPerformed(Lnet/minecraft/world/item/ItemStack;I)V")
     public void onEnchantmentPerformed(ItemStack itemStack, int level, CallbackInfo ci) {
-        PlayerEvents.onEnchantItem(this, itemStack, level);
-    }
-
-    @Inject(at = @At(
-            value = "INVOKE",
-            target = "Lnet/minecraft/world/entity/player/Player;hurtServer(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/damagesource/DamageSource;F)Z",
-            shift = At.Shift.BEFORE),
-            method = "hurtServer",
-            cancellable = true)
-    public void hurt(ServerLevel serverLevel, DamageSource damageSource, float f, CallbackInfoReturnable<Boolean> cir) {
-        Entity entity = this.arc$getPlayer();
-        if (entity instanceof ArcServerPlayer arcServerPlayer) {
-            ActionResult actionResult = new ActionDataBuilder(arcServerPlayer, IActionType.GET_HURT)
-                    .withData(IActionDataType.DAMAGE_SOURCE, damageSource)
-                    .withData(IActionDataType.DAMAGE_AMOUNT, f)
-                    .build()
-                    .sendToAction();
-
-            if (actionResult.shouldCancelAction()) {
-                f = 0F;
-            }
-            if (actionResult.getDamageModifier() != 1F) {
-                f = f * actionResult.getDamageModifier();
-            }
-        }
-
-        if (damageSource.getEntity() instanceof ArcServerPlayer arcServerPlayer) {
-            ActionResult actionResult = new ActionDataBuilder(arcServerPlayer, IActionType.HURT_PLAYER)
-                    .withData(IActionDataType.ENTITY, entity)
-                    .withData(IActionDataType.DAMAGE_AMOUNT, f)
-                    .build()
-                    .sendToAction();
-
-            if (actionResult.shouldCancelAction()) {
-                f = 0F;
-            }
-            if (actionResult.getDamageModifier() != 1F) {
-                f = f * actionResult.getDamageModifier();
-            }
-        }
-        cir.setReturnValue(super.hurtServer(serverLevel, damageSource, f));
+        ArcPlayerEvent.ENCHANT_ITEM.invoker().onEnchantItem((ServerPlayer) (Object) this, itemStack, level);
     }
 
     @Inject(at = @At("TAIL"), method = "restoreFrom(Lnet/minecraft/server/level/ServerPlayer;Z)V")
     public void restoreFrom(ServerPlayer oldPlayer, boolean alive, CallbackInfo ci) {
         if (oldPlayer instanceof ArcServerPlayer arcServerPlayer) {
-            this.arc$actionHolders = arcServerPlayer.arc$getActionHoldersMap();
-            this.arc$statData = arcServerPlayer.arc$getStatData();
-            this.arc$lastDistanceInCm = arcServerPlayer.arc$getLastDistancesInCm();
-            this.arc$lastRemainderInCm = arcServerPlayer.arc$getLastRemaindersInCm();
-            this.arc$isSwimming = arcServerPlayer.arc$isSwimming();
-            this.arc$swimmingDistanceInCm = arcServerPlayer.arc$getSwimmingDistanceInCm();
-            this.arc$isWalking = arcServerPlayer.arc$isWalking();
-            this.arc$walkingDistance = arcServerPlayer.arc$getWalkingDistance();
-            this.arc$isSprinting = arcServerPlayer.arc$isSprinting();
-            this.arc$sprintingDistance = arcServerPlayer.arc$getSprintingDistance();
-            this.arc$isCrouching = arcServerPlayer.arc$isCrouching();
-            this.arc$crouchingDistance = arcServerPlayer.arc$getCrouchingDistance();
-            this.arc$isElytraFlying = arcServerPlayer.arc$isElytraFlying();
-            this.arc$elytraFlyingDistance = arcServerPlayer.arc$getElytraFlyingDistance();
-            this.arc$isGrinding = arcServerPlayer.arc$isGrinding();
-            this.arc$isHorseRiding = arcServerPlayer.arc$isHorseRiding();
+            this.arc$totalWalkedCm = arcServerPlayer.arc$getTotalWalkedCm();
+            this.arc$totalSprintedCm = arcServerPlayer.arc$getTotalSprintedCm();
+            this.arc$totalSwamCm = arcServerPlayer.arc$getTotalSwamCm();
+            this.arc$totalCrouchedCm = arcServerPlayer.arc$getTotalCrouchedCm();
+            this.arc$totalElytraFlyCm = arcServerPlayer.arc$getTotalElytraFlyCm();
+            this.arc$totalHorseRideCm = arcServerPlayer.arc$getTotalHorseRideCm();
+            this.arc$actionLastMetDistances.putAll(arcServerPlayer.arc$getActionLastMetDistances());
+            this.arc$blockPosCache = arcServerPlayer.arc$getBlockPosCache();
         }
     }
 

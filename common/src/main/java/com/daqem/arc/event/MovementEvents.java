@@ -1,123 +1,199 @@
 package com.daqem.arc.event;
 
 import com.daqem.arc.api.action.IActionType;
+import com.daqem.arc.api.event.ArcMovementEvent;
+import com.daqem.arc.api.event.EventPriority;
 import com.daqem.arc.api.player.ArcServerPlayer;
 import com.daqem.arc.api.action.data.ActionDataBuilder;
 import com.daqem.arc.api.action.data.IActionDataType;
 
 public class MovementEvents {
 
-    public static void onSwim(ArcServerPlayer player, int swimmingDistanceInCm) {
-        new ActionDataBuilder(player, IActionType.SWIM)
-                .withData(IActionDataType.DISTANCE_IN_CM, swimmingDistanceInCm)
-                .build()
-                .sendToAction();
-    }
+    public static void registerEvents() {
+        ArcMovementEvent.WALK.register((serverPlayer, distanceInCm) -> {
+            if (serverPlayer instanceof ArcServerPlayer arcServerPlayer) {
+                new ActionDataBuilder(arcServerPlayer, IActionType.WALK)
+                        .withData(IActionDataType.DISTANCE_IN_CM, distanceInCm)
+                        .withData(IActionDataType.WORLD, serverPlayer.level())
+                        .withData(IActionDataType.BLOCK_POSITION, serverPlayer.blockPosition())
+                        .build()
+                        .sendToAction();
+            }
+        }, EventPriority.HIGH);
 
-    public static void onStartSwimming(ArcServerPlayer player) {
-        new ActionDataBuilder(player, IActionType.SWIM_START)
-                .build()
-                .sendToAction();
-    }
+        ArcMovementEvent.START_WALK.register(serverPlayer -> {
+            if (serverPlayer instanceof ArcServerPlayer arcServerPlayer) {
+                new ActionDataBuilder(arcServerPlayer, IActionType.WALK_START)
+                        .withData(IActionDataType.WORLD, serverPlayer.level())
+                        .withData(IActionDataType.BLOCK_POSITION, serverPlayer.blockPosition())
+                        .build()
+                        .sendToAction();
+            }
+        }, EventPriority.HIGH);
 
-    public static void onStopSwimming(ArcServerPlayer player) {
-        new ActionDataBuilder(player, IActionType.SWIM_STOP)
-                .build()
-                .sendToAction();
-    }
+        ArcMovementEvent.STOP_WALK.register(serverPlayer -> {
+            if (serverPlayer instanceof ArcServerPlayer arcServerPlayer) {
+                new ActionDataBuilder(arcServerPlayer, IActionType.WALK_STOP)
+                        .withData(IActionDataType.WORLD, serverPlayer.level())
+                        .withData(IActionDataType.BLOCK_POSITION, serverPlayer.blockPosition())
+                        .build()
+                        .sendToAction();
+            }
+        }, EventPriority.HIGH);
 
-    public static void onWalk(ArcServerPlayer player, int walkingDistanceInCm) {
-        new ActionDataBuilder(player, IActionType.WALK)
-                .withData(IActionDataType.DISTANCE_IN_CM, walkingDistanceInCm)
-                .build()
-                .sendToAction();
-    }
+        ArcMovementEvent.SPRINT.register((serverPlayer, distanceInCm) -> {
+            if (serverPlayer instanceof ArcServerPlayer arcServerPlayer) {
+                new ActionDataBuilder(arcServerPlayer, IActionType.SPRINT)
+                        .withData(IActionDataType.DISTANCE_IN_CM, distanceInCm)
+                        .withData(IActionDataType.WORLD, serverPlayer.level())
+                        .withData(IActionDataType.BLOCK_POSITION, serverPlayer.blockPosition())
+                        .build()
+                        .sendToAction();
+            }
+        }, EventPriority.HIGH);
 
-    public static void onStopWalking(ArcServerPlayer player) {
-        new ActionDataBuilder(player, IActionType.WALK_STOP)
-                .build()
-                .sendToAction();
-    }
+        ArcMovementEvent.START_SPRINT.register(serverPlayer -> {
+            if (serverPlayer instanceof ArcServerPlayer arcServerPlayer) {
+                new ActionDataBuilder(arcServerPlayer, IActionType.SPRINT_START)
+                        .withData(IActionDataType.WORLD, serverPlayer.level())
+                        .withData(IActionDataType.BLOCK_POSITION, serverPlayer.blockPosition())
+                        .build()
+                        .sendToAction();
+            }
+        }, EventPriority.HIGH);
 
-    public static void onStartWalking(ArcServerPlayer player) {
-        new ActionDataBuilder(player, IActionType.WALK_START)
-                .build()
-                .sendToAction();
-    }
+        ArcMovementEvent.STOP_SPRINT.register(serverPlayer -> {
+            if (serverPlayer instanceof ArcServerPlayer arcServerPlayer) {
+                new ActionDataBuilder(arcServerPlayer, IActionType.SPRINT_STOP)
+                        .withData(IActionDataType.WORLD, serverPlayer.level())
+                        .withData(IActionDataType.BLOCK_POSITION, serverPlayer.blockPosition())
+                        .build()
+                        .sendToAction();
+            }
+        }, EventPriority.HIGH);
 
-    public static void onSprint(ArcServerPlayer player, int sprintingDistanceInCm) {
-        new ActionDataBuilder(player, IActionType.SPRINT)
-                .withData(IActionDataType.DISTANCE_IN_CM, sprintingDistanceInCm)
-                .build()
-                .sendToAction();
-    }
+        ArcMovementEvent.SWIM.register((serverPlayer, distanceInCm) -> {
+            if (serverPlayer instanceof ArcServerPlayer arcServerPlayer) {
+                new ActionDataBuilder(arcServerPlayer, IActionType.SWIM)
+                        .withData(IActionDataType.DISTANCE_IN_CM, distanceInCm)
+                        .withData(IActionDataType.WORLD, serverPlayer.level())
+                        .withData(IActionDataType.BLOCK_POSITION, serverPlayer.blockPosition())
+                        .build()
+                        .sendToAction();
+            }
+        }, EventPriority.HIGH);
 
-    public static void onStopSprinting(ArcServerPlayer player) {
-        new ActionDataBuilder(player, IActionType.SPRINT_STOP)
-                .build()
-                .sendToAction();
-    }
+        ArcMovementEvent.START_SWIM.register(serverPlayer -> {
+            if (serverPlayer instanceof ArcServerPlayer arcServerPlayer) {
+                new ActionDataBuilder(arcServerPlayer, IActionType.SWIM_START)
+                        .withData(IActionDataType.WORLD, serverPlayer.level())
+                        .withData(IActionDataType.BLOCK_POSITION, serverPlayer.blockPosition())
+                        .build()
+                        .sendToAction();
+            }
+        }, EventPriority.HIGH);
 
-    public static void onStartSprinting(ArcServerPlayer player) {
-        new ActionDataBuilder(player, IActionType.SPRINT_START)
-                .build()
-                .sendToAction();
-    }
+        ArcMovementEvent.STOP_SWIM.register(serverPlayer -> {
+            if (serverPlayer instanceof ArcServerPlayer arcServerPlayer) {
+                new ActionDataBuilder(arcServerPlayer, IActionType.SWIM_STOP)
+                        .withData(IActionDataType.WORLD, serverPlayer.level())
+                        .withData(IActionDataType.BLOCK_POSITION, serverPlayer.blockPosition())
+                        .build()
+                        .sendToAction();
+            }
+        }, EventPriority.HIGH);
 
-    public static void onCrouch(ArcServerPlayer player, int crouchDistanceInCm) {
-        new ActionDataBuilder(player, IActionType.CROUCH)
-                .withData(IActionDataType.DISTANCE_IN_CM, crouchDistanceInCm)
-                .build()
-                .sendToAction();
-    }
+        ArcMovementEvent.CROUCH.register((serverPlayer, distanceInCm) -> {
+            if (serverPlayer instanceof ArcServerPlayer arcServerPlayer) {
+                new ActionDataBuilder(arcServerPlayer, IActionType.CROUCH)
+                        .withData(IActionDataType.DISTANCE_IN_CM, distanceInCm)
+                        .withData(IActionDataType.WORLD, serverPlayer.level())
+                        .withData(IActionDataType.BLOCK_POSITION, serverPlayer.blockPosition())
+                        .build()
+                        .sendToAction();
+            }
+        }, EventPriority.HIGH);
 
-    public static void onStopCrouching(ArcServerPlayer player) {
-        new ActionDataBuilder(player, IActionType.CROUCH_STOP)
-                .build()
-                .sendToAction();
-    }
+        ArcMovementEvent.START_CROUCH.register(serverPlayer -> {
+            if (serverPlayer instanceof ArcServerPlayer arcServerPlayer) {
+                new ActionDataBuilder(arcServerPlayer, IActionType.CROUCH_START)
+                        .withData(IActionDataType.WORLD, serverPlayer.level())
+                        .withData(IActionDataType.BLOCK_POSITION, serverPlayer.blockPosition())
+                        .build()
+                        .sendToAction();
+            }
+        }, EventPriority.HIGH);
 
-    public static void onStartCrouching(ArcServerPlayer player) {
-        new ActionDataBuilder(player, IActionType.CROUCH_START)
-                .build()
-                .sendToAction();
-    }
+        ArcMovementEvent.STOP_CROUCH.register(serverPlayer -> {
+            if (serverPlayer instanceof ArcServerPlayer arcServerPlayer) {
+                new ActionDataBuilder(arcServerPlayer, IActionType.CROUCH_STOP)
+                        .withData(IActionDataType.WORLD, serverPlayer.level())
+                        .withData(IActionDataType.BLOCK_POSITION, serverPlayer.blockPosition())
+                        .build()
+                        .sendToAction();
+            }
+        }, EventPriority.HIGH);
 
-    public static void onElytraFly(ArcServerPlayer player, int flyingDistanceInCm) {
-        new ActionDataBuilder(player, IActionType.ELYTRA_FLY)
-                .withData(IActionDataType.DISTANCE_IN_CM, flyingDistanceInCm)
-                .build()
-                .sendToAction();
-    }
+        ArcMovementEvent.ELYTRA_FLY.register((serverPlayer, distanceInCm) -> {
+            if (serverPlayer instanceof ArcServerPlayer arcServerPlayer) {
+                new ActionDataBuilder(arcServerPlayer, IActionType.ELYTRA_FLY)
+                        .withData(IActionDataType.DISTANCE_IN_CM, distanceInCm)
+                        .withData(IActionDataType.WORLD, serverPlayer.level())
+                        .withData(IActionDataType.BLOCK_POSITION, serverPlayer.blockPosition())
+                        .build()
+                        .sendToAction();
+            }
+        }, EventPriority.HIGH);
 
-    public static void onStopElytraFlying(ArcServerPlayer player) {
-        new ActionDataBuilder(player, IActionType.ELYTRA_FLY_STOP)
-                .build()
-                .sendToAction();
-    }
+        ArcMovementEvent.START_ELYTRA_FLY.register(serverPlayer -> {
+            if (serverPlayer instanceof ArcServerPlayer arcServerPlayer) {
+                new ActionDataBuilder(arcServerPlayer, IActionType.ELYTRA_FLY_START)
+                        .withData(IActionDataType.WORLD, serverPlayer.level())
+                        .withData(IActionDataType.BLOCK_POSITION, serverPlayer.blockPosition())
+                        .build()
+                        .sendToAction();
+            }
+        }, EventPriority.HIGH);
 
-    public static void onStartElytraFlying(ArcServerPlayer player) {
-        new ActionDataBuilder(player, IActionType.ELYTRA_FLY_START)
-                .build()
-                .sendToAction();
-    }
+        ArcMovementEvent.STOP_ELYTRA_FLY.register(serverPlayer -> {
+            if (serverPlayer instanceof ArcServerPlayer arcServerPlayer) {
+                new ActionDataBuilder(arcServerPlayer, IActionType.ELYTRA_FLY_STOP)
+                        .withData(IActionDataType.WORLD, serverPlayer.level())
+                        .withData(IActionDataType.BLOCK_POSITION, serverPlayer.blockPosition())
+                        .build()
+                        .sendToAction();
+            }
+        }, EventPriority.HIGH);
 
-    public static void onHorseRide(ArcServerPlayer player, int ridingDistanceInCm) {
-        new ActionDataBuilder(player, IActionType.HORSE_RIDE)
-                .withData(IActionDataType.DISTANCE_IN_CM, ridingDistanceInCm)
-                .build()
-                .sendToAction();
-    }
+        ArcMovementEvent.HORSE_RIDE.register((serverPlayer, distanceInCm) -> {
+            if (serverPlayer instanceof ArcServerPlayer arcServerPlayer) {
+                new ActionDataBuilder(arcServerPlayer, IActionType.HORSE_RIDE)
+                        .withData(IActionDataType.DISTANCE_IN_CM, distanceInCm)
+                        .withData(IActionDataType.WORLD, serverPlayer.level())
+                        .withData(IActionDataType.BLOCK_POSITION, serverPlayer.blockPosition())
+                        .build()
+                        .sendToAction();
+            }
+        }, EventPriority.HIGH);
 
-    public static void onStopHorseRiding(ArcServerPlayer player) {
-        new ActionDataBuilder(player, IActionType.HORSE_RIDE_STOP)
-                .build()
-                .sendToAction();
-    }
+        ArcMovementEvent.START_HORSE_RIDE.register(serverPlayer -> {
+            if (serverPlayer instanceof ArcServerPlayer arcServerPlayer) {
+                new ActionDataBuilder(arcServerPlayer, IActionType.HORSE_RIDE_START)
+                        .withData(IActionDataType.WORLD, serverPlayer.level())
+                        .withData(IActionDataType.BLOCK_POSITION, serverPlayer.blockPosition())
+                        .build()
+                        .sendToAction();
+            }
+        }, EventPriority.HIGH);
 
-    public static void onStartHorseRiding(ArcServerPlayer player) {
-        new ActionDataBuilder(player, IActionType.HORSE_RIDE_START)
-                .build()
-                .sendToAction();
+        ArcMovementEvent.STOP_HORSE_RIDE.register(serverPlayer -> {
+            if (serverPlayer instanceof ArcServerPlayer arcServerPlayer) {
+                new ActionDataBuilder(arcServerPlayer, IActionType.HORSE_RIDE_STOP)
+                        .withData(IActionDataType.WORLD, serverPlayer.level())
+                        .withData(IActionDataType.BLOCK_POSITION, serverPlayer.blockPosition())
+                        .build()
+                        .sendToAction();
+            }
+        }, EventPriority.HIGH);
     }
 }

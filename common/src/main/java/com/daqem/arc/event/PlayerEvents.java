@@ -1,137 +1,232 @@
 package com.daqem.arc.event;
 
-import com.daqem.arc.api.IArcAbstractArrow;
 import com.daqem.arc.api.action.IActionType;
+import com.daqem.arc.api.action.data.ActionDataBuilder;
+import com.daqem.arc.api.action.data.IActionDataType;
+import com.daqem.arc.api.action.result.ActionResult;
+import com.daqem.arc.api.event.ArcPlayerEvent;
+import com.daqem.arc.api.event.EventPriority;
+import com.daqem.arc.api.event.EventResult;
 import com.daqem.arc.api.player.ArcPlayer;
 import com.daqem.arc.api.player.ArcServerPlayer;
-import com.daqem.arc.api.action.data.ActionDataBuilder;
-import com.daqem.arc.api.action.result.ActionResult;
-import com.daqem.arc.api.action.data.IActionDataType;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.projectile.AbstractArrow;
-import net.minecraft.world.entity.projectile.FishingHook;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.level.Level;
 
 public class PlayerEvents {
 
-    public static void onPlayerEat(ArcServerPlayer player, ItemStack stack) {
-        new ActionDataBuilder(player, IActionType.EAT)
-                .withData(IActionDataType.ITEM_STACK, stack)
-                .build()
-                .sendToAction();
-    }
+    public static void registerEvents() {
 
-    public static void onPlayerDrink(ArcServerPlayer player, ItemStack stack) {
-        new ActionDataBuilder(player, IActionType.DRINK)
-                .withData(IActionDataType.ITEM_STACK, stack)
-                .build()
-                .sendToAction();
-    }
+        ArcPlayerEvent.ENTITY_HURT_PLAYER.register((serverPlayer, damageSource, damage) -> {
+            if (serverPlayer instanceof ArcServerPlayer arcServerPlayer) {
+                ActionResult actionResult = new ActionDataBuilder(arcServerPlayer, IActionType.GET_HURT)
+                        .withData(IActionDataType.ENTITY, damageSource.getEntity())
+                        .withData(IActionDataType.DAMAGE_SOURCE, damageSource)
+                        .withData(IActionDataType.DAMAGE_AMOUNT, damage.floatValue())
+                        .build()
+                        .sendToAction();
 
-    public static void onShootProjectile(ArcServerPlayer player, IArcAbstractArrow shotArrowEntity) {
-        new ActionDataBuilder(player, IActionType.SHOOT_PROJECTILE)
-                .withData(IActionDataType.ITEM_STACK, shotArrowEntity.arc$getPickupItem())
-                .withData(IActionDataType.ENTITY, (AbstractArrow) shotArrowEntity)
-                .build()
-                .sendToAction();
-    }
+                if (actionResult.shouldCancelAction()) {
+                    return EventResult.INTERRUPT_FALSE;
+                }
 
-    public static void onBrewPotion(ArcServerPlayer player, ItemStack stack, BlockPos pos, Level level) {
-        new ActionDataBuilder(player, IActionType.BREW_POTION)
-                .withData(IActionDataType.ITEM_STACK, stack)
-                .withData(IActionDataType.BLOCK_POSITION, pos)
-                .withData(IActionDataType.BLOCK_STATE, level.getBlockState(pos))
-                .withData(IActionDataType.WORLD, level)
-                .build()
-                .sendToAction();
-    }
+                if (actionResult.getDamageModifier() != 1F) {
+                    damage.setValue(damage.getValue() * actionResult.getDamageModifier());
+                }
+            }
+            return EventResult.PASS;
+        }, EventPriority.HIGH);
 
-    public static ActionResult onEffectAdded(ArcServerPlayer player, MobEffectInstance effect, Entity source) {
-        return new ActionDataBuilder(player, IActionType.EFFECT_ADDED)
-                .withData(IActionDataType.MOB_EFFECT_INSTANCE, effect)
-                .withData(IActionDataType.ENTITY, source)
-                .build()
-                .sendToAction();
+        ArcPlayerEvent.PLAYER_HURT_PLAYER.register((attacker, defender, damageSource, damage) -> {
+            if (attacker instanceof ArcServerPlayer arcServerPlayer) {
+                ActionResult actionResult = new ActionDataBuilder(arcServerPlayer, IActionType.HURT_PLAYER)
+                        .withData(IActionDataType.ENTITY, defender)
+                        .withData(IActionDataType.DAMAGE_SOURCE, damageSource)
+                        .withData(IActionDataType.DAMAGE_AMOUNT, damage.floatValue())
+                        .build()
+                        .sendToAction();
 
-    }
+                if (actionResult.shouldCancelAction()) {
+                    return EventResult.INTERRUPT_FALSE;
+                }
 
-    public static void onSmeltItem(ArcServerPlayer player, Recipe<?> recipe, ItemStack stack, BlockPos furnacePos, Level level) {
-        new ActionDataBuilder(player, IActionType.SMELT_ITEM)
-                .withData(IActionDataType.ITEM_STACK, stack)
-                .withData(IActionDataType.BLOCK_POSITION, furnacePos)
-                .withData(IActionDataType.BLOCK_STATE, level.getBlockState(furnacePos))
-                .withData(IActionDataType.WORLD, level)
-                .withData(IActionDataType.RECIPE, recipe)
-                .build()
-                .sendToAction();
-    }
+                if (actionResult.getDamageModifier() != 1F) {
+                    damage.setValue(damage.getValue() * actionResult.getDamageModifier());
+                }
+            }
+            return EventResult.PASS;
+        }, EventPriority.HIGH);
 
-    public static void onCraftItem(ArcServerPlayer player, Recipe<?> recipe, ItemStack stack, Level level) {
-        new ActionDataBuilder(player, IActionType.CRAFT_ITEM)
-                .withData(IActionDataType.ITEM_STACK, stack)
-                .withData(IActionDataType.WORLD, level)
-                .withData(IActionDataType.RECIPE, recipe)
-                .build()
-                .sendToAction();
-    }
+        ArcPlayerEvent.BREW_POTION.register((player, potion, brewingStandBlockEntity) -> {
+            if (player instanceof ArcServerPlayer arcServerPlayer) {
+                new ActionDataBuilder(arcServerPlayer, IActionType.BREW_POTION)
+                        .withData(IActionDataType.ITEM_STACK, potion)
+                        .withData(IActionDataType.BLOCK_POSITION, brewingStandBlockEntity.getBlockPos())
+                        .withData(IActionDataType.BLOCK_STATE, brewingStandBlockEntity.getBlockState())
+                        .withData(IActionDataType.WORLD, brewingStandBlockEntity.getLevel())
+                        .build()
+                        .sendToAction();
+            }
+        }, EventPriority.HIGH);
 
-    public static void onEnchantItem(ArcServerPlayer player, ItemStack stack, int level) {
-        new ActionDataBuilder(player, IActionType.ENCHANT_ITEM)
-                .withData(IActionDataType.ITEM_STACK, stack)
-                .withData(IActionDataType.EXP_LEVEL, level)
-                .build()
-                .sendToAction();
-    }
+        ArcPlayerEvent.EAT.register((player, itemStack) -> {
+            if (player instanceof ArcPlayer arcPlayer) {
+                ActionResult actionResult = new ActionDataBuilder(arcPlayer, IActionType.EAT)
+                        .withData(IActionDataType.ITEM_STACK, itemStack)
+                        .withData(IActionDataType.ITEM, itemStack.getItem())
+                        .withData(IActionDataType.WORLD, player.level())
+                        .withData(IActionDataType.BLOCK_POSITION, player.blockPosition())
+                        .build()
+                        .sendToAction();
 
-    public static void onFishedUpItem(ArcServerPlayer player, ItemStack stack) {
-        new ActionDataBuilder(player, IActionType.FISHED_UP_ITEM)
-                .withData(IActionDataType.ITEM_STACK, stack)
-                .withData(IActionDataType.ITEM, stack.getItem())
-                .build()
-                .sendToAction();
-    }
+                if (actionResult.shouldCancelAction()) {
+                    return EventResult.INTERRUPT_FALSE;
+                }
+            }
+            return EventResult.PASS;
+        }, EventPriority.HIGH);
 
-    public static void onStripLog(ArcServerPlayer player, BlockPos pos, Level level) {
-        new ActionDataBuilder(player, IActionType.STRIP_LOG)
-                .withData(IActionDataType.BLOCK_STATE, level.getBlockState(pos))
-                .withData(IActionDataType.BLOCK_POSITION, pos)
-                .withData(IActionDataType.WORLD, level)
-                .build()
-                .sendToAction();
-    }
+        ArcPlayerEvent.DRINK.register((player, itemStack) -> {
+            if (player instanceof ArcPlayer arcPlayer) {
+                ActionResult actionResult = new ActionDataBuilder(arcPlayer, IActionType.DRINK)
+                        .withData(IActionDataType.ITEM_STACK, itemStack)
+                        .withData(IActionDataType.ITEM, itemStack.getItem())
+                        .withData(IActionDataType.WORLD, player.level())
+                        .withData(IActionDataType.BLOCK_POSITION, player.blockPosition())
+                        .build()
+                        .sendToAction();
 
-    public static void onGrindItem(ArcServerPlayer player) {
-        new ActionDataBuilder(player, IActionType.GRIND_ITEM)
-                .build()
-                .sendToAction();
-    }
+                if (actionResult.shouldCancelAction()) {
+                    return EventResult.INTERRUPT_FALSE;
+                }
+            }
+            return EventResult.PASS;
+        }, EventPriority.HIGH);
 
-    public static void onUseAnvil(ArcServerPlayer player, ItemStack stack) {
-        new ActionDataBuilder(player, IActionType.USE_ANVIL)
-                .withData(IActionDataType.ITEM_STACK, stack)
-                .withData(IActionDataType.ITEM, stack.getItem())
-                .build()
-                .sendToAction();
-    }
+        ArcPlayerEvent.EFFECT_ADDED.register((serverPlayer, effect, source) -> {
+            if (serverPlayer instanceof ArcServerPlayer arcServerPlayer) {
+                ActionResult actionResult = new ActionDataBuilder(arcServerPlayer, IActionType.EFFECT_ADDED)
+                        .withData(IActionDataType.MOB_EFFECT_INSTANCE, effect)
+                        .withData(IActionDataType.ENTITY, source)
+                        .withData(IActionDataType.WORLD, serverPlayer.level())
+                        .withData(IActionDataType.BLOCK_POSITION, serverPlayer.blockPosition())
+                        .build()
+                        .sendToAction();
 
-    public static ActionResult onPlayerHurtItem(ArcServerPlayer player, ItemStack itemStack) {
-        return new ActionDataBuilder(player, IActionType.HURT_ITEM)
-                .withData(IActionDataType.ITEM_STACK, itemStack)
-                .withData(IActionDataType.ITEM, itemStack.getItem())
-                .build()
-                .sendToAction();
-    }
+                if (actionResult.shouldCancelAction()) {
+                    return EventResult.INTERRUPT_FALSE;
+                }
+            }
+            return EventResult.PASS;
+        }, EventPriority.HIGH);
 
-    public static void onRodReelIn(ArcPlayer serverPlayer, FishingHook fishingHook) {
-        new ActionDataBuilder(serverPlayer, IActionType.ROD_REEL_IN)
-                .withData(IActionDataType.ENTITY, fishingHook)
-                .withData(IActionDataType.BLOCK_POSITION, fishingHook.blockPosition())
-                .withData(IActionDataType.WORLD, fishingHook.level())
-                .build()
-                .sendToAction();
+        ArcPlayerEvent.SMELT_ITEM.register((serverPlayer, recipe, stack, furnacePos, level) -> {
+            if (serverPlayer instanceof ArcServerPlayer arcServerPlayer) {
+                new ActionDataBuilder(arcServerPlayer, IActionType.SMELT_ITEM)
+                        .withData(IActionDataType.ITEM_STACK, stack)
+                        .withData(IActionDataType.BLOCK_POSITION, furnacePos)
+                        .withData(IActionDataType.BLOCK_STATE, level.getBlockState(furnacePos))
+                        .withData(IActionDataType.WORLD, level)
+                        .withData(IActionDataType.RECIPE, recipe)
+                        .build()
+                        .sendToAction();
+            }
+        }, EventPriority.HIGH);
+
+        ArcPlayerEvent.ENCHANT_ITEM.register((serverPlayer, stack, level) -> {
+            if (serverPlayer instanceof ArcServerPlayer arcServerPlayer) {
+                new ActionDataBuilder(arcServerPlayer, IActionType.ENCHANT_ITEM)
+                        .withData(IActionDataType.ITEM_STACK, stack)
+                        .withData(IActionDataType.EXP_LEVEL, level)
+                        .build()
+                        .sendToAction();
+            }
+        }, EventPriority.HIGH);
+
+        ArcPlayerEvent.FISH_UP_ITEM.register((serverPlayer, stack) -> {
+            if (serverPlayer instanceof ArcServerPlayer arcServerPlayer) {
+                new ActionDataBuilder(arcServerPlayer, IActionType.FISHED_UP_ITEM)
+                        .withData(IActionDataType.ITEM_STACK, stack)
+                        .withData(IActionDataType.ITEM, stack.getItem())
+                        .build()
+                        .sendToAction();
+            }
+        }, EventPriority.HIGH);
+
+        ArcPlayerEvent.STRIP_LOG.register((player, hand, stack, pos, blockState, level) -> {
+            if (player instanceof ArcPlayer arcPlayer) {
+                ActionResult actionResult = new ActionDataBuilder(arcPlayer, IActionType.STRIP_LOG)
+                        .withData(IActionDataType.BLOCK_STATE, blockState)
+                        .withData(IActionDataType.BLOCK_POSITION, pos)
+                        .withData(IActionDataType.WORLD, level)
+                        .withData(IActionDataType.ITEM_STACK, stack)
+                        .withData(IActionDataType.ITEM, stack.getItem())
+                        .withData(IActionDataType.HAND, hand)
+                        .build()
+                        .sendToAction();
+
+                if (actionResult.shouldCancelAction()) {
+                    return EventResult.INTERRUPT_FALSE;
+                }
+            }
+            return EventResult.PASS;
+        }, EventPriority.HIGH);
+
+        ArcPlayerEvent.GRIND_ITEM.register((player, stack, experience) -> {
+            if (player instanceof ArcServerPlayer arcServerPlayer) {
+                new ActionDataBuilder(arcServerPlayer, IActionType.GRIND_ITEM)
+                        .withData(IActionDataType.ITEM_STACK, stack)
+                        .withData(IActionDataType.ITEM, stack.getItem())
+                        .withData(IActionDataType.WORLD, player.level())
+                        .withData(IActionDataType.BLOCK_POSITION, player.blockPosition())
+                        .withData(IActionDataType.EXP_DROP, experience)
+                        .build()
+                        .sendToAction();
+            }
+        }, EventPriority.HIGH);
+
+        ArcPlayerEvent.USE_ANVIL.register((player, stack, cost) -> {
+            if (player instanceof ArcServerPlayer arcServerPlayer) {
+                new ActionDataBuilder(arcServerPlayer, IActionType.USE_ANVIL)
+                        .withData(IActionDataType.ITEM_STACK, stack)
+                        .withData(IActionDataType.ITEM, stack.getItem())
+                        .withData(IActionDataType.WORLD, player.level())
+                        .withData(IActionDataType.BLOCK_POSITION, player.blockPosition())
+                        .withData(IActionDataType.EXP_LEVEL, cost)
+                        .build()
+                        .sendToAction();
+            }
+        }, EventPriority.HIGH);
+
+        ArcPlayerEvent.ROD_REEL_IN.register((player, fishingHook) -> {
+            if (player instanceof ArcServerPlayer arcServerPlayer) {
+                new ActionDataBuilder(arcServerPlayer, IActionType.ROD_REEL_IN)
+                        .withData(IActionDataType.ENTITY, fishingHook)
+                        .withData(IActionDataType.BLOCK_POSITION, fishingHook.blockPosition())
+                        .withData(IActionDataType.BLOCK_STATE, fishingHook.level().getBlockState(fishingHook.blockPosition()))
+                        .withData(IActionDataType.WORLD, fishingHook.level())
+                        .build()
+                        .sendToAction();
+            }
+        }, EventPriority.HIGH);
+
+        ArcPlayerEvent.GET_ATTACK_SPEED.register((player, itemStack, attackSpeed) -> {
+            if (player instanceof ArcPlayer arcPlayer) {
+                ActionResult actionResult = new ActionDataBuilder(arcPlayer, IActionType.GET_ATTACK_SPEED)
+                        .withData(IActionDataType.ITEM_STACK, itemStack)
+                        .withData(IActionDataType.ITEM, itemStack.getItem())
+                        .withData(IActionDataType.WORLD, player.level())
+                        .withData(IActionDataType.BLOCK_POSITION, player.blockPosition())
+                        .build()
+                        .sendToAction();
+
+                if (actionResult.shouldCancelAction()) {
+                    return EventResult.INTERRUPT_FALSE;
+                }
+
+                if (actionResult.getAttackSpeedModifier() != 1F) {
+                    attackSpeed.setValue(attackSpeed.getValue() / actionResult.getAttackSpeedModifier());
+                }
+            }
+            return EventResult.PASS;
+        }, EventPriority.HIGH);
+
     }
 }

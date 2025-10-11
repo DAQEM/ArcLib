@@ -1,6 +1,6 @@
 package com.daqem.arc.data.condition.scoreboard;
 
-import com.daqem.arc.api.action.data.ActionData;
+import com.daqem.arc.data.ActionData;
 import com.daqem.arc.api.condition.AbstractCondition;
 import com.daqem.arc.api.condition.IConditionSerializer;
 import com.daqem.arc.api.condition.IConditionType;

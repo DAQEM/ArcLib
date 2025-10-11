@@ -14,8 +14,8 @@ import java.util.List;
 
 public class BrewPotionAction extends AbstractAction {
 
-    public BrewPotionAction(ResourceLocation location, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-        super(location, actionHolderLocation, actionHolderType, performOnClient, rewards, conditions);
+    public BrewPotionAction(ResourceLocation location, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+        super(location, actionHolderLocation, actionHolderType, rewards, conditions);
     }
 
     @Override
@@ -26,13 +26,13 @@ public class BrewPotionAction extends AbstractAction {
     public static class Serializer implements IActionSerializer<BrewPotionAction> {
 
         @Override
-        public BrewPotionAction fromJson(ResourceLocation location, JsonObject jsonObject, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-            return new BrewPotionAction(location, actionHolderLocation, actionHolderType, performOnClient, rewards, conditions);
+        public BrewPotionAction fromJson(ResourceLocation location, JsonObject jsonObject, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+            return new BrewPotionAction(location, actionHolderLocation, actionHolderType, rewards, conditions);
         }
 
         @Override
-        public BrewPotionAction fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-            return new BrewPotionAction(location, actionHolderLocation, actionHolderType, performOnClient, rewards, conditions);
+        public BrewPotionAction fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+            return new BrewPotionAction(location, actionHolderLocation, actionHolderType, rewards, conditions);
         }
 
         @Override

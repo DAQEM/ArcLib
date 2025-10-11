@@ -14,8 +14,8 @@ import java.util.List;
 
 public class SmeltItemAction extends AbstractAction {
 
-    public SmeltItemAction(ResourceLocation location, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-        super(location, actionHolderLocation, actionHolderType, performOnClient, rewards, conditions);
+    public SmeltItemAction(ResourceLocation location, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+        super(location, actionHolderLocation, actionHolderType, rewards, conditions);
     }
 
     @Override
@@ -26,13 +26,13 @@ public class SmeltItemAction extends AbstractAction {
     public static class Serializer implements IActionSerializer<SmeltItemAction> {
 
         @Override
-        public SmeltItemAction fromJson(ResourceLocation location, JsonObject jsonObject, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-            return new SmeltItemAction(location, actionHolderLocation, actionHolderType, performOnClient, rewards, conditions);
+        public SmeltItemAction fromJson(ResourceLocation location, JsonObject jsonObject, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+            return new SmeltItemAction(location, actionHolderLocation, actionHolderType, rewards, conditions);
         }
 
         @Override
-        public SmeltItemAction fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-            return new SmeltItemAction(location, actionHolderLocation, actionHolderType, performOnClient, rewards, conditions);
+        public SmeltItemAction fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+            return new SmeltItemAction(location, actionHolderLocation, actionHolderType, rewards, conditions);
         }
 
         @Override

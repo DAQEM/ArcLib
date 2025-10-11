@@ -14,8 +14,8 @@ import java.util.List;
 
 public class PlaceBlockAction extends AbstractAction {
 
-    public PlaceBlockAction(ResourceLocation location, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-        super(location, actionHolderLocation, actionHolderType, performOnClient, rewards, conditions);
+    public PlaceBlockAction(ResourceLocation location, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+        super(location, actionHolderLocation, actionHolderType, rewards, conditions);
     }
 
     @Override
@@ -26,13 +26,13 @@ public class PlaceBlockAction extends AbstractAction {
     public static class Serializer implements IActionSerializer<PlaceBlockAction> {
 
         @Override
-        public PlaceBlockAction fromJson(ResourceLocation location, JsonObject jsonObject, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-            return new PlaceBlockAction(location, actionHolderLocation, actionHolderType, performOnClient, rewards, conditions);
+        public PlaceBlockAction fromJson(ResourceLocation location, JsonObject jsonObject, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+            return new PlaceBlockAction(location, actionHolderLocation, actionHolderType, rewards, conditions);
         }
 
         @Override
-        public PlaceBlockAction fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-            return new PlaceBlockAction(location, actionHolderLocation, actionHolderType, performOnClient, rewards, conditions);
+        public PlaceBlockAction fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+            return new PlaceBlockAction(location, actionHolderLocation, actionHolderType, rewards, conditions);
         }
 
         @Override

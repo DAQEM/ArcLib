@@ -1,7 +1,8 @@
 package com.daqem.arc.data.condition.movement;
 
-import com.daqem.arc.api.action.data.ActionData;
+import com.daqem.arc.api.action.IActionType;
 import com.daqem.arc.api.action.data.IActionDataType;
+import com.daqem.arc.data.ActionData;
 import com.daqem.arc.api.condition.AbstractCondition;
 import com.daqem.arc.api.condition.IConditionSerializer;
 import com.daqem.arc.api.condition.IConditionType;
@@ -28,21 +29,23 @@ public class DistanceCondition extends AbstractCondition {
 
     @Override
     public boolean isMet(ActionData actionData) {
-        if (actionData.getPlayer() instanceof ArcServerPlayer serverPlayer) {
-            Integer totalDistanceMovedInCm = actionData.getData(IActionDataType.DISTANCE_IN_CM);
-            if (totalDistanceMovedInCm != null) {
-                totalDistanceMovedInCm += serverPlayer.arc$getLastRemainderInCm(this);
+        if (actionData.getPlayer() instanceof ArcServerPlayer accessor) {
+            Double totalDistanceMovedInCm = actionData.getData(IActionDataType.DISTANCE_IN_CM);
+            if (totalDistanceMovedInCm == null || totalDistanceMovedInCm < 0) return false;
+            double lastAccountedDistanceCm = accessor.arc$getActionLastMetDistances().getOrDefault(this, 0.0);
+            double requiredDistanceInCm = (double) this.distanceInBlocks * 100.0;
+            boolean hasMetCondition = false;
 
-                double lastTotalDistanceMovedInCm = serverPlayer.arc$getLastDistanceInCm(this);
-                double currentDistanceMovedInCm = totalDistanceMovedInCm - lastTotalDistanceMovedInCm;
-                double currentDistanceMovedInBlocks = currentDistanceMovedInCm / 100.0;
-
-                if (currentDistanceMovedInBlocks >= distanceInBlocks) {
-                    serverPlayer.arc$setLastDistanceInCm(this, totalDistanceMovedInCm);
-                    return true;
-                }
-                serverPlayer.arc$setLastRemainderInCm(this, (int) (currentDistanceMovedInBlocks % distanceInBlocks) * 100);
+            while (totalDistanceMovedInCm - lastAccountedDistanceCm >= requiredDistanceInCm) {
+                hasMetCondition = true;
+                lastAccountedDistanceCm += requiredDistanceInCm;
             }
+
+            if (hasMetCondition) {
+                accessor.arc$setActionLastMetDistance(this, lastAccountedDistanceCm);
+            }
+
+            return hasMetCondition;
         }
         return false;
     }
@@ -62,14 +65,16 @@ public class DistanceCondition extends AbstractCondition {
         public DistanceCondition fromJson(ResourceLocation location, JsonObject jsonObject, boolean inverted) {
             return new DistanceCondition(
                     inverted,
-                    GsonHelper.getAsInt(jsonObject, "distance_in_blocks"));
+                    GsonHelper.getAsInt(jsonObject, "distance_in_blocks")
+            );
         }
 
         @Override
         public DistanceCondition fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
             return new DistanceCondition(
                     inverted,
-                    friendlyByteBuf.readVarInt());
+                    friendlyByteBuf.readVarInt()
+            );
         }
 
         @Override

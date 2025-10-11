@@ -6,10 +6,7 @@ import com.daqem.arc.config.ArcCommonConfig;
 import com.daqem.arc.data.ActionHolderManager;
 import com.daqem.arc.data.ActionManager;
 import com.daqem.arc.data.PlayerActionHolderManager;
-import com.daqem.arc.event.AdvancementEvents;
-import com.daqem.arc.event.BlockEvents;
-import com.daqem.arc.event.EntityEvents;
-import com.daqem.arc.event.ItemEvents;
+import com.daqem.arc.event.*;
 import com.daqem.arc.networking.ArcNetworking;
 import com.daqem.arc.player.brewing.BrewingStandData;
 import com.mojang.logging.LogUtils;
@@ -31,7 +28,7 @@ public class Arc {
 
     public static final Map<BlockPos, BrewingStandData> BREWING_STANDS = new HashMap<>();
 
-    public static void initCommon() {
+    public static void init() {
         ArcCommonConfig.init();
         ArcNetworking.init();
         registerEvents();
@@ -42,10 +39,12 @@ public class Arc {
     private static void registerEvents() {
         CommandRegistrationEvent.EVENT.register(ArcCommand::registerCommand);
 
-        BlockEvents.registerEvents();
-        ItemEvents.registerEvents();
-        EntityEvents.registerEvents();
         AdvancementEvents.registerEvents();
+        BlockEvents.registerEvents();
+        EntityEvents.registerEvents();
+        ItemEvents.registerEvents();
+        MovementEvents.registerEvents();
+        PlayerEvents.registerEvents();
     }
 
     public static ResourceLocation getId(String id) {

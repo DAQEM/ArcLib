@@ -14,8 +14,8 @@ import java.util.List;
 
 public class InteractEntityAction extends AbstractAction {
 
-    public InteractEntityAction(ResourceLocation location, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-        super(location, actionHolderLocation, actionHolderType, performOnClient, rewards, conditions);
+    public InteractEntityAction(ResourceLocation location, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+        super(location, actionHolderLocation, actionHolderType, rewards, conditions);
     }
 
     @Override
@@ -26,13 +26,13 @@ public class InteractEntityAction extends AbstractAction {
     public static class Serializer implements IActionSerializer<InteractEntityAction> {
 
         @Override
-        public InteractEntityAction fromJson(ResourceLocation location, JsonObject jsonObject, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-            return new InteractEntityAction(location, actionHolderLocation, actionHolderType, performOnClient, rewards, conditions);
+        public InteractEntityAction fromJson(ResourceLocation location, JsonObject jsonObject, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+            return new InteractEntityAction(location, actionHolderLocation, actionHolderType, rewards, conditions);
         }
 
         @Override
-        public InteractEntityAction fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-            return new InteractEntityAction(location, actionHolderLocation, actionHolderType, performOnClient, rewards, conditions);
+        public InteractEntityAction fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+            return new InteractEntityAction(location, actionHolderLocation, actionHolderType, rewards, conditions);
         }
 
         @Override

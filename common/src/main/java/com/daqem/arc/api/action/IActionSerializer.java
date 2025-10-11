@@ -16,12 +16,13 @@ import net.minecraft.util.GsonHelper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public interface IActionSerializer<T extends IAction> extends ArcSerializer {
 
-    T fromJson(ResourceLocation location, JsonObject jsonObject, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions);
+    T fromJson(ResourceLocation location, JsonObject jsonObject, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions);
 
-    T fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions);
+    T fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions);
 
     static IAction fromNetwork(RegistryFriendlyByteBuf friendlyByteBuf) {
         ResourceLocation resourceLocation = friendlyByteBuf.readResourceLocation();
@@ -31,8 +32,9 @@ public interface IActionSerializer<T extends IAction> extends ArcSerializer {
         ).getSerializer().fromNetwork(resourceLocation2, friendlyByteBuf);
     }
 
+    @SuppressWarnings("unchecked")
     static <T extends IAction> void toNetwork(T action, RegistryFriendlyByteBuf friendlyByteBuf) {
-        friendlyByteBuf.writeResourceLocation(ArcRegistry.ACTION.getKey(action.getType()));
+        friendlyByteBuf.writeResourceLocation(Objects.requireNonNull(ArcRegistry.ACTION.getKey(action.getType())));
         friendlyByteBuf.writeResourceLocation(action.getLocation());
         ((IActionSerializer<T>) action.getSerializer()).toNetwork(friendlyByteBuf, action);
 
@@ -63,7 +65,6 @@ public interface IActionSerializer<T extends IAction> extends ArcSerializer {
                 getResourceLocation(holderObject, "id"),
                 ArcRegistry.ACTION_HOLDER.byNameCodec().decode(JsonOps.INSTANCE, holderObject.get("type")).result()
                         .orElseThrow(() -> new JsonParseException("Invalid action holder type")).getFirst(),
-                false,
                 rewards, conditions);
     }
 
@@ -71,7 +72,6 @@ public interface IActionSerializer<T extends IAction> extends ArcSerializer {
         return fromNetwork(location, friendlyByteBuf,
                 friendlyByteBuf.readResourceLocation(),
                 ArcRegistry.ACTION_HOLDER.getOptional(friendlyByteBuf.readResourceLocation()).orElse(null),
-                friendlyByteBuf.readBoolean(),
                 friendlyByteBuf.readList(object -> IRewardSerializer.fromNetwork((RegistryFriendlyByteBuf) object)),
                 friendlyByteBuf.readList(object -> IConditionSerializer.fromNetwork((RegistryFriendlyByteBuf) object)));
     }
@@ -79,7 +79,6 @@ public interface IActionSerializer<T extends IAction> extends ArcSerializer {
     default void toNetwork(RegistryFriendlyByteBuf friendlyByteBuf, T type) {
         friendlyByteBuf.writeResourceLocation(type.getActionHolderLocation());
         friendlyByteBuf.writeResourceLocation(type.getActionHolderType().getLocation());
-        friendlyByteBuf.writeBoolean(type.shouldPerformOnClient());
         friendlyByteBuf.writeCollection(type.getRewards(),
                 (friendlyByteBuf1, reward) -> IRewardSerializer.toNetwork(reward, (RegistryFriendlyByteBuf) friendlyByteBuf1, type.getLocation()));
         friendlyByteBuf.writeCollection(type.getConditions(),

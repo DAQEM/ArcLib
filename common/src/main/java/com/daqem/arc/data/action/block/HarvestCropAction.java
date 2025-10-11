@@ -14,8 +14,8 @@ import java.util.List;
 
 public class HarvestCropAction extends AbstractAction {
 
-    public HarvestCropAction(ResourceLocation location, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-        super(location, actionHolderLocation, actionHolderType, performOnClient, rewards, conditions);
+    public HarvestCropAction(ResourceLocation location, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+        super(location, actionHolderLocation, actionHolderType, rewards, conditions);
     }
 
     @Override
@@ -26,13 +26,13 @@ public class HarvestCropAction extends AbstractAction {
     public static class Serializer implements IActionSerializer<HarvestCropAction> {
 
         @Override
-        public HarvestCropAction fromJson(ResourceLocation location, JsonObject jsonObject, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-            return new HarvestCropAction(location, actionHolderLocation, actionHolderType, performOnClient, rewards, conditions);
+        public HarvestCropAction fromJson(ResourceLocation location, JsonObject jsonObject, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+            return new HarvestCropAction(location, actionHolderLocation, actionHolderType, rewards, conditions);
         }
 
         @Override
-        public HarvestCropAction fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-            return new HarvestCropAction(location, actionHolderLocation, actionHolderType, performOnClient, rewards, conditions);
+        public HarvestCropAction fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+            return new HarvestCropAction(location, actionHolderLocation, actionHolderType, rewards, conditions);
         }
 
         @Override

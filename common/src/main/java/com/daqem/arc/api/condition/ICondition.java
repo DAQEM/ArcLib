@@ -1,6 +1,6 @@
 package com.daqem.arc.api.condition;
 
-import com.daqem.arc.api.action.data.ActionData;
+import com.daqem.arc.data.ActionData;
 import net.minecraft.network.chat.Component;
 
 public interface ICondition {

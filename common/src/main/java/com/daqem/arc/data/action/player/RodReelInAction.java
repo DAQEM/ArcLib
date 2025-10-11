@@ -14,8 +14,8 @@ import java.util.List;
 
 public class RodReelInAction extends AbstractAction {
 
-    public RodReelInAction(ResourceLocation location, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-        super(location, actionHolderLocation, actionHolderType, performOnClient, rewards, conditions);
+    public RodReelInAction(ResourceLocation location, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+        super(location, actionHolderLocation, actionHolderType, rewards, conditions);
     }
 
     @Override
@@ -26,13 +26,13 @@ public class RodReelInAction extends AbstractAction {
     public static class Serializer implements IActionSerializer<RodReelInAction> {
 
         @Override
-        public RodReelInAction fromJson(ResourceLocation location, JsonObject jsonObject, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-            return new RodReelInAction(location, actionHolderLocation, actionHolderType, performOnClient, rewards, conditions);
+        public RodReelInAction fromJson(ResourceLocation location, JsonObject jsonObject, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+            return new RodReelInAction(location, actionHolderLocation, actionHolderType, rewards, conditions);
         }
 
         @Override
-        public RodReelInAction fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-            return new RodReelInAction(location, actionHolderLocation, actionHolderType, performOnClient, rewards, conditions);
+        public RodReelInAction fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+            return new RodReelInAction(location, actionHolderLocation, actionHolderType, rewards, conditions);
         }
 
         @Override

@@ -1,23 +1,54 @@
 package com.daqem.arc.event;
 
-import com.daqem.arc.api.action.result.ActionResult;
 import com.daqem.arc.api.action.IActionType;
-import com.daqem.arc.api.player.ArcServerPlayer;
 import com.daqem.arc.api.action.data.ActionDataBuilder;
 import com.daqem.arc.api.action.data.IActionDataType;
-import dev.architectury.event.EventResult;
+import com.daqem.arc.api.action.result.ActionResult;
+import com.daqem.arc.api.event.ArcBlockEvent;
+import com.daqem.arc.api.event.EventPriority;
+import com.daqem.arc.api.event.EventResult;
+import com.daqem.arc.api.player.ArcPlayer;
+import com.daqem.arc.api.player.ArcServerPlayer;
 import dev.architectury.event.events.common.BlockEvent;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.CropBlock;
-import net.minecraft.world.level.block.state.BlockState;
 
 public class BlockEvents {
 
     public static void registerEvents() {
-        BlockEvent.PLACE.register((level, pos, state, placer) -> {
-            if (placer instanceof ArcServerPlayer arcServerPlayer) {
-                ActionResult actionResult = new ActionDataBuilder(arcServerPlayer, IActionType.PLACE_BLOCK)
+        BlockEvent.BREAK.register((level, pos, state, player, xp) ->
+                ArcBlockEvent.BREAK_BLOCK.invoker().onBreakBlock((ServerLevel) level, pos, state, player, xp).toArchEventResult());
+        BlockEvent.PLACE.register((level, pos, state, placer) ->
+                ArcBlockEvent.PLACE_BLOCK.invoker().onPlaceBlock(level, pos, state, placer).toArchEventResult());
+
+
+        ArcBlockEvent.BREAK_BLOCK.register((serverLevel, blockPos, blockState, serverPlayer, xp) -> {
+            if (serverPlayer instanceof ArcServerPlayer arcServerPlayer) {
+                ActionResult actionResult = new ActionDataBuilder(arcServerPlayer, IActionType.BREAK_BLOCK)
+                        .withData(IActionDataType.BLOCK_STATE, blockState)
+                        .withData(IActionDataType.BLOCK_POSITION, blockPos)
+                        .withData(IActionDataType.EXP_DROP, xp == null ? 0 : xp.get())
+                        .withData(IActionDataType.WORLD, serverLevel)
+                        .build()
+                        .sendToAction();
+
+                if (actionResult.shouldCancelAction()) {
+                    return EventResult.INTERRUPT_FALSE;
+                }
+
+                if (blockState.getBlock() instanceof CropBlock) {
+                    EventResult eventResult = ArcBlockEvent.HARVEST_CROP.invoker().onHarvestCrop(serverLevel, blockPos, blockState, serverPlayer, xp);
+                    if (eventResult.cancelsEvent()) {
+                        return EventResult.INTERRUPT_FALSE;
+                    }
+                }
+            }
+            return EventResult.PASS;
+        }, EventPriority.HIGH);
+
+        ArcBlockEvent.PLACE_BLOCK.register((level, pos, state, placer) -> {
+            if (placer instanceof ArcPlayer arcPlayer) {
+                ActionResult actionResult = new ActionDataBuilder(arcPlayer, IActionType.PLACE_BLOCK)
                         .withData(IActionDataType.BLOCK_STATE, state)
                         .withData(IActionDataType.BLOCK_POSITION, pos)
                         .withData(IActionDataType.WORLD, level)
@@ -25,68 +56,89 @@ public class BlockEvents {
                         .sendToAction();
 
                 if (actionResult.shouldCancelAction()) {
-                    return EventResult.interruptFalse();
+                    return EventResult.INTERRUPT_FALSE;
                 }
 
                 if (state.getBlock() instanceof CropBlock) {
-                    ActionResult actionResult1 = onPlantCrop(arcServerPlayer, state, pos, level);
-                    if (actionResult1.shouldCancelAction()) {
-                        return EventResult.interruptFalse();
+                    EventResult eventResult = ArcBlockEvent.PLANT_CROP.invoker().onPlantCrop(level, pos, state, arcPlayer.arc$getPlayer());
+                    if (eventResult.cancelsEvent()) {
+                        return EventResult.INTERRUPT_FALSE;
                     }
                 }
-                arcServerPlayer.arc$getBlockPosCache().add(pos);
+
+                if (placer instanceof ArcServerPlayer arcServerPlayer) {
+                    arcServerPlayer.arc$getBlockPosCache().add(pos);
+                }
             }
-            return EventResult.pass();
-        });
-        BlockEvent.BREAK.register((level, pos, state, player, xp) -> {
-            if (player instanceof ArcServerPlayer arcServerPlayer) {
-                ActionResult actionResult = new ActionDataBuilder(arcServerPlayer, IActionType.BREAK_BLOCK)
+            return EventResult.PASS;
+        }, EventPriority.HIGH);
+
+        ArcBlockEvent.RIGHT_CLICK_BLOCK.register((itemStack, level, player, hand, state, blockPos) -> {
+            if (player instanceof ArcPlayer arcPlayer) {
+                ActionResult actionResult = new ActionDataBuilder(arcPlayer, IActionType.INTERACT_BLOCK)
                         .withData(IActionDataType.BLOCK_STATE, state)
-                        .withData(IActionDataType.BLOCK_POSITION, pos)
+                        .withData(IActionDataType.BLOCK_POSITION, blockPos)
+                        .withData(IActionDataType.WORLD, level)
+                        .withData(IActionDataType.ITEM_STACK, itemStack)
+                        .withData(IActionDataType.HAND, hand)
+                        .build()
+                        .sendToAction();
+                if (actionResult.shouldCancelAction()) {
+                    return EventResult.INTERRUPT_FALSE;
+                }
+            }
+            return EventResult.PASS;
+        }, EventPriority.HIGH);
+
+        ArcBlockEvent.PLANT_CROP.register((level, blockPos, blockState, planter) -> {
+            if (planter instanceof ArcPlayer arcPlayer) {
+                ActionResult actionResult = new ActionDataBuilder(arcPlayer, IActionType.PLANT_CROP)
+                        .withData(IActionDataType.BLOCK_STATE, blockState)
+                        .withData(IActionDataType.BLOCK_POSITION, blockPos)
+                        .withData(IActionDataType.WORLD, level)
+                        .build()
+                        .sendToAction();
+                if (actionResult.shouldCancelAction()) {
+                    return EventResult.INTERRUPT_TRUE;
+                }
+            }
+            return EventResult.PASS;
+        }, EventPriority.HIGH);
+
+        ArcBlockEvent.HARVEST_CROP.register((level, blockPos, blockState, serverPlayer, xp) -> {
+            if (serverPlayer instanceof ArcServerPlayer arcServerPlayer) {
+                ActionResult actionResult = new ActionDataBuilder(arcServerPlayer, IActionType.HARVEST_CROP)
+                        .withData(IActionDataType.BLOCK_STATE, blockState)
+                        .withData(IActionDataType.BLOCK_POSITION, blockPos)
                         .withData(IActionDataType.EXP_DROP, xp == null ? 0 : xp.get())
                         .withData(IActionDataType.WORLD, level)
                         .build()
                         .sendToAction();
-
                 if (actionResult.shouldCancelAction()) {
-                    return EventResult.interruptFalse();
-                }
-
-                if (state.getBlock() instanceof CropBlock) {
-                    ActionResult actionResult1 = onHarvestCrop(arcServerPlayer, state, pos, level);
-                    if (actionResult1.shouldCancelAction()) {
-                        return EventResult.interruptFalse();
-                    }
+                    return EventResult.INTERRUPT_FALSE;
                 }
             }
-            return EventResult.pass();
-        });
-    }
+            return EventResult.PASS;
+        }, EventPriority.HIGH);
 
-    public static ActionResult onBlockInteract(ArcServerPlayer player, BlockState state, BlockPos pos, Level level) {
-        return new ActionDataBuilder(player, IActionType.INTERACT_BLOCK)
-                .withData(IActionDataType.BLOCK_STATE, state)
-                .withData(IActionDataType.BLOCK_POSITION, pos)
-                .withData(IActionDataType.WORLD, level)
-                .build()
-                .sendToAction();
-    }
-
-    public static ActionResult onPlantCrop(ArcServerPlayer player, BlockState state, BlockPos pos, Level level) {
-        return new ActionDataBuilder(player, IActionType.PLANT_CROP)
-                .withData(IActionDataType.BLOCK_STATE, state)
-                .withData(IActionDataType.BLOCK_POSITION, pos)
-                .withData(IActionDataType.WORLD, level)
-                .build()
-                .sendToAction();
-    }
-
-    public static ActionResult onHarvestCrop(ArcServerPlayer player, BlockState state, BlockPos pos, Level level) {
-        return new ActionDataBuilder(player, IActionType.HARVEST_CROP)
-                .withData(IActionDataType.BLOCK_STATE, state)
-                .withData(IActionDataType.BLOCK_POSITION, pos)
-                .withData(IActionDataType.WORLD, level)
-                .build()
-                .sendToAction();
+        ArcBlockEvent.GET_DESTROY_SPEED.register((player, blockState, blockPos, itemStack, speed) -> {
+            if (player instanceof ArcPlayer arcPlayer) {
+                ActionResult actionResult = new ActionDataBuilder(arcPlayer, IActionType.GET_DESTROY_SPEED)
+                        .withData(IActionDataType.BLOCK_STATE, blockState)
+                        .withData(IActionDataType.BLOCK_POSITION, blockPos)
+                        .withData(IActionDataType.ITEM_STACK, itemStack)
+                        .withData(IActionDataType.ITEM, itemStack.getItem())
+                        .withData(IActionDataType.WORLD, player.level())
+                        .build()
+                        .sendToAction();
+                if (actionResult.shouldCancelAction()) {
+                    return EventResult.INTERRUPT_FALSE;
+                }
+                if (actionResult.getDestroySpeedModifier() != 1F) {
+                    speed.setValue(speed.getValue() * actionResult.getDestroySpeedModifier());
+                }
+            }
+            return EventResult.PASS;
+        }, EventPriority.HIGH);
     }
 }

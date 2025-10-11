@@ -14,8 +14,8 @@ import java.util.List;
 
 public class InteractBlockAction extends AbstractAction {
 
-    public InteractBlockAction(ResourceLocation location, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-        super(location, actionHolderLocation, actionHolderType, performOnClient, rewards, conditions);
+    public InteractBlockAction(ResourceLocation location, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+        super(location, actionHolderLocation, actionHolderType, rewards, conditions);
     }
 
     @Override
@@ -26,13 +26,13 @@ public class InteractBlockAction extends AbstractAction {
     public static class Serializer implements IActionSerializer<InteractBlockAction> {
 
         @Override
-        public InteractBlockAction fromJson(ResourceLocation location, JsonObject jsonObject, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-            return new InteractBlockAction(location, actionHolderLocation, actionHolderType, performOnClient, rewards, conditions);
+        public InteractBlockAction fromJson(ResourceLocation location, JsonObject jsonObject, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+            return new InteractBlockAction(location, actionHolderLocation, actionHolderType, rewards, conditions);
         }
 
         @Override
-        public InteractBlockAction fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-            return new InteractBlockAction(location, actionHolderLocation, actionHolderType, performOnClient, rewards, conditions);
+        public InteractBlockAction fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+            return new InteractBlockAction(location, actionHolderLocation, actionHolderType, rewards, conditions);
         }
 
         @Override

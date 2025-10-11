@@ -43,8 +43,8 @@ public class ClientboundActionHoldersScreenPacket implements CustomPacketPayload
     public @NotNull Type<? extends CustomPacketPayload> type() {
         return ArcNetworking.CLIENTBOUND_ACTION_HOLDERS_SCREEN_PACKET;
     }
-    @Environment(EnvType.CLIENT)
-    public static void handleClientSide(ClientboundActionHoldersScreenPacket packet, NetworkManager.PacketContext context) {
-        Minecraft.getInstance().setScreen(new ActionHoldersScreen(packet.actionHolders));
+
+    public List<IActionHolder> getActionHolders() {
+        return actionHolders;
     }
 }

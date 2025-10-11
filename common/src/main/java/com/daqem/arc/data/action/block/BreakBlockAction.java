@@ -14,8 +14,8 @@ import java.util.List;
 
 public class BreakBlockAction extends AbstractAction {
 
-    public BreakBlockAction(ResourceLocation location, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-        super(location, actionHolderLocation, actionHolderType, performOnClient, rewards, conditions);
+    public BreakBlockAction(ResourceLocation location, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+        super(location, actionHolderLocation, actionHolderType, rewards, conditions);
     }
 
     @Override
@@ -26,13 +26,13 @@ public class BreakBlockAction extends AbstractAction {
     public static class Serializer implements IActionSerializer<BreakBlockAction> {
 
         @Override
-        public BreakBlockAction fromJson(ResourceLocation location, JsonObject jsonObject, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-            return new BreakBlockAction(location, actionHolderLocation, actionHolderType, performOnClient, rewards, conditions);
+        public BreakBlockAction fromJson(ResourceLocation location, JsonObject jsonObject, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+            return new BreakBlockAction(location, actionHolderLocation, actionHolderType, rewards, conditions);
         }
 
         @Override
-        public BreakBlockAction fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-            return new BreakBlockAction(location, actionHolderLocation, actionHolderType, performOnClient, rewards, conditions);
+        public BreakBlockAction fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+            return new BreakBlockAction(location, actionHolderLocation, actionHolderType, rewards, conditions);
         }
 
         @Override

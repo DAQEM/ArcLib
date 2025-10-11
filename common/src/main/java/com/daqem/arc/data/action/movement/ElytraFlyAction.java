@@ -14,8 +14,8 @@ import java.util.List;
 
 public class ElytraFlyAction extends AbstractAction {
 
-    public ElytraFlyAction(ResourceLocation location, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-        super(location, actionHolderLocation, actionHolderType, performOnClient, rewards, conditions);
+    public ElytraFlyAction(ResourceLocation location, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+        super(location, actionHolderLocation, actionHolderType, rewards, conditions);
     }
 
     @Override
@@ -26,13 +26,13 @@ public class ElytraFlyAction extends AbstractAction {
     public static class Serializer implements IActionSerializer<ElytraFlyAction> {
 
         @Override
-        public ElytraFlyAction fromJson(ResourceLocation location, JsonObject jsonObject, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-            return new ElytraFlyAction(location, actionHolderLocation, actionHolderType, performOnClient, rewards, conditions);
+        public ElytraFlyAction fromJson(ResourceLocation location, JsonObject jsonObject, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+            return new ElytraFlyAction(location, actionHolderLocation, actionHolderType, rewards, conditions);
         }
 
         @Override
-        public ElytraFlyAction fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-            return new ElytraFlyAction(location, actionHolderLocation, actionHolderType, performOnClient, rewards, conditions);
+        public ElytraFlyAction fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+            return new ElytraFlyAction(location, actionHolderLocation, actionHolderType, rewards, conditions);
         }
 
         @Override

@@ -1,7 +1,7 @@
 package com.daqem.arc.api.reward;
 
 import com.daqem.arc.Arc;
-import com.daqem.arc.api.action.data.ActionData;
+import com.daqem.arc.data.ActionData;
 import com.daqem.arc.api.action.result.ActionResult;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.contents.TranslatableContents;

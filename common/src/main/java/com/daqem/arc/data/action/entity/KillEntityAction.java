@@ -14,8 +14,8 @@ import java.util.List;
 
 public class KillEntityAction extends AbstractAction {
 
-    public KillEntityAction(ResourceLocation location, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-        super(location, actionHolderLocation, actionHolderType, performOnClient, rewards, conditions);
+    public KillEntityAction(ResourceLocation location, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+        super(location, actionHolderLocation, actionHolderType, rewards, conditions);
     }
 
     @Override
@@ -26,13 +26,13 @@ public class KillEntityAction extends AbstractAction {
     public static class Serializer implements IActionSerializer<KillEntityAction> {
 
         @Override
-        public KillEntityAction fromJson(ResourceLocation location, JsonObject jsonObject, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-            return new KillEntityAction(location, actionHolderLocation, actionHolderType, performOnClient, rewards, conditions);
+        public KillEntityAction fromJson(ResourceLocation location, JsonObject jsonObject, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+            return new KillEntityAction(location, actionHolderLocation, actionHolderType, rewards, conditions);
         }
 
         @Override
-        public KillEntityAction fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, boolean performOnClient, List<IReward> rewards, List<ICondition> conditions) {
-            return new KillEntityAction(location, actionHolderLocation, actionHolderType, performOnClient, rewards, conditions);
+        public KillEntityAction fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+            return new KillEntityAction(location, actionHolderLocation, actionHolderType, rewards, conditions);
         }
 
         @Override

@@ -1,88 +1,143 @@
 package com.daqem.arc.event;
 
-import com.daqem.arc.api.action.result.ActionResult;
 import com.daqem.arc.api.action.IActionType;
-import com.daqem.arc.api.player.ArcServerPlayer;
 import com.daqem.arc.api.action.data.ActionDataBuilder;
 import com.daqem.arc.api.action.data.IActionDataType;
-import dev.architectury.event.EventResult;
+import com.daqem.arc.api.action.result.ActionResult;
+import com.daqem.arc.api.event.ArcEntityEvent;
+import com.daqem.arc.api.event.EventPriority;
+import com.daqem.arc.api.event.EventResult;
+import com.daqem.arc.api.player.ArcServerPlayer;
 import dev.architectury.event.events.common.EntityEvent;
 import dev.architectury.event.events.common.InteractionEvent;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.animal.Animal;
+import net.minecraft.server.level.ServerPlayer;
 
 public class EntityEvents {
 
     public static void registerEvents() {
         EntityEvent.LIVING_DEATH.register((entity, source) -> {
-            if (entity instanceof ArcServerPlayer arcServerPlayer) {
-                new ActionDataBuilder(arcServerPlayer, IActionType.DEATH)
-                        .withData(IActionDataType.DAMAGE_SOURCE, source)
+            if (entity instanceof ServerPlayer serverPlayer) {
+                EventResult eventResult = ArcEntityEvent.PLAYER_DEATH.invoker().onPlayerDeath(serverPlayer, source);
+                if (eventResult.cancelsEvent()) {
+                    return dev.architectury.event.EventResult.interruptFalse();
+                }
+            }
+            if (source.getEntity() instanceof ServerPlayer serverPlayer) {
+                EventResult eventResult = ArcEntityEvent.PLAYER_KILL_ENTITY.invoker().onPlayerKillEntity(serverPlayer, entity, source);
+                if (eventResult.cancelsEvent()) {
+                    return dev.architectury.event.EventResult.interruptFalse();
+                }
+            }
+            return dev.architectury.event.EventResult.pass();
+        });
+        EntityEvent.ANIMAL_TAME.register((animal, player) ->
+                ArcEntityEvent.TAME_ANIMAL.invoker().onTameAnimal(animal, player).toArchEventResult());
+        InteractionEvent.INTERACT_ENTITY.register((player, entity, hand) ->
+                ArcEntityEvent.INTERACT_WITH_ENTITY.invoker().onInteractWithEntity(player, entity, hand).toArchEventResult());
+
+
+        ArcEntityEvent.PLAYER_DEATH.register((serverPlayer, damageSource) -> {
+            if (serverPlayer instanceof ArcServerPlayer arcServerPlayer) {
+                ActionResult actionResult = new ActionDataBuilder(arcServerPlayer, IActionType.DEATH)
+                        .withData(IActionDataType.ENTITY, damageSource.getEntity())
+                        .withData(IActionDataType.DAMAGE_SOURCE, damageSource)
+                        .withData(IActionDataType.BLOCK_POSITION, serverPlayer.blockPosition())
+                        .withData(IActionDataType.WORLD, serverPlayer.level())
+                        .withData(IActionDataType.EXP_DROP, serverPlayer.getExperienceReward(serverPlayer.level(), damageSource.getEntity()))
                         .build()
                         .sendToAction();
-            } else if (source.getEntity() instanceof ArcServerPlayer arcServerPlayer) {
-                new ActionDataBuilder(arcServerPlayer, IActionType.KILL_ENTITY)
+
+                if (actionResult.shouldCancelAction()) {
+                    return EventResult.INTERRUPT_FALSE;
+                }
+            }
+            return EventResult.PASS;
+        }, EventPriority.HIGH);
+
+        ArcEntityEvent.PLAYER_KILL_ENTITY.register((serverPlayer, entity, damageSource) -> {
+            if (serverPlayer instanceof ArcServerPlayer arcServerPlayer) {
+                ActionResult actionResult = new ActionDataBuilder(arcServerPlayer, IActionType.KILL_ENTITY)
                         .withData(IActionDataType.ENTITY, entity)
+                        .withData(IActionDataType.DAMAGE_SOURCE, damageSource)
                         .withData(IActionDataType.BLOCK_POSITION, entity.blockPosition())
                         .withData(IActionDataType.WORLD, entity.level())
                         .withData(IActionDataType.EXP_DROP, entity.getExperienceReward((ServerLevel) entity.level(), entity))
                         .build()
                         .sendToAction();
-            }
-            return EventResult.pass();
-        });
 
-        EntityEvent.ANIMAL_TAME.register((animal, player) -> {
+                if (actionResult.shouldCancelAction()) {
+                    return EventResult.INTERRUPT_FALSE;
+                }
+            }
+            return EventResult.PASS;
+        }, EventPriority.HIGH);
+
+        ArcEntityEvent.TAME_ANIMAL.register((animal, player) -> {
             if (player instanceof ArcServerPlayer arcServerPlayer) {
                 ActionResult actionResult = new ActionDataBuilder(arcServerPlayer, IActionType.TAME_ANIMAL)
                         .withData(IActionDataType.ENTITY, animal)
+                        .withData(IActionDataType.BLOCK_POSITION, animal.blockPosition())
+                        .withData(IActionDataType.WORLD, animal.level())
                         .build()
                         .sendToAction();
 
                 if (actionResult.shouldCancelAction()) {
-                    return EventResult.interruptFalse();
+                    return EventResult.INTERRUPT_FALSE;
                 }
             }
-            return EventResult.pass();
+            return EventResult.PASS;
         });
 
-        InteractionEvent.INTERACT_ENTITY.register((player, entity, hand) -> {
+        ArcEntityEvent.INTERACT_WITH_ENTITY.register((player, entity, hand) -> {
             if (player instanceof ArcServerPlayer arcServerPlayer) {
                 ActionResult actionResult = new ActionDataBuilder(arcServerPlayer, IActionType.INTERACT_ENTITY)
                         .withData(IActionDataType.ITEM_STACK, player.getItemInHand(hand))
                         .withData(IActionDataType.ITEM, player.getItemInHand(hand).getItem())
+                        .withData(IActionDataType.HAND, hand)
                         .withData(IActionDataType.ENTITY, entity)
+                        .withData(IActionDataType.WORLD, entity.level())
                         .build()
                         .sendToAction();
 
                 if (actionResult.shouldCancelAction()) {
-                    return EventResult.interruptFalse();
+                    return EventResult.INTERRUPT_FALSE;
                 }
             }
-            return EventResult.pass();
+            return EventResult.PASS;
         });
 
-        EntityEvent.LIVING_HURT.register((entity, source, amount) -> {
-            if (source.getEntity() instanceof ArcServerPlayer arcServerPlayer) {
+        ArcEntityEvent.PLAYER_HURT_ENTITY.register((serverPlayer, entity, damageSource, damage) -> {
+            if (serverPlayer instanceof ArcServerPlayer arcServerPlayer) {
                 ActionResult actionResult = new ActionDataBuilder(arcServerPlayer, IActionType.HURT_ENTITY)
                         .withData(IActionDataType.ENTITY, entity)
-                        .withData(IActionDataType.DAMAGE_SOURCE, source)
-                        .withData(IActionDataType.DAMAGE_AMOUNT, amount)
+                        .withData(IActionDataType.DAMAGE_SOURCE, damageSource)
+                        .withData(IActionDataType.DAMAGE_AMOUNT, damage.floatValue())
                         .build()
                         .sendToAction();
 
                 if (actionResult.shouldCancelAction()) {
-                    return EventResult.interruptFalse();
+                    return EventResult.INTERRUPT_FALSE;
+                }
+
+                if (actionResult.getDamageModifier() != 1F) {
+                    damage.setValue(damage.getValue() * actionResult.getDamageModifier());
                 }
             }
-            return EventResult.pass();
+            return EventResult.PASS;
         });
-    }
 
-    public static ActionResult onBreedAnimal(ArcServerPlayer player, Animal animal) {
-        return new ActionDataBuilder(player, IActionType.BREED_ANIMAL)
-                .withData(IActionDataType.ENTITY, animal)
-                .build()
-                .sendToAction();
+        ArcEntityEvent.BREED_ANIMAL.register((serverLevel, serverPlayer, baby) -> {
+            if (serverPlayer instanceof ArcServerPlayer arcServerPlayer) {
+                var actionResult = new ActionDataBuilder(arcServerPlayer, IActionType.BREED_ANIMAL)
+                        .withData(IActionDataType.ENTITY, baby)
+                        .build()
+                        .sendToAction();
+                if (actionResult.shouldCancelAction()) {
+                    return EventResult.INTERRUPT_FALSE;
+                }
+            }
+            return EventResult.PASS;
+        }, EventPriority.HIGH);
     }
 }

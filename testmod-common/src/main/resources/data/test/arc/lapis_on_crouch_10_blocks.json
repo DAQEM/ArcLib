@@ -1,0 +1,23 @@
+{
+  "holder": {
+    "type": "arc:player",
+    "id": "arc:player"
+  },
+  "type": "arc:on_crouch",
+  "conditions": [
+    {
+      "type": "arc:distance",
+      "distance_in_blocks": 10
+
+    }
+  ],
+  "rewards": [
+    {
+      "type": "arc:item",
+      "item": {
+        "id": "minecraft:lapis_lazuli",
+        "count": 1
+      }
+    }
+  ]
+}
