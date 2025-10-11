@@ -62,8 +62,6 @@ public abstract class MixinServerPlayer extends Player implements ArcServerPlaye
     private final Map<Object, Double> arc$actionLastMetDistances = new HashMap<>();
     @Unique
     public BlockPosCache arc$blockPosCache = new BlockPosCache();
-    @Unique
-    private boolean arc$isApplyingRewardEffect = false;
 
     public MixinServerPlayer(Level level, GameProfile gameProfile) {
         super(level, gameProfile);
@@ -153,16 +151,6 @@ public abstract class MixinServerPlayer extends Player implements ArcServerPlaye
     @Override
     public BlockPosCache arc$getBlockPosCache() {
         return this.arc$blockPosCache;
-    }
-
-    @Override
-    public boolean arc$isApplyingRewardEffect() {
-        return this.arc$isApplyingRewardEffect;
-    }
-
-    @Override
-    public void arc$setApplyingRewardEffect(boolean isApplying) {
-        this.arc$isApplyingRewardEffect = isApplying;
     }
 
     @Override
@@ -299,10 +287,6 @@ public abstract class MixinServerPlayer extends Player implements ArcServerPlaye
                 ArcMovementEvent.STOP_HORSE_RIDE.invoker().onStopHorseRide(player);
                 break;
         }
-    }
-
-    @Inject(at = @At("TAIL"), method = "onEffectAdded(Lnet/minecraft/world/effect/MobEffectInstance;Lnet/minecraft/world/entity/Entity;)V")
-    public void onEffectAdded(MobEffectInstance effect, @Nullable Entity entity, CallbackInfo ci) {
     }
 
     @Inject(at = @At("TAIL"), method = "onEnchantmentPerformed(Lnet/minecraft/world/item/ItemStack;I)V")

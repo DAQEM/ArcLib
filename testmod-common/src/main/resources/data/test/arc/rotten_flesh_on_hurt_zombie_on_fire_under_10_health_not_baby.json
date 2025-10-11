@@ -1,0 +1,46 @@
+{
+  "type": "arc:on_hurt_entity",
+  "holder": {
+    "type": "arc:player",
+    "id": "arc:player"
+  },
+  "conditions": [
+    {
+      "type": "arc:entity_type",
+      "entity_type": "minecraft:zombie"
+    },
+    {
+      "type": "arc:entity_data",
+      "target": "entity",
+      "properties": [
+        {
+          "id": "arc:is_on_fire",
+          "value": "true"
+        },
+        {
+          "id": "arc:health",
+          "value": "10",
+          "comparison": "<="
+        },
+        {
+          "id": "arc:health",
+          "value": "5",
+          "comparison": ">="
+        },
+        {
+          "id": "arc:is_baby",
+          "value": "false"
+        }
+      ]
+    }
+  ],
+  "rewards": [
+    {
+      "type": "arc:item",
+      "item": {
+        "id": "minecraft:rotten_flesh",
+        "count": 1
+      }
+    }
+  ]
+}

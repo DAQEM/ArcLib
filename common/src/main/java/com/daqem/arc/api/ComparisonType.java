@@ -1,6 +1,9 @@
 package com.daqem.arc.api;
 
+import com.daqem.arc.networking.ArcCodecs;
 import net.minecraft.core.Direction;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.StringRepresentable;
 import org.jetbrains.annotations.NotNull;
 
@@ -13,6 +16,7 @@ public enum ComparisonType implements StringRepresentable {
     LESS_THAN_OR_EQUAL("<=");
 
     public static final StringRepresentable.EnumCodec<ComparisonType> CODEC = StringRepresentable.fromEnum(ComparisonType::values);
+    public static final StreamCodec<RegistryFriendlyByteBuf, ComparisonType> STREAM_CODEC = ArcCodecs.enumCodec(ComparisonType.class);
 
     private final String symbol;
 

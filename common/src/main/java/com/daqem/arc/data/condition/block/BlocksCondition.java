@@ -1,11 +1,12 @@
 package com.daqem.arc.data.condition.block;
 
-import com.daqem.arc.data.ActionData;
 import com.daqem.arc.api.action.data.IActionDataType;
 import com.daqem.arc.api.condition.AbstractCondition;
 import com.daqem.arc.api.condition.IConditionSerializer;
 import com.daqem.arc.api.condition.IConditionType;
-import com.google.gson.*;
+import com.daqem.arc.data.ActionData;
+import com.daqem.arc.model.ArcBlockState;
+import com.google.gson.JsonObject;
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -22,25 +23,25 @@ import java.util.List;
 
 public class BlocksCondition extends AbstractCondition {
 
-    private final List<Block> blocks;
+    private final List<ArcBlockState> blockStates;
     private final List<TagKey<Block>> blockTags;
 
-    public BlocksCondition(boolean inverted, List<Block> blocks, List<TagKey<Block>> blockTags) {
+    public BlocksCondition(boolean inverted, List<ArcBlockState> blockStates, List<TagKey<Block>> blockTags) {
         super(inverted);
-        this.blocks = blocks;
+        this.blockStates = blockStates;
         this.blockTags = blockTags;
     }
 
     @Override
     public Component getDescription() {
-        return getDescription(blocks.stream().map(Block::getName).toArray(Component[]::new), blockTags.stream().map(TagKey::location).toArray(ResourceLocation[]::new));
+        return getDescription(blockStates.stream().map(x -> x.block().getName()).toArray(Component[]::new), blockTags.stream().map(TagKey::location).toArray(ResourceLocation[]::new));
     }
 
     @Override
     public boolean isMet(ActionData actionData) {
         BlockState blockState = actionData.getData(IActionDataType.BLOCK_STATE);
         return blockState != null
-                && (this.blocks.contains(blockState.getBlock())
+                && (this.blockStates.stream().anyMatch(x -> x.matches(blockState))
                 || this.blockTags.stream().anyMatch(blockState::is));
     }
 
@@ -49,8 +50,13 @@ public class BlocksCondition extends AbstractCondition {
         return IConditionType.BLOCKS;
     }
 
+
     public List<Block> getBlocks() {
-        return blocks;
+        return blockStates.stream().map(ArcBlockState::block).toList();
+    }
+
+    public List<ArcBlockState> getBlockStates() {
+        return blockStates;
     }
 
     public List<TagKey<Block>> getBlockTags() {
@@ -58,7 +64,7 @@ public class BlocksCondition extends AbstractCondition {
     }
 
     public List<Block> getAllBlocks(RegistryAccess registryAccess) {
-        List<Block> allBlocks = new ArrayList<>(blocks);
+        List<Block> allBlocks = new ArrayList<>(getBlocks());
         for (TagKey<Block> tag : blockTags) {
             registryAccess.lookupOrThrow(Registries.BLOCK)
                     .get(tag)
@@ -73,22 +79,17 @@ public class BlocksCondition extends AbstractCondition {
         public BlocksCondition fromJson(ResourceLocation location, JsonObject jsonObject, boolean inverted) {
             return new BlocksCondition(
                     inverted,
-                    getBlocks(jsonObject, "blocks"),
+                    getBlockStates(jsonObject, "blocks"),
                     getBlockTags(jsonObject, "blocks"));
         }
 
         @Override
         public BlocksCondition fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
-            int blockCount = friendlyByteBuf.readVarInt();
-            int tagCount = friendlyByteBuf.readVarInt();
-
-            List<Block> blocks = new ArrayList<>();
+            List<ArcBlockState> blocks = friendlyByteBuf.readList(buf ->
+                    ArcBlockState.STREAM_CODEC.decode((RegistryFriendlyByteBuf) buf));
             List<TagKey<Block>> blockTags = new ArrayList<>();
 
-            for (int i = 0; i < blockCount; i++) {
-                blocks.add(BuiltInRegistries.BLOCK.byId(friendlyByteBuf.readVarInt()));
-            }
-
+            int tagCount = friendlyByteBuf.readVarInt();
             for (int i = 0; i < tagCount; i++) {
                 blockTags.add(TagKey.create(BuiltInRegistries.BLOCK.key(), friendlyByteBuf.readResourceLocation()));
             }
@@ -97,15 +98,16 @@ public class BlocksCondition extends AbstractCondition {
             return new BlocksCondition(
                     inverted,
                     blocks,
-                    blockTags);
+                    blockTags
+            );
         }
 
         @Override
         public void toNetwork(RegistryFriendlyByteBuf friendlyByteBuf, BlocksCondition type) {
             IConditionSerializer.super.toNetwork(friendlyByteBuf, type);
-            friendlyByteBuf.writeVarInt(type.blocks.size());
+            friendlyByteBuf.writeCollection(type.blockStates, (buf, blockState) ->
+                    ArcBlockState.STREAM_CODEC.encode((RegistryFriendlyByteBuf) buf, blockState));
             friendlyByteBuf.writeVarInt(type.blockTags.size());
-            type.blocks.forEach(block -> friendlyByteBuf.writeVarInt(BuiltInRegistries.BLOCK.getId(block)));
             type.blockTags.forEach(tag -> friendlyByteBuf.writeResourceLocation(tag.location()));
         }
     }

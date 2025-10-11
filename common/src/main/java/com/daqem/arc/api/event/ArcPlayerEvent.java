@@ -25,7 +25,7 @@ public interface ArcPlayerEvent {
     Event<RodReelIn> ROD_REEL_IN = EventFactory.createLoop(RodReelIn.class);
 
     Event<BrewPotion> BREW_POTION = EventFactory.createLoop(BrewPotion.class);
-    Event<EffectAdded> EFFECT_ADDED = EventFactory.createEventResult(EffectAdded.class);
+    Event<AddEffect> ADD_EFFECT = EventFactory.createEventResult(AddEffect.class);
     Event<EnchantItem> ENCHANT_ITEM = EventFactory.createLoop(EnchantItem.class);
     Event<FishUpItem> FISH_UP_ITEM = EventFactory.createLoop(FishUpItem.class);
     Event<GrindItem> GRIND_ITEM = EventFactory.createLoop(GrindItem.class);
@@ -58,8 +58,8 @@ public interface ArcPlayerEvent {
         void onBrewPotion(Player player, ItemStack potion, BrewingStandBlockEntity brewingStandBlockEntity);
     }
 
-    interface EffectAdded {
-        EventResult onEffectAdded(ServerPlayer serverPlayer, MobEffectInstance effect, Entity source);
+    interface AddEffect {
+        EventResult onAddEffect(ServerPlayer serverPlayer, MobEffectInstance effect, Entity source);
     }
 
     interface EnchantItem {

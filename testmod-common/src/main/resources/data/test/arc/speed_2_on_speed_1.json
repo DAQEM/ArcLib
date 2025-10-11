@@ -1,0 +1,29 @@
+{
+  "holder": {
+    "type": "arc:player",
+    "id": "arc:player"
+  },
+  "type": "arc:on_add_effect",
+  "conditions": [
+    {
+      "type": "arc:effect",
+      "effect": {
+        "id": "minecraft:speed",
+        "amplifier": 0
+      },
+      "check_amplifier": true
+    }
+  ],
+  "rewards": [
+    {
+      "type": "arc:effect",
+      "effect": {
+        "id": "minecraft:speed",
+        "duration": 2000,
+        "amplifier": 1,
+        "show_particles": true,
+        "show_icon": true
+      }
+    }
+  ]
+}

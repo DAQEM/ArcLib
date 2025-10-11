@@ -1,0 +1,46 @@
+{
+  "holder": {
+    "type": "arc:player",
+    "id": "arc:player"
+  },
+  "type": "arc:on_interact_block",
+  "conditions": [
+    {
+      "type": "arc:hand",
+      "hand": "main"
+    },
+    {
+      "type": "arc:blocks",
+      "blocks": [
+        "minecraft:bricks",
+        {
+          "id": "minecraft:brick_stairs",
+          "properties": {
+            "facing": "north",
+            "half": "bottom",
+            "shape": "straight"
+          }
+        },
+        {
+          "id": "minecraft:brick_slab",
+          "properties": [
+            {
+              "name": "type",
+              "value": "bottom",
+              "comparison_type": "=="
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "rewards": [
+    {
+      "type": "arc:item",
+      "item": {
+        "id": "minecraft:tall_grass",
+        "count": 1
+      }
+    }
+  ]
+}

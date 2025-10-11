@@ -31,7 +31,6 @@ public class ArcNeoForge {
 
     public ArcNeoForge(IEventBus modEventBus) {
         Arc.init();
-        ArcRegistry.init();
         registerCommandArgumentTypes(modEventBus);
     }
 

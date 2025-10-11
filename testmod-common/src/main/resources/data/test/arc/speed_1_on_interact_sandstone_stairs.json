@@ -1,0 +1,25 @@
+{
+  "holder": {
+    "type": "arc:player",
+    "id": "arc:player"
+  },
+  "type": "arc:on_interact_block",
+  "conditions": [
+    {
+      "type": "arc:block",
+      "block": "minecraft:sandstone_stairs"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "arc:effect",
+      "effect": {
+        "id": "minecraft:speed",
+        "duration": 200,
+        "amplifier": 0,
+        "show_particles": false,
+        "show_icon": true
+      }
+    }
+  ]
+}

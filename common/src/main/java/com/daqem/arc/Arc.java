@@ -8,6 +8,8 @@ import com.daqem.arc.data.ActionManager;
 import com.daqem.arc.data.PlayerActionHolderManager;
 import com.daqem.arc.event.*;
 import com.daqem.arc.networking.ArcNetworking;
+import com.daqem.arc.registry.ArcRegistry;
+import com.daqem.arc.registry.EntityDataRegistry;
 import com.mojang.logging.LogUtils;
 import dev.architectury.event.events.common.CommandRegistrationEvent;
 import dev.architectury.registry.ReloadListenerRegistry;
@@ -25,6 +27,8 @@ public class Arc {
         ArcCommonConfig.init();
         ArcNetworking.init();
         registerEvents();
+        ArcRegistry.init();
+        EntityDataRegistry.init();
         ReloadListenerRegistry.register(PackType.SERVER_DATA, new PlayerActionHolderManager(), Arc.getId("please_do_not_use_this"));
         ReloadListenerRegistry.register(PackType.SERVER_DATA, new ActionManager(), Arc.getId(MOD_ID));
     }

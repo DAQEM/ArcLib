@@ -1,6 +1,8 @@
 package com.daqem.arc.data.serializer;
 
 import com.daqem.arc.api.ComparisonType;
+import com.daqem.arc.model.ArcBlockState;
+import com.daqem.arc.model.EntityDataProperty;
 import com.google.gson.*;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.JsonOps;
@@ -43,7 +45,7 @@ public interface ArcSerializer {
                     if (defaultLocation != null) {
                         return new Pair<>(defaultLocation, null);
                     }
-                    throw new JsonParseException("Expected '" + key + "' to be a resource location, but it was invalid");
+                    throw new JsonParseException("Expected '" + jsonObject.get(key) + "' to be a resource location, but it was invalid");
                 }).getFirst();
     }
 
@@ -75,7 +77,7 @@ public interface ArcSerializer {
                     if (defaultItem != null) {
                         return new Pair<>(defaultItem, null);
                     }
-                    throw new JsonParseException("Expected '" + key + "' to be an item, but it was invalid");
+                    throw new JsonParseException("Expected '" + jsonObject.get(key) + "' to be an item, but it was invalid");
                 }).getFirst();
     }
 
@@ -144,15 +146,17 @@ public interface ArcSerializer {
             JsonArray jsonArray = element.getAsJsonArray();
             List<TagKey<Item>> itemTags = new ArrayList<>();
             for (JsonElement itemTagElement : jsonArray) {
-                String itemTagName = itemTagElement.getAsString();
-                if (itemTagName != null && itemTagName.startsWith("#")) {
-                    itemTagName = itemTagName.substring(1);
-                    String finalItemTagName = itemTagName;
-                    ResourceLocation resourceLocation = ResourceLocation.CODEC.decode(JsonOps.INSTANCE, new JsonPrimitive(finalItemTagName)).result()
-                            .orElseThrow(() -> new JsonParseException("Expected '" + key + "' to be a list of item tags, but one of the item tags was invalid: " + finalItemTagName))
-                            .getFirst();
-                    TagKey<Item> itemTag = TagKey.create(BuiltInRegistries.ITEM.key(), resourceLocation);
-                    itemTags.add(itemTag);
+                if (itemTagElement.isJsonPrimitive()) {
+                    String itemTagName = itemTagElement.getAsString();
+                    if (itemTagName != null && itemTagName.startsWith("#")) {
+                        itemTagName = itemTagName.substring(1);
+                        String finalItemTagName = itemTagName;
+                        ResourceLocation resourceLocation = ResourceLocation.CODEC.decode(JsonOps.INSTANCE, new JsonPrimitive(finalItemTagName)).result()
+                                .orElseThrow(() -> new JsonParseException("Expected '" + key + "' to be a list of item tags, but one of the item tags was invalid: " + finalItemTagName))
+                                .getFirst();
+                        TagKey<Item> itemTag = TagKey.create(BuiltInRegistries.ITEM.key(), resourceLocation);
+                        itemTags.add(itemTag);
+                    }
                 }
             }
             return itemTags;
@@ -189,7 +193,7 @@ public interface ArcSerializer {
                     if (defaultItemStack != null) {
                         return new Pair<>(defaultItemStack, null);
                     }
-                    throw new JsonParseException("Expected '" + key + "' to be an item stack, but it was invalid");
+                    throw new JsonParseException("Expected '" + jsonObject.get(key) + "' to be an item stack, but it was invalid");
                 }).getFirst();
     }
 
@@ -260,7 +264,7 @@ public interface ArcSerializer {
                     if (defaultEffect != null) {
                         return new Pair<>(defaultEffect, null);
                     }
-                    throw new JsonParseException("Expected '" + key + "' to be a mob effect, but it was invalid");
+                    throw new JsonParseException("Expected '" + jsonObject.get(key) + "' to be a mob effect, but it was invalid");
                 }).getFirst();
     }
 
@@ -299,7 +303,7 @@ public interface ArcSerializer {
                     if (defaultEffect != null) {
                         return new Pair<>(defaultEffect, null);
                     }
-                    throw new JsonParseException("Expected '" + key + "' to be a mob effect instance, but it was invalid");
+                    throw new JsonParseException("Expected '" + jsonObject.get(key) + "' to be a mob effect instance, but it was invalid");
                 }).getFirst();
     }
 
@@ -334,7 +338,7 @@ public interface ArcSerializer {
             if (defaultCategory != null) {
                 return defaultCategory;
             }
-            throw new JsonParseException("Expected '" + key + "' to be a mob effect category, but it was invalid. Options are:" + Arrays.stream(MobEffectCategory.values()).map(Enum::name).collect(Collectors.joining(", ")) + ".");
+            throw new JsonParseException("Expected '" + categoryName + "' to be a mob effect category, but it was invalid. Options are:" + Arrays.stream(MobEffectCategory.values()).map(Enum::name).collect(Collectors.joining(", ")) + ".");
         }
         return category;
     }
@@ -367,7 +371,7 @@ public interface ArcSerializer {
                     if (defaultType != null) {
                         return new Pair<>(defaultType, null);
                     }
-                    throw new JsonParseException("Expected '" + key + "' to be a comparison type, but it was invalid");
+                    throw new JsonParseException("Expected '" + jsonObject.get(key) + "' to be a comparison type, but it was invalid");
                 }).getFirst();
     }
 
@@ -399,7 +403,7 @@ public interface ArcSerializer {
                     if (defaultBlock != null) {
                         return new Pair<>(defaultBlock, null);
                     }
-                    throw new JsonParseException("Expected '" + key + "' to be a block, but it was invalid");
+                    throw new JsonParseException("Expected '" + jsonObject.get(key) + "' to be a block, but it was invalid");
                 }).getFirst();
     }
 
@@ -452,6 +456,70 @@ public interface ArcSerializer {
 
     //endregion
 
+    //region Block State
+
+    default ArcBlockState getBlockState(JsonObject jsonObject, String key, @Nullable ArcBlockState defaultBlock) {
+        if (!jsonObject.has(key) || jsonObject.get(key).isJsonNull()) {
+            if (defaultBlock != null) {
+                return defaultBlock;
+            }
+            throw new JsonParseException("Expected '" + key + "' to be a block");
+        }
+
+        return ArcBlockState.CODEC.decode(JsonOps.INSTANCE, jsonObject.get(key)).result()
+                .orElseGet(() -> {
+                    if (defaultBlock != null) {
+                        return new Pair<>(defaultBlock, null);
+                    }
+                    throw new JsonParseException("Expected '" + jsonObject.get(key) + "' to be a block, but it was invalid");
+                }).getFirst();
+    }
+
+    default ArcBlockState getBlockState(JsonObject jsonObject, String key) {
+        return getBlockState(jsonObject, key, null);
+    }
+
+    default @Nullable ArcBlockState getOptionalBlockState(JsonObject jsonObject, String key) {
+        if (!jsonObject.has(key) || jsonObject.get(key).isJsonNull()) {
+            return null;
+        }
+        return getBlockState(jsonObject, key, null);
+    }
+
+    //endregion
+
+    //region Block States
+
+    default List<ArcBlockState> getBlockStates(JsonObject jsonObject, String key, @Nullable List<ArcBlockState> defaultBlocks) {
+        if (!jsonObject.has(key) || jsonObject.get(key).isJsonNull()) {
+            if (defaultBlocks != null) {
+                return defaultBlocks;
+            }
+            throw new JsonParseException("Expected '" + key + "' to be a block");
+        }
+
+        return ArcBlockState.CODEC.listOf().decode(JsonOps.INSTANCE, jsonObject.get(key)).result()
+                .orElseGet(() -> {
+                    if (defaultBlocks != null) {
+                        return new Pair<>(defaultBlocks, null);
+                    }
+                    throw new JsonParseException("Expected '" + jsonObject.get(key) + "' to be a block, but it was invalid");
+                }).getFirst();
+    }
+
+    default List<ArcBlockState> getBlockStates(JsonObject jsonObject, String key) {
+        return getBlockStates(jsonObject, key, null);
+    }
+
+    default List<ArcBlockState> getOptionalBlockStates(JsonObject jsonObject, String key) {
+        if (!jsonObject.has(key) || jsonObject.get(key).isJsonNull()) {
+            return new ArrayList<>();
+        }
+        return getBlockStates(jsonObject, key, new ArrayList<>());
+    }
+
+    //endregion
+
     //region Block Tags
 
     default List<TagKey<Block>> getBlockTags(JsonObject jsonObject, String key, @Nullable List<TagKey<Block>> defaultBlockTags) {
@@ -468,13 +536,15 @@ public interface ArcSerializer {
             JsonArray jsonArray = element.getAsJsonArray();
             List<TagKey<Block>> blockTags = new ArrayList<>();
             for (JsonElement blockTagElement : jsonArray) {
-                String blockTagName = blockTagElement.getAsString();
-                if (blockTagName != null && blockTagName.startsWith("#")) {
-                    ResourceLocation resourceLocation = ResourceLocation.CODEC.decode(JsonOps.INSTANCE, blockTagElement).result()
-                            .orElseThrow(() -> new JsonParseException("Expected '" + key + "' to be a list of block tags, but one of the block tags was invalid: " + blockTagName))
-                            .getFirst();
-                    TagKey<Block> blockTag = TagKey.create(BuiltInRegistries.BLOCK.key(), resourceLocation);
-                    blockTags.add(blockTag);
+                if (blockTagElement.isJsonPrimitive()) {
+                    String blockTagName = blockTagElement.getAsString();
+                    if (blockTagName != null && blockTagName.startsWith("#")) {
+                        ResourceLocation resourceLocation = ResourceLocation.CODEC.decode(JsonOps.INSTANCE, blockTagElement).result()
+                                .orElseThrow(() -> new JsonParseException("Expected '" + key + "' to be a list of block tags, but one of the block tags was invalid: " + blockTagName))
+                                .getFirst();
+                        TagKey<Block> blockTag = TagKey.create(BuiltInRegistries.BLOCK.key(), resourceLocation);
+                        blockTags.add(blockTag);
+                    }
                 }
             }
             return blockTags;
@@ -557,6 +627,70 @@ public interface ArcSerializer {
 
     //endregion
 
+    //region Entity Data Property
+
+    default EntityDataProperty getEntityDataProperty(JsonObject jsonObject, String key, @Nullable EntityDataProperty defaultEntityDataProperty) {
+        if (!jsonObject.has(key) || jsonObject.get(key).isJsonNull()) {
+            if (defaultEntityDataProperty != null) {
+                return defaultEntityDataProperty;
+            }
+            throw new JsonParseException("Expected '" + key + "' to be a entity data property");
+        }
+
+        return EntityDataProperty.CODEC.decode(JsonOps.INSTANCE, jsonObject.get(key)).result()
+                .orElseGet(() -> {
+                    if (defaultEntityDataProperty != null) {
+                        return new Pair<>(defaultEntityDataProperty, null);
+                    }
+                    throw new JsonParseException("Expected '" + jsonObject.get(key) + "' to be a entity data property, but it was invalid");
+                }).getFirst();
+    }
+
+    default EntityDataProperty getEntityDataProperty(JsonObject jsonObject, String key) {
+        return getEntityDataProperty(jsonObject, key, null);
+    }
+
+    default @Nullable EntityDataProperty getOptionalEntityDataProperty(JsonObject jsonObject, String key) {
+        if (!jsonObject.has(key) || jsonObject.get(key).isJsonNull()) {
+            return null;
+        }
+        return getEntityDataProperty(jsonObject, key, null);
+    }
+
+    //endregion
+
+    //region Entity Data Property
+
+    default List<EntityDataProperty> getEntityDataProperties(JsonObject jsonObject, String key, @Nullable List<EntityDataProperty> defaultEntityDataProperties) {
+        if (!jsonObject.has(key) || jsonObject.get(key).isJsonNull()) {
+            if (defaultEntityDataProperties != null) {
+                return defaultEntityDataProperties;
+            }
+            throw new JsonParseException("Expected '" + key + "' to be a list of entity data properties");
+        }
+
+        return EntityDataProperty.CODEC.listOf().decode(JsonOps.INSTANCE, jsonObject.get(key)).result()
+                .orElseGet(() -> {
+                    if (defaultEntityDataProperties != null) {
+                        return new Pair<>(defaultEntityDataProperties, null);
+                    }
+                    throw new JsonParseException("Expected '" + jsonObject.get(key) + "' to be a entity data property, but it was invalid");
+                }).getFirst();
+    }
+
+    default List<EntityDataProperty> getEntityDataProperties(JsonObject jsonObject, String key) {
+        return getEntityDataProperties(jsonObject, key, null);
+    }
+
+    default List<EntityDataProperty> getOptionalEntityDataProperties(JsonObject jsonObject, String key) {
+        if (!jsonObject.has(key) || jsonObject.get(key).isJsonNull()) {
+            return new ArrayList<>();
+        }
+        return getEntityDataProperties(jsonObject, key, new ArrayList<>());
+    }
+
+    //endregion
+
     //region String
 
     default String getString(JsonObject jsonObject, String elementName, @Nullable String defaultString) {
@@ -597,7 +731,7 @@ public interface ArcSerializer {
             try {
                 hand = InteractionHand.valueOf(handName);
             } catch (IllegalArgumentException e) {
-                throw new JsonParseException("Expected '" + elementName + "' to be a hand, but it was invalid. Options are:" + Arrays.stream(InteractionHand.values()).map(Enum::name).collect(Collectors.joining(", ")) + ".");
+                throw new JsonParseException("Expected '" + handName + "' to be a hand, but it was invalid. Options are:" + Arrays.stream(InteractionHand.values()).map(Enum::name).collect(Collectors.joining(", ")) + ".");
             }
         }
         return hand;
@@ -631,7 +765,7 @@ public interface ArcSerializer {
                     if (defaultDimension != null) {
                         return new Pair<>(defaultDimension, null);
                     }
-                    throw new JsonParseException("Expected '" + elementName + "' to be a dimension, but it was invalid");
+                    throw new JsonParseException("Expected '" + jsonObject.get(elementName) + "' to be a dimension, but it was invalid");
                 }).getFirst();
     }
 

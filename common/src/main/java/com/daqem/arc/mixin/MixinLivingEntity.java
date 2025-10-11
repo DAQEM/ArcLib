@@ -20,19 +20,17 @@ public abstract class MixinLivingEntity extends Entity {
         super(entityType, level);
     }
 
-    @Inject(at = @At("RETURN"), method = "addEffect(Lnet/minecraft/world/effect/MobEffectInstance;Lnet/minecraft/world/entity/Entity;)Z")
+    @Inject(at = @At(
+            value = "INVOKE",
+            target = "Ljava/util/Map;get(Ljava/lang/Object;)Ljava/lang/Object;",
+            shift = At.Shift.BEFORE
+    ), method = "addEffect(Lnet/minecraft/world/effect/MobEffectInstance;Lnet/minecraft/world/entity/Entity;)Z", cancellable = true)
     private void addEffect(MobEffectInstance effect, Entity entity, CallbackInfoReturnable<Boolean> cir) {
         final LivingEntity self = (LivingEntity) (Object) this;
         if (self instanceof ArcServerPlayer serverPlayer) {
-
-            // RECURSION GUARD
-            if (serverPlayer.arc$isApplyingRewardEffect()) {
-                return;
-            }
-
-            EventResult eventResult = ArcPlayerEvent.EFFECT_ADDED.invoker().onEffectAdded(serverPlayer.arc$getServerPlayer(), effect, entity);
+            EventResult eventResult = ArcPlayerEvent.ADD_EFFECT.invoker().onAddEffect(serverPlayer.arc$getServerPlayer(), effect, entity);
             if (eventResult.cancelsEvent()) {
-                self.removeEffect(effect.getEffect());
+                cir.setReturnValue(false);
             }
         }
     }

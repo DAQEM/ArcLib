@@ -1,13 +1,13 @@
 package com.daqem.arc.data.reward.effect;
 
-import com.daqem.arc.data.ActionData;
-import com.daqem.arc.api.action.result.ActionResult;
 import com.daqem.arc.api.action.data.IActionDataType;
-import com.daqem.arc.api.player.ArcServerPlayer;
+import com.daqem.arc.api.action.result.ActionResult;
 import com.daqem.arc.api.reward.AbstractReward;
 import com.daqem.arc.api.reward.IRewardSerializer;
 import com.daqem.arc.api.reward.IRewardType;
-import com.google.gson.*;
+import com.daqem.arc.data.ActionData;
+import com.daqem.arc.mixin.MobEffectInstanceAccessor;
+import com.google.gson.JsonObject;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.GsonHelper;
@@ -32,15 +32,8 @@ public class EffectDurationMultiplierReward extends AbstractReward {
     public ActionResult apply(ActionData actionData) {
         MobEffectInstance effect = actionData.getData(IActionDataType.MOB_EFFECT_INSTANCE);
         if (effect != null) {
-            if (actionData.getPlayer() instanceof ArcServerPlayer player) {
-                MobEffectInstance newEffect = new MobEffectInstance(effect.getEffect(), Mth.floor(effect.getDuration() * multiplier), effect.getAmplifier(), effect.isAmbient(), effect.isVisible());
-                try {
-                    player.arc$setApplyingRewardEffect(true);
-                    player.arc$getPlayer().addEffect(newEffect);
-                } finally {
-                    player.arc$setApplyingRewardEffect(false);
-                }
-            }
+            int newDuration = Mth.ceil(effect.getDuration() * multiplier);
+            ((MobEffectInstanceAccessor) effect).arc$setDuration(newDuration);
         }
         return new ActionResult();
     }

@@ -1,7 +1,6 @@
 package com.daqem.arc.api.condition;
 
 import com.daqem.arc.Arc;
-import com.daqem.arc.data.condition.NotCondition;
 import com.daqem.arc.data.condition.OrCondition;
 import com.daqem.arc.data.condition.advancement.AdvancementCondition;
 import com.daqem.arc.data.condition.block.BlockCondition;
@@ -30,7 +29,6 @@ import net.minecraft.resources.ResourceLocation;
 public interface IConditionType<T extends ICondition> {
 
     IConditionType<OrCondition> OR = register(Arc.getId("or"), new OrCondition.Serializer());
-    IConditionType<NotCondition> NOT = register(Arc.getId("not"), new NotCondition.Serializer());
 
     IConditionType<AdvancementCondition> ADVANCEMENT = register(Arc.getId("advancement"), new AdvancementCondition.Serializer());
     IConditionType<CropFullyGrownCondition> CROP_FULLY_GROWN = register(Arc.getId("crop_fully_grown"), new CropFullyGrownCondition.Serializer());
@@ -60,6 +58,8 @@ public interface IConditionType<T extends ICondition> {
     IConditionType<EntityInBlockCondition> ENTITY_IN_BLOCK = register(Arc.getId("entity_in_block"), new EntityInBlockCondition.Serializer());
     IConditionType<DamageSourceCondition> DAMAGE_SOURCE = register(Arc.getId("damage_source"), new DamageSourceCondition.Serializer());
     IConditionType<NotInBlockPosCacheCondition> NOT_IN_BLOCK_POS_CACHE = register(Arc.getId("not_in_block_pos_cache"), new NotInBlockPosCacheCondition.Serializer());
+    IConditionType<HandCondition> HAND = register(Arc.getId("hand"), new HandCondition.Serializer());
+    IConditionType<EntityDataCondition > ENTITY_DATA = register(Arc.getId("entity_data"), new EntityDataCondition.Serializer());
 
     static <T extends ICondition> IConditionType<T> register(final ResourceLocation location, final IConditionSerializer<T> serializer) {
         return Registry.register(ArcRegistry.CONDITION, location, new IConditionType<T>(){

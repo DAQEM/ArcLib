@@ -26,6 +26,7 @@
     "MixinResultSlot",
     "MixinServerPlayer",
     "MixinSmithingMenu",
+    "MobEffectInstanceAccessor",
     "PlayerListMixin",
     "PotionSlotMixin"
   ],

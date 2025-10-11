@@ -100,9 +100,9 @@ public class PlayerEvents {
             return EventResult.PASS;
         }, EventPriority.HIGH);
 
-        ArcPlayerEvent.EFFECT_ADDED.register((serverPlayer, effect, source) -> {
+        ArcPlayerEvent.ADD_EFFECT.register((serverPlayer, effect, source) -> {
             if (serverPlayer instanceof ArcServerPlayer arcServerPlayer) {
-                ActionResult actionResult = new ActionDataBuilder(arcServerPlayer, IActionType.EFFECT_ADDED)
+                ActionResult actionResult = new ActionDataBuilder(arcServerPlayer, IActionType.ADD_EFFECT)
                         .withData(IActionDataType.MOB_EFFECT_INSTANCE, effect)
                         .withData(IActionDataType.ENTITY, source)
                         .withData(IActionDataType.WORLD, serverPlayer.level())

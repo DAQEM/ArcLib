@@ -1,3 +1,5 @@
 accessWidener   v2  named
 
 accessible class net/minecraft/world/inventory/BrewingStandMenu$PotionSlot
+accessible method net/minecraft/world/entity/monster/SpellcasterIllager getCurrentSpell ()Lnet/minecraft/world/entity/monster/SpellcasterIllager$IllagerSpell;
+accessible method net/minecraft/world/entity/Entity isInRain ()Z

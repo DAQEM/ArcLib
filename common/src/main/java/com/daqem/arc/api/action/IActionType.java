@@ -49,7 +49,7 @@ public interface IActionType<T extends IAction> {
     IActionType<ThrowItemAction> THROW_ITEM = register(Arc.getId("on_throw_item"), new ThrowItemAction.Serializer());
     IActionType<ShootProjectileAction> SHOOT_PROJECTILE = register(Arc.getId("on_shoot_projectile"), new ShootProjectileAction.Serializer());
     IActionType<BrewPotionAction> BREW_POTION = register(Arc.getId("on_brew_potion"), new BrewPotionAction.Serializer());
-    IActionType<EffectAddedAction> EFFECT_ADDED = register(Arc.getId("on_effect_added"), new EffectAddedAction.Serializer());
+    IActionType<AddEffectAction> ADD_EFFECT = register(Arc.getId("on_add_effect"), new AddEffectAction.Serializer());
     IActionType<SmeltItemAction> SMELT_ITEM = register(Arc.getId("on_smelt_item"), new SmeltItemAction.Serializer());
     IActionType<EnchantItemAction> ENCHANT_ITEM = register(Arc.getId("on_enchant_item"), new EnchantItemAction.Serializer());
     IActionType<PlantCropAction> PLANT_CROP = register(Arc.getId("on_plant_crop"), new PlantCropAction.Serializer());
