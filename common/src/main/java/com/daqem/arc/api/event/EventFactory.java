@@ -22,6 +22,11 @@ public final class EventFactory {
                     for (T listener : listeners) {
                         method.invoke(listener, args);
                     }
+                    Class<?> returnType = method.getReturnType();
+                    if (returnType.isPrimitive()) {
+                        if (returnType == boolean.class) return false;
+                        return 0;
+                    }
                     return null;
                 });
     }

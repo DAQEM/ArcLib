@@ -31,8 +31,7 @@ public enum EventResult {
             return dev.architectury.event.EventResult.interrupt(true);
         } else if (this == INTERRUPT_FALSE) {
             return dev.architectury.event.EventResult.interrupt(false);
-        } else {
-            return interrupts ? dev.architectury.event.EventResult.interrupt(value) : dev.architectury.event.EventResult.pass();
         }
+        return interrupts ? dev.architectury.event.EventResult.interrupt(value) : dev.architectury.event.EventResult.pass();
     }
 }

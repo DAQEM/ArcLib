@@ -45,8 +45,9 @@ public interface IActionSerializer<T extends IAction> extends ArcSerializer {
         if (jsonObject.has("rewards")) {
             jsonObject.getAsJsonArray("rewards").forEach(jsonElement -> {
                 ResourceLocation rewardTypeLocation = getResourceLocation(jsonElement.getAsJsonObject(), "type");
-                ArcRegistry.REWARD.getOptional(rewardTypeLocation).ifPresent(rewardType ->
-                        rewards.add(rewardType.getSerializer().fromJson(location, jsonElement.getAsJsonObject())));
+                rewards.add(ArcRegistry.REWARD.getOptional(rewardTypeLocation)
+                        .orElseThrow(() -> new JsonParseException("Unknown reward type: " + rewardTypeLocation))
+                        .getSerializer().fromJson(location, jsonElement.getAsJsonObject()));
             });
         }
 
@@ -54,8 +55,9 @@ public interface IActionSerializer<T extends IAction> extends ArcSerializer {
         if (jsonObject.has("conditions")) {
             jsonObject.getAsJsonArray("conditions").forEach(jsonElement -> {
                 ResourceLocation conditionTypeLocation = getResourceLocation(jsonElement.getAsJsonObject(), "type");
-                ArcRegistry.CONDITION.getOptional(conditionTypeLocation).ifPresent(conditionType ->
-                        conditions.add(conditionType.getSerializer().fromJson(location, jsonElement.getAsJsonObject())));
+                conditions.add(ArcRegistry.CONDITION.getOptional(conditionTypeLocation)
+                        .orElseThrow(() -> new JsonParseException("Unknown condition type: " + conditionTypeLocation))
+                        .getSerializer().fromJson(location, jsonElement.getAsJsonObject()));
             });
         }
 

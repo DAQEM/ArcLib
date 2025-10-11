@@ -7,12 +7,13 @@ import com.daqem.arc.api.action.holder.IActionHolderType;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 public class ActionHolderManager implements IArcRegistryAccessor {
 
-    private final Map<IActionHolderType<?>, Map<ResourceLocation, IAction>> actions = new HashMap<>();
-    private final Map<IActionHolderType<?>, Map<ResourceLocation, IActionHolder>> actionHolders = new HashMap<>();
+    private final Map<IActionHolderType<?>, Map<ResourceLocation, IAction>> actions = new ConcurrentHashMap<>();
+    private final Map<IActionHolderType<?>, Map<ResourceLocation, IActionHolder>> actionHolders = new ConcurrentHashMap<>();
 
     private static ActionHolderManager instance;
 
@@ -28,7 +29,7 @@ public class ActionHolderManager implements IArcRegistryAccessor {
 
     public void registerActionHolders(List<IActionHolder> actionHolders) {
         for (IActionHolder actionHolder : actionHolders) {
-            this.actionHolders.computeIfAbsent(actionHolder.getType(), mapFunc -> new HashMap<>())
+            this.actionHolders.computeIfAbsent(actionHolder.getType(), mapFunc -> new ConcurrentHashMap<>())
                     .put(actionHolder.getLocation(), actionHolder);
 
             List<IAction> actionsForHolder = getActionsForHolder(actionHolder);
@@ -39,7 +40,7 @@ public class ActionHolderManager implements IArcRegistryAccessor {
 
     public void registerActions(List<IAction> actions) {
         for (IAction action : actions) {
-            this.actions.computeIfAbsent(action.getActionHolderType(), mapFunc -> new HashMap<>())
+            this.actions.computeIfAbsent(action.getActionHolderType(), mapFunc -> new ConcurrentHashMap<>())
                     .put(action.getLocation(), action);
         }
 

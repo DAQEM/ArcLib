@@ -11,7 +11,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.BlastingRecipe;
 import net.minecraft.world.item.crafting.Recipe;
 
-public class IsBlastingRecipeCondition extends IsRecipeCondition<BlastingRecipe> {
+public class IsBlastingRecipeCondition extends IsRecipeCondition {
 
     public IsBlastingRecipeCondition(boolean inverted) {
         super(inverted);
@@ -25,7 +25,7 @@ public class IsBlastingRecipeCondition extends IsRecipeCondition<BlastingRecipe>
                 return true;
             }
             if (recipe instanceof IArcAbstractCookingRecipe smeltingRecipe) {
-                return isSmeltingRecipeVersion(actionData, smeltingRecipe, BlastingRecipe.class);
+                return RecipeCache.isRecipeType(actionData, smeltingRecipe, BlastingRecipe.class);
             }
         }
         return false;

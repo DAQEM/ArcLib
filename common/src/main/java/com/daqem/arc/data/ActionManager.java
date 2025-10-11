@@ -2,6 +2,7 @@ package com.daqem.arc.data;
 
 import com.daqem.arc.Arc;
 import com.daqem.arc.api.action.IAction;
+import com.daqem.arc.data.condition.recipe.RecipeCache;
 import com.daqem.arc.registry.ArcRegistry;
 import com.google.gson.*;
 import net.minecraft.resources.ResourceLocation;
@@ -63,6 +64,7 @@ public class ActionManager extends SimplePreparableReloadListener<List<IAction>>
     @Override
     protected void apply(List<IAction> actions, ResourceManager resourceManager, ProfilerFiller profilerFiller) {
         ActionHolderManager actionHolderManager = ActionHolderManager.getInstance();
+        RecipeCache.invalidate();
         actionHolderManager.clearAllActions();
         actionHolderManager.registerActions(actions);
         Arc.LOGGER.info("Loaded {} actions", actions.size());

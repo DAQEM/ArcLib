@@ -1,11 +1,11 @@
 package com.daqem.arc.data.reward.entity;
 
-import com.daqem.arc.data.ActionData;
 import com.daqem.arc.api.action.data.IActionDataType;
 import com.daqem.arc.api.action.result.ActionResult;
 import com.daqem.arc.api.reward.AbstractReward;
 import com.daqem.arc.api.reward.IRewardSerializer;
 import com.daqem.arc.api.reward.IRewardType;
+import com.daqem.arc.data.ActionData;
 import com.google.gson.JsonObject;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -17,7 +17,9 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
-import net.minecraft.world.item.*;
+import net.minecraft.world.item.BowItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
@@ -49,7 +51,7 @@ public class MultipleArrowsReward extends AbstractReward {
     @Override
     public ActionResult apply(ActionData actionData) {
         Entity entity = actionData.getData(IActionDataType.ENTITY);
-        if (entity instanceof AbstractArrow shotArrow) {
+        if (entity instanceof AbstractArrow) {
             Player player = actionData.getPlayer().arc$getPlayer();
             ItemStack bow;
             if (player.getMainHandItem().getItem() instanceof BowItem) {
@@ -64,7 +66,7 @@ public class MultipleArrowsReward extends AbstractReward {
                 float[] afloat = getShotPitches(new Random());
                 int[] arrowPositions = scatterArrows(amount);
                 for (int i = 0; i < amount; i++) {
-                    shootProjectile(shotArrow, player.level(), player, bow, Items.ARROW.getDefaultInstance(), afloat[1], power * 3, arrowPositions[i]);
+                    shootProjectile(player.level(), player, bow, Items.ARROW.getDefaultInstance(), afloat[1], power * 3, arrowPositions[i]);
                 }
             }
         }
@@ -74,6 +76,10 @@ public class MultipleArrowsReward extends AbstractReward {
     public static int[] scatterArrows(int numArrows) {
         if (numArrows < 1 || numArrows > 20) {
             throw new IllegalArgumentException("Number of arrows should be between 1 and 20.");
+        }
+
+        if (numArrows == 1) {
+            return new int[]{0};
         }
 
         int[] arrowPositions = new int[numArrows];
@@ -86,7 +92,7 @@ public class MultipleArrowsReward extends AbstractReward {
         return arrowPositions;
     }
 
-    private void shootProjectile(AbstractArrow shotArrow, Level level, LivingEntity livingEntity, ItemStack bow, ItemStack arrow,
+    private void shootProjectile(Level level, LivingEntity livingEntity, ItemStack bow, ItemStack arrow,
                                  float shotPitch, float power, float pitch) {
         if (livingEntity instanceof Player player) {
             AbstractArrow projectile = new AbstractArrow(EntityType.ARROW, livingEntity, level, arrow, bow) {
@@ -104,7 +110,7 @@ public class MultipleArrowsReward extends AbstractReward {
             };
             projectile.pickup = AbstractArrow.Pickup.CREATIVE_ONLY;
             Vec3 vec3 = player.getUpVector(1.0f);
-            Quaternionf quaternionf = new Quaternionf().setAngleAxis(pitch * ((float)Math.PI / 180), vec3.x, vec3.y, vec3.z);
+            Quaternionf quaternionf = new Quaternionf().setAngleAxis(pitch * ((float) Math.PI / 180), vec3.x, vec3.y, vec3.z);
             Vec3 vec32 = player.getViewVector(1.0f);
             Vector3f vector3f = vec32.toVector3f().rotate(quaternionf);
             projectile.shoot(vector3f.x(), vector3f.y(), vector3f.z(), power, 1.0F);
@@ -136,7 +142,7 @@ public class MultipleArrowsReward extends AbstractReward {
             return new MultipleArrowsReward(
                     chance,
                     priority,
-                    Math.min(20, Math.max(1, GsonHelper.getAsInt(jsonObject, "amount"))));
+                    Math.clamp(GsonHelper.getAsInt(jsonObject, "amount"), 1, 20));
         }
 
         @Override

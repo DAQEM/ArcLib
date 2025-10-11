@@ -8,25 +8,18 @@ import com.daqem.arc.data.ActionManager;
 import com.daqem.arc.data.PlayerActionHolderManager;
 import com.daqem.arc.event.*;
 import com.daqem.arc.networking.ArcNetworking;
-import com.daqem.arc.player.brewing.BrewingStandData;
 import com.mojang.logging.LogUtils;
 import dev.architectury.event.events.common.CommandRegistrationEvent;
 import dev.architectury.registry.ReloadListenerRegistry;
-import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
 import org.slf4j.Logger;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class Arc {
     public static final String MOD_ID = "arc";
     public static final Logger LOGGER = LogUtils.getLogger();
-
-    public static final Map<BlockPos, BrewingStandData> BREWING_STANDS = new HashMap<>();
 
     public static void init() {
         ArcCommonConfig.init();

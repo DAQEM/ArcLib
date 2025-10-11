@@ -1,11 +1,12 @@
 package com.daqem.arc.data.reward.effect;
 
-import com.daqem.arc.data.ActionData;
 import com.daqem.arc.api.action.result.ActionResult;
 import com.daqem.arc.api.player.ArcPlayer;
+import com.daqem.arc.api.player.ArcServerPlayer;
 import com.daqem.arc.api.reward.AbstractReward;
 import com.daqem.arc.api.reward.IRewardSerializer;
 import com.daqem.arc.api.reward.IRewardType;
+import com.daqem.arc.data.ActionData;
 import com.google.gson.JsonObject;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -31,6 +32,14 @@ public class EffectReward extends AbstractReward {
     public ActionResult apply(ActionData actionData) {
         ArcPlayer player = actionData.getPlayer();
         player.arc$getPlayer().addEffect(new MobEffectInstance(effectInstance));
+        if (player instanceof ArcServerPlayer serverPlayer) {
+            try {
+                serverPlayer.arc$setApplyingRewardEffect(true);
+                serverPlayer.arc$getPlayer().addEffect(new MobEffectInstance(effectInstance));
+            } finally {
+                serverPlayer.arc$setApplyingRewardEffect(false);
+            }
+        }
         return new ActionResult();
     }
 

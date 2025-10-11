@@ -36,6 +36,7 @@ public abstract class PlayerListMixin {
                 List<ResourceLocation> actionHolderLocations = arcServerPlayer.arc$getActionHolders().stream().map(IActionHolder::getLocation).toList();
                 arcServerPlayer.arc$clearActionHolders();
                 List<IActionHolder> actionHolders = ActionHolderManager.getInstance().getActionHolders(actionHolderLocations);
+                arcServerPlayer.arc$getActionLastMetDistances().clear();
                 arcServerPlayer.arc$addActionHolders(actionHolders);
             }
             NetworkManager.sendToPlayer(player, new ClientboundUpdateActionsPacket(ActionHolderManager.getInstance().getActions()));

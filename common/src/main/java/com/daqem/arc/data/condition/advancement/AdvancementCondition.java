@@ -65,7 +65,7 @@ public class AdvancementCondition extends AbstractCondition {
             return new AdvancementCondition(
                     inverted,
                     getOptionalResourceLocation(jsonObject, "id"),
-                    getOptionalResourceLocation(jsonObject, "id"),
+                    getOptionalResourceLocation(jsonObject, "parent_id"),
                     AdvancementType.CODEC.decode(JsonOps.INSTANCE, jsonObject.get("type")).result().orElse(new Pair<>(null, null)).getFirst()
             );
         }
