@@ -1,8 +1,8 @@
 package com.daqem.arc.registry;
 
 import com.daqem.arc.Arc;
-import com.daqem.arc.api.action.holder.IActionHolderType;
 import com.daqem.arc.api.action.IActionType;
+import com.daqem.arc.api.action.holder.IActionHolderType;
 import com.daqem.arc.api.condition.IConditionType;
 import com.daqem.arc.api.reward.IRewardType;
 import com.mojang.serialization.Lifecycle;

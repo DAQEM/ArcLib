@@ -2,10 +2,7 @@ package com.daqem.arc.mixin;
 
 import com.daqem.arc.api.event.ArcPlayerEvent;
 import com.daqem.arc.api.event.EventResult;
-import com.daqem.arc.event.PlayerEvents;
-import com.daqem.arc.api.player.ArcServerPlayer;
 import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.AxeItem;

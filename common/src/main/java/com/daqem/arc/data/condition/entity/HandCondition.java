@@ -1,10 +1,10 @@
 package com.daqem.arc.data.condition.entity;
 
-import com.daqem.arc.data.ActionData;
 import com.daqem.arc.api.action.data.IActionDataType;
 import com.daqem.arc.api.condition.AbstractCondition;
 import com.daqem.arc.api.condition.IConditionSerializer;
 import com.daqem.arc.api.condition.IConditionType;
+import com.daqem.arc.data.ActionData;
 import com.google.gson.JsonObject;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;

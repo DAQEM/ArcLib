@@ -1,12 +1,14 @@
 package com.daqem.arc.data.condition;
 
-import com.daqem.arc.data.ActionData;
 import com.daqem.arc.api.condition.AbstractCondition;
 import com.daqem.arc.api.condition.ICondition;
 import com.daqem.arc.api.condition.IConditionSerializer;
 import com.daqem.arc.api.condition.IConditionType;
+import com.daqem.arc.data.ActionData;
 import com.daqem.arc.registry.ArcRegistry;
-import com.google.gson.*;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;

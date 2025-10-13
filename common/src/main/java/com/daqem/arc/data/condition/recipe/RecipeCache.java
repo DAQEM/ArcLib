@@ -4,7 +4,6 @@ import com.daqem.arc.api.IArcAbstractCookingRecipe;
 import com.daqem.arc.api.IArcIngredient;
 import com.daqem.arc.data.ActionData;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 

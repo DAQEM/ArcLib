@@ -1,7 +1,6 @@
 package com.daqem.arc.player.brewing;
 
 import com.daqem.arc.api.player.ArcServerPlayer;
-import net.minecraft.world.level.block.entity.BrewingStandBlockEntity;
 
 import java.util.HashMap;
 import java.util.Map;

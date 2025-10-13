@@ -4,7 +4,10 @@ import com.daqem.arc.Arc;
 import com.daqem.arc.api.action.IAction;
 import com.daqem.arc.data.condition.recipe.RecipeCache;
 import com.daqem.arc.registry.ArcRegistry;
-import com.google.gson.*;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonSyntaxException;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -13,7 +16,10 @@ import net.minecraft.util.GsonHelper;
 import net.minecraft.util.profiling.ProfilerFiller;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class ActionManager extends SimplePreparableReloadListener<List<IAction>> {

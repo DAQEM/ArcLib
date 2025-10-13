@@ -1,7 +1,6 @@
 package com.daqem.arc.networking;
 
 import com.daqem.arc.Arc;
-
 import com.daqem.arc.client.networking.*;
 import dev.architectury.networking.NetworkManager;
 import dev.architectury.utils.Env;

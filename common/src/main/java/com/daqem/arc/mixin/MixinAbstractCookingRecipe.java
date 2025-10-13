@@ -2,7 +2,6 @@ package com.daqem.arc.mixin;
 
 import com.daqem.arc.api.IArcAbstractCookingRecipe;
 import com.daqem.arc.api.IArcIngredient;
-import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.AbstractCookingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;

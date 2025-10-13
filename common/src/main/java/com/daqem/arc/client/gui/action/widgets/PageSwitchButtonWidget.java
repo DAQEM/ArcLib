@@ -1,10 +1,8 @@
 package com.daqem.arc.client.gui.action.widgets;
 
 import com.daqem.uilib.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.item.properties.select.ComponentContents;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
