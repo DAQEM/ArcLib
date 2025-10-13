@@ -2,7 +2,11 @@ package com.daqem.arc.data.serializer;
 
 import com.daqem.arc.api.ComparisonType;
 import com.daqem.arc.model.ArcBlockState;
+import com.daqem.arc.model.ArcEnchantment;
+import com.daqem.arc.model.ArcWeatherType;
+import com.daqem.arc.model.target.ArcItemTarget;
 import com.daqem.arc.model.EntityDataProperty;
+import com.daqem.arc.model.target.ArcPositionTarget;
 import com.google.gson.*;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.JsonOps;
@@ -10,6 +14,8 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.InteractionHand;
@@ -58,6 +64,38 @@ public interface ArcSerializer {
             return null;
         }
         return getResourceLocation(jsonObject, key, null);
+    }
+
+    //endregion
+
+    //region Resource Locations
+
+    default List<ResourceLocation> getResourceLocations(JsonObject jsonObject, String key, @Nullable List<ResourceLocation> defaultLocations) {
+        if (!jsonObject.has(key) || jsonObject.get(key).isJsonNull()) {
+            if (defaultLocations != null) {
+                return defaultLocations;
+            }
+            throw new JsonParseException("Expected '" + key + "' to be a list of resource locations");
+        }
+
+        return ResourceLocation.CODEC.listOf().decode(JsonOps.INSTANCE, jsonObject.get(key)).result()
+                .orElseGet(() -> {
+                    if (defaultLocations != null) {
+                        return new Pair<>(defaultLocations, null);
+                    }
+                    throw new JsonParseException("Expected '" + jsonObject.get(key) + "' to be a resource location, but it was invalid");
+                }).getFirst();
+    }
+
+    default List<ResourceLocation> getResourceLocations(JsonObject jsonObject, String key) {
+        return getResourceLocations(jsonObject, key, null);
+    }
+
+    default @Nullable List<ResourceLocation> getOptionalResourceLocations(JsonObject jsonObject, String key) {
+        if (!jsonObject.has(key) || jsonObject.get(key).isJsonNull()) {
+            return new ArrayList<>();
+        }
+        return getResourceLocations(jsonObject, key, new ArrayList<>());
     }
 
     //endregion
@@ -247,6 +285,17 @@ public interface ArcSerializer {
         }
     }
 
+    default List<ItemStack> getItemStacks(JsonObject jsonObject, String key) {
+        return getItemStacks(jsonObject, key, new ArrayList<>());
+    }
+
+    default List<ItemStack> getOptionalItemStacks(JsonObject jsonObject, String key) {
+        if (!jsonObject.has(key) || jsonObject.get(key).isJsonNull()) {
+            return new ArrayList<>();
+        }
+        return getItemStacks(jsonObject, key, new ArrayList<>());
+    }
+
     //endregion
 
     //region Mob Effect
@@ -352,6 +401,70 @@ public interface ArcSerializer {
             return null;
         }
         return getMobEffectCategory(jsonObject, key, null);
+    }
+
+    //endregion
+
+    //region Enchantment
+
+    default ArcEnchantment getEnchantment(JsonObject jsonObject, String key, @Nullable ArcEnchantment defaultEnchantment) {
+        if (!jsonObject.has(key) || jsonObject.get(key).isJsonNull()) {
+            if (defaultEnchantment != null) {
+                return defaultEnchantment;
+            }
+            throw new JsonParseException("Expected '" + key + "' to be an enchantment");
+        }
+
+        return ArcEnchantment.CODEC.decode(JsonOps.INSTANCE, jsonObject.get(key)).result()
+                .orElseGet(() -> {
+                    if (defaultEnchantment != null) {
+                        return new Pair<>(defaultEnchantment, null);
+                    }
+                    throw new JsonParseException("Expected '" + jsonObject.get(key) + "' to be an enchantment, but it was invalid");
+                }).getFirst();
+    }
+
+    default ArcEnchantment getEnchantment(JsonObject jsonObject, String key) {
+        return getEnchantment(jsonObject, key, null);
+    }
+
+    default @Nullable ArcEnchantment getOptionalEnchantment(JsonObject jsonObject, String key) {
+        if (!jsonObject.has(key) || jsonObject.get(key).isJsonNull()) {
+            return null;
+        }
+        return getEnchantment(jsonObject, key, null);
+    }
+
+    //endregion
+
+    //region Enchantment
+
+    default List<ArcEnchantment> getEnchantments(JsonObject jsonObject, String key, @Nullable List<ArcEnchantment> defaultEnchantment) {
+        if (!jsonObject.has(key) || jsonObject.get(key).isJsonNull()) {
+            if (defaultEnchantment != null) {
+                return defaultEnchantment;
+            }
+            throw new JsonParseException("Expected '" + key + "' to be an enchantment");
+        }
+
+        return ArcEnchantment.CODEC.listOf().decode(JsonOps.INSTANCE, jsonObject.get(key)).result()
+                .orElseGet(() -> {
+                    if (defaultEnchantment != null) {
+                        return new Pair<>(defaultEnchantment, null);
+                    }
+                    throw new JsonParseException("Expected '" + jsonObject.get(key) + "' to be an enchantment, but it was invalid");
+                }).getFirst();
+    }
+
+    default List<ArcEnchantment> getEnchantments(JsonObject jsonObject, String key) {
+        return getEnchantments(jsonObject, key, null);
+    }
+
+    default @Nullable List<ArcEnchantment> getOptionalEnchantments(JsonObject jsonObject, String key) {
+        if (!jsonObject.has(key) || jsonObject.get(key).isJsonNull()) {
+            return null;
+        }
+        return getEnchantments(jsonObject, key, null);
     }
 
     //endregion
@@ -750,6 +863,112 @@ public interface ArcSerializer {
 
     //endregion
 
+    //region Item Target
+
+    default ArcItemTarget getItemTarget(JsonObject jsonObject, String elementName, @Nullable ArcItemTarget defaultTarget) {
+        if (!jsonObject.has(elementName) || jsonObject.get(elementName).isJsonNull()) {
+            if (defaultTarget != null) {
+                return defaultTarget;
+            }
+            throw new JsonParseException("Expected '" + elementName + "' to be an item target");
+        }
+        String targetName = GsonHelper.getAsString(jsonObject, elementName).toUpperCase();
+        ArcItemTarget target;
+        try {
+            target = ArcItemTarget.valueOf(targetName);
+        } catch (IllegalArgumentException e) {
+            if (defaultTarget != null) {
+                return defaultTarget;
+            }
+            throw new JsonParseException("Expected '" + targetName + "' to be an item target, but it was invalid. Options are:" + Arrays.stream(ArcItemTarget.values()).map(Enum::name).collect(Collectors.joining(", ")) + ".");
+        }
+        return target;
+    }
+
+    default ArcItemTarget getItemTarget(JsonObject jsonObject, String elementName) {
+        return getItemTarget(jsonObject, elementName, null);
+    }
+
+    default @Nullable ArcItemTarget getOptionalItemTarget(JsonObject jsonObject, String elementName) {
+        if (!jsonObject.has(elementName) || jsonObject.get(elementName).isJsonNull()) {
+            return null;
+        }
+        return getItemTarget(jsonObject, elementName, null);
+    }
+
+    //endregion
+
+    //region Position Target
+
+    default ArcPositionTarget getPositionTarget(JsonObject jsonObject, String elementName, @Nullable ArcPositionTarget defaultTarget) {
+        if (!jsonObject.has(elementName) || jsonObject.get(elementName).isJsonNull()) {
+            if (defaultTarget != null) {
+                return defaultTarget;
+            }
+            throw new JsonParseException("Expected '" + elementName + "' to be a position target");
+        }
+        String targetName = GsonHelper.getAsString(jsonObject, elementName).toUpperCase();
+        ArcPositionTarget target;
+        try {
+            target = ArcPositionTarget.valueOf(targetName);
+        } catch (IllegalArgumentException e) {
+            if (defaultTarget != null) {
+                return defaultTarget;
+            }
+            throw new JsonParseException("Expected '" + targetName + "' to be a position target, but it was invalid. Options are:" + Arrays.stream(ArcPositionTarget.values()).map(Enum::name).collect(Collectors.joining(", ")) + ".");
+        }
+        return target;
+    }
+
+    default ArcPositionTarget getPositionTarget(JsonObject jsonObject, String elementName) {
+        return getPositionTarget(jsonObject, elementName, null);
+    }
+
+    default @Nullable ArcPositionTarget getOptionalPositionTarget(JsonObject jsonObject, String elementName) {
+        if (!jsonObject.has(elementName) || jsonObject.get(elementName).isJsonNull()) {
+            return null;
+        }
+        return getPositionTarget(jsonObject, elementName, null);
+    }
+
+    //endregion
+
+
+    //region Weather Type
+
+    default ArcWeatherType getWeatherType(JsonObject jsonObject, String elementName, @Nullable ArcWeatherType defaultTarget) {
+        if (!jsonObject.has(elementName) || jsonObject.get(elementName).isJsonNull()) {
+            if (defaultTarget != null) {
+                return defaultTarget;
+            }
+            throw new JsonParseException("Expected '" + elementName + "' to be a weather type");
+        }
+        String weatherTypeName = GsonHelper.getAsString(jsonObject, elementName).toUpperCase();
+        ArcWeatherType weatherType;
+        try {
+            weatherType = ArcWeatherType.valueOf(weatherTypeName);
+        } catch (IllegalArgumentException e) {
+            if (defaultTarget != null) {
+                return defaultTarget;
+            }
+            throw new JsonParseException("Expected '" + weatherTypeName + "' to be a weather type, but it was invalid. Options are:" + Arrays.stream(ArcWeatherType.values()).map(Enum::name).collect(Collectors.joining(", ")) + ".");
+        }
+        return weatherType;
+    }
+
+    default ArcWeatherType getWeatherType(JsonObject jsonObject, String elementName) {
+        return getWeatherType(jsonObject, elementName, null);
+    }
+
+    default @Nullable ArcWeatherType getOptionalWeatherType(JsonObject jsonObject, String elementName) {
+        if (!jsonObject.has(elementName) || jsonObject.get(elementName).isJsonNull()) {
+            return null;
+        }
+        return getWeatherType(jsonObject, elementName, null);
+    }
+
+    //endregion
+
     //region Dimension
 
     default ResourceKey<Level> getDimension(JsonObject jsonObject, String elementName, @Nullable ResourceKey<Level> defaultDimension) {
@@ -778,6 +997,74 @@ public interface ArcSerializer {
             return null;
         }
         return getDimension(jsonObject, elementName, null);
+    }
+
+    //endregion
+
+    //region Sound Event
+
+    default Holder<SoundEvent> getSoundEvent(JsonObject jsonObject, String key, @Nullable Holder<SoundEvent> defaultSoundEvent) {
+        if (!jsonObject.has(key) || jsonObject.get(key).isJsonNull()) {
+            if (defaultSoundEvent != null) {
+                return defaultSoundEvent;
+            }
+            throw new JsonParseException("Expected '" + key + "' to be a sound event");
+        }
+
+        return SoundEvent.CODEC.decode(JsonOps.INSTANCE, jsonObject.get(key)).result()
+                .orElseGet(() -> {
+                    if (defaultSoundEvent != null) {
+                        return new Pair<>(defaultSoundEvent, null);
+                    }
+                    throw new JsonParseException("Expected '" + jsonObject.get(key) + "' to be a sound event, but it was invalid");
+                }).getFirst();
+    }
+
+    default Holder<SoundEvent> getSoundEvent(JsonObject jsonObject, String key) {
+        return getSoundEvent(jsonObject, key, null);
+    }
+
+    default @Nullable Holder<SoundEvent> getOptionalSoundEvent(JsonObject jsonObject, String key) {
+        if (!jsonObject.has(key) || jsonObject.get(key).isJsonNull()) {
+            return null;
+        }
+        return getSoundEvent(jsonObject, key, null);
+    }
+
+    //endregion
+
+    //region Sound Source
+
+    default SoundSource getSoundSource(JsonObject jsonObject, String key, @Nullable SoundSource defaultSoundSource) {
+        if (!jsonObject.has(key) || jsonObject.get(key).isJsonNull()) {
+            if (defaultSoundSource != null) {
+                return defaultSoundSource;
+            }
+            throw new JsonParseException("Expected '" + key + "' to be a sound source");
+        }
+
+        String soundSourceName = GsonHelper.getAsString(jsonObject, key).toUpperCase();
+        SoundSource soundSource;
+        try {
+            soundSource = SoundSource.valueOf(soundSourceName);
+        } catch (IllegalArgumentException e) {
+            if (defaultSoundSource != null) {
+                return defaultSoundSource;
+            }
+            throw new JsonParseException("Expected '" + soundSourceName + "' to be a sound source, but it was invalid. Options are:" + Arrays.stream(SoundSource.values()).map(Enum::name).collect(Collectors.joining(", ")) + ".");
+        }
+        return soundSource;
+    }
+
+    default SoundSource getSoundSource(JsonObject jsonObject, String key) {
+        return getSoundSource(jsonObject, key, null);
+    }
+
+    default @Nullable SoundSource getOptionalSoundSource(JsonObject jsonObject, String key) {
+        if (!jsonObject.has(key) || jsonObject.get(key).isJsonNull()) {
+            return null;
+        }
+        return getSoundSource(jsonObject, key, null);
     }
 
     //endregion

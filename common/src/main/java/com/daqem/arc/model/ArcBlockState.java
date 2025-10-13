@@ -10,10 +10,13 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.Property;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public record ArcBlockState(Block block, List<ArcProperty> properties) {
@@ -96,5 +99,33 @@ public record ArcBlockState(Block block, List<ArcProperty> properties) {
             return requiredProperties.stream()
                     .anyMatch(arcProperty -> arcProperty.matches(actualValue));
         });
+    }
+
+    public BlockState create() {
+        BlockState blockState = this.block.defaultBlockState();
+
+        for (ArcProperty arcProperty : this.properties) {
+            if (arcProperty.comparisonType() != ComparisonType.EQUAL) {
+                throw new IllegalStateException("Cannot create a BlockState with a non-EQUAL comparison type for property: " + arcProperty.name());
+            }
+
+            Property<?> property = blockState.getBlock().getStateDefinition().getProperty(arcProperty.name());
+            if (property != null) {
+                Optional<?> valueOptional = property.getValue(arcProperty.value());
+                if (valueOptional.isPresent()) {
+                    blockState = setValue(blockState, property, valueOptional.get());
+                } else {
+                    throw new IllegalArgumentException("Invalid value '" + arcProperty.value() + "' for property '" + arcProperty.name() + "' in block " + this.block);
+                }
+            } else {
+                throw new IllegalArgumentException("Unknown property '" + arcProperty.name() + "' for block " + this.block);
+            }
+        }
+        return blockState;
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T extends Comparable<T>> BlockState setValue(BlockState blockState, Property<T> property, Object value) {
+        return blockState.setValue(property, (T) value);
     }
 }

@@ -37,6 +37,7 @@ public interface IActionDataType<T> {
     IActionDataType<ResourceKey<Level>> FROM_DIMENSION = register(Arc.getId("from_dimension"));
     IActionDataType<ResourceKey<Level>> TO_DIMENSION = register(Arc.getId("to_dimension"));
     IActionDataType<MerchantOffer> TRADE_OFFER = register(Arc.getId("trade_offer"));
+    IActionDataType<Boolean> IS_CRITICAL_HIT = register(Arc.getId("is_critical_hit"));
 
     static <T> IActionDataType<T> register(ResourceLocation location) {
         return () -> location;
