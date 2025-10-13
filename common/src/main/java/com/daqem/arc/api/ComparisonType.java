@@ -1,7 +1,6 @@
 package com.daqem.arc.api;
 
 import com.daqem.arc.networking.ArcCodecs;
-import net.minecraft.core.Direction;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.StringRepresentable;

@@ -1,13 +1,15 @@
 package com.daqem.arc.api.action;
 
 import com.daqem.arc.Arc;
-import com.daqem.arc.data.action.player.AdvancementAction;
 import com.daqem.arc.data.action.block.*;
 import com.daqem.arc.data.action.combat.GetHurtAction;
 import com.daqem.arc.data.action.combat.HurtEntityAction;
 import com.daqem.arc.data.action.combat.HurtPlayerAction;
 import com.daqem.arc.data.action.combat.KillEntityAction;
-import com.daqem.arc.data.action.entity.*;
+import com.daqem.arc.data.action.entity.BreedAnimalAction;
+import com.daqem.arc.data.action.entity.InteractEntityAction;
+import com.daqem.arc.data.action.entity.TameAnimalAction;
+import com.daqem.arc.data.action.entity.TradeWithVillagerAction;
 import com.daqem.arc.data.action.item.*;
 import com.daqem.arc.data.action.movement.*;
 import com.daqem.arc.data.action.player.*;

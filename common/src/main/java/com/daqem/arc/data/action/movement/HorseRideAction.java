@@ -1,4 +1,5 @@
 package com.daqem.arc.data.action.movement;
+
 import com.daqem.arc.api.action.AbstractAction;
 import com.daqem.arc.api.action.IActionSerializer;
 import com.daqem.arc.api.action.IActionType;
@@ -8,6 +9,7 @@ import com.daqem.arc.api.reward.IReward;
 import com.google.gson.JsonObject;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+
 import java.util.List;
 
 public class HorseRideAction extends AbstractAction {

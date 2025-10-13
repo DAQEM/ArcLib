@@ -1,12 +1,12 @@
 package com.daqem.arc.data.condition.block;
 
-import com.daqem.arc.data.ActionData;
 import com.daqem.arc.api.action.data.IActionDataType;
 import com.daqem.arc.api.condition.AbstractCondition;
 import com.daqem.arc.api.condition.ICondition;
 import com.daqem.arc.api.condition.IConditionSerializer;
 import com.daqem.arc.api.condition.IConditionType;
 import com.daqem.arc.api.player.ArcServerPlayer;
+import com.daqem.arc.data.ActionData;
 import com.daqem.arc.player.BlockPosCache;
 import com.google.gson.JsonObject;
 import net.minecraft.core.BlockPos;

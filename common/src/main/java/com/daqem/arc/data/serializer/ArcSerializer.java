@@ -4,8 +4,8 @@ import com.daqem.arc.api.ComparisonType;
 import com.daqem.arc.model.ArcBlockState;
 import com.daqem.arc.model.ArcEnchantment;
 import com.daqem.arc.model.ArcWeatherType;
-import com.daqem.arc.model.target.ArcItemTarget;
 import com.daqem.arc.model.EntityDataProperty;
+import com.daqem.arc.model.target.ArcItemTarget;
 import com.daqem.arc.model.target.ArcPositionTarget;
 import com.google.gson.*;
 import com.mojang.datafixers.util.Pair;
@@ -608,15 +608,28 @@ public interface ArcSerializer {
             if (defaultBlocks != null) {
                 return defaultBlocks;
             }
-            throw new JsonParseException("Expected '" + key + "' to be a block");
+            throw new JsonParseException("Expected '" + key + "' to be a list of block states");
         }
 
-        return ArcBlockState.CODEC.listOf().decode(JsonOps.INSTANCE, jsonObject.get(key)).result()
+        JsonArray originalArray = jsonObject.getAsJsonArray(key);
+        JsonArray filteredArray = new JsonArray();
+
+        for (JsonElement element : originalArray) {
+            if (element.isJsonPrimitive()) {
+                String value = element.getAsString();
+                if (value != null && value.startsWith("#")) {
+                    continue;
+                }
+            }
+            filteredArray.add(element);
+        }
+
+        return ArcBlockState.CODEC.listOf().decode(JsonOps.INSTANCE, filteredArray).result()
                 .orElseGet(() -> {
                     if (defaultBlocks != null) {
                         return new Pair<>(defaultBlocks, null);
                     }
-                    throw new JsonParseException("Expected '" + jsonObject.get(key) + "' to be a block, but it was invalid");
+                    throw new JsonParseException("Expected '" + filteredArray + "' to be a list of block states, but it was invalid");
                 }).getFirst();
     }
 

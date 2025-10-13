@@ -7,7 +7,6 @@ import com.daqem.arc.api.reward.IRewardType;
 import com.daqem.arc.data.ActionData;
 import com.daqem.arc.model.target.ArcPositionTarget;
 import com.google.gson.JsonObject;
-import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.entity.EntitySpawnReason;

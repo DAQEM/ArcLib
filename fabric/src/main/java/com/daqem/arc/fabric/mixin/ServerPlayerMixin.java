@@ -1,7 +1,6 @@
 package com.daqem.arc.fabric.mixin;
 
 import com.daqem.arc.api.event.ArcItemEvent;
-import dev.architectury.event.events.common.PlayerEvent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
