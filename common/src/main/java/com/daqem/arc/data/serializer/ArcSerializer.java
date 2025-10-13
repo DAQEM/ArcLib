@@ -665,8 +665,10 @@ public interface ArcSerializer {
                 if (blockTagElement.isJsonPrimitive()) {
                     String blockTagName = blockTagElement.getAsString();
                     if (blockTagName != null && blockTagName.startsWith("#")) {
-                        ResourceLocation resourceLocation = ResourceLocation.CODEC.decode(JsonOps.INSTANCE, blockTagElement).result()
-                                .orElseThrow(() -> new JsonParseException("Expected '" + key + "' to be a list of block tags, but one of the block tags was invalid: " + blockTagName))
+                        blockTagName = blockTagName.substring(1);
+                        String finalBlockTagName = blockTagName;
+                        ResourceLocation resourceLocation = ResourceLocation.CODEC.decode(JsonOps.INSTANCE, new JsonPrimitive(finalBlockTagName)).result()
+                                .orElseThrow(() -> new JsonParseException("Expected '" + key + "' to be a list of block tags, but one of the block tags was invalid: " + finalBlockTagName))
                                 .getFirst();
                         TagKey<Block> blockTag = TagKey.create(BuiltInRegistries.BLOCK.key(), resourceLocation);
                         blockTags.add(blockTag);
