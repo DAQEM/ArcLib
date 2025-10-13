@@ -1,4 +1,4 @@
-package com.daqem.arc.data.reward.entity;
+package com.daqem.arc.data.reward.combat;
 
 import com.daqem.arc.api.action.data.IActionDataType;
 import com.daqem.arc.api.action.result.ActionResult;

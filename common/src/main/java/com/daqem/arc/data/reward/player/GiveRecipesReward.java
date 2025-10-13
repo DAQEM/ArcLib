@@ -37,7 +37,7 @@ public class GiveRecipesReward extends AbstractReward {
 
     @Override
     public IRewardType<?> getType() {
-        return IRewardType.GIVE_KNOWLEDGE;
+        return IRewardType.GIVE_RECIPES;
     }
 
     public static class Serializer implements IRewardSerializer<GiveRecipesReward> {

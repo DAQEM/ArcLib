@@ -1,4 +1,4 @@
-package com.daqem.arc.data.condition.block.properties;
+package com.daqem.arc.data.condition.block;
 
 import com.daqem.arc.data.ActionData;
 import com.daqem.arc.api.action.data.IActionDataType;

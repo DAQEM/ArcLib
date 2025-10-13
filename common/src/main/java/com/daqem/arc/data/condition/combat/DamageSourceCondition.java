@@ -1,4 +1,4 @@
-package com.daqem.arc.data.condition.entity;
+package com.daqem.arc.data.condition.combat;
 
 import com.daqem.arc.data.ActionData;
 import com.daqem.arc.api.action.data.IActionDataType;

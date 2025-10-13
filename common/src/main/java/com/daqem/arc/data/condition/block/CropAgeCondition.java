@@ -1,4 +1,4 @@
-package com.daqem.arc.data.condition.block.crop;
+package com.daqem.arc.data.condition.block;
 
 import com.daqem.arc.data.ActionData;
 import com.daqem.arc.api.action.data.IActionDataType;
@@ -7,6 +7,7 @@ import com.daqem.arc.api.condition.IConditionSerializer;
 import com.daqem.arc.api.condition.IConditionType;
 import com.google.gson.*;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
@@ -15,10 +16,18 @@ import net.minecraft.world.level.block.state.properties.Property;
 import java.util.Collection;
 import java.util.Optional;
 
-public class CropFullyGrownCondition extends AbstractCondition {
+public class CropAgeCondition extends AbstractCondition {
 
-    public CropFullyGrownCondition(boolean inverted) {
+    private final int age;
+
+    public CropAgeCondition(boolean inverted, int age) {
         super(inverted);
+        this.age = age;
+    }
+
+    @Override
+    public Component getDescription() {
+        return getDescription(age);
     }
 
     @Override
@@ -31,14 +40,9 @@ public class CropFullyGrownCondition extends AbstractCondition {
                     .findFirst();
             if (optionalAgeProperty.isPresent()) {
                 IntegerProperty ageProperty = (IntegerProperty) optionalAgeProperty.get();
-                Collection<Integer> possibleValues = ageProperty.getPossibleValues();
-                Integer lastValue = possibleValues.stream().reduce((a, b) -> b).orElse(null);
-                if (lastValue != null) {
-                    int fullyGrownAge = lastValue;
-                    Optional<Integer> optionalAgeValue = blockState.getOptionalValue(ageProperty);
-                    if (optionalAgeValue.isPresent()) {
-                        return optionalAgeValue.get() == fullyGrownAge;
-                    }
+                Optional<Integer> optionalAgeValue = blockState.getOptionalValue(ageProperty);
+                if (optionalAgeValue.isPresent()) {
+                    return optionalAgeValue.get() == this.age;
                 }
             }
         }
@@ -47,24 +51,33 @@ public class CropFullyGrownCondition extends AbstractCondition {
 
     @Override
     public IConditionType<?> getType() {
-        return IConditionType.CROP_FULLY_GROWN;
+        return IConditionType.CROP_AGE;
     }
 
-    public static class Serializer implements IConditionSerializer<CropFullyGrownCondition> {
+    public int getAge() {
+        return age;
+    }
+
+    public static class Serializer implements IConditionSerializer<CropAgeCondition> {
 
         @Override
-        public CropFullyGrownCondition fromJson(ResourceLocation location, JsonObject jsonObject, boolean inverted) {
-            return new CropFullyGrownCondition(inverted);
+        public CropAgeCondition fromJson(ResourceLocation location, JsonObject jsonObject, boolean inverted) {
+            return new CropAgeCondition(
+                    inverted,
+                    jsonObject.get("age").getAsInt());
         }
 
         @Override
-        public CropFullyGrownCondition fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
-            return new CropFullyGrownCondition(inverted);
+        public CropAgeCondition fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
+            return new CropAgeCondition(
+                    inverted,
+                    friendlyByteBuf.readInt());
         }
 
         @Override
-        public void toNetwork(RegistryFriendlyByteBuf friendlyByteBuf, CropFullyGrownCondition type) {
+        public void toNetwork(RegistryFriendlyByteBuf friendlyByteBuf, CropAgeCondition type) {
             IConditionSerializer.super.toNetwork(friendlyByteBuf, type);
+            friendlyByteBuf.writeInt(type.age);
         }
     }
 }

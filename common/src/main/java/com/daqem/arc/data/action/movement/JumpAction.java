@@ -1,4 +1,4 @@
-package com.daqem.arc.data.action.player;
+package com.daqem.arc.data.action.movement;
 
 import com.daqem.arc.api.action.AbstractAction;
 import com.daqem.arc.api.action.IActionSerializer;

@@ -1,4 +1,4 @@
-package com.daqem.arc.data.condition.team;
+package com.daqem.arc.data.condition.player;
 
 import com.daqem.arc.data.ActionData;
 import com.daqem.arc.api.condition.AbstractCondition;

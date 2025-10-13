@@ -39,7 +39,7 @@ public class EnchantItemReward extends AbstractReward {
 
     @Override
     public IRewardType<?> getType() {
-        return IRewardType.ENCHANT_HELD_ITEM;
+        return IRewardType.ENCHANT_ITEM;
     }
 
     public static class Serializer implements IRewardSerializer<EnchantItemReward> {

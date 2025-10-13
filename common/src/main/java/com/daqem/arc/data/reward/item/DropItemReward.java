@@ -1,4 +1,4 @@
-package com.daqem.arc.data.reward.world;
+package com.daqem.arc.data.reward.item;
 
 import com.daqem.arc.data.ActionData;
 import com.daqem.arc.api.action.data.IActionDataType;

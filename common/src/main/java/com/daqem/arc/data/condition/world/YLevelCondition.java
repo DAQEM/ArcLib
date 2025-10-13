@@ -1,4 +1,4 @@
-package com.daqem.arc.data.condition.player;
+package com.daqem.arc.data.condition.world;
 
 import com.daqem.arc.api.condition.AbstractCondition;
 import com.daqem.arc.api.condition.IConditionSerializer;
