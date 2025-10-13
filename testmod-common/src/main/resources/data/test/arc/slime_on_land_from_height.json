@@ -1,0 +1,28 @@
+{
+  "holder": {
+    "type": "arc:player",
+    "id": "arc:player"
+  },
+  "type": "arc:on_land",
+  "conditions": [
+    {
+      "type": "arc:entity_data",
+      "target": "player",
+      "properties": [
+        {
+          "id": "arc:fall_distance",
+          "value": "3",
+          "comparison": ">"
+        }
+      ]
+    }
+  ],
+  "rewards": [
+    {
+      "type": "arc:item",
+      "item": {
+        "id": "minecraft:slime_ball"
+      }
+    }
+  ]
+}

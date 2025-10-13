@@ -24,6 +24,8 @@ public interface ArcBlockEvent {
 
     Event<GetDestroySpeed> GET_DESTROY_SPEED = EventFactory.createEventResult(GetDestroySpeed.class);
 
+    Event<TillSoil> TILL_SOIL = EventFactory.createLoop(TillSoil.class);
+
     interface BreakBlock {
         EventResult onBreakBlock(ServerLevel level, BlockPos blockPos, BlockState blockState, ServerPlayer serverPlayer, Supplier<Integer> xp);
     }
@@ -46,5 +48,9 @@ public interface ArcBlockEvent {
 
     interface GetDestroySpeed {
         EventResult onGetDestroySpeed(Player player, BlockState blockState, BlockPos blockPos, ItemStack itemStack, MutableFloat speed);
+    }
+
+    interface TillSoil {
+        void onTillSoil(Level level, BlockPos blockPos, BlockState resultingState, Player player, ItemStack hoe);
     }
 }

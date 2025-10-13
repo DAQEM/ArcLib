@@ -55,4 +55,15 @@ public class ItemStackMixin {
             this.arc$damage = null;
         }
     }
+
+    @Inject(
+            method = "applyDamage",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/world/item/ItemStack;shrink(I)V"
+            )
+    )
+    private void arc$onItemBreak(int i, ServerPlayer serverPlayer, Consumer<Item> consumer, CallbackInfo ci) {
+        ArcItemEvent.ITEM_BREAK.invoker().onItemBreak(serverPlayer, (ItemStack) (Object) this);
+    }
 }

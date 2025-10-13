@@ -65,6 +65,16 @@ public interface IActionType<T extends IAction> {
     IActionType<GetDestroySpeedAction> GET_DESTROY_SPEED = register(Arc.getId("on_get_destroy_speed"), new GetDestroySpeedAction.Serializer());
     IActionType<GetAttackSpeedAction> GET_ATTACK_SPEED = register(Arc.getId("on_get_attack_speed"), new GetAttackSpeedAction.Serializer());
     IActionType<RodReelInAction> ROD_REEL_IN = register(Arc.getId("on_rod_reel_in"), new RodReelInAction.Serializer());
+    IActionType<JumpAction> JUMP = register(Arc.getId("on_jump"), new JumpAction.Serializer());
+    IActionType<LandOnGroundAction> LAND_ON_GROUND = register(Arc.getId("on_land"), new LandOnGroundAction.Serializer());
+    IActionType<PickupItemAction> PICKUP_ITEM = register(Arc.getId("on_pickup_item"), new PickupItemAction.Serializer());
+    IActionType<BlockWithShieldAction> BLOCK_WITH_SHIELD = register(Arc.getId("on_block_with_shield"), new BlockWithShieldAction.Serializer());
+    IActionType<ChangeDimensionAction> CHANGE_DIMENSION = register(Arc.getId("on_change_dimension"), new ChangeDimensionAction.Serializer());
+    IActionType<FillBucketAction> FILL_BUCKET = register(Arc.getId("on_fill_bucket"), new FillBucketAction.Serializer());
+    IActionType<EmptyBucketAction> EMPTY_BUCKET = register(Arc.getId("on_empty_bucket"), new EmptyBucketAction.Serializer());
+    IActionType<TillSoilAction> TILL_SOIL = register(Arc.getId("on_till_soil"), new TillSoilAction.Serializer());
+    IActionType<ItemBreakAction> ITEM_BREAK = register(Arc.getId("on_item_break"), new ItemBreakAction.Serializer());
+    IActionType<TradeWithVillagerAction> TRADE_WITH_VILLAGER = register(Arc.getId("on_trade_with_villager"), new TradeWithVillagerAction.Serializer());
 
     static <T extends IAction> IActionType<T> register(final ResourceLocation location, final IActionSerializer<T> serializer) {
         return Registry.register(ArcRegistry.ACTION, location, new IActionType<T>(){

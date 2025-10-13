@@ -9,6 +9,9 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.trading.Merchant;
+import net.minecraft.world.item.trading.MerchantOffer;
 import org.apache.commons.lang3.mutable.MutableFloat;
 
 public interface ArcEntityEvent {
@@ -21,6 +24,8 @@ public interface ArcEntityEvent {
     Event<TameAnimal> TAME_ANIMAL = EventFactory.createEventResult(TameAnimal.class);
 
     Event<InteractWithEntity> INTERACT_WITH_ENTITY = EventFactory.createEventResult(InteractWithEntity.class);
+
+    Event<TradeWithVillager> TRADE_WITH_VILLAGER = EventFactory.createLoop(TradeWithVillager.class);
 
     interface PlayerDeath {
         EventResult onPlayerDeath(ServerPlayer serverPlayer, DamageSource damageSource);
@@ -44,5 +49,9 @@ public interface ArcEntityEvent {
 
     interface InteractWithEntity {
         EventResult onInteractWithEntity(Player player, Entity entity, InteractionHand hand);
+    }
+
+    interface TradeWithVillager {
+        void onTradeWithVillager(Player player, Merchant merchant, MerchantOffer offer, ItemStack boughtStack);
     }
 }

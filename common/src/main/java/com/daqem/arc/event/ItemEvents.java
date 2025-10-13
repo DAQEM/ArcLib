@@ -1,5 +1,6 @@
 package com.daqem.arc.event;
 
+import com.daqem.arc.Arc;
 import com.daqem.arc.api.action.IActionType;
 import com.daqem.arc.api.action.result.ActionResult;
 import com.daqem.arc.api.event.ArcItemEvent;
@@ -86,6 +87,62 @@ public class ItemEvents {
                 }
             }
             return EventResult.PASS;
+        }, EventPriority.HIGH);
+
+        ArcItemEvent.PICKUP_ITEM.register((player, itemEntity) -> {
+            if (player instanceof ArcServerPlayer arcServerPlayer) {
+                new ActionDataBuilder(arcServerPlayer, IActionType.PICKUP_ITEM)
+                        .withData(IActionDataType.ENTITY, itemEntity)
+                        .withData(IActionDataType.ITEM_STACK, itemEntity.getItem())
+                        .withData(IActionDataType.ITEM, itemEntity.getItem().getItem())
+                        .withData(IActionDataType.BLOCK_POSITION, player.blockPosition())
+                        .withData(IActionDataType.WORLD, player.level())
+                        .build()
+                        .sendToAction();
+            }
+        }, EventPriority.HIGH);
+
+        ArcItemEvent.FILL_BUCKET.register((player, filledBucket, level, pos, fluidState) -> {
+            if (player instanceof ArcServerPlayer arcServerPlayer) {
+                new ActionDataBuilder(arcServerPlayer, IActionType.FILL_BUCKET)
+                        .withData(IActionDataType.ITEM_STACK, filledBucket)
+                        .withData(IActionDataType.ITEM, filledBucket.getItem())
+                        .withData(IActionDataType.BLOCK_POSITION, pos)
+                        .withData(IActionDataType.BLOCK_STATE, fluidState)
+                        .withData(IActionDataType.WORLD, level)
+                        .build()
+                        .sendToAction();
+            }
+        }, EventPriority.HIGH);
+
+        ArcItemEvent.EMPTY_BUCKET.register((player, emptyBucket, level, pos, fluidState) -> {
+            if (player instanceof ArcPlayer arcPlayer) {
+                ActionResult actionResult = new ActionDataBuilder(arcPlayer, IActionType.EMPTY_BUCKET)
+                        .withData(IActionDataType.ITEM_STACK, emptyBucket)
+                        .withData(IActionDataType.ITEM, emptyBucket.getItem())
+                        .withData(IActionDataType.BLOCK_POSITION, pos)
+                        .withData(IActionDataType.BLOCK_STATE, fluidState)
+                        .withData(IActionDataType.WORLD, level)
+                        .build()
+                        .sendToAction();
+
+                if (actionResult.shouldCancelAction()) {
+                    return EventResult.INTERRUPT_FALSE;
+                }
+            }
+            return EventResult.PASS;
+        }, EventPriority.HIGH);
+
+        ArcItemEvent.ITEM_BREAK.register((player, brokenItem) -> {
+            if (player instanceof ArcServerPlayer arcServerPlayer) {
+                new ActionDataBuilder(arcServerPlayer, IActionType.ITEM_BREAK)
+                        .withData(IActionDataType.ITEM_STACK, brokenItem)
+                        .withData(IActionDataType.ITEM, brokenItem.getItem())
+                        .withData(IActionDataType.BLOCK_POSITION, player.blockPosition())
+                        .withData(IActionDataType.WORLD, player.level())
+                        .build()
+                        .sendToAction();
+            }
         }, EventPriority.HIGH);
     }
 }

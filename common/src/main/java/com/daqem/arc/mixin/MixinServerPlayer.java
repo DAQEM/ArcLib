@@ -2,6 +2,7 @@ package com.daqem.arc.mixin;
 
 import com.daqem.arc.api.MovementType;
 import com.daqem.arc.api.action.holder.IActionHolder;
+import com.daqem.arc.api.event.ArcItemEvent;
 import com.daqem.arc.api.event.ArcMovementEvent;
 import com.daqem.arc.api.event.ArcPlayerEvent;
 import com.daqem.arc.api.player.ArcPlayer;
@@ -20,6 +21,7 @@ import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.animal.horse.AbstractHorse;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -313,5 +315,10 @@ public abstract class MixinServerPlayer extends Player implements ArcServerPlaye
         if (((ServerPlayer) (Object) this) instanceof ArcPlayer arcPlayer) {
             arcPlayer.arc$addActionHolders(PlayerActionHolderManager.getInstance().getPlayerActionHoldersList());
         }
+    }
+
+    @Inject(method = "onItemPickup", at = @At("HEAD"))
+    private void arc$onItemPickup(ItemEntity itemEntity, CallbackInfo ci) {
+        ArcItemEvent.PICKUP_ITEM.invoker().onPickupItem(this, itemEntity);
     }
 }

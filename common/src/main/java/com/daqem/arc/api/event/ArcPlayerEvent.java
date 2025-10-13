@@ -2,6 +2,7 @@ package com.daqem.arc.api.event;
 
 import com.daqem.arc.api.IArcAbstractArrow;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
@@ -37,6 +38,11 @@ public interface ArcPlayerEvent {
     Event<Eat> EAT = EventFactory.createEventResult(Eat.class);
 
     Event<GetAttackSpeed> GET_ATTACK_SPEED = EventFactory.createEventResult(GetAttackSpeed.class);
+
+    Event<Jump> JUMP = EventFactory.createLoop(Jump.class);
+    Event<LandOnGround> LAND_ON_GROUND = EventFactory.createEventResult(LandOnGround.class);
+    Event<BlockWithShield> BLOCK_WITH_SHIELD = EventFactory.createLoop(BlockWithShield.class);
+    Event<ChangeDimension> CHANGE_DIMENSION = EventFactory.createLoop(ChangeDimension.class);
 
     interface EntityHurtPlayer {
         EventResult onEntityHurtPlayer(ServerPlayer serverPlayer, DamageSource damageSource, MutableFloat damage);
@@ -96,5 +102,21 @@ public interface ArcPlayerEvent {
 
     interface GetAttackSpeed {
         EventResult onGetAttackSpeed(Player player, ItemStack itemStack, MutableFloat attackSpeed);
+    }
+
+    interface Jump {
+        void onJump(Player player);
+    }
+
+    interface LandOnGround {
+        EventResult onLandOnGround(Player player, double fallDistance);
+    }
+
+    interface BlockWithShield {
+        void onBlockWithShield(Player player, DamageSource source, float amount);
+    }
+
+    interface ChangeDimension {
+        void onChangeDimension(ServerPlayer player, ResourceKey<Level> from, ResourceKey<Level> to);
     }
 }

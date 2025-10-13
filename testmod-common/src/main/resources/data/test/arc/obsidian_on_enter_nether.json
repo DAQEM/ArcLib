@@ -1,0 +1,28 @@
+{
+  "holder": {
+    "type": "arc:player",
+    "id": "arc:player"
+  },
+  "type": "arc:on_change_dimension",
+  "conditions": [
+    {
+      "type": "arc:dimension",
+      "dimension": "minecraft:the_nether"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "arc:item",
+      "item": {
+        "id": "minecraft:obsidian",
+        "count": 4
+      }
+    },
+    {
+      "type": "arc:item",
+      "item": {
+        "id": "minecraft:fire_charge"
+      }
+    }
+  ]
+}

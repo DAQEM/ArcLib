@@ -3,6 +3,7 @@ package com.daqem.arc.api.action.data;
 import com.daqem.arc.Arc;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
@@ -11,6 +12,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -31,6 +33,10 @@ public interface IActionDataType<T> {
     IActionDataType<MobEffectInstance> MOB_EFFECT_INSTANCE = register(Arc.getId("mob_effect_instance"));
     IActionDataType<Recipe<?>> RECIPE = register(Arc.getId("recipe"));
     IActionDataType<InteractionHand> HAND = register(Arc.getId("hand"));
+    IActionDataType<Double> FALL_DISTANCE = register(Arc.getId("fall_distance"));
+    IActionDataType<ResourceKey<Level>> FROM_DIMENSION = register(Arc.getId("from_dimension"));
+    IActionDataType<ResourceKey<Level>> TO_DIMENSION = register(Arc.getId("to_dimension"));
+    IActionDataType<MerchantOffer> TRADE_OFFER = register(Arc.getId("trade_offer"));
 
     static <T> IActionDataType<T> register(ResourceLocation location) {
         return () -> location;

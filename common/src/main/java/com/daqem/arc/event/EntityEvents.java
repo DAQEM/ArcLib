@@ -12,6 +12,7 @@ import dev.architectury.event.events.common.EntityEvent;
 import dev.architectury.event.events.common.InteractionEvent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
 
 public class EntityEvents {
 
@@ -138,6 +139,18 @@ public class EntityEvents {
                 }
             }
             return EventResult.PASS;
+        }, EventPriority.HIGH);
+
+        ArcEntityEvent.TRADE_WITH_VILLAGER.register((player, merchant, offer, boughtStack) -> {
+            if (player instanceof ArcServerPlayer arcServerPlayer && merchant instanceof Entity merchantEntity) {
+                new ActionDataBuilder(arcServerPlayer, IActionType.TRADE_WITH_VILLAGER)
+                        .withData(IActionDataType.ENTITY, merchantEntity)
+                        .withData(IActionDataType.ITEM_STACK, boughtStack)
+                        .withData(IActionDataType.TRADE_OFFER, offer)
+                        .withData(IActionDataType.WORLD, player.level())
+                        .build()
+                        .sendToAction();
+            }
         }, EventPriority.HIGH);
     }
 }

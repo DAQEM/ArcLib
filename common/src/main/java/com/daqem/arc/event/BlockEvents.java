@@ -140,5 +140,17 @@ public class BlockEvents {
             }
             return EventResult.PASS;
         }, EventPriority.HIGH);
+
+        ArcBlockEvent.TILL_SOIL.register((level, blockPos, resultingState, player, hoe) -> {
+            if (player instanceof ArcServerPlayer arcServerPlayer) {
+                new ActionDataBuilder(arcServerPlayer, IActionType.TILL_SOIL)
+                        .withData(IActionDataType.BLOCK_STATE, resultingState)
+                        .withData(IActionDataType.BLOCK_POSITION, blockPos)
+                        .withData(IActionDataType.WORLD, level)
+                        .withData(IActionDataType.ITEM_STACK, hoe)
+                        .build()
+                        .sendToAction();
+            }
+        }, EventPriority.HIGH);
     }
 }

@@ -1,0 +1,31 @@
+{
+  "holder": {
+    "type": "arc:player",
+    "id": "arc:player"
+  },
+  "type": "arc:on_trade_with_villager",
+  "conditions": [
+    {
+      "type": "arc:entity_type",
+      "entity_type": "minecraft:villager"
+    },
+    {
+      "type": "arc:entity_data",
+      "target": "entity",
+      "properties": [
+        {
+          "id": "arc:villager_profession",
+          "value": "minecraft:librarian"
+        }
+      ]
+    }
+  ],
+  "rewards": [
+    {
+      "type": "arc:item",
+      "item": {
+        "id": "minecraft:book"
+      }
+    }
+  ]
+}

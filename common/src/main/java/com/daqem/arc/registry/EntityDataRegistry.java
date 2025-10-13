@@ -2,6 +2,7 @@ package com.daqem.arc.registry;
 
 import com.daqem.arc.Arc;
 import com.daqem.arc.api.entity.IEntityDataResolver;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -10,6 +11,7 @@ import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.monster.SpellcasterIllager;
 import net.minecraft.world.entity.npc.AbstractVillager;
+import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.HashMap;
@@ -125,6 +127,8 @@ public class EntityDataRegistry {
                 entity -> entity instanceof AbstractVillager v ? v.getUnhappyCounter() : 0));
         register(new SimpleEntityDataResolver<>(Arc.getId("is_trading"), Boolean.class,
                 entity -> entity instanceof AbstractVillager v && v.isTrading()));
+        register(new SimpleEntityDataResolver<>(Arc.getId("villager_profession"), String.class,
+                entity -> entity instanceof Villager v ? BuiltInRegistries.VILLAGER_PROFESSION.getKey(v.getVillagerData().profession().value()).toString() : "none"));
         register(new SimpleEntityDataResolver<>(Arc.getId("is_casting_spell"), Boolean.class,
                 entity -> entity instanceof SpellcasterIllager si && si.isCastingSpell()));
         register(new SimpleEntityDataResolver<>(Arc.getId("current_spell"), String.class,

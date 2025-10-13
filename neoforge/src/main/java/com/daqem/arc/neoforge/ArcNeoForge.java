@@ -6,7 +6,6 @@ import com.daqem.arc.api.event.ArcItemEvent;
 import com.daqem.arc.api.event.ArcPlayerEvent;
 import com.daqem.arc.api.event.EventResult;
 import com.daqem.arc.command.argument.ActionArgument;
-import com.daqem.arc.registry.ArcRegistry;
 import net.minecraft.commands.synchronization.ArgumentTypeInfo;
 import net.minecraft.commands.synchronization.ArgumentTypeInfos;
 import net.minecraft.commands.synchronization.SingletonArgumentInfo;
@@ -14,14 +13,15 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
-import net.neoforged.neoforge.event.GrindstoneEvent;
-import net.neoforged.neoforge.event.brewing.PlayerBrewedPotionEvent;
 import net.neoforged.neoforge.event.entity.item.ItemTossEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
+import net.neoforged.neoforge.event.entity.living.LivingShieldBlockEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerDestroyItemEvent;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.apache.commons.lang3.mutable.MutableFloat;
 
@@ -69,10 +69,24 @@ public class ArcNeoForge {
     }
 
     @SubscribeEvent
+    public static void onShieldBlock(LivingShieldBlockEvent event) {
+        if (event.getEntity() instanceof Player player && event.getBlockedDamage() > 0.0F) {
+            ArcPlayerEvent.BLOCK_WITH_SHIELD.invoker().onBlockWithShield(player, event.getDamageSource(), event.getBlockedDamage());
+        }
+    }
+
+    @SubscribeEvent
     public static void onItemToss(ItemTossEvent event) {
         EventResult eventResult = ArcItemEvent.DROP_ITEM.invoker().onDropItem(event.getPlayer(), event.getEntity());
         if (eventResult.cancelsEvent()) {
             event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onDestroyItem(PlayerDestroyItemEvent event) {
+        if (event.getEntity() instanceof ServerPlayer serverPlayer) {
+            ArcItemEvent.ITEM_BREAK.invoker().onItemBreak(serverPlayer, event.getOriginal());
         }
     }
 }

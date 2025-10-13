@@ -1,0 +1,21 @@
+{
+  "holder": {
+    "type": "arc:player",
+    "id": "arc:player"
+  },
+  "type": "arc:on_pickup_item",
+  "conditions": [
+    {
+      "type": "arc:item",
+      "item": "minecraft:diamond"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "arc:item",
+      "item": {
+        "id": "minecraft:diamond"
+      }
+    }
+  ]
+}

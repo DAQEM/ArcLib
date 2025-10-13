@@ -9,10 +9,14 @@ import com.daqem.arc.api.event.EventPriority;
 import com.daqem.arc.api.event.EventResult;
 import com.daqem.arc.api.player.ArcPlayer;
 import com.daqem.arc.api.player.ArcServerPlayer;
+import dev.architectury.event.events.common.PlayerEvent;
 
 public class PlayerEvents {
 
     public static void registerEvents() {
+
+        PlayerEvent.CHANGE_DIMENSION.register((player, from, to) ->
+                ArcPlayerEvent.CHANGE_DIMENSION.invoker().onChangeDimension(player, from, to));
 
         ArcPlayerEvent.ENTITY_HURT_PLAYER.register((serverPlayer, damageSource, damage) -> {
             if (serverPlayer instanceof ArcServerPlayer arcServerPlayer) {
@@ -228,5 +232,54 @@ public class PlayerEvents {
             return EventResult.PASS;
         }, EventPriority.HIGH);
 
+        ArcPlayerEvent.JUMP.register(player -> {
+            if (player instanceof ArcServerPlayer arcServerPlayer) {
+                new ActionDataBuilder(arcServerPlayer, IActionType.JUMP)
+                        .withData(IActionDataType.BLOCK_POSITION, player.blockPosition())
+                        .withData(IActionDataType.WORLD, player.level())
+                        .build()
+                        .sendToAction();
+            }
+        }, EventPriority.HIGH);
+
+        ArcPlayerEvent.LAND_ON_GROUND.register((player, fallDistance) -> {
+            if (player instanceof ArcServerPlayer arcServerPlayer) {
+                ActionResult actionResult = new ActionDataBuilder(arcServerPlayer, IActionType.LAND_ON_GROUND)
+                        .withData(IActionDataType.FALL_DISTANCE, fallDistance)
+                        .withData(IActionDataType.BLOCK_POSITION, player.blockPosition())
+                        .withData(IActionDataType.WORLD, player.level())
+                        .build()
+                        .sendToAction();
+
+                if (actionResult.shouldCancelAction()) {
+                    return EventResult.INTERRUPT_FALSE;
+                }
+            }
+            return EventResult.PASS;
+        }, EventPriority.HIGH);
+
+        ArcPlayerEvent.BLOCK_WITH_SHIELD.register((player, source, amount) -> {
+            if (player instanceof ArcServerPlayer arcServerPlayer) {
+                new ActionDataBuilder(arcServerPlayer, IActionType.BLOCK_WITH_SHIELD)
+                        .withData(IActionDataType.DAMAGE_SOURCE, source)
+                        .withData(IActionDataType.DAMAGE_AMOUNT, amount)
+                        .withData(IActionDataType.ENTITY, source.getEntity())
+                        .withData(IActionDataType.BLOCK_POSITION, player.blockPosition())
+                        .withData(IActionDataType.WORLD, player.level())
+                        .build()
+                        .sendToAction();
+            }
+        }, EventPriority.HIGH);
+
+        ArcPlayerEvent.CHANGE_DIMENSION.register((player, from, to) -> {
+            if (player instanceof ArcServerPlayer arcServerPlayer) {
+                new ActionDataBuilder(arcServerPlayer, IActionType.CHANGE_DIMENSION)
+                        .withData(IActionDataType.FROM_DIMENSION, from)
+                        .withData(IActionDataType.TO_DIMENSION, to)
+                        .withData(IActionDataType.WORLD, player.level())
+                        .build()
+                        .sendToAction();
+            }
+        }, EventPriority.HIGH);
     }
 }

@@ -1,0 +1,24 @@
+{
+  "holder": {
+    "type": "arc:player",
+    "id": "arc:player"
+  },
+  "type": "arc:on_empty_bucket",
+  "conditions": [
+    {
+      "type": "arc:item",
+      "item": "minecraft:lava_bucket"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "arc:item",
+      "item": {
+        "id": "minecraft:obsidian"
+      }
+    },
+    {
+      "type": "arc:cancel_action"
+    }
+  ]
+}

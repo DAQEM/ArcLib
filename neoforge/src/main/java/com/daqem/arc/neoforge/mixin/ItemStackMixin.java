@@ -27,7 +27,8 @@ public class ItemStackMixin {
             method = "hurtAndBreak(ILnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/entity/LivingEntity;Ljava/util/function/Consumer;)V",
             at = @At("HEAD"),
             order = 900,
-            cancellable = true)
+            cancellable = true
+    )
     private void onHurtAndBreak(int damage, ServerLevel serverLevel, LivingEntity livingEntity, Consumer<Item> consumer, CallbackInfo ci) {
         if (livingEntity instanceof ServerPlayer serverPlayer) {
             MutableInt mutableDamage = new MutableInt(damage);
@@ -54,8 +55,7 @@ public class ItemStackMixin {
                 return this.arc$damage.getValue();
             }
             return i;
-        }
-        finally {
+        } finally {
             this.arc$damage = null;
         }
     }

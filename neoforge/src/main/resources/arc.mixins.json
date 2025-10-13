@@ -5,7 +5,9 @@
   "client": [
   ],
   "mixins": [
-    "ItemStackMixin"
+    "BucketItemMixin",
+    "ItemStackMixin",
+    "MixinHoeItem"
   ],
   "injectors": {
     "defaultRequire": 1

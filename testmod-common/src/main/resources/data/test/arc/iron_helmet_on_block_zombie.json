@@ -1,0 +1,21 @@
+{
+  "holder": {
+    "type": "arc:player",
+    "id": "arc:player"
+  },
+  "type": "arc:on_block_with_shield",
+  "conditions": [
+    {
+      "type": "arc:entity_type",
+      "entity_type": "minecraft:zombie"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "arc:item",
+      "item": {
+        "id": "minecraft:iron_helmet"
+      }
+    }
+  ]
+}

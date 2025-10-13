@@ -34,7 +34,8 @@ public record EntityDataProperty(ResourceLocation id, String value, ComparisonTy
     );
 
     public boolean matches(Entity entity) {
-        return EntityDataRegistry.get(id)
+        Optional<IEntityDataResolver<?>> entityDataResolver = EntityDataRegistry.get(id);
+        return entityDataResolver
                 .map(resolver -> {
                     Object actualValue = resolver.getDataFetcher().apply(entity);
                     if (actualValue instanceof Optional<?> optional) {
