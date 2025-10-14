@@ -11,6 +11,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -34,7 +35,12 @@ public class ItemsCondition extends AbstractCondition {
 
     @Override
     public Component getDescription() {
-        return getDescription(items.stream().map(Item::getName).toArray(Component[]::new), itemTags.stream().map(TagKey::location).toArray(ResourceLocation[]::new));
+        return getDescription(items.stream().map(Item::getName).reduce(
+                (a, b) -> ((MutableComponent) a).append(", ").append(b)
+        ).orElse(Component.literal("No Items")
+        ), itemTags.stream().map(TagKey::location).map(ResourceLocation::toString).reduce(
+                (a, b) -> a + ", " + b
+        ).orElse("No Item Tags"));
     }
 
     @Override

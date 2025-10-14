@@ -34,7 +34,12 @@ public class BlocksCondition extends AbstractCondition {
 
     @Override
     public Component getDescription() {
-        return getDescription(blockStates.stream().map(x -> x.block().getName()).toArray(Component[]::new), blockTags.stream().map(TagKey::location).toArray(ResourceLocation[]::new));
+        return getDescription(blockStates.stream().map(x -> x.block().getName()).reduce(
+                (a, b) -> a.append(", ").append(b)
+        ).orElse(Component.literal("No Blocks")
+        ), blockTags.stream().map(TagKey::location).map(ResourceLocation::toString).reduce(
+                (a, b) -> a + ", " + b
+        ).orElse("No Block Tags"));
     }
 
     @Override

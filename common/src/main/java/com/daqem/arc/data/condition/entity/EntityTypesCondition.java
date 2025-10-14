@@ -9,6 +9,7 @@ import com.google.gson.JsonObject;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -27,7 +28,8 @@ public class EntityTypesCondition extends AbstractCondition {
 
     @Override
     public Component getDescription() {
-        return getDescription((Object[]) entityTypes.stream().map(EntityType::getDescription).toArray(Component[]::new));
+        return getDescription(entityTypes.stream().map(EntityType::getDescription)
+                .reduce((a, b) -> ((MutableComponent) a).append(", ").append(b)));
     }
 
     @Override
