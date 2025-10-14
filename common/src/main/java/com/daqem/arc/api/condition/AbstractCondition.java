@@ -24,11 +24,17 @@ public abstract class AbstractCondition implements ICondition {
 
     @Override
     public Component getName() {
+        if (inverted) {
+            return Arc.translatable("condition." + this.getType().getLocation().getPath() + ".inverted");
+        }
         return Arc.translatable("condition." + this.getType().getLocation().getPath());
     }
 
     @Override
     public Component getDescription(Object... args) {
+        if (inverted) {
+            return Arc.translatable("condition.description." + this.getType().getLocation().getPath() + ".inverted", args);
+        }
         return Arc.translatable("condition.description." + this.getType().getLocation().getPath(), args);
     }
 
