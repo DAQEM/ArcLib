@@ -29,7 +29,7 @@ public class EntityTypesCondition extends AbstractCondition {
     @Override
     public Component getDescription() {
         return getDescription(entityTypes.stream().map(EntityType::getDescription)
-                .reduce((a, b) -> ((MutableComponent) a).append(", ").append(b)));
+                .reduce((a, b) -> ((MutableComponent) a).append(", ").append(b)).orElse(Component.literal("None")));
     }
 
     @Override
