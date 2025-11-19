@@ -56,11 +56,9 @@ public abstract class MixinItemStack {
 
                     int j = copy.getDamageValue() + i;
                     copy.setDamageValue(j);
-                    if (j >= copy.getMaxDamage()) {
-                        ActionResult actionResult = PlayerEvents.onPlayerHurtItem(player, arc$getItemStack());
-                        if (actionResult.shouldCancelAction()) {
-                            ci.cancel();
-                        }
+                    ActionResult actionResult = PlayerEvents.onPlayerHurtItem(player, arc$getItemStack());
+                    if (actionResult.shouldCancelAction()) {
+                        ci.cancel();
                     }
                 }
             }
