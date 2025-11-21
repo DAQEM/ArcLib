@@ -27,7 +27,7 @@ public class OrCondition extends AbstractCondition {
 
     @Override
     public boolean isMet(ActionData actionData) {
-        return conditions.stream().anyMatch(condition -> condition.isMet(actionData));
+        return conditions.stream().anyMatch(condition -> condition.isMet(actionData) != condition.isInverted());
     }
 
     @Override

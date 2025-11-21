@@ -82,7 +82,7 @@ public class LivingEntityFabricMixin {
                     shift = At.Shift.BEFORE
             ),
             order = 1100,
-            name = "f"
+            argsOnly = true
     )
     private float modifyDamage(float f) {
         if (this.arc$damage != null) {
