@@ -29,9 +29,6 @@ public abstract class PlayerListMixin {
     @Inject(at = @At("TAIL"), method = "reloadResources")
     private void reloadResources(CallbackInfo ci) {
         for (ServerPlayer player : this.players) {
-            if (Arc.isDebugEnvironment()) {
-                Arc.LOGGER.info("Sending actions to player {}", player.getName().getString());
-            }
             if (player instanceof ArcServerPlayer arcServerPlayer) {
                 List<ResourceLocation> actionHolderLocations = arcServerPlayer.arc$getActionHolders().stream().map(IActionHolder::getLocation).toList();
                 arcServerPlayer.arc$clearActionHolders();

@@ -60,10 +60,6 @@ public class Arc {
         return Component.literal(str);
     }
 
-    public static boolean isDebugEnvironment() {
-        return ArcCommonConfig.isDebug.get();
-    }
-
     @SuppressWarnings("unused")
     public static IArcRegistryAccessor getRegistryAccessor() {
         return ActionHolderManager.getInstance();

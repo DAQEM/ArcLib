@@ -43,9 +43,6 @@ public class ActionProcessor {
         }
 
         if (action.getConditions().stream().allMatch(condition -> condition.isMet(actionData) != condition.isInverted())) {
-            if (Arc.isDebugEnvironment()) {
-                Arc.LOGGER.info("Action {} passed conditions for action holder {}", action.getLocation(), action.getActionHolderLocation());
-            }
             result = applyRewards(action, actionData);
         }
 

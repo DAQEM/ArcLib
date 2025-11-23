@@ -2,8 +2,10 @@ package com.daqem.arc.data;
 
 import com.daqem.arc.Arc;
 import com.daqem.arc.api.action.IAction;
+import com.daqem.arc.config.ArcCommonConfig;
 import com.daqem.arc.data.condition.recipe.RecipeCache;
 import com.daqem.arc.registry.ArcRegistry;
+import com.daqem.yamlconfig.YamlConfigExpectPlatform;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
@@ -16,11 +18,15 @@ import net.minecraft.util.GsonHelper;
 import net.minecraft.util.profiling.ProfilerFiller;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.BufferedReader;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class ActionManager extends SimplePreparableReloadListener<List<IAction>> {
 
@@ -47,14 +53,48 @@ public class ActionManager extends SimplePreparableReloadListener<List<IAction>>
                 Arc.LOGGER.error("Parsing error loading action {}", location, runtimeException);
             }
         }
-        List<IAction> actions = new ArrayList<>();
 
-        if (!Arc.isDebugEnvironment()) {
-            map.entrySet().removeIf(entry -> entry.getKey().getNamespace().equals("debug"));
+        try {
+            Path configDir = YamlConfigExpectPlatform.getConfigDirectory().resolve(Arc.MOD_ID).resolve("actions");
+            if (!Files.exists(configDir)) {
+                Files.createDirectories(configDir);
+            }
+            try (Stream<Path> paths = Files.walk(configDir)) {
+                paths.filter(path -> path.toString().endsWith(".json"))
+                        .forEach(path -> {
+                            try (BufferedReader reader = Files.newBufferedReader(path)) {
+                                JsonObject jsonElement = GsonHelper.parse(reader);
+                                String relativePath = configDir.relativize(path).toString();
+                                relativePath = relativePath.replace("\\", "/");
+                                relativePath = relativePath.substring(0, relativePath.length() - ".json".length());
+                                String namespace;
+                                String resourcePath;
+                                int firstSlashIndex = relativePath.indexOf('/');
+                                if (firstSlashIndex > 0) {
+                                    namespace = relativePath.substring(0, firstSlashIndex);
+                                    resourcePath = relativePath.substring(firstSlashIndex + 1);
+                                } else {
+                                    namespace = Arc.MOD_ID;
+                                    resourcePath = relativePath;
+                                }
+                                ResourceLocation location = ResourceLocation.fromNamespaceAndPath(namespace, resourcePath);
+                                map.put(location, jsonElement);
+                            } catch (Exception e) {
+                                Arc.LOGGER.error("Parsing error loading action from config {}", path, e);
+                            }
+                        });
+            }
+        } catch (Exception e) {
+            Arc.LOGGER.error("Error loading actions from config", e);
         }
+        List<IAction> actions = new ArrayList<>();
+        List<String> excludedActions = ArcCommonConfig.excludedActions.get();
 
         for (Map.Entry<ResourceLocation, JsonElement> entry : map.entrySet()) {
             ResourceLocation location = entry.getKey();
+            if (excludedActions.contains(location.toString())) {
+                continue;
+            }
             try {
                 IAction action = fromJson(location, GsonHelper.convertToJsonObject(entry.getValue(), "top element"));
                 actions.add(action);
