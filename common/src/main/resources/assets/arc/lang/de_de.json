@@ -439,8 +439,8 @@
   "tag.item.c.leggings": "Beinschützer",
   "yamlconfig.arc": "Arc Lib",
   "yamlconfig.arc.arc-common": "Allgemein",
-  "yamlconfig.arc.arc-common.debug": "Debug",
-  "yamlconfig.arc.arc-common.debug.is_debug": "Debug aktiviert",
+  "yamlconfig.arc.arc-common.actions": "Aktionen",
+  "yamlconfig.arc.arc-common.actions.excluded_actions": "Ausgeschlossene Aktionen",
   "yamlconfig.arc.arc-common.block": "Block",
   "yamlconfig.arc.arc-common.block.max_block_pos_cache_size": "Maximale Größe des Blockpositions-Caches"
 }

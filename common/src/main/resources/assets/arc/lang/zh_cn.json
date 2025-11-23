@@ -439,8 +439,8 @@
   "tag.item.c.leggings": "护腿",
   "yamlconfig.arc": "Arc Lib",
   "yamlconfig.arc.arc-common": "通用",
-  "yamlconfig.arc.arc-common.debug": "调试",
-  "yamlconfig.arc.arc-common.debug.is_debug": "启用调试",
+  "yamlconfig.arc.arc-common.actions": "动作",
+  "yamlconfig.arc.arc-common.actions.excluded_actions": "排除的动作",
   "yamlconfig.arc.arc-common.block": "方块",
   "yamlconfig.arc.arc-common.block.max_block_pos_cache_size": "最大方块位置缓存大小"
 }

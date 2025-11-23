@@ -439,8 +439,8 @@
   "tag.item.c.leggings": "Поножи",
   "yamlconfig.arc": "Arc Lib",
   "yamlconfig.arc.arc-common": "Общие",
-  "yamlconfig.arc.arc-common.debug": "Отладка",
-  "yamlconfig.arc.arc-common.debug.is_debug": "Отладка включена",
+  "yamlconfig.arc.arc-common.actions": "Действия",
+  "yamlconfig.arc.arc-common.actions.excluded_actions": "Исключенные действия",
   "yamlconfig.arc.arc-common.block": "Блок",
   "yamlconfig.arc.arc-common.block.max_block_pos_cache_size": "Максимальный размер кэша позиций блоков"
 }

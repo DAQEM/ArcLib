@@ -439,8 +439,8 @@
   "tag.item.c.leggings": "Jambières",
   "yamlconfig.arc": "Arc Lib",
   "yamlconfig.arc.arc-common": "Commun",
-  "yamlconfig.arc.arc-common.debug": "Débogage",
-  "yamlconfig.arc.arc-common.debug.is_debug": "Débogage Activé",
+  "yamlconfig.arc.arc-common.actions": "Actions",
+  "yamlconfig.arc.arc-common.actions.excluded_actions": "Actions Exclues",
   "yamlconfig.arc.arc-common.block": "Bloc",
   "yamlconfig.arc.arc-common.block.max_block_pos_cache_size": "Taille Maximale du Cache de Position de Bloc"
 }

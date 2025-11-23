@@ -439,8 +439,8 @@
   "tag.item.c.leggings": "Grebas",
   "yamlconfig.arc": "Arc Lib",
   "yamlconfig.arc.arc-common": "Común",
-  "yamlconfig.arc.arc-common.debug": "Depuración",
-  "yamlconfig.arc.arc-common.debug.is_debug": "Depuración Habilitada",
+  "yamlconfig.arc.arc-common.actions": "Acciones",
+  "yamlconfig.arc.arc-common.actions.excluded_actions": "Acciones Excluidas",
   "yamlconfig.arc.arc-common.block": "Bloque",
   "yamlconfig.arc.arc-common.block.max_block_pos_cache_size": "Tamaño Máximo del Caché de Posición de Bloque"
 }

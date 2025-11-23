@@ -439,8 +439,8 @@
   "tag.item.c.leggings": "Leggings",
   "yamlconfig.arc": "Arc Lib",
   "yamlconfig.arc.arc-common": "Common",
-  "yamlconfig.arc.arc-common.debug": "Debug",
-  "yamlconfig.arc.arc-common.debug.is_debug": "Debug Enabled",
+  "yamlconfig.arc.arc-common.actions": "Actions",
+  "yamlconfig.arc.arc-common.actions.excluded_actions": "Excluded Actions",
   "yamlconfig.arc.arc-common.block": "Block",
   "yamlconfig.arc.arc-common.block.max_block_pos_cache_size": "Max Block Pos Cache Size"
 }
