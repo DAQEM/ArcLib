@@ -4,6 +4,7 @@
   "package": "com.daqem.arc.mixin",
   "compatibilityLevel": "JAVA_21",
   "client": [
+    "ClientLanguageMixin",
     "MixinLocalPlayer"
   ],
   "mixins": [
