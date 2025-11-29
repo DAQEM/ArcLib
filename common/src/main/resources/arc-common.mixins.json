@@ -15,6 +15,7 @@
     "MixinAnimal",
     "MixinAnvilMenu",
     "MixinAxeItem",
+    "MixinBlockBehaviour",
     "MixinBlockStateBase",
     "MixinBucketItem",
     "MixinConsumable",

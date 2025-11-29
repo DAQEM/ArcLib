@@ -31,21 +31,4 @@ public abstract class MixinBlockStateBase {
             cir.setReturnValue(InteractionResult.FAIL);
         }
     }
-
-    @Inject(at = @At("RETURN"), method = "getDestroyProgress(Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/world/level/BlockGetter;Lnet/minecraft/core/BlockPos;)F", cancellable = true)
-    public void getDestroyProgress(Player player, BlockGetter blockGetter, BlockPos blockPos, CallbackInfoReturnable<Float> cir) {
-        MutableFloat speed = new MutableFloat(cir.getReturnValue());
-        EventResult eventResult = ArcBlockEvent.GET_DESTROY_SPEED.invoker().onGetDestroySpeed(
-                player,
-                blockGetter.getBlockState(blockPos),
-                blockPos,
-                player.getMainHandItem(),
-                speed
-        );
-        if (eventResult.cancelsEvent()) {
-            cir.setReturnValue(0F);
-        } else if (!Objects.equals(speed.getValue(), cir.getReturnValue())) {
-            cir.setReturnValue(speed.getValue());
-        }
-    }
 }
