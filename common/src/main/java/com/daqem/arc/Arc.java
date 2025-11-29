@@ -22,6 +22,7 @@ import org.slf4j.Logger;
 public class Arc {
     public static final String MOD_ID = "arc";
     public static final Logger LOGGER = LogUtils.getLogger();
+    public static boolean DEBUG = false;
 
     public static void init() {
         ArcCommonConfig.init();

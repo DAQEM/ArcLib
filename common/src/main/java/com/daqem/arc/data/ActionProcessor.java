@@ -43,6 +43,9 @@ public class ActionProcessor {
         }
 
         if (action.getConditions().stream().allMatch(condition -> condition.isMet(actionData) != condition.isInverted())) {
+            if (Arc.DEBUG) {
+                Arc.LOGGER.info("Applying rewards for action: {}", action.getLocation());
+            }
             result = applyRewards(action, actionData);
         }
 

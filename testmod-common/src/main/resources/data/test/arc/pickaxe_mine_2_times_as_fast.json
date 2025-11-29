@@ -7,7 +7,7 @@
   "rewards": [
     {
       "type": "arc:destroy_speed_multiplier",
-      "multiplier" : 5
+      "multiplier" : 2
     }
   ],
   "conditions": [
@@ -15,6 +15,12 @@
       "type": "arc:items",
       "items": [
         "#minecraft:pickaxes"
+      ]
+    },
+    {
+      "type": "arc:blocks",
+      "blocks": [
+        "#minecraft:mineable/pickaxe"
       ]
     }
   ]
