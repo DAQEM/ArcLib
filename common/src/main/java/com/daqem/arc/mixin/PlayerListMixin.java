@@ -8,7 +8,7 @@ import com.daqem.arc.networking.ClientboundUpdateActionHoldersPacket;
 import com.daqem.arc.networking.ClientboundUpdateActionsPacket;
 import dev.architectury.networking.NetworkManager;
 import net.minecraft.network.Connection;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.CommonListenerCookie;
 import net.minecraft.server.players.PlayerList;
@@ -30,7 +30,7 @@ public abstract class PlayerListMixin {
     private void reloadResources(CallbackInfo ci) {
         for (ServerPlayer player : this.players) {
             if (player instanceof ArcServerPlayer arcServerPlayer) {
-                List<ResourceLocation> actionHolderLocations = arcServerPlayer.arc$getActionHolders().stream().map(IActionHolder::getLocation).toList();
+                List<Identifier> actionHolderLocations = arcServerPlayer.arc$getActionHolders().stream().map(IActionHolder::getIdentifier).toList();
                 arcServerPlayer.arc$clearActionHolders();
                 List<IActionHolder> actionHolders = ActionHolderManager.getInstance().getActionHolders(actionHolderLocations);
                 arcServerPlayer.arc$getActionLastMetDistances().clear();

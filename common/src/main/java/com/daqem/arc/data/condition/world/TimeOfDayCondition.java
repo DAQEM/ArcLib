@@ -7,7 +7,7 @@ import com.daqem.arc.data.ActionData;
 import com.google.gson.JsonObject;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.Level;
 
@@ -42,7 +42,7 @@ public class TimeOfDayCondition extends AbstractCondition {
     public static class Serializer implements IConditionSerializer<TimeOfDayCondition> {
 
         @Override
-        public TimeOfDayCondition fromJson(ResourceLocation location, JsonObject jsonObject, boolean inverted) {
+        public TimeOfDayCondition fromJson(Identifier location, JsonObject jsonObject, boolean inverted) {
             return new TimeOfDayCondition(
                     inverted,
                     GsonHelper.getAsInt(jsonObject, "min_time"),
@@ -51,7 +51,7 @@ public class TimeOfDayCondition extends AbstractCondition {
         }
 
         @Override
-        public TimeOfDayCondition fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
+        public TimeOfDayCondition fromNetwork(Identifier location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
             return new TimeOfDayCondition(
                     inverted,
                     friendlyByteBuf.readVarInt(),

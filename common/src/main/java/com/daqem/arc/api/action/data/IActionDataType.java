@@ -4,7 +4,7 @@ import com.daqem.arc.Arc;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -39,9 +39,9 @@ public interface IActionDataType<T> {
     IActionDataType<MerchantOffer> TRADE_OFFER = register(Arc.getId("trade_offer"));
     IActionDataType<Boolean> IS_CRITICAL_HIT = register(Arc.getId("is_critical_hit"));
 
-    static <T> IActionDataType<T> register(ResourceLocation location) {
+    static <T> IActionDataType<T> register(Identifier location) {
         return () -> location;
     }
 
-    ResourceLocation getLocation();
+    Identifier getIdentifier();
 }

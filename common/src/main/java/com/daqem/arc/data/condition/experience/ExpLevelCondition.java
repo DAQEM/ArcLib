@@ -8,7 +8,7 @@ import com.daqem.arc.data.ActionData;
 import com.google.gson.JsonObject;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.GsonHelper;
 
 public class ExpLevelCondition extends AbstractCondition {
@@ -43,14 +43,14 @@ public class ExpLevelCondition extends AbstractCondition {
     public static class Serializer implements IConditionSerializer<ExpLevelCondition> {
 
         @Override
-        public ExpLevelCondition fromJson(ResourceLocation location, JsonObject jsonObject, boolean inverted) {
+        public ExpLevelCondition fromJson(Identifier location, JsonObject jsonObject, boolean inverted) {
             return new ExpLevelCondition(
                     inverted,
                     GsonHelper.getAsInt(jsonObject, "level"));
         }
 
         @Override
-        public ExpLevelCondition fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
+        public ExpLevelCondition fromNetwork(Identifier location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
             return new ExpLevelCondition(
                     inverted,
                     friendlyByteBuf.readVarInt());

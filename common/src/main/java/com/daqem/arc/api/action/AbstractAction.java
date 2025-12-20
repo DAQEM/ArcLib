@@ -5,19 +5,19 @@ import com.daqem.arc.api.action.holder.IActionHolderType;
 import com.daqem.arc.api.condition.ICondition;
 import com.daqem.arc.api.reward.IReward;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.List;
 
 public abstract class AbstractAction implements IAction {
 
-    private final ResourceLocation location;
-    private final ResourceLocation actionHolderLocation;
+    private final Identifier location;
+    private final Identifier actionHolderLocation;
     private final IActionHolderType<?> actionHolderType;
     private final List<IReward> rewards;
     private final List<ICondition> conditions;
 
-    public AbstractAction(ResourceLocation location, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+    public AbstractAction(Identifier location, Identifier actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
         this.location = location;
         this.actionHolderLocation = actionHolderLocation;
         this.actionHolderType = actionHolderType;
@@ -26,7 +26,7 @@ public abstract class AbstractAction implements IAction {
     }
 
     @Override
-    public ResourceLocation getLocation() {
+    public Identifier getIdentifier() {
         return location;
     }
 
@@ -36,7 +36,7 @@ public abstract class AbstractAction implements IAction {
     }
 
     @Override
-    public ResourceLocation getActionHolderLocation() {
+    public Identifier getActionHolderLocation() {
         return actionHolderLocation;
     }
 
@@ -52,12 +52,12 @@ public abstract class AbstractAction implements IAction {
 
     @Override
     public Component getName() {
-        return Arc.translatable("action." + this.getType().getLocation().getPath());
+        return Arc.translatable("action." + this.getType().getIdentifier().getPath());
     }
 
     @Override
     public Component getDescription() {
-        return Arc.translatable("action.description." + this.getType().getLocation().getPath());
+        return Arc.translatable("action.description." + this.getType().getIdentifier().getPath());
     }
 
     @Override
@@ -72,6 +72,6 @@ public abstract class AbstractAction implements IAction {
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof IAction action && action.getLocation().equals(this.getLocation());
+        return obj instanceof IAction action && action.getIdentifier().equals(this.getIdentifier());
     }
 }

@@ -9,7 +9,7 @@ import com.google.gson.JsonObject;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 
@@ -45,14 +45,14 @@ public class EntityTypeCondition extends AbstractCondition {
     public static class Serializer implements IConditionSerializer<EntityTypeCondition> {
 
         @Override
-        public EntityTypeCondition fromJson(ResourceLocation location, JsonObject jsonObject, boolean inverted) {
+        public EntityTypeCondition fromJson(Identifier location, JsonObject jsonObject, boolean inverted) {
             return new EntityTypeCondition(
                     inverted,
                     getEntityType(jsonObject, "entity_type"));
         }
 
         @Override
-        public EntityTypeCondition fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
+        public EntityTypeCondition fromNetwork(Identifier location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
             return new EntityTypeCondition(
                     inverted,
                     BuiltInRegistries.ENTITY_TYPE.byId(friendlyByteBuf.readVarInt()));

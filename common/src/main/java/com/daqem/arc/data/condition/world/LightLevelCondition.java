@@ -8,7 +8,7 @@ import com.daqem.arc.data.ActionData;
 import com.google.gson.JsonObject;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.entity.player.Player;
 
@@ -43,7 +43,7 @@ public class LightLevelCondition extends AbstractCondition {
     public static class Serializer implements IConditionSerializer<LightLevelCondition> {
 
         @Override
-        public LightLevelCondition fromJson(ResourceLocation location, JsonObject jsonObject, boolean inverted) {
+        public LightLevelCondition fromJson(Identifier location, JsonObject jsonObject, boolean inverted) {
             return new LightLevelCondition(
                     inverted,
                     GsonHelper.getAsInt(jsonObject, "light_level"),
@@ -52,7 +52,7 @@ public class LightLevelCondition extends AbstractCondition {
         }
 
         @Override
-        public LightLevelCondition fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
+        public LightLevelCondition fromNetwork(Identifier location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
             return new LightLevelCondition(
                     inverted,
                     friendlyByteBuf.readVarInt(),

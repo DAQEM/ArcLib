@@ -10,7 +10,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.GsonHelper;
 
 import java.util.ArrayList;
@@ -43,12 +43,12 @@ public class OrCondition extends AbstractCondition {
 
         @Override
         @SuppressWarnings("unchecked")
-        public OrCondition fromJson(ResourceLocation location, JsonObject jsonObject, boolean inverted) {
+        public OrCondition fromJson(Identifier location, JsonObject jsonObject, boolean inverted) {
             List<ICondition> tempConditions = new ArrayList<>();
             JsonArray jsonArray = GsonHelper.getAsJsonArray(jsonObject, "conditions");
             jsonArray.forEach(jsonElement -> {
                 JsonObject conditionObject = jsonElement.getAsJsonObject();
-                ResourceLocation type = getResourceLocation(conditionObject, "type");
+                Identifier type = getIdentifier(conditionObject, "type");
                 IConditionSerializer<ICondition> conditionSerializer = (IConditionSerializer<ICondition>) ArcRegistry.CONDITION
                         .getOptional(type)
                         .map(IConditionType::getSerializer)
@@ -62,7 +62,7 @@ public class OrCondition extends AbstractCondition {
         }
 
         @Override
-        public OrCondition fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
+        public OrCondition fromNetwork(Identifier location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
             List<ICondition> tempConditions = new ArrayList<>();
             int size = friendlyByteBuf.readVarInt();
             for (int i = 0; i < size; i++) {
@@ -81,7 +81,7 @@ public class OrCondition extends AbstractCondition {
             IConditionSerializer.super.toNetwork(friendlyByteBuf, type);
             friendlyByteBuf.writeVarInt(type.conditions.size());
             type.conditions.forEach(condition ->
-                    IConditionSerializer.toNetwork(condition, friendlyByteBuf, condition.getType().getLocation()));
+                    IConditionSerializer.toNetwork(condition, friendlyByteBuf, condition.getType().getIdentifier()));
         }
     }
 }

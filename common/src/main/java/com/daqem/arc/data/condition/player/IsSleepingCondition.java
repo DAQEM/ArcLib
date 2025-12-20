@@ -6,7 +6,7 @@ import com.daqem.arc.api.condition.IConditionType;
 import com.daqem.arc.data.ActionData;
 import com.google.gson.JsonObject;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 
 public class IsSleepingCondition extends AbstractCondition {
@@ -29,12 +29,12 @@ public class IsSleepingCondition extends AbstractCondition {
     public static class Serializer implements IConditionSerializer<IsSleepingCondition> {
 
         @Override
-        public IsSleepingCondition fromJson(ResourceLocation location, JsonObject jsonObject, boolean inverted) {
+        public IsSleepingCondition fromJson(Identifier location, JsonObject jsonObject, boolean inverted) {
             return new IsSleepingCondition(inverted);
         }
 
         @Override
-        public IsSleepingCondition fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
+        public IsSleepingCondition fromNetwork(Identifier location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
             return new IsSleepingCondition(inverted);
         }
     }

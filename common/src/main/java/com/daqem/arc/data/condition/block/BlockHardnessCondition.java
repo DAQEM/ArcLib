@@ -9,7 +9,7 @@ import com.google.gson.JsonObject;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -58,7 +58,7 @@ public class BlockHardnessCondition extends AbstractCondition {
     public static class Serializer implements IConditionSerializer<BlockHardnessCondition> {
 
         @Override
-        public BlockHardnessCondition fromJson(ResourceLocation location, JsonObject jsonObject, boolean inverted) {
+        public BlockHardnessCondition fromJson(Identifier location, JsonObject jsonObject, boolean inverted) {
             return new BlockHardnessCondition(
                     inverted,
                     GsonHelper.getAsFloat(jsonObject, "min", Float.MIN_VALUE),
@@ -66,7 +66,7 @@ public class BlockHardnessCondition extends AbstractCondition {
         }
 
         @Override
-        public BlockHardnessCondition fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
+        public BlockHardnessCondition fromNetwork(Identifier location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
             return new BlockHardnessCondition(
                     inverted,
                     friendlyByteBuf.readFloat(),

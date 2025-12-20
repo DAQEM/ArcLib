@@ -13,7 +13,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -38,7 +38,7 @@ public class ItemsCondition extends AbstractCondition {
         return getDescription(items.stream().map(Item::getName).reduce(
                 (a, b) -> ((MutableComponent) a).append(", ").append(b)
         ).orElse(Component.literal("No Items")
-        ), itemTags.stream().map(TagKey::location).map(ResourceLocation::toString).reduce(
+        ), itemTags.stream().map(TagKey::location).map(Identifier::toString).reduce(
                 (a, b) -> a + ", " + b
         ).orElse("No Item Tags"));
     }
@@ -94,7 +94,7 @@ public class ItemsCondition extends AbstractCondition {
     public static class Serializer implements IConditionSerializer<ItemsCondition> {
 
         @Override
-        public ItemsCondition fromJson(ResourceLocation location, JsonObject jsonObject, boolean inverted) {
+        public ItemsCondition fromJson(Identifier location, JsonObject jsonObject, boolean inverted) {
             return new ItemsCondition(
                     inverted,
                     getItems(jsonObject, "items"),
@@ -102,7 +102,7 @@ public class ItemsCondition extends AbstractCondition {
         }
 
         @Override
-        public ItemsCondition fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
+        public ItemsCondition fromNetwork(Identifier location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
             int itemCount = friendlyByteBuf.readVarInt();
             int tagCount = friendlyByteBuf.readVarInt();
 
@@ -115,7 +115,7 @@ public class ItemsCondition extends AbstractCondition {
             }
 
             for (int i = 0; i < tagCount; i++) {
-                itemTags.add(TagKey.create(BuiltInRegistries.ITEM.key(), friendlyByteBuf.readResourceLocation()));
+                itemTags.add(TagKey.create(BuiltInRegistries.ITEM.key(), friendlyByteBuf.readIdentifier()));
             }
 
 
@@ -131,7 +131,7 @@ public class ItemsCondition extends AbstractCondition {
             friendlyByteBuf.writeVarInt(type.items.size());
             friendlyByteBuf.writeVarInt(type.itemTags.size());
             type.items.forEach(item -> ByteBufCodecs.registry(Registries.ITEM).encode(friendlyByteBuf, item));
-            type.itemTags.forEach(tag -> friendlyByteBuf.writeResourceLocation(tag.location()));
+            type.itemTags.forEach(tag -> friendlyByteBuf.writeIdentifier(tag.location()));
         }
     }
 }

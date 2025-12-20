@@ -8,7 +8,7 @@ import com.daqem.arc.model.ArcItemStack;
 import com.google.gson.JsonObject;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
@@ -63,7 +63,7 @@ public class FullArmorSetCondition extends AbstractCondition {
     public static class Serializer implements IConditionSerializer<FullArmorSetCondition> {
 
         @Override
-        public FullArmorSetCondition fromJson(ResourceLocation location, JsonObject jsonObject, boolean inverted) {
+        public FullArmorSetCondition fromJson(Identifier location, JsonObject jsonObject, boolean inverted) {
             return new FullArmorSetCondition(
                     inverted,
                     getItemStacks(jsonObject, "items").stream().map(ArcItemStack::new).toList(),
@@ -72,7 +72,7 @@ public class FullArmorSetCondition extends AbstractCondition {
         }
 
         @Override
-        public FullArmorSetCondition fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
+        public FullArmorSetCondition fromNetwork(Identifier location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
             return new FullArmorSetCondition(
                     inverted,
                     friendlyByteBuf.readList(object -> ItemStack.STREAM_CODEC.decode(friendlyByteBuf)).stream().map(ArcItemStack::new).toList(),

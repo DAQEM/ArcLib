@@ -5,7 +5,7 @@ import com.daqem.uilib.gui.component.EmptyComponent;
 import com.daqem.uilib.gui.widget.ScrollContainerWidget;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.List;
 
@@ -19,7 +19,7 @@ public class AHScrollContainerComponent extends EmptyComponent {
             protected void renderScrollbar(GuiGraphics guiGraphics, int i, int j) {
                 super.renderScrollbar(guiGraphics, i, j);
                 if (!this.scrollbarVisible()) {
-                    guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, ResourceLocation.withDefaultNamespace("widget/scroller"), this.scrollBarX(), this.getY(), 6, this.getHeight());
+                    guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, Identifier.withDefaultNamespace("widget/scroller"), this.scrollBarX(), this.getY(), 6, this.getHeight());
                 }
             }
         };

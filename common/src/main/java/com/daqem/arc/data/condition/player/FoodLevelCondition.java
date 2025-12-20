@@ -8,7 +8,7 @@ import com.daqem.arc.data.ActionData;
 import com.google.gson.JsonObject;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.entity.player.Player;
 
@@ -42,7 +42,7 @@ public class FoodLevelCondition extends AbstractCondition {
     public static class Serializer implements IConditionSerializer<FoodLevelCondition> {
 
         @Override
-        public FoodLevelCondition fromJson(ResourceLocation location, JsonObject jsonObject, boolean inverted) {
+        public FoodLevelCondition fromJson(Identifier location, JsonObject jsonObject, boolean inverted) {
             return new FoodLevelCondition(
                     inverted,
                     GsonHelper.getAsInt(jsonObject, "food_level"),
@@ -51,7 +51,7 @@ public class FoodLevelCondition extends AbstractCondition {
         }
 
         @Override
-        public FoodLevelCondition fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
+        public FoodLevelCondition fromNetwork(Identifier location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
             return new FoodLevelCondition(
                     inverted,
                     friendlyByteBuf.readVarInt(),

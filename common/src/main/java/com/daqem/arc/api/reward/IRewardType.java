@@ -19,7 +19,7 @@ import com.daqem.arc.data.reward.server.CommandReward;
 import com.daqem.arc.data.reward.world.*;
 import com.daqem.arc.registry.ArcRegistry;
 import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public interface IRewardType<T extends IReward> {
 
@@ -63,11 +63,11 @@ public interface IRewardType<T extends IReward> {
     IRewardType<PlaySoundReward> PLAY_SOUND = register(Arc.getId("play_sound"), new PlaySoundReward.Serializer());
 
 
-    static <T extends IReward> IRewardType<T> register(final ResourceLocation location, final IRewardSerializer<T> serializer) {
+    static <T extends IReward> IRewardType<T> register(final Identifier location, final IRewardSerializer<T> serializer) {
         return Registry.register(ArcRegistry.REWARD, location, new IRewardType<T>(){
 
             @Override
-            public ResourceLocation getLocation() {
+            public Identifier getIdentifier() {
                 return location;
             }
 
@@ -86,7 +86,7 @@ public interface IRewardType<T extends IReward> {
     static void init() {
     }
 
-    ResourceLocation getLocation();
+    Identifier getIdentifier();
 
     IRewardSerializer<T> getSerializer();
 }

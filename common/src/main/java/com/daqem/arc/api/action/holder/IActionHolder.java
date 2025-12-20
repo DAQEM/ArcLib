@@ -2,13 +2,13 @@ package com.daqem.arc.api.action.holder;
 
 import com.daqem.arc.api.action.IAction;
 import com.daqem.arc.data.ActionData;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.List;
 
 public interface IActionHolder {
 
-    ResourceLocation getLocation();
+    Identifier getIdentifier();
 
     List<IAction> getActions();
 

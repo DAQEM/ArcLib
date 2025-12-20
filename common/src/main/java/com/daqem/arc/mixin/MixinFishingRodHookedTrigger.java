@@ -1,7 +1,7 @@
 package com.daqem.arc.mixin;
 
 import com.daqem.arc.api.event.ArcPlayerEvent;
-import net.minecraft.advancements.critereon.FishingRodHookedTrigger;
+import net.minecraft.advancements.criterion.FishingRodHookedTrigger;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.projectile.FishingHook;
 import net.minecraft.world.item.ItemStack;

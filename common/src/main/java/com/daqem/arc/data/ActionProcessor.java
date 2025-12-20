@@ -19,7 +19,7 @@ public class ActionProcessor {
     public ActionResult process(IAction action, ActionData actionData) {
         IActionHolder sourceActionHolder = actionData.getPlayer().arc$getActionHolders().stream()
                 .filter(holder -> holder.getType() == action.getActionHolderType()
-                        && holder.getLocation().equals(action.getActionHolderLocation()))
+                        && holder.getIdentifier().equals(action.getActionHolderLocation()))
                 .findFirst()
                 .orElse(null);
 
@@ -44,7 +44,7 @@ public class ActionProcessor {
 
         if (action.getConditions().stream().allMatch(condition -> condition.isMet(actionData) != condition.isInverted())) {
             if (Arc.DEBUG) {
-                Arc.LOGGER.info("Applying rewards for action: {}", action.getLocation());
+                Arc.LOGGER.info("Applying rewards for action: {}", action.getIdentifier());
             }
             result = applyRewards(action, actionData);
         }

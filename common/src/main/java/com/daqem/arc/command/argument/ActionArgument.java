@@ -10,7 +10,7 @@ import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -28,7 +28,7 @@ public class ActionArgument implements ArgumentType<IAction> {
 
     @Override
     public IAction parse(StringReader reader) throws CommandSyntaxException {
-        return actionHolderManager.getAction(ResourceLocation.read(reader)).orElseThrow(() -> {
+        return actionHolderManager.getAction(Identifier.read(reader)).orElseThrow(() -> {
             reader.setCursor(reader.getRemainingLength());
             return new CommandSyntaxException(null, Component.literal("Unknown action location: " + reader.getString()), reader.getString(), reader.getCursor());
         });

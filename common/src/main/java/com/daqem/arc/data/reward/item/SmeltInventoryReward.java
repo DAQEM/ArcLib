@@ -8,7 +8,7 @@ import com.daqem.arc.data.ActionData;
 import com.google.gson.JsonObject;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
@@ -20,9 +20,9 @@ import java.util.Optional;
 
 public class SmeltInventoryReward extends AbstractReward {
 
-    private final List<ResourceLocation> recipes;
+    private final List<Identifier> recipes;
 
-    public SmeltInventoryReward(double chance, int priority, List<ResourceLocation> recipes) {
+    public SmeltInventoryReward(double chance, int priority, List<Identifier> recipes) {
         super(chance, priority);
         this.recipes = recipes;
     }
@@ -43,7 +43,7 @@ public class SmeltInventoryReward extends AbstractReward {
                     Optional<RecipeHolder<SmeltingRecipe>> recipeHolderOpt = recipeManager.getRecipeFor(RecipeType.SMELTING, singleRecipeInput, level);
 
                     if (recipeHolderOpt.isPresent()) {
-                        if (!recipes.isEmpty() && !recipes.contains(recipeHolderOpt.get().id().location())) {
+                        if (!recipes.isEmpty() && !recipes.contains(recipeHolderOpt.get().id().identifier())) {
                             continue;
                         }
 
@@ -86,7 +86,7 @@ public class SmeltInventoryReward extends AbstractReward {
             return new SmeltInventoryReward(
                     chance,
                     priority,
-                    getOptionalResourceLocations(jsonObject, "recipes")
+                    getOptionalIdentifiers(jsonObject, "recipes")
             );
         }
 
@@ -95,14 +95,14 @@ public class SmeltInventoryReward extends AbstractReward {
             return new SmeltInventoryReward(
                     chance,
                     priority,
-                    friendlyByteBuf.readList(FriendlyByteBuf::readResourceLocation)
+                    friendlyByteBuf.readList(FriendlyByteBuf::readIdentifier)
             );
         }
 
         @Override
         public void toNetwork(RegistryFriendlyByteBuf friendlyByteBuf, SmeltInventoryReward type) {
             IRewardSerializer.super.toNetwork(friendlyByteBuf, type);
-            friendlyByteBuf.writeCollection(type.recipes, FriendlyByteBuf::writeResourceLocation);
+            friendlyByteBuf.writeCollection(type.recipes, FriendlyByteBuf::writeIdentifier);
         }
     }
 }

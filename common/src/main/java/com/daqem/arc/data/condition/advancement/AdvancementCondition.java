@@ -14,19 +14,19 @@ import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementType;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
 
 public class AdvancementCondition extends AbstractCondition {
 
     @Nullable
-    private final ResourceLocation id;
+    private final Identifier id;
     @Nullable
-    private final ResourceLocation parentId;
+    private final Identifier parentId;
     @Nullable
     private final AdvancementType type;
 
-    public AdvancementCondition(boolean inverted, @Nullable ResourceLocation id, @Nullable ResourceLocation parentId, @Nullable AdvancementType type) {
+    public AdvancementCondition(boolean inverted, @Nullable Identifier id, @Nullable Identifier parentId, @Nullable AdvancementType type) {
         super(inverted);
         this.id = id;
         this.parentId = parentId;
@@ -61,21 +61,21 @@ public class AdvancementCondition extends AbstractCondition {
     public static class Serializer implements IConditionSerializer<AdvancementCondition> {
 
         @Override
-        public AdvancementCondition fromJson(ResourceLocation location, JsonObject jsonObject, boolean inverted) {
+        public AdvancementCondition fromJson(Identifier location, JsonObject jsonObject, boolean inverted) {
             return new AdvancementCondition(
                     inverted,
-                    getOptionalResourceLocation(jsonObject, "id"),
-                    getOptionalResourceLocation(jsonObject, "parent_id"),
+                    getOptionalIdentifier(jsonObject, "id"),
+                    getOptionalIdentifier(jsonObject, "parent_id"),
                     AdvancementType.CODEC.decode(JsonOps.INSTANCE, jsonObject.get("type")).result().orElse(new Pair<>(null, null)).getFirst()
             );
         }
 
         @Override
-        public AdvancementCondition fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
+        public AdvancementCondition fromNetwork(Identifier location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
             return new AdvancementCondition(
                     inverted,
-                    friendlyByteBuf.readNullable(FriendlyByteBuf::readResourceLocation),
-                    friendlyByteBuf.readNullable(FriendlyByteBuf::readResourceLocation),
+                    friendlyByteBuf.readNullable(FriendlyByteBuf::readIdentifier),
+                    friendlyByteBuf.readNullable(FriendlyByteBuf::readIdentifier),
                     friendlyByteBuf.readNullable(buf -> buf.readEnum(AdvancementType.class))
             );
         }
@@ -83,8 +83,8 @@ public class AdvancementCondition extends AbstractCondition {
         @Override
         public void toNetwork(RegistryFriendlyByteBuf friendlyByteBuf, AdvancementCondition type) {
             IConditionSerializer.super.toNetwork(friendlyByteBuf, type);
-            friendlyByteBuf.writeNullable(type.id, FriendlyByteBuf::writeResourceLocation);
-            friendlyByteBuf.writeNullable(type.parentId, FriendlyByteBuf::writeResourceLocation);
+            friendlyByteBuf.writeNullable(type.id, FriendlyByteBuf::writeIdentifier);
+            friendlyByteBuf.writeNullable(type.parentId, FriendlyByteBuf::writeIdentifier);
             friendlyByteBuf.writeNullable(type.type, FriendlyByteBuf::writeEnum);
         }
     }

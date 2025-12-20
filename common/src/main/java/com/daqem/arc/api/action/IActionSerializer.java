@@ -11,7 +11,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.mojang.serialization.JsonOps;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.GsonHelper;
 
 import java.util.ArrayList;
@@ -20,13 +20,13 @@ import java.util.Objects;
 
 public interface IActionSerializer<T extends IAction> extends ArcSerializer {
 
-    T fromJson(ResourceLocation location, JsonObject jsonObject, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions);
+    T fromJson(Identifier location, JsonObject jsonObject, Identifier actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions);
 
-    T fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions);
+    T fromNetwork(Identifier location, RegistryFriendlyByteBuf friendlyByteBuf, Identifier actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions);
 
     static IAction fromNetwork(RegistryFriendlyByteBuf friendlyByteBuf) {
-        ResourceLocation resourceLocation = friendlyByteBuf.readResourceLocation();
-        ResourceLocation resourceLocation2 = friendlyByteBuf.readResourceLocation();
+        Identifier resourceLocation = friendlyByteBuf.readIdentifier();
+        Identifier resourceLocation2 = friendlyByteBuf.readIdentifier();
         return ArcRegistry.ACTION.getOptional(resourceLocation).orElseThrow(
                 () -> new IllegalArgumentException("Unknown action serializer " + resourceLocation)
         ).getSerializer().fromNetwork(resourceLocation2, friendlyByteBuf);
@@ -34,17 +34,17 @@ public interface IActionSerializer<T extends IAction> extends ArcSerializer {
 
     @SuppressWarnings("unchecked")
     static <T extends IAction> void toNetwork(T action, RegistryFriendlyByteBuf friendlyByteBuf) {
-        friendlyByteBuf.writeResourceLocation(Objects.requireNonNull(ArcRegistry.ACTION.getKey(action.getType())));
-        friendlyByteBuf.writeResourceLocation(action.getLocation());
+        friendlyByteBuf.writeIdentifier(Objects.requireNonNull(ArcRegistry.ACTION.getKey(action.getType())));
+        friendlyByteBuf.writeIdentifier(action.getIdentifier());
         ((IActionSerializer<T>) action.getSerializer()).toNetwork(friendlyByteBuf, action);
 
     }
 
-    default T fromJson(ResourceLocation location, JsonObject jsonObject) {
+    default T fromJson(Identifier location, JsonObject jsonObject) {
         List<IReward> rewards = new ArrayList<>();
         if (jsonObject.has("rewards")) {
             jsonObject.getAsJsonArray("rewards").forEach(jsonElement -> {
-                ResourceLocation rewardTypeLocation = getResourceLocation(jsonElement.getAsJsonObject(), "type");
+                Identifier rewardTypeLocation = getIdentifier(jsonElement.getAsJsonObject(), "type");
                 rewards.add(ArcRegistry.REWARD.getOptional(rewardTypeLocation)
                         .orElseThrow(() -> new JsonParseException("Unknown reward type: " + rewardTypeLocation))
                         .getSerializer().fromJson(location, jsonElement.getAsJsonObject()));
@@ -54,7 +54,7 @@ public interface IActionSerializer<T extends IAction> extends ArcSerializer {
         List<ICondition> conditions = new ArrayList<>();
         if (jsonObject.has("conditions")) {
             jsonObject.getAsJsonArray("conditions").forEach(jsonElement -> {
-                ResourceLocation conditionTypeLocation = getResourceLocation(jsonElement.getAsJsonObject(), "type");
+                Identifier conditionTypeLocation = getIdentifier(jsonElement.getAsJsonObject(), "type");
                 conditions.add(ArcRegistry.CONDITION.getOptional(conditionTypeLocation)
                         .orElseThrow(() -> new JsonParseException("Unknown condition type: " + conditionTypeLocation))
                         .getSerializer().fromJson(location, jsonElement.getAsJsonObject()));
@@ -64,26 +64,26 @@ public interface IActionSerializer<T extends IAction> extends ArcSerializer {
         JsonObject holderObject = GsonHelper.getAsJsonObject(jsonObject, "holder");
 
         return fromJson(location, jsonObject,
-                getResourceLocation(holderObject, "id"),
+                getIdentifier(holderObject, "id"),
                 ArcRegistry.ACTION_HOLDER.byNameCodec().decode(JsonOps.INSTANCE, holderObject.get("type")).result()
                         .orElseThrow(() -> new JsonParseException("Invalid action holder type")).getFirst(),
                 rewards, conditions);
     }
 
-    default T fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf) {
+    default T fromNetwork(Identifier location, RegistryFriendlyByteBuf friendlyByteBuf) {
         return fromNetwork(location, friendlyByteBuf,
-                friendlyByteBuf.readResourceLocation(),
-                ArcRegistry.ACTION_HOLDER.getOptional(friendlyByteBuf.readResourceLocation()).orElse(null),
+                friendlyByteBuf.readIdentifier(),
+                ArcRegistry.ACTION_HOLDER.getOptional(friendlyByteBuf.readIdentifier()).orElse(null),
                 friendlyByteBuf.readList(object -> IRewardSerializer.fromNetwork((RegistryFriendlyByteBuf) object)),
                 friendlyByteBuf.readList(object -> IConditionSerializer.fromNetwork((RegistryFriendlyByteBuf) object)));
     }
 
     default void toNetwork(RegistryFriendlyByteBuf friendlyByteBuf, T type) {
-        friendlyByteBuf.writeResourceLocation(type.getActionHolderLocation());
-        friendlyByteBuf.writeResourceLocation(type.getActionHolderType().getLocation());
+        friendlyByteBuf.writeIdentifier(type.getActionHolderLocation());
+        friendlyByteBuf.writeIdentifier(type.getActionHolderType().getIdentifier());
         friendlyByteBuf.writeCollection(type.getRewards(),
-                (friendlyByteBuf1, reward) -> IRewardSerializer.toNetwork(reward, (RegistryFriendlyByteBuf) friendlyByteBuf1, type.getLocation()));
+                (friendlyByteBuf1, reward) -> IRewardSerializer.toNetwork(reward, (RegistryFriendlyByteBuf) friendlyByteBuf1, type.getIdentifier()));
         friendlyByteBuf.writeCollection(type.getConditions(),
-                (friendlyByteBuf1, condition) -> IConditionSerializer.toNetwork(condition, (RegistryFriendlyByteBuf) friendlyByteBuf1, type.getLocation()));
+                (friendlyByteBuf1, condition) -> IConditionSerializer.toNetwork(condition, (RegistryFriendlyByteBuf) friendlyByteBuf1, type.getIdentifier()));
     }
 }

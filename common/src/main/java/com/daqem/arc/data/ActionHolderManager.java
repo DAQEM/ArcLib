@@ -4,7 +4,7 @@ import com.daqem.arc.api.IArcRegistryAccessor;
 import com.daqem.arc.api.action.IAction;
 import com.daqem.arc.api.action.holder.IActionHolder;
 import com.daqem.arc.api.action.holder.IActionHolderType;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.Collections;
 import java.util.List;
@@ -15,8 +15,8 @@ import java.util.stream.Collectors;
 
 public class ActionHolderManager implements IArcRegistryAccessor {
 
-    private final Map<IActionHolderType<?>, Map<ResourceLocation, IAction>> actions = new ConcurrentHashMap<>();
-    private final Map<IActionHolderType<?>, Map<ResourceLocation, IActionHolder>> actionHolders = new ConcurrentHashMap<>();
+    private final Map<IActionHolderType<?>, Map<Identifier, IAction>> actions = new ConcurrentHashMap<>();
+    private final Map<IActionHolderType<?>, Map<Identifier, IActionHolder>> actionHolders = new ConcurrentHashMap<>();
 
     private static ActionHolderManager instance;
 
@@ -33,7 +33,7 @@ public class ActionHolderManager implements IArcRegistryAccessor {
     public void registerActionHolders(List<IActionHolder> actionHolders) {
         for (IActionHolder actionHolder : actionHolders) {
             this.actionHolders.computeIfAbsent(actionHolder.getType(), mapFunc -> new ConcurrentHashMap<>())
-                    .put(actionHolder.getLocation(), actionHolder);
+                    .put(actionHolder.getIdentifier(), actionHolder);
 
             List<IAction> actionsForHolder = getActionsForHolder(actionHolder);
             actionHolder.clearActions();
@@ -44,7 +44,7 @@ public class ActionHolderManager implements IArcRegistryAccessor {
     public void registerActions(List<IAction> actions) {
         for (IAction action : actions) {
             this.actions.computeIfAbsent(action.getActionHolderType(), mapFunc -> new ConcurrentHashMap<>())
-                    .put(action.getLocation(), action);
+                    .put(action.getIdentifier(), action);
         }
 
         mapActionsByTheirHolders(actions).forEach((location, actionHolderActions) ->
@@ -64,7 +64,7 @@ public class ActionHolderManager implements IArcRegistryAccessor {
         actionHolders.values().forEach(holderMap -> holderMap.values().forEach(IActionHolder::clearActions));
     }
 
-    public List<IActionHolder> getActionHolders(List<ResourceLocation> actionHolderLocations) {
+    public List<IActionHolder> getActionHolders(List<Identifier> actionHolderLocations) {
         return actionHolderLocations.stream()
                 .map(this::getActionHolder)
                 .filter(Optional::isPresent)
@@ -72,12 +72,12 @@ public class ActionHolderManager implements IArcRegistryAccessor {
                 .collect(Collectors.toList());
     }
 
-    private Map<ResourceLocation, List<IAction>> mapActionsByTheirHolders(List<IAction> actions) {
+    private Map<Identifier, List<IAction>> mapActionsByTheirHolders(List<IAction> actions) {
         return actions.stream().collect(Collectors.groupingBy(IAction::getActionHolderLocation));
     }
 
-    public Optional<IActionHolder> getActionHolder(ResourceLocation location) {
-        for (Map<ResourceLocation, IActionHolder> actionHolderMap : actionHolders.values()) {
+    public Optional<IActionHolder> getActionHolder(Identifier location) {
+        for (Map<Identifier, IActionHolder> actionHolderMap : actionHolders.values()) {
             if (actionHolderMap.containsKey(location)) {
                 return Optional.of(actionHolderMap.get(location));
             }
@@ -88,12 +88,12 @@ public class ActionHolderManager implements IArcRegistryAccessor {
     private List<IAction> getActionsForHolder(IActionHolder actionHolder) {
         return actions.getOrDefault(actionHolder.getType(), Collections.emptyMap())
                 .values().stream()
-                .filter(action -> action.getActionHolderLocation().equals(actionHolder.getLocation()))
+                .filter(action -> action.getActionHolderLocation().equals(actionHolder.getIdentifier()))
                 .collect(Collectors.toList());
     }
 
-    public Optional<IAction> getAction(ResourceLocation actionLocation) {
-        for (Map<ResourceLocation, IAction> actionMap : actions.values()) {
+    public Optional<IAction> getAction(Identifier actionLocation) {
+        for (Map<Identifier, IAction> actionMap : actions.values()) {
             if (actionMap.containsKey(actionLocation)) {
                 return Optional.of(actionMap.get(actionLocation));
             }
@@ -104,7 +104,7 @@ public class ActionHolderManager implements IArcRegistryAccessor {
     public List<String> getActionLocationStrings() {
         return actions.values().stream()
                 .flatMap(map -> map.keySet().stream())
-                .map(ResourceLocation::toString)
+                .map(Identifier::toString)
                 .collect(Collectors.toList());
     }
 

@@ -32,7 +32,7 @@ public abstract class AbstractTabWidget extends ButtonWidget {
     }
 
     @Override
-    protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    protected void renderContents(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         this.iconComponent.setX(getX() + 4);
         this.iconComponent.setY(getY() + 6 + (isSelected() ? 0 : 2));
 

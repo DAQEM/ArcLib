@@ -6,36 +6,36 @@ import com.daqem.arc.data.serializer.ArcSerializer;
 import com.daqem.arc.registry.ArcRegistry;
 import com.google.gson.JsonObject;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.List;
 
 public interface IActionHolderSerializer<T extends IActionHolder> extends ArcSerializer {
 
-    T fromJson(JsonObject jsonObject, ResourceLocation location);
+    T fromJson(JsonObject jsonObject, Identifier location);
 
-    T fromNetwork(RegistryFriendlyByteBuf friendlyByteBuf, ResourceLocation location);
+    T fromNetwork(RegistryFriendlyByteBuf friendlyByteBuf, Identifier location);
 
     static IActionHolder fromNetwork(RegistryFriendlyByteBuf friendlyByteBuf) {
-        ResourceLocation resourceLocation = friendlyByteBuf.readResourceLocation();
-        ResourceLocation resourceLocation2 = friendlyByteBuf.readResourceLocation();
+        Identifier resourceLocation = friendlyByteBuf.readIdentifier();
+        Identifier resourceLocation2 = friendlyByteBuf.readIdentifier();
         return ArcRegistry.ACTION_HOLDER.getOptional(resourceLocation).orElseThrow(
                 () -> new IllegalArgumentException("Unknown action holder serializer " + resourceLocation)
         ).getSerializer().fromNetwork(resourceLocation2, friendlyByteBuf);
     }
 
     static <T extends IActionHolder> void toNetwork(T actionHolder, RegistryFriendlyByteBuf friendlyByteBuf) {
-        friendlyByteBuf.writeResourceLocation(ArcRegistry.ACTION_HOLDER.getKey(actionHolder.getType()));
-        friendlyByteBuf.writeResourceLocation(actionHolder.getLocation());
+        friendlyByteBuf.writeIdentifier(ArcRegistry.ACTION_HOLDER.getKey(actionHolder.getType()));
+        friendlyByteBuf.writeIdentifier(actionHolder.getIdentifier());
         ((IActionHolderSerializer<T>)actionHolder.getSerializer()).toNetwork(friendlyByteBuf, actionHolder);
 
     }
 
-    default T fromJson(ResourceLocation location, JsonObject jsonObject) {
+    default T fromJson(Identifier location, JsonObject jsonObject) {
         return fromJson(jsonObject, location);
     }
 
-    default T fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf) {
+    default T fromNetwork(Identifier location, RegistryFriendlyByteBuf friendlyByteBuf) {
         var actionHolder = fromNetwork(friendlyByteBuf, location);
         List<IAction> actions = friendlyByteBuf.readList(friendlyByteBuf1 ->
                 IActionSerializer.fromNetwork((RegistryFriendlyByteBuf) friendlyByteBuf1));

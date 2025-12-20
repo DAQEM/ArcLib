@@ -13,7 +13,7 @@ import com.mojang.serialization.JsonOps;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.TagKey;
@@ -38,7 +38,7 @@ public interface ArcSerializer {
 
     //region Resource Location
 
-    default ResourceLocation getResourceLocation(JsonObject jsonObject, String key, @Nullable ResourceLocation defaultLocation) {
+    default Identifier getIdentifier(JsonObject jsonObject, String key, @Nullable Identifier defaultLocation) {
         if (!jsonObject.has(key) || jsonObject.get(key).isJsonNull()) {
             if (defaultLocation != null) {
                 return defaultLocation;
@@ -46,7 +46,7 @@ public interface ArcSerializer {
             throw new JsonParseException("Expected '" + key + "' to be a resource location");
         }
 
-        return ResourceLocation.CODEC.decode(JsonOps.INSTANCE, jsonObject.get(key)).result()
+        return Identifier.CODEC.decode(JsonOps.INSTANCE, jsonObject.get(key)).result()
                 .orElseGet(() -> {
                     if (defaultLocation != null) {
                         return new Pair<>(defaultLocation, null);
@@ -55,22 +55,22 @@ public interface ArcSerializer {
                 }).getFirst();
     }
 
-    default ResourceLocation getResourceLocation(JsonObject jsonObject, String key) {
-        return getResourceLocation(jsonObject, key, null);
+    default Identifier getIdentifier(JsonObject jsonObject, String key) {
+        return getIdentifier(jsonObject, key, null);
     }
 
-    default @Nullable ResourceLocation getOptionalResourceLocation(JsonObject jsonObject, String key) {
+    default @Nullable Identifier getOptionalIdentifier(JsonObject jsonObject, String key) {
         if (!jsonObject.has(key) || jsonObject.get(key).isJsonNull()) {
             return null;
         }
-        return getResourceLocation(jsonObject, key, null);
+        return getIdentifier(jsonObject, key, null);
     }
 
     //endregion
 
     //region Resource Locations
 
-    default List<ResourceLocation> getResourceLocations(JsonObject jsonObject, String key, @Nullable List<ResourceLocation> defaultLocations) {
+    default List<Identifier> getIdentifiers(JsonObject jsonObject, String key, @Nullable List<Identifier> defaultLocations) {
         if (!jsonObject.has(key) || jsonObject.get(key).isJsonNull()) {
             if (defaultLocations != null) {
                 return defaultLocations;
@@ -78,7 +78,7 @@ public interface ArcSerializer {
             throw new JsonParseException("Expected '" + key + "' to be a list of resource locations");
         }
 
-        return ResourceLocation.CODEC.listOf().decode(JsonOps.INSTANCE, jsonObject.get(key)).result()
+        return Identifier.CODEC.listOf().decode(JsonOps.INSTANCE, jsonObject.get(key)).result()
                 .orElseGet(() -> {
                     if (defaultLocations != null) {
                         return new Pair<>(defaultLocations, null);
@@ -87,15 +87,15 @@ public interface ArcSerializer {
                 }).getFirst();
     }
 
-    default List<ResourceLocation> getResourceLocations(JsonObject jsonObject, String key) {
-        return getResourceLocations(jsonObject, key, null);
+    default List<Identifier> getIdentifiers(JsonObject jsonObject, String key) {
+        return getIdentifiers(jsonObject, key, null);
     }
 
-    default @Nullable List<ResourceLocation> getOptionalResourceLocations(JsonObject jsonObject, String key) {
+    default @Nullable List<Identifier> getOptionalIdentifiers(JsonObject jsonObject, String key) {
         if (!jsonObject.has(key) || jsonObject.get(key).isJsonNull()) {
             return new ArrayList<>();
         }
-        return getResourceLocations(jsonObject, key, new ArrayList<>());
+        return getIdentifiers(jsonObject, key, new ArrayList<>());
     }
 
     //endregion
@@ -189,7 +189,7 @@ public interface ArcSerializer {
                     if (itemTagName != null && itemTagName.startsWith("#")) {
                         itemTagName = itemTagName.substring(1);
                         String finalItemTagName = itemTagName;
-                        ResourceLocation resourceLocation = ResourceLocation.CODEC.decode(JsonOps.INSTANCE, new JsonPrimitive(finalItemTagName)).result()
+                        Identifier resourceLocation = Identifier.CODEC.decode(JsonOps.INSTANCE, new JsonPrimitive(finalItemTagName)).result()
                                 .orElseThrow(() -> new JsonParseException("Expected '" + key + "' to be a list of item tags, but one of the item tags was invalid: " + finalItemTagName))
                                 .getFirst();
                         TagKey<Item> itemTag = TagKey.create(BuiltInRegistries.ITEM.key(), resourceLocation);
@@ -667,7 +667,7 @@ public interface ArcSerializer {
                     if (blockTagName != null && blockTagName.startsWith("#")) {
                         blockTagName = blockTagName.substring(1);
                         String finalBlockTagName = blockTagName;
-                        ResourceLocation resourceLocation = ResourceLocation.CODEC.decode(JsonOps.INSTANCE, new JsonPrimitive(finalBlockTagName)).result()
+                        Identifier resourceLocation = Identifier.CODEC.decode(JsonOps.INSTANCE, new JsonPrimitive(finalBlockTagName)).result()
                                 .orElseThrow(() -> new JsonParseException("Expected '" + key + "' to be a list of block tags, but one of the block tags was invalid: " + finalBlockTagName))
                                 .getFirst();
                         TagKey<Block> blockTag = TagKey.create(BuiltInRegistries.BLOCK.key(), resourceLocation);

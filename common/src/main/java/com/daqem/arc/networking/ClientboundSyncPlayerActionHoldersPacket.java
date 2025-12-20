@@ -5,7 +5,7 @@ import com.daqem.arc.data.ActionHolderManager;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -25,7 +25,7 @@ public class ClientboundSyncPlayerActionHoldersPacket implements CustomPacketPay
         public void encode(RegistryFriendlyByteBuf buf, ClientboundSyncPlayerActionHoldersPacket packet) {
             buf.writeInt(packet.actionHolders.size());
             for (IActionHolder actionHolder : packet.actionHolders) {
-                buf.writeResourceLocation(actionHolder.getLocation());
+                buf.writeIdentifier(actionHolder.getIdentifier());
             }
         }
     };
@@ -35,10 +35,10 @@ public class ClientboundSyncPlayerActionHoldersPacket implements CustomPacketPay
     }
 
     public ClientboundSyncPlayerActionHoldersPacket(RegistryFriendlyByteBuf friendlyByteBuf) {
-        List<ResourceLocation> actionHolderLocations = new ArrayList<>();
+        List<Identifier> actionHolderLocations = new ArrayList<>();
         int size = friendlyByteBuf.readInt();
         for (int i = 0; i < size; i++) {
-            actionHolderLocations.add(friendlyByteBuf.readResourceLocation());
+            actionHolderLocations.add(friendlyByteBuf.readIdentifier());
         }
         this.actionHolders = ActionHolderManager.getInstance().getActionHolders(actionHolderLocations);
     }

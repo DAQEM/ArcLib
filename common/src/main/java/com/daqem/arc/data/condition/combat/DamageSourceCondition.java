@@ -10,7 +10,7 @@ import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.JsonOps;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
@@ -76,7 +76,7 @@ public class DamageSourceCondition extends AbstractCondition {
     public static class Serializer implements IConditionSerializer<DamageSourceCondition> {
 
         @Override
-        public DamageSourceCondition fromJson(ResourceLocation location, JsonObject jsonObject, boolean inverted) {
+        public DamageSourceCondition fromJson(Identifier location, JsonObject jsonObject, boolean inverted) {
             return new DamageSourceCondition(
                     inverted,
                     GsonHelper.getAsString(jsonObject, "source", "any"),
@@ -86,7 +86,7 @@ public class DamageSourceCondition extends AbstractCondition {
         }
 
         @Override
-        public DamageSourceCondition fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
+        public DamageSourceCondition fromNetwork(Identifier location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
             return new DamageSourceCondition(
                     inverted,
                     friendlyByteBuf.readUtf(),

@@ -12,7 +12,7 @@ public class ClientboundActionScreenPacketHandler {
         Minecraft.getInstance().setScreen(new ActionScreen(
                 ActionHolderManager.getInstance().getActions(),
                 ActionHolderManager.getInstance().getActions().stream()
-                        .filter(a -> a.getLocation().equals(packet.getAction().getLocation()))
+                        .filter(a -> a.getIdentifier().equals(packet.getAction().getIdentifier()))
                         .findFirst()
                         .orElse(null)));
     }

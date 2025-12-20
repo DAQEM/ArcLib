@@ -12,13 +12,13 @@ import com.daqem.arc.networking.ClientboundSyncPlayerActionHoldersPacket;
 import com.daqem.arc.player.BlockPosCache;
 import com.mojang.authlib.GameProfile;
 import dev.architectury.networking.NetworkManager;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ClientInformation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
-import net.minecraft.world.entity.animal.horse.AbstractHorse;
+import net.minecraft.world.entity.animal.equine.AbstractHorse;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -42,7 +42,7 @@ public abstract class MixinServerPlayer extends Player implements ArcServerPlaye
     @Shadow
     public ServerGamePacketListenerImpl connection;
     @Unique
-    private final Map<ResourceLocation, IActionHolder> arc$actionHolders = new HashMap<>();
+    private final Map<Identifier, IActionHolder> arc$actionHolders = new HashMap<>();
     @Unique
     private MovementType arc$previousMovementType = MovementType.IDLE;
     @Unique
@@ -74,7 +74,7 @@ public abstract class MixinServerPlayer extends Player implements ArcServerPlaye
     @Override
     public void arc$addActionHolder(IActionHolder actionHolder) {
         if (actionHolder == null) return;
-        this.arc$actionHolders.put(actionHolder.getLocation(), actionHolder);
+        this.arc$actionHolders.put(actionHolder.getIdentifier(), actionHolder);
         arc$syncActionHoldersWithClient();
     }
 
@@ -88,7 +88,7 @@ public abstract class MixinServerPlayer extends Player implements ArcServerPlaye
 
     @Override
     public void arc$removeActionHolder(IActionHolder actionHolder) {
-        this.arc$actionHolders.remove(actionHolder.getLocation());
+        this.arc$actionHolders.remove(actionHolder.getIdentifier());
     }
 
     @Override

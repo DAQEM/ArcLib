@@ -6,7 +6,7 @@ import com.daqem.arc.api.condition.IConditionType;
 import com.daqem.arc.data.ActionData;
 import com.google.gson.JsonObject;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 
 public class InventoryEmptyCondition extends AbstractCondition {
@@ -29,12 +29,12 @@ public class InventoryEmptyCondition extends AbstractCondition {
     public static class Serializer implements IConditionSerializer<InventoryEmptyCondition> {
 
         @Override
-        public InventoryEmptyCondition fromJson(ResourceLocation location, JsonObject jsonObject, boolean inverted) {
+        public InventoryEmptyCondition fromJson(Identifier location, JsonObject jsonObject, boolean inverted) {
             return new InventoryEmptyCondition(inverted);
         }
 
         @Override
-        public InventoryEmptyCondition fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
+        public InventoryEmptyCondition fromNetwork(Identifier location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
             return new InventoryEmptyCondition(inverted);
         }
     }

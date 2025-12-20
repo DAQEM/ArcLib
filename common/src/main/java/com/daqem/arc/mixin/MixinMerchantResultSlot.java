@@ -19,7 +19,7 @@ public class MixinMerchantResultSlot {
 
     @Shadow @Final private Merchant merchant;
 
-    @Inject(method = "onTake", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;awardStat(Lnet/minecraft/resources/ResourceLocation;)V"), locals = LocalCapture.CAPTURE_FAILHARD)
+    @Inject(method = "onTake", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;awardStat(Lnet/minecraft/resources/Identifier;)V"), locals = LocalCapture.CAPTURE_FAILHARD)
     private void arc$onTradeWithVillager(Player player, ItemStack itemStack, CallbackInfo ci, MerchantOffer merchantOffer, ItemStack itemStack2, ItemStack itemStack3) {
         ArcEntityEvent.TRADE_WITH_VILLAGER.invoker().onTradeWithVillager(player, this.merchant, merchantOffer, itemStack);
     }

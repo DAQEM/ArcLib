@@ -5,11 +5,11 @@ import com.daqem.arc.api.action.holder.IActionHolderSerializer;
 import com.daqem.arc.api.action.holder.IActionHolderType;
 import com.google.gson.JsonObject;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public final class PlayerActionHolder extends AbstractActionHolder {
 
-    public PlayerActionHolder(ResourceLocation location) {
+    public PlayerActionHolder(Identifier location) {
         super(location);
     }
 
@@ -21,12 +21,12 @@ public final class PlayerActionHolder extends AbstractActionHolder {
     public static class Serializer implements IActionHolderSerializer<PlayerActionHolder> {
 
         @Override
-        public PlayerActionHolder fromJson(JsonObject jsonObject, ResourceLocation location) {
+        public PlayerActionHolder fromJson(JsonObject jsonObject, Identifier location) {
             return new PlayerActionHolder(location);
         }
 
         @Override
-        public PlayerActionHolder fromNetwork(RegistryFriendlyByteBuf friendlyByteBuf, ResourceLocation location) {
+        public PlayerActionHolder fromNetwork(RegistryFriendlyByteBuf friendlyByteBuf, Identifier location) {
             return new PlayerActionHolder(location);
         }
 

@@ -11,7 +11,7 @@ import com.daqem.arc.player.BlockPosCache;
 import com.google.gson.JsonObject;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class NotInBlockPosCacheCondition  extends AbstractCondition {
 
@@ -39,12 +39,12 @@ public class NotInBlockPosCacheCondition  extends AbstractCondition {
     public static class Serializer implements IConditionSerializer<NotInBlockPosCacheCondition> {
 
         @Override
-        public NotInBlockPosCacheCondition fromJson(ResourceLocation location, JsonObject jsonObject, boolean inverted) {
+        public NotInBlockPosCacheCondition fromJson(Identifier location, JsonObject jsonObject, boolean inverted) {
             return new NotInBlockPosCacheCondition(inverted);
         }
 
         @Override
-        public NotInBlockPosCacheCondition fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
+        public NotInBlockPosCacheCondition fromNetwork(Identifier location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
             return new NotInBlockPosCacheCondition(inverted);
         }
 

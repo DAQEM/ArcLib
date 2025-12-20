@@ -7,7 +7,7 @@ import com.daqem.arc.data.ActionData;
 import com.google.gson.JsonObject;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.scores.Objective;
 import net.minecraft.world.scores.ScoreHolder;
@@ -66,7 +66,7 @@ public class ScoreboardCondition extends AbstractCondition {
     public static class Serializer implements IConditionSerializer<ScoreboardCondition> {
 
         @Override
-        public ScoreboardCondition fromJson(ResourceLocation location, JsonObject jsonObject, boolean inverted) {
+        public ScoreboardCondition fromJson(Identifier location, JsonObject jsonObject, boolean inverted) {
             return new ScoreboardCondition(
                     inverted,
                     getString(jsonObject, "objective"),
@@ -75,7 +75,7 @@ public class ScoreboardCondition extends AbstractCondition {
         }
 
         @Override
-        public ScoreboardCondition fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
+        public ScoreboardCondition fromNetwork(Identifier location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
             return new ScoreboardCondition(
                     inverted,
                     friendlyByteBuf.readUtf(),

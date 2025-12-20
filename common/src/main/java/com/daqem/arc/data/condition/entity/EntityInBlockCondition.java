@@ -9,7 +9,7 @@ import com.google.gson.JsonObject;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.Block;
 
@@ -45,14 +45,14 @@ public class EntityInBlockCondition extends AbstractCondition {
     public static class Serializer implements IConditionSerializer<EntityInBlockCondition> {
 
         @Override
-        public EntityInBlockCondition fromJson(ResourceLocation location, JsonObject jsonObject, boolean inverted) {
+        public EntityInBlockCondition fromJson(Identifier location, JsonObject jsonObject, boolean inverted) {
             return new EntityInBlockCondition(
                     inverted,
                     getBlock(jsonObject, "block"));
         }
 
         @Override
-        public EntityInBlockCondition fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
+        public EntityInBlockCondition fromNetwork(Identifier location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
             return new EntityInBlockCondition(
                     inverted,
                     BuiltInRegistries.BLOCK.byId(friendlyByteBuf.readVarInt()));

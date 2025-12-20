@@ -6,7 +6,7 @@ import com.daqem.arc.api.condition.IConditionType;
 import com.daqem.arc.data.ActionData;
 import com.google.gson.JsonObject;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 
 public class IsSneakingCondition extends AbstractCondition {
@@ -29,12 +29,12 @@ public class IsSneakingCondition extends AbstractCondition {
     public static class Serializer implements IConditionSerializer<IsSneakingCondition> {
 
         @Override
-        public IsSneakingCondition fromJson(ResourceLocation location, JsonObject jsonObject, boolean inverted) {
+        public IsSneakingCondition fromJson(Identifier location, JsonObject jsonObject, boolean inverted) {
             return new IsSneakingCondition(inverted);
         }
 
         @Override
-        public IsSneakingCondition fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
+        public IsSneakingCondition fromNetwork(Identifier location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
             return new IsSneakingCondition(inverted);
         }
     }

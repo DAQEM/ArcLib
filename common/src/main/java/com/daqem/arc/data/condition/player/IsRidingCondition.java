@@ -6,7 +6,7 @@ import com.daqem.arc.api.condition.IConditionType;
 import com.daqem.arc.data.ActionData;
 import com.google.gson.JsonObject;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 
 public class IsRidingCondition extends AbstractCondition {
@@ -29,12 +29,12 @@ public class IsRidingCondition extends AbstractCondition {
     public static class Serializer implements IConditionSerializer<IsRidingCondition> {
 
         @Override
-        public IsRidingCondition fromJson(ResourceLocation location, JsonObject jsonObject, boolean inverted) {
+        public IsRidingCondition fromJson(Identifier location, JsonObject jsonObject, boolean inverted) {
             return new IsRidingCondition(inverted);
         }
 
         @Override
-        public IsRidingCondition fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
+        public IsRidingCondition fromNetwork(Identifier location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
             return new IsRidingCondition(inverted);
         }
     }

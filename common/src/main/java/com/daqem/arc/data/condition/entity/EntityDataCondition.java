@@ -9,7 +9,7 @@ import com.daqem.arc.model.EntityDataProperty;
 import com.google.gson.JsonObject;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.Nullable;
 
@@ -51,14 +51,14 @@ public class EntityDataCondition extends AbstractCondition {
 
     public static class Serializer implements IConditionSerializer<EntityDataCondition> {
         @Override
-        public EntityDataCondition fromJson(ResourceLocation location, JsonObject jsonObject, boolean inverted) {
+        public EntityDataCondition fromJson(Identifier location, JsonObject jsonObject, boolean inverted) {
             List<EntityDataProperty> properties = getEntityDataProperties(jsonObject, "properties");
             String target = getString(jsonObject, "target", "player");
             return new EntityDataCondition(inverted, properties, target);
         }
 
         @Override
-        public EntityDataCondition fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf buf, boolean inverted) {
+        public EntityDataCondition fromNetwork(Identifier location, RegistryFriendlyByteBuf buf, boolean inverted) {
             List<EntityDataProperty> properties = EntityDataProperty.STREAM_CODEC.apply(ByteBufCodecs.list()).decode(buf);
             String target = buf.readUtf();
             return new EntityDataCondition(inverted, properties, target);

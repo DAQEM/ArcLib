@@ -7,7 +7,7 @@ import com.daqem.arc.data.ActionData;
 import com.google.gson.JsonObject;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -56,14 +56,14 @@ public class ItemEquippedCondition extends AbstractCondition {
     public static class Serializer implements IConditionSerializer<ItemEquippedCondition> {
 
         @Override
-        public ItemEquippedCondition fromJson(ResourceLocation location, JsonObject jsonObject, boolean inverted) {
+        public ItemEquippedCondition fromJson(Identifier location, JsonObject jsonObject, boolean inverted) {
             return new ItemEquippedCondition(
                     inverted,
                     getItemStack(jsonObject, "item"));
         }
 
         @Override
-        public ItemEquippedCondition fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
+        public ItemEquippedCondition fromNetwork(Identifier location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
             return new ItemEquippedCondition(
                     inverted,
                     ItemStack.STREAM_CODEC.decode(friendlyByteBuf));

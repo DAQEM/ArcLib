@@ -9,7 +9,7 @@ import com.daqem.arc.model.ArcBlockState;
 import com.google.gson.JsonObject;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -49,7 +49,7 @@ public class BlockCondition extends AbstractCondition {
     public static class Serializer implements IConditionSerializer<BlockCondition> {
 
         @Override
-        public BlockCondition fromJson(ResourceLocation location, JsonObject jsonObject, boolean inverted) {
+        public BlockCondition fromJson(Identifier location, JsonObject jsonObject, boolean inverted) {
             return new BlockCondition(
                     inverted,
                     getBlockState(jsonObject, "block")
@@ -57,7 +57,7 @@ public class BlockCondition extends AbstractCondition {
         }
 
         @Override
-        public BlockCondition fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
+        public BlockCondition fromNetwork(Identifier location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
             return new BlockCondition(
                     inverted,
                     ArcBlockState.STREAM_CODEC.decode(friendlyByteBuf)

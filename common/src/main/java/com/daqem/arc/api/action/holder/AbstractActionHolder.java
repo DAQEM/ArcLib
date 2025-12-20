@@ -1,7 +1,7 @@
 package com.daqem.arc.api.action.holder;
 
 import com.daqem.arc.api.action.IAction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,11 +10,11 @@ import java.util.Map;
 
 public abstract class AbstractActionHolder implements IActionHolder {
 
-    protected final ResourceLocation location;
+    protected final Identifier location;
     // Made this a maps, so we don't get duplicate actions.
-    protected final Map<ResourceLocation, IAction> actions = new HashMap<>();
+    protected final Map<Identifier, IAction> actions = new HashMap<>();
 
-    public AbstractActionHolder(ResourceLocation location) {
+    public AbstractActionHolder(Identifier location) {
         this.location = location;
     }
 
@@ -24,7 +24,7 @@ public abstract class AbstractActionHolder implements IActionHolder {
     }
 
     @Override
-    public ResourceLocation getLocation() {
+    public Identifier getIdentifier() {
         return location;
     }
 
@@ -35,7 +35,7 @@ public abstract class AbstractActionHolder implements IActionHolder {
 
     @Override
     public void addAction(IAction action) {
-        this.actions.put(action.getLocation(), action);
+        this.actions.put(action.getIdentifier(), action);
     }
 
     @Override
@@ -45,7 +45,7 @@ public abstract class AbstractActionHolder implements IActionHolder {
 
     @Override
     public void removeAction(IAction action) {
-        this.actions.remove(action.getLocation());
+        this.actions.remove(action.getIdentifier());
     }
 
     @Override
