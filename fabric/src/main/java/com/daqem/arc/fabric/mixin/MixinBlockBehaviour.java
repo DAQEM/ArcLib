@@ -1,9 +1,11 @@
-package com.daqem.arc.mixin;
+package com.daqem.arc.fabric.mixin;
 
 import com.daqem.arc.api.event.ArcBlockEvent;
 import com.daqem.arc.api.event.EventResult;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
@@ -23,7 +25,7 @@ public class MixinBlockBehaviour {
                     target = "Lnet/minecraft/world/entity/player/Player;getDestroySpeed(Lnet/minecraft/world/level/block/state/BlockState;)F"
             )
     )
-    private float onGetDestroyProgress(float original, BlockState blockState, Player player) {
+    private float onGetDestroyProgress(float original, BlockState blockState, Player player, BlockGetter blockGetter, BlockPos blockPos) {
         // 1. Wrap the original speed (e.g., 1.0 for hand, 6.0 for iron tool)
         MutableFloat speed = new MutableFloat(original);
 
@@ -32,7 +34,7 @@ public class MixinBlockBehaviour {
         EventResult eventResult = ArcBlockEvent.GET_DESTROY_SPEED.invoker().onGetDestroySpeed(
                 player,
                 blockState,
-                this.arc$getBlockHitResult(player).getBlockPos(),
+                blockPos,
                 player.getMainHandItem(),
                 speed
         );
@@ -43,13 +45,6 @@ public class MixinBlockBehaviour {
         }
 
         // 4. Return the modified value
-        return speed.getValue();
-    }
-
-    private BlockHitResult arc$getBlockHitResult(Player player) {
-        Vec3 eyePos = player.getEyePosition(1.0F);
-        Vec3 viewVec = player.getViewVector(1.0F);
-        Vec3 target = eyePos.add(viewVec.x * 5, viewVec.y * 5, viewVec.z * 5);
-        return player.level().clip(new ClipContext(eyePos, target, ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, player));
+        return speed.floatValue();
     }
 }

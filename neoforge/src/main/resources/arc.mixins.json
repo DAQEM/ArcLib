@@ -7,6 +7,7 @@
   "mixins": [
     "BucketItemMixin",
     "ItemStackMixin",
+    "MixinBlockBehaviour",
     "MixinHoeItem"
   ],
   "injectors": {
