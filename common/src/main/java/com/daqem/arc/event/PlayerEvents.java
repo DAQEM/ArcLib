@@ -10,6 +10,7 @@ import com.daqem.arc.api.event.EventResult;
 import com.daqem.arc.api.player.ArcPlayer;
 import com.daqem.arc.api.player.ArcServerPlayer;
 import dev.architectury.event.events.common.PlayerEvent;
+import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
 
 public class PlayerEvents {
 
@@ -277,6 +278,18 @@ public class PlayerEvents {
                         .withData(IActionDataType.FROM_DIMENSION, from)
                         .withData(IActionDataType.TO_DIMENSION, to)
                         .withData(IActionDataType.WORLD, player.level())
+                        .build()
+                        .sendToAction();
+            }
+        }, EventPriority.HIGH);
+
+        ArcPlayerEvent.SHOOT_PROJECTILE.register((player, projectile) -> {
+            if (player instanceof ArcServerPlayer arcServerPlayer) {
+                new ActionDataBuilder(arcServerPlayer, IActionType.SHOOT_PROJECTILE)
+                        .withData(IActionDataType.ITEM_STACK, projectile.arc$getPickupItem())
+                        .withData(IActionDataType.ENTITY, (AbstractArrow) projectile)
+                        .withData(IActionDataType.WORLD, player.level())
+                        .withData(IActionDataType.BLOCK_POSITION, ((AbstractArrow) projectile).blockPosition())
                         .build()
                         .sendToAction();
             }
