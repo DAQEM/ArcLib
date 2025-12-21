@@ -10,6 +10,10 @@ import com.daqem.arc.api.event.EventResult;
 import com.daqem.arc.api.player.ArcPlayer;
 import com.daqem.arc.api.player.ArcServerPlayer;
 import dev.architectury.event.events.common.PlayerEvent;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
 
 public class PlayerEvents {
@@ -114,6 +118,12 @@ public class PlayerEvents {
                         .withData(IActionDataType.BLOCK_POSITION, serverPlayer.blockPosition())
                         .build()
                         .sendToAction();
+
+                if (effect != null) {
+                    if (actionResult.getCancelEffects().stream().anyMatch(e -> e.is(effect.getEffect()))) {
+                        return EventResult.INTERRUPT_FALSE;
+                    }
+                }
 
                 if (actionResult.shouldCancelAction()) {
                     return EventResult.INTERRUPT_FALSE;
