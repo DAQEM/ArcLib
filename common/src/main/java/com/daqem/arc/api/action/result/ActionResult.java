@@ -1,17 +1,25 @@
 package com.daqem.arc.api.action.result;
 
+import net.minecraft.core.Holder;
+import net.minecraft.world.effect.MobEffect;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public final class ActionResult {
 
     private boolean cancelAction = false;
     private float destroySpeedModifier = 1.0F;
     private float attackSpeedModifier = 1.0F;
     private float damageModifier = 1.0F;
+    private List<Holder<MobEffect>> cancelEffects = new ArrayList<>();
 
     public ActionResult merge(ActionResult other) {
         this.cancelAction = this.cancelAction || other.cancelAction;
         this.destroySpeedModifier = this.destroySpeedModifier * other.destroySpeedModifier;
         this.attackSpeedModifier = this.attackSpeedModifier * other.attackSpeedModifier;
         this.damageModifier = this.damageModifier * other.damageModifier;
+        this.cancelEffects.addAll(other.cancelEffects);
         return this;
     }
 
@@ -36,6 +44,10 @@ public final class ActionResult {
         return damageModifier;
     }
 
+    public List<Holder<MobEffect>> getCancelEffects() {
+        return cancelEffects;
+    }
+
     public ActionResult withDestroySpeedModifier(float destroySpeedModifier) {
         this.destroySpeedModifier = destroySpeedModifier;
         return this;
@@ -48,6 +60,16 @@ public final class ActionResult {
 
     public ActionResult withDamageModifier(float damageModifier) {
         this.damageModifier = damageModifier;
+        return this;
+    }
+
+    public ActionResult withCancelEffects(List<Holder<MobEffect>> cancelEffects) {
+        this.cancelEffects.addAll(cancelEffects);
+        return this;
+    }
+
+    public ActionResult withCancelEffect(Holder<MobEffect> cancelEffect) {
+        this.cancelEffects.add(cancelEffect);
         return this;
     }
 }
