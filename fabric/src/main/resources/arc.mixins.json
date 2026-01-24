@@ -8,6 +8,7 @@
     "BucketItemMixin",
     "ItemStackMixin",
     "LivingEntityFabricMixin",
+    "MixinAxeItem",
     "MixinBlockBehaviour",
     "MixinHoeItem",
     "PlayerMixin",

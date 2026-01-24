@@ -43,6 +43,7 @@ public class Arc {
         ItemEvents.registerEvents();
         MovementEvents.registerEvents();
         PlayerEvents.registerEvents();
+        NextTickScheduler.registerEvent();
     }
 
     public static Identifier getId(String id) {

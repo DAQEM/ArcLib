@@ -1026,7 +1026,7 @@ public interface ArcSerializer {
             throw new JsonParseException("Expected '" + key + "' to be a sound event");
         }
 
-        return SoundEvent.CODEC.decode(JsonOps.INSTANCE, jsonObject.get(key)).result()
+        return BuiltInRegistries.SOUND_EVENT.holderByNameCodec().decode(JsonOps.INSTANCE, jsonObject.get(key)).result()
                 .orElseGet(() -> {
                     if (defaultSoundEvent != null) {
                         return new Pair<>(defaultSoundEvent, null);
