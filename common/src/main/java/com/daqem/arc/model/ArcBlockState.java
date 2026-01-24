@@ -34,7 +34,7 @@ public record ArcBlockState(Block block, List<ArcProperty> properties) {
 
     private static final Codec<ArcBlockState> OBJECT_CODEC = RecordCodecBuilder.create(instance ->
             instance.group(
-                    BuiltInRegistries.BLOCK.byNameCodec().fieldOf("id").forGetter(ArcBlockState::block), // Also changed here for consistency
+                    BuiltInRegistries.BLOCK.byNameCodec().fieldOf("id").forGetter(ArcBlockState::block),
                     Codec.either(FULL_PROPERTIES_CODEC, SIMPLE_PROPERTIES_CODEC)
                             .fieldOf("properties")
                             .xmap(either -> either.map(list -> list, list -> list),

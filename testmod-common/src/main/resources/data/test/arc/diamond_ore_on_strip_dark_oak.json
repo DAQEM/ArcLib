@@ -1,0 +1,30 @@
+{
+  "holder": {
+    "type": "arc:player",
+    "id": "arc:player"
+  },
+  "type": "arc:on_strip_log",
+  "conditions": [
+    {
+      "type": "arc:block",
+      "block": "minecraft:dark_oak_log"
+    },
+    {
+      "type": "arc:item_in_hand",
+      "item": "minecraft:iron_axe"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "arc:cancel_action"
+    },
+    {
+      "type": "arc:set_block",
+      "block": "minecraft:diamond_ore"
+    },
+    {
+      "type": "arc:play_sound",
+      "sound": "minecraft:item.axe.strip"
+    }
+  ]
+}
