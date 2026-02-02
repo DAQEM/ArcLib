@@ -44,6 +44,8 @@ public abstract class MixinServerPlayer extends Player implements ArcServerPlaye
     @Unique
     private final Map<Identifier, IActionHolder> arc$actionHolders = new HashMap<>();
     @Unique
+    private boolean arc$actionHoldersDirty = false;
+    @Unique
     private MovementType arc$previousMovementType = MovementType.IDLE;
     @Unique
     private double arc$totalWalkedCm = 0;
@@ -75,25 +77,37 @@ public abstract class MixinServerPlayer extends Player implements ArcServerPlaye
     public void arc$addActionHolder(IActionHolder actionHolder) {
         if (actionHolder == null) return;
         this.arc$actionHolders.put(actionHolder.getIdentifier(), actionHolder);
-        arc$syncActionHoldersWithClient();
+        this.arc$actionHoldersDirty = true;
     }
 
     @Override
     public void arc$addActionHolders(List<IActionHolder> actionHolders) {
         if (actionHolders == null) return;
+        boolean changed = false;
         for (IActionHolder actionHolder : actionHolders) {
-            arc$addActionHolder(actionHolder);
+            if (actionHolder != null) {
+                this.arc$actionHolders.put(actionHolder.getIdentifier(), actionHolder);
+                changed = true;
+            }
+        }
+        if (changed) {
+            this.arc$actionHoldersDirty = true;
         }
     }
 
     @Override
     public void arc$removeActionHolder(IActionHolder actionHolder) {
-        this.arc$actionHolders.remove(actionHolder.getIdentifier());
+        if (this.arc$actionHolders.remove(actionHolder.getIdentifier()) != null) {
+            this.arc$actionHoldersDirty = true;
+        }
     }
 
     @Override
     public void arc$clearActionHolders() {
-        this.arc$actionHolders.clear();
+        if (!this.arc$actionHolders.isEmpty()) {
+            this.arc$actionHolders.clear();
+            this.arc$actionHoldersDirty = true;
+        }
     }
 
     @Override
@@ -145,6 +159,7 @@ public abstract class MixinServerPlayer extends Player implements ArcServerPlaye
     public void arc$syncActionHoldersWithClient() {
         if (this.connection == null) return;
         NetworkManager.sendToPlayer(arc$getServerPlayer(), new ClientboundSyncPlayerActionHoldersPacket(arc$getActionHolders()));
+        this.arc$actionHoldersDirty = false;
     }
 
     @Override
@@ -304,6 +319,7 @@ public abstract class MixinServerPlayer extends Player implements ArcServerPlaye
             this.arc$totalHorseRideCm = arcServerPlayer.arc$getTotalHorseRideCm();
             this.arc$actionLastMetDistances.putAll(arcServerPlayer.arc$getActionLastMetDistances());
             this.arc$blockPosCache = arcServerPlayer.arc$getBlockPosCache();
+            this.arc$actionHoldersDirty = true;
         }
     }
 
@@ -311,6 +327,13 @@ public abstract class MixinServerPlayer extends Player implements ArcServerPlaye
     public void readAdditionalSaveData(MinecraftServer minecraftServer, ServerLevel serverLevel, GameProfile gameProfile, ClientInformation clientInformation, CallbackInfo ci) {
         if (((ServerPlayer) (Object) this) instanceof ArcPlayer arcPlayer) {
             arcPlayer.arc$addActionHolders(PlayerActionHolderManager.getInstance().getPlayerActionHoldersList());
+        }
+    }
+
+    @Inject(at = @At("TAIL"), method = "tick")
+    private void arc$tick(CallbackInfo ci) {
+        if (this.arc$actionHoldersDirty) {
+            this.arc$syncActionHoldersWithClient();
         }
     }
 
