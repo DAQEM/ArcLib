@@ -8,6 +8,7 @@
     "MixinLocalPlayer"
   ],
   "mixins": [
+    "EntityAccessor",
     "GrindstoneMenuMixin",
     "MixinAbstractArrow",
     "MixinAbstractCookingRecipe",

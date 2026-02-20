@@ -2,6 +2,7 @@ package com.daqem.arc.registry;
 
 import com.daqem.arc.Arc;
 import com.daqem.arc.api.entity.IEntityDataResolver;
+import com.daqem.arc.mixin.EntityAccessor;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
@@ -41,7 +42,7 @@ public class EntityDataRegistry {
         register(new SimpleEntityDataResolver<>(Arc.getId("is_on_ground"), Boolean.class, Entity::onGround));
         register(new SimpleEntityDataResolver<>(Arc.getId("is_in_water"), Boolean.class, Entity::isInWater));
         register(new SimpleEntityDataResolver<>(Arc.getId("is_in_lava"), Boolean.class, Entity::isInLava));
-        register(new SimpleEntityDataResolver<>(Arc.getId("is_in_rain"), Boolean.class, Entity::isInRain));
+        register(new SimpleEntityDataResolver<>(Arc.getId("is_in_rain"), Boolean.class, entity -> ((EntityAccessor) entity).arc$isInRain()));
         register(new SimpleEntityDataResolver<>(Arc.getId("air_supply"), Integer.class, Entity::getAirSupply));
         register(new SimpleEntityDataResolver<>(Arc.getId("fall_distance"), Float.class, entity -> (float) entity.fallDistance));
         register(new SimpleEntityDataResolver<>(Arc.getId("ticks_frozen"), Integer.class, Entity::getTicksFrozen));

@@ -18,6 +18,7 @@ dependencies {
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     common(project(path: ":testmod-common", configuration: "namedElements")) { transitive false }
 
+    modApi "dev.architectury:architectury-fabric:${project.architectury_version}"
     modImplementation "com.daqem.uilib:uilib-fabric:${project.uilib_version}"
     modImplementation "com.daqem.yamlconfig:yamlconfig-fabric:${project.yamlconfig_version}"
 }
