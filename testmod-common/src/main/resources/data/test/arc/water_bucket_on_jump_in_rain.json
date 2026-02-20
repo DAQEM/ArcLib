@@ -1,0 +1,27 @@
+{
+  "holder": {
+    "type": "arc:player",
+    "id": "arc:player"
+  },
+  "type": "arc:on_jump",
+  "conditions": [
+    {
+      "type": "arc:entity_data",
+      "target": "player",
+      "properties": [
+        {
+          "id": "arc:is_in_rain",
+          "value": "true"
+        }
+      ]
+    }
+  ],
+  "rewards": [
+    {
+      "type": "arc:item",
+      "item": {
+        "id": "minecraft:water_bucket"
+      }
+    }
+  ]
+}

@@ -31,6 +31,7 @@ dependencies {
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     common(project(path: ":testmod-common", configuration: "namedElements")) { transitive false }
 
+    modApi "dev.architectury:architectury-neoforge:${project.architectury_version}"
     modImplementation "com.daqem.uilib:uilib-neoforge:${project.uilib_version}"
     modImplementation "com.daqem.yamlconfig:yamlconfig-neoforge:${project.yamlconfig_version}"
 }
