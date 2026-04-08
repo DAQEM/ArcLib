@@ -6,11 +6,17 @@ import com.daqem.arc.data.serializer.ArcSerializer;
 import com.daqem.arc.registry.ArcRegistry;
 import com.google.gson.JsonObject;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 
 import java.util.List;
 
 public interface IActionHolderSerializer<T extends IActionHolder> extends ArcSerializer {
+
+    StreamCodec<RegistryFriendlyByteBuf, IActionHolder> STREAM_CODEC = StreamCodec.of(
+            (buf, action) -> toNetwork(action, buf),
+            IActionHolderSerializer::fromNetwork
+    );
 
     T fromJson(JsonObject jsonObject, Identifier location);
 

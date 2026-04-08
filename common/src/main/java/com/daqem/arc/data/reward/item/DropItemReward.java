@@ -13,6 +13,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootParams;
@@ -23,16 +24,18 @@ import java.util.List;
 
 public class DropItemReward extends AbstractReward {
 
-    private final ItemStack itemStack;
+    private final ItemStackTemplate itemStackTemplate;
+    private ItemStack cachedItemStack;
 
-    public DropItemReward(double chance, int priority, ItemStack itemStack) {
+    public DropItemReward(double chance, int priority, ItemStackTemplate itemStackTemplate) {
         super(chance, priority);
-        this.itemStack = itemStack;
+        this.itemStackTemplate = itemStackTemplate;
+        this.cachedItemStack = null;
     }
 
     @Override
     public Component getDescription() {
-        return getDescription(itemStack.getCount(), itemStack.getHoverName());
+        return getDescription(getItemStack().getCount(), getItemStack().getHoverName());
     }
 
     @Override
@@ -42,14 +45,14 @@ public class DropItemReward extends AbstractReward {
             Level level = actionData.getData(IActionDataType.WORLD);
             if (level == null) level = actionData.getPlayer().arc$getLevel();
             if (level instanceof ServerLevel serverLevel) {
-                if (!itemStack.isEmpty()) {
-                    for (int i = 0; i < itemStack.getCount(); i++) {
+                if (!getItemStack().isEmpty()) {
+                    for (int i = 0; i < getItemStack().getCount(); i++) {
                         ItemEntity entity = new ItemEntity(
                                 serverLevel,
                                 pos.getX(),
                                 pos.getY(),
                                 pos.getZ(),
-                                itemStack.copyWithCount(1));
+                                getItemStack().copyWithCount(1));
                         entity.setDefaultPickUpDelay();
                         serverLevel.addFreshEntity(entity);
                     }
@@ -63,8 +66,8 @@ public class DropItemReward extends AbstractReward {
                                         .withParameter(LootContextParams.BLOCK_STATE, state)
                                         .withParameter(LootContextParams.THIS_ENTITY, actionData.getPlayer().arc$getPlayer())
                         );
-                        for (int i = 0; i < itemStack.getCount(); i++) {
-                            ItemStack randomDrop = drops.get(serverLevel.random.nextInt(drops.size()));
+                        for (int i = 0; i < getItemStack().getCount(); i++) {
+                            ItemStack randomDrop = drops.get(serverLevel.getRandom().nextInt(drops.size()));
                             ItemEntity entity = new ItemEntity(
                                     serverLevel,
                                     pos.getX(),
@@ -87,14 +90,22 @@ public class DropItemReward extends AbstractReward {
     }
 
     public ItemStack getItemStack() {
-        return itemStack;
+        if (cachedItemStack != null) {
+            return cachedItemStack;
+        }
+        this.cachedItemStack = itemStackTemplate.create();
+        return cachedItemStack;
+    }
+
+    public ItemStackTemplate getItemStackTemplate() {
+        return itemStackTemplate;
     }
 
     public static class Serializer implements IRewardSerializer<DropItemReward> {
 
         @Override
         public DropItemReward fromJson(JsonObject jsonObject, double chance, int priority) {
-            return new DropItemReward(chance, priority, getItemStack(jsonObject, "item"));
+            return new DropItemReward(chance, priority, getItemStackTemplate(jsonObject, "item"));
         }
 
         @Override
@@ -102,13 +113,13 @@ public class DropItemReward extends AbstractReward {
             return new DropItemReward(
                     chance,
                     priority,
-                    ItemStack.STREAM_CODEC.decode(friendlyByteBuf));
+                    ItemStackTemplate.STREAM_CODEC.decode(friendlyByteBuf));
         }
 
         @Override
         public void toNetwork(RegistryFriendlyByteBuf friendlyByteBuf, DropItemReward type) {
             IRewardSerializer.super.toNetwork(friendlyByteBuf, type);
-            ItemStack.STREAM_CODEC.encode(friendlyByteBuf, type.itemStack);
+            ItemStackTemplate.STREAM_CODEC.encode(friendlyByteBuf, type.itemStackTemplate);
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.daqem.arc.data.reward.world;
 
+import com.daqem.arc.Arc;
 import com.daqem.arc.api.action.IActionType;
 import com.daqem.arc.api.action.result.ActionResult;
 import com.daqem.arc.api.reward.AbstractReward;
@@ -9,10 +10,11 @@ import com.daqem.arc.data.ActionData;
 import com.daqem.arc.event.NextTickScheduler;
 import com.daqem.arc.model.ArcBlockState;
 import com.daqem.arc.model.target.ArcPositionTarget;
+import com.daqem.knot.api.platform.KnotPlatform;
+import com.daqem.knot.api.platform.Platform;
+import com.daqem.knot.events.EventResult;
+import com.daqem.knot.events.common.block.BlockEvent;
 import com.google.gson.JsonObject;
-import dev.architectury.event.EventResult;
-import dev.architectury.event.events.common.BlockEvent;
-import dev.architectury.platform.Platform;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -55,16 +57,16 @@ public class SetBlockReward extends AbstractReward {
 
             if (placeAsPlayer) {
                 BlockState stateBefore = level.getBlockState(pos);
-                EventResult result = BlockEvent.PLACE.invoker().placeBlock(level, pos, state, player);
+                EventResult result = BlockEvent.PLACE_BLOCK.invoker().onPlaceBlock(level, pos, state, player);
                 BlockState stateAfter = level.getBlockState(pos);
 
-                if (result == EventResult.interruptFalse() || !stateBefore.equals(stateAfter)) {
+                if (result == EventResult.INTERRUPT_FALSE || !stateBefore.equals(stateAfter)) {
                     shouldPlace = false;
                 }
             }
 
             if (shouldPlace) {
-                if (Platform.isFabric() && actionData.getActionType().equals(IActionType.PLACE_BLOCK)) NextTickScheduler.schedule(() -> placeBlock(level, pos, state, player));
+                if (Platform.INFO.getPlatform() == KnotPlatform.FABRIC && actionData.getActionType().equals(IActionType.PLACE_BLOCK)) NextTickScheduler.schedule(() -> placeBlock(level, pos, state, player));
                 else placeBlock(level, pos, state, player);
             }
         }

@@ -13,6 +13,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,15 +41,15 @@ public class SmeltInventoryReward extends AbstractReward {
                 ItemStack stack = player.getInventory().getItem(i);
                 if (!stack.isEmpty()) {
                     SingleRecipeInput singleRecipeInput = new SingleRecipeInput(stack);
-                    Optional<RecipeHolder<SmeltingRecipe>> recipeHolderOpt = recipeManager.getRecipeFor(RecipeType.SMELTING, singleRecipeInput, level);
+                    Optional<RecipeHolder<@NotNull SmeltingRecipe>> recipeHolderOpt = recipeManager.getRecipeFor(RecipeType.SMELTING, singleRecipeInput, level);
 
                     if (recipeHolderOpt.isPresent()) {
                         if (!recipes.isEmpty() && !recipes.contains(recipeHolderOpt.get().id().identifier())) {
                             continue;
                         }
 
-                        Recipe<SingleRecipeInput> recipe = recipeHolderOpt.get().value();
-                        ItemStack result = recipe.assemble(singleRecipeInput, level.registryAccess());
+                        Recipe<@NotNull SingleRecipeInput> recipe = recipeHolderOpt.get().value();
+                        ItemStack result = recipe.assemble(singleRecipeInput);
 
                         if (!result.isEmpty()) {
                             ItemStack smeltedStack = result.copy();

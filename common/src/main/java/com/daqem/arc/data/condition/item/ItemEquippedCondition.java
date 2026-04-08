@@ -11,22 +11,25 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ItemEquippedCondition extends AbstractCondition {
 
-    private final ItemStack itemStack;
+    private final ItemStackTemplate itemStackTemplate;
+    private ItemStack cachedItemStack;
 
-    public ItemEquippedCondition(boolean inverted, ItemStack itemStack) {
+    public ItemEquippedCondition(boolean inverted, ItemStackTemplate itemStackTemplate) {
         super(inverted);
-        this.itemStack = itemStack;
+        this.itemStackTemplate = itemStackTemplate;
+        this.cachedItemStack = null;
     }
 
     @Override
     public Component getDescription() {
-        return getDescription(itemStack.getHoverName());
+        return getDescription(getItemStack().getHoverName());
     }
 
     @Override
@@ -41,7 +44,7 @@ public class ItemEquippedCondition extends AbstractCondition {
                 }
             }
         }
-        return armor.stream().anyMatch(stack -> stack.getItem() == itemStack.getItem());
+        return armor.stream().anyMatch(stack -> stack.getItem() == getItemStack().getItem());
     }
 
     @Override
@@ -50,7 +53,15 @@ public class ItemEquippedCondition extends AbstractCondition {
     }
 
     public ItemStack getItemStack() {
-        return itemStack;
+        if (cachedItemStack != null) {
+            return cachedItemStack;
+        }
+        this.cachedItemStack = itemStackTemplate.create();
+        return cachedItemStack;
+    }
+
+    public ItemStackTemplate getItemStackTemplate() {
+        return itemStackTemplate;
     }
 
     public static class Serializer implements IConditionSerializer<ItemEquippedCondition> {
@@ -59,20 +70,20 @@ public class ItemEquippedCondition extends AbstractCondition {
         public ItemEquippedCondition fromJson(Identifier location, JsonObject jsonObject, boolean inverted) {
             return new ItemEquippedCondition(
                     inverted,
-                    getItemStack(jsonObject, "item"));
+                    getItemStackTemplate(jsonObject, "item"));
         }
 
         @Override
         public ItemEquippedCondition fromNetwork(Identifier location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
             return new ItemEquippedCondition(
                     inverted,
-                    ItemStack.STREAM_CODEC.decode(friendlyByteBuf));
+                    ItemStackTemplate.STREAM_CODEC.decode(friendlyByteBuf));
         }
 
         @Override
         public void toNetwork(RegistryFriendlyByteBuf friendlyByteBuf, ItemEquippedCondition type) {
             IConditionSerializer.super.toNetwork(friendlyByteBuf, type);
-            ItemStack.STREAM_CODEC.encode(friendlyByteBuf, type.itemStack);
+            ItemStackTemplate.STREAM_CODEC.encode(friendlyByteBuf, type.itemStackTemplate);
         }
     }
 }

@@ -18,26 +18,26 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public interface IActionDataType<T> {
 
-    IActionDataType<BlockState> BLOCK_STATE = register(Arc.getId("block_state"));
-    IActionDataType<BlockPos> BLOCK_POSITION = register(Arc.getId("block_position"));
-    IActionDataType<Integer> EXP_DROP = register(Arc.getId("exp_drop"));
-    IActionDataType<Integer> EXP_LEVEL = register(Arc.getId("exp_level"));
-    IActionDataType<Level> WORLD = register(Arc.getId("world"));
-    IActionDataType<DamageSource> DAMAGE_SOURCE = register(Arc.getId("damage_source"));
-    IActionDataType<Entity> ENTITY = register(Arc.getId("entity"));
-    IActionDataType<Float> DAMAGE_AMOUNT = register(Arc.getId("damage_amount"));
-    IActionDataType<Double> DISTANCE_IN_CM = register(Arc.getId("distance_in_cm"));
-    IActionDataType<ItemStack> ITEM_STACK = register(Arc.getId("item_stack"));
-    IActionDataType<Item> ITEM = register(Arc.getId("item"));
-    IActionDataType<AdvancementHolder> ADVANCEMENT = register(Arc.getId("advancement"));
-    IActionDataType<MobEffectInstance> MOB_EFFECT_INSTANCE = register(Arc.getId("mob_effect_instance"));
-    IActionDataType<Recipe<?>> RECIPE = register(Arc.getId("recipe"));
-    IActionDataType<InteractionHand> HAND = register(Arc.getId("hand"));
-    IActionDataType<Double> FALL_DISTANCE = register(Arc.getId("fall_distance"));
-    IActionDataType<ResourceKey<Level>> FROM_DIMENSION = register(Arc.getId("from_dimension"));
-    IActionDataType<ResourceKey<Level>> TO_DIMENSION = register(Arc.getId("to_dimension"));
-    IActionDataType<MerchantOffer> TRADE_OFFER = register(Arc.getId("trade_offer"));
-    IActionDataType<Boolean> IS_CRITICAL_HIT = register(Arc.getId("is_critical_hit"));
+    IActionDataType<BlockState> BLOCK_STATE = register(Arc.API.getId("block_state"));
+    IActionDataType<BlockPos> BLOCK_POSITION = register(Arc.API.getId("block_position"));
+    IActionDataType<Integer> EXP_DROP = register(Arc.API.getId("exp_drop"));
+    IActionDataType<Integer> EXP_LEVEL = register(Arc.API.getId("exp_level"));
+    IActionDataType<Level> WORLD = register(Arc.API.getId("world"));
+    IActionDataType<DamageSource> DAMAGE_SOURCE = register(Arc.API.getId("damage_source"));
+    IActionDataType<Entity> ENTITY = register(Arc.API.getId("entity"));
+    IActionDataType<Float> DAMAGE_AMOUNT = register(Arc.API.getId("damage_amount"));
+    IActionDataType<Double> DISTANCE_IN_CM = register(Arc.API.getId("distance_in_cm"));
+    IActionDataType<ItemStack> ITEM_STACK = register(Arc.API.getId("item_stack"));
+    IActionDataType<Item> ITEM = register(Arc.API.getId("item"));
+    IActionDataType<AdvancementHolder> ADVANCEMENT = register(Arc.API.getId("advancement"));
+    IActionDataType<MobEffectInstance> MOB_EFFECT_INSTANCE = register(Arc.API.getId("mob_effect_instance"));
+    IActionDataType<Recipe<?>> RECIPE = register(Arc.API.getId("recipe"));
+    IActionDataType<InteractionHand> HAND = register(Arc.API.getId("hand"));
+    IActionDataType<Double> FALL_DISTANCE = register(Arc.API.getId("fall_distance"));
+    IActionDataType<ResourceKey<Level>> FROM_DIMENSION = register(Arc.API.getId("from_dimension"));
+    IActionDataType<ResourceKey<Level>> TO_DIMENSION = register(Arc.API.getId("to_dimension"));
+    IActionDataType<MerchantOffer> TRADE_OFFER = register(Arc.API.getId("trade_offer"));
+    IActionDataType<Boolean> IS_CRITICAL_HIT = register(Arc.API.getId("is_critical_hit"));
 
     static <T> IActionDataType<T> register(Identifier location) {
         return () -> location;

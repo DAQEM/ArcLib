@@ -10,25 +10,28 @@ import com.google.gson.JsonObject;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 
 public class ItemReward extends AbstractReward {
 
-    private final ItemStack itemStack;
+    private final ItemStackTemplate itemStackTemplate;
+    private ItemStack cachedItemStack;
 
-    public ItemReward(double chance, int priority, ItemStack itemStack) {
+    public ItemReward(double chance, int priority, ItemStackTemplate itemStackTemplate) {
         super(chance, priority);
-        this.itemStack = itemStack;
+        this.itemStackTemplate = itemStackTemplate;
+        this.cachedItemStack = null;
     }
 
     @Override
     public Component getDescription() {
-        return getDescription(itemStack.getCount(), itemStack.getHoverName());
+        return getDescription(getItemStack().getCount(), getItemStack().getHoverName());
     }
 
     @Override
     public ActionResult apply(ActionData actionData) {
         ArcPlayer player = actionData.getPlayer();
-        player.arc$getPlayer().addItem(itemStack.copy());
+        player.arc$getPlayer().addItem(getItemStack().copy());
         return new ActionResult();
     }
 
@@ -38,29 +41,37 @@ public class ItemReward extends AbstractReward {
     }
 
     public ItemStack getItemStack() {
-        return itemStack;
+        if (cachedItemStack != null) {
+            return cachedItemStack;
+        }
+        this.cachedItemStack = itemStackTemplate.create();
+        return cachedItemStack;
+    }
+
+    public ItemStackTemplate getItemStackTemplate() {
+        return itemStackTemplate;
     }
 
     public int getAmount() {
-        return itemStack.getCount();
+        return getItemStack().getCount();
     }
 
     public static class Serializer implements IRewardSerializer<ItemReward> {
 
         @Override
         public ItemReward fromJson(JsonObject jsonObject, double chance, int priority) {
-            return new ItemReward(chance, priority, getItemStack(jsonObject, "item"));
+            return new ItemReward(chance, priority, getItemStackTemplate(jsonObject, "item"));
         }
 
         @Override
         public ItemReward fromNetwork(RegistryFriendlyByteBuf friendlyByteBuf, double chance, int priority) {
-            return new ItemReward(chance, priority, ItemStack.STREAM_CODEC.decode(friendlyByteBuf));
+            return new ItemReward(chance, priority, ItemStackTemplate.STREAM_CODEC.decode(friendlyByteBuf));
         }
 
         @Override
         public void toNetwork(RegistryFriendlyByteBuf friendlyByteBuf, ItemReward type) {
             IRewardSerializer.super.toNetwork(friendlyByteBuf, type);
-            ItemStack.STREAM_CODEC.encode(friendlyByteBuf, type.itemStack);
+            ItemStackTemplate.STREAM_CODEC.encode(friendlyByteBuf, type.itemStackTemplate);
         }
     }
 }

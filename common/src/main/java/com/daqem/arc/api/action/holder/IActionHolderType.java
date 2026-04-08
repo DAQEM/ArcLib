@@ -8,7 +8,7 @@ import net.minecraft.resources.Identifier;
 
 public interface IActionHolderType<T extends IActionHolder> {
 
-    IActionHolderType<PlayerActionHolder> PLAYER_ACTION_TYPE = IActionHolderType.register(Arc.getId("player"), new PlayerActionHolder.Serializer());
+    IActionHolderType<PlayerActionHolder> PLAYER_ACTION_TYPE = IActionHolderType.register(Arc.API.getId("player"), new PlayerActionHolder.Serializer());
 
     static <T extends IActionHolder> IActionHolderType<T> register(final Identifier location, final IActionHolderSerializer<T> serializer) {
         return Registry.register(ArcRegistry.ACTION_HOLDER, location, new IActionHolderType<T>() {

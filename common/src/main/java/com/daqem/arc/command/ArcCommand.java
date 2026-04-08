@@ -7,8 +7,8 @@ import com.daqem.arc.command.argument.ActionArgument;
 import com.daqem.arc.data.ActionHolderManager;
 import com.daqem.arc.networking.ClientboundActionHoldersScreenPacket;
 import com.daqem.arc.networking.ClientboundActionScreenPacket;
+import com.daqem.knot.Knot;
 import com.mojang.brigadier.CommandDispatcher;
-import dev.architectury.networking.NetworkManager;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -62,14 +62,14 @@ public class ArcCommand {
             return 0;
         }
         if (source.getPlayer() != null) {
-            NetworkManager.sendToPlayer(source.getPlayer(), new ClientboundActionScreenPacket(action));
+            Knot.NETWORKING.sendToPlayer(source.getPlayer(), new ClientboundActionScreenPacket(action));
         }
         return 1;
     }
 
     private static int openActionHoldersScreen(CommandSourceStack source, List<IActionHolder> actionHolders) {
         if (source.getPlayer() != null) {
-            NetworkManager.sendToPlayer(source.getPlayer(), new ClientboundActionHoldersScreenPacket(actionHolders));
+            Knot.NETWORKING.sendToPlayer(source.getPlayer(), new ClientboundActionHoldersScreenPacket(actionHolders));
         }
         return 1;
     }

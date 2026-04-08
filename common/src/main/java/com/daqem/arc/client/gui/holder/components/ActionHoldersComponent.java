@@ -9,7 +9,7 @@ import java.util.List;
 public class ActionHoldersComponent extends SpriteComponent {
 
     public ActionHoldersComponent(List<IActionHolder> actionHolders) {
-        super(0, 0, 166, 200, Arc.getId("action_holders_background"));
+        super(0, 0, 166, 200, Arc.API.getId("action_holders_background"));
 
         AHScrollContainerComponent scrollContainer = new AHScrollContainerComponent(actionHolders);
 
