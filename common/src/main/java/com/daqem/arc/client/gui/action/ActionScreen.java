@@ -23,7 +23,7 @@ public class ActionScreen extends AbstractScreen {
     public PageSwitchButtonWidget arrowRightComponent;
 
     public ActionScreen(List<IAction> actions, IAction selectedAction) {
-        super(Arc.API.translatable("screen.action"));
+        super(Arc.translatable("screen.action"));
         this.actions = actions;
         this.selectedAction = selectedAction;
 
@@ -35,8 +35,8 @@ public class ActionScreen extends AbstractScreen {
         this.actionComponent = new ActionComponent(getCurrentIndex(), selectedAction);
         this.actionComponent.center();
 
-        this.arrowLeftComponent = new PageSwitchButtonWidget(0, 0, Arc.API.getId("left_button"), button -> moveToPreviousActionComponent(), Arc.API.translatable("screen.action.button.previous"));
-        this.arrowRightComponent = new PageSwitchButtonWidget(0, 0, Arc.API.getId("right_button"), button -> moveToNextActionComponent(), Arc.API.translatable("screen.action.button.next"));
+        this.arrowLeftComponent = new PageSwitchButtonWidget(0, 0, Arc.getId("left_button"), button -> moveToPreviousActionComponent(), Arc.translatable("screen.action.button.previous"));
+        this.arrowRightComponent = new PageSwitchButtonWidget(0, 0, Arc.getId("right_button"), button -> moveToNextActionComponent(), Arc.translatable("screen.action.button.next"));
 
         this.addComponent(actionComponent);
         this.addWidget(this.arrowLeftComponent);

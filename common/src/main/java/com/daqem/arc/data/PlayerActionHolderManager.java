@@ -25,7 +25,7 @@ public class PlayerActionHolderManager extends SimplePreparableReloadListener<IA
 
     @Override
     protected @NotNull IActionHolder prepare(ResourceManager resourceManager, ProfilerFiller profilerFiller) {
-        Identifier location = Arc.API.getId("player");
+        Identifier location = Arc.getId("player");
         return new PlayerActionHolder(location);
     }
 

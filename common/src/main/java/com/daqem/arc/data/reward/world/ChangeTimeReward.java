@@ -25,11 +25,9 @@ public class ChangeTimeReward extends AbstractReward {
     public ActionResult apply(ActionData actionData) {
         if (actionData.getPlayer().arc$getLevel() instanceof ServerLevel serverLevel) {
             if (addTime) {
-                serverLevel.dimensionType().defaultClock().ifPresent(clock ->
-                        serverLevel.clockManager().setTotalTicks(clock, serverLevel.getOverworldClockTime() + time));
+                serverLevel.setDayTime(serverLevel.getDayTime() + time);
             } else {
-                serverLevel.dimensionType().defaultClock().ifPresent(clock ->
-                        serverLevel.clockManager().setTotalTicks(clock, time));
+                serverLevel.setDayTime(time);
             }
         }
         return new ActionResult();

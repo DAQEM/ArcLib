@@ -1,28 +1,45 @@
 package com.daqem.arc.networking;
 
-import com.daqem.arc.Arc;
 import com.daqem.arc.api.action.IAction;
 import com.daqem.arc.api.action.IActionSerializer;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public record ClientboundUpdateActionsPacket(List<IAction> actions) implements CustomPacketPayload {
+public class ClientboundUpdateActionsPacket implements CustomPacketPayload {
 
-    public static final Type<@NotNull ClientboundUpdateActionsPacket> TYPE = new Type<>(Arc.API.getId("clientbound_update_actions_packet"));
+    private final List<IAction> actions;
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, ClientboundUpdateActionsPacket> STREAM_CODEC = StreamCodec.composite(
-            IActionSerializer.STREAM_CODEC.apply(ByteBufCodecs.list()),
-            ClientboundUpdateActionsPacket::actions,
-            ClientboundUpdateActionsPacket::new
-    );
+    public static final StreamCodec<RegistryFriendlyByteBuf, ClientboundUpdateActionsPacket> STREAM_CODEC = new StreamCodec<>() {
+        @Override
+        public @NotNull ClientboundUpdateActionsPacket decode(RegistryFriendlyByteBuf buf) {
+            return new ClientboundUpdateActionsPacket(buf);
+        }
+
+        @Override
+        public void encode(RegistryFriendlyByteBuf buf, ClientboundUpdateActionsPacket packet) {
+            buf.writeCollection(packet.actions,
+                    (friendlyByteBuf, action) -> IActionSerializer.toNetwork(action, (RegistryFriendlyByteBuf) friendlyByteBuf));
+        }
+    };
+
+    public ClientboundUpdateActionsPacket(List<IAction> actions) {
+        this.actions = actions;
+    }
+
+    public ClientboundUpdateActionsPacket(RegistryFriendlyByteBuf friendlyByteBuf) {
+        this.actions = friendlyByteBuf.readList(object -> IActionSerializer.fromNetwork((RegistryFriendlyByteBuf) object));
+    }
 
     @Override
-    public @NotNull Type<? extends @NotNull CustomPacketPayload> type() {
-        return TYPE;
+    public @NotNull Type<? extends CustomPacketPayload> type() {
+        return ArcNetworking.CLIENTBOUND_UPDATE_ACTIONS;
+    }
+
+    public List<IAction> getActions() {
+        return actions;
     }
 }

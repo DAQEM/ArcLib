@@ -30,7 +30,7 @@ public class TimeOfDayCondition extends AbstractCondition {
     @Override
     public boolean isMet(ActionData actionData) {
         Level level = actionData.getPlayer().arc$getLevel();
-        long time = level.getOverworldClockTime() % 24000;
+        long time = level.getDayTime() % 24000;
         return time >= minTime && time <= maxTime;
     }
 

@@ -14,7 +14,7 @@ public class ActionHoldersScreen extends AbstractScreen {
     private final List<IActionHolder> actionHolders;
 
     public ActionHoldersScreen(List<IActionHolder> actionHolders) {
-        super(Arc.API.translatable("screen.action_holders"));
+        super(Arc.translatable("screen.action_holders"));
         this.actionHolders = actionHolders;
 
         setBackground(new BlurredBackground());

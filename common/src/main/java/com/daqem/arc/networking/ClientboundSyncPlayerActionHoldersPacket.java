@@ -1,11 +1,8 @@
 package com.daqem.arc.networking;
 
-import com.daqem.arc.Arc;
 import com.daqem.arc.api.action.holder.IActionHolder;
-import com.daqem.arc.api.action.holder.IActionHolderSerializer;
 import com.daqem.arc.data.ActionHolderManager;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
@@ -14,18 +11,44 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public record ClientboundSyncPlayerActionHoldersPacket(List<IActionHolder> actionHolders) implements CustomPacketPayload {
+public class ClientboundSyncPlayerActionHoldersPacket implements CustomPacketPayload {
 
-    public static final Type<@NotNull ClientboundSyncPlayerActionHoldersPacket> TYPE = new Type<>(Arc.API.getId("clientbound_sync_player_action_holders_packet"));
+    private final List<IActionHolder> actionHolders;
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, ClientboundSyncPlayerActionHoldersPacket> STREAM_CODEC = StreamCodec.composite(
-            IActionHolderSerializer.STREAM_CODEC.apply(ByteBufCodecs.list()),
-            ClientboundSyncPlayerActionHoldersPacket::actionHolders,
-            ClientboundSyncPlayerActionHoldersPacket::new
-    );
+    public static final StreamCodec<RegistryFriendlyByteBuf, ClientboundSyncPlayerActionHoldersPacket> STREAM_CODEC = new StreamCodec<>() {
+        @Override
+        public @NotNull ClientboundSyncPlayerActionHoldersPacket decode(RegistryFriendlyByteBuf buf) {
+            return new ClientboundSyncPlayerActionHoldersPacket(buf);
+        }
+
+        @Override
+        public void encode(RegistryFriendlyByteBuf buf, ClientboundSyncPlayerActionHoldersPacket packet) {
+            buf.writeInt(packet.actionHolders.size());
+            for (IActionHolder actionHolder : packet.actionHolders) {
+                buf.writeIdentifier(actionHolder.getIdentifier());
+            }
+        }
+    };
+
+    public ClientboundSyncPlayerActionHoldersPacket(List<IActionHolder> actionHolders) {
+        this.actionHolders = actionHolders;
+    }
+
+    public ClientboundSyncPlayerActionHoldersPacket(RegistryFriendlyByteBuf friendlyByteBuf) {
+        List<Identifier> actionHolderLocations = new ArrayList<>();
+        int size = friendlyByteBuf.readInt();
+        for (int i = 0; i < size; i++) {
+            actionHolderLocations.add(friendlyByteBuf.readIdentifier());
+        }
+        this.actionHolders = ActionHolderManager.getInstance().getActionHolders(actionHolderLocations);
+    }
 
     @Override
-    public @NotNull Type<? extends @NotNull CustomPacketPayload> type() {
-        return TYPE;
+    public @NotNull Type<? extends CustomPacketPayload> type() {
+        return ArcNetworking.CLIENTBOUND_SYNC_PLAYER_ACTION_HOLDERS;
+    }
+
+    public List<IActionHolder> getActionHolders() {
+        return actionHolders;
     }
 }

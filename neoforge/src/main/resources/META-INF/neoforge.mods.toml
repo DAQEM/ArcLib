@@ -27,9 +27,9 @@ ordering = "NONE"
 side = "BOTH"
 
 [[dependencies."${mod_id}"]]
-modId = "knot"
+modId = "architectury"
 type = "required"
-versionRange = "[${knot_version},)"
+versionRange = "[${architectury_version},)"
 ordering = "AFTER"
 side = "BOTH"
 
@@ -49,3 +49,6 @@ side = "BOTH"
 
 [[mixins]]
 config = "arc-common.mixins.json"
+
+[[mixins]]
+config = "arc.mixins.json"

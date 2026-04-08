@@ -2,7 +2,7 @@ name: Run Tests
 
 on:
   push:
-    branches: [ "26.1.1-dev" ]
+    branches: [ "1.21.11-dev" ]
 
 permissions:
   contents: read
@@ -17,16 +17,16 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-    
-      - name: Set up JDK 25
+
+      - name: Set up JDK 21
         uses: actions/setup-java@v3
         with:
-          java-version: '25'
+          java-version: '21'
           distribution: 'temurin'
-      
+
       - name: Grant Permissions to gradlew
         run: chmod +x gradlew
-        
+
       - name: Test
         run: ./gradlew :common:test
 

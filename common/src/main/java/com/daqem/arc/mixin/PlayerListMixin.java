@@ -1,11 +1,12 @@
 package com.daqem.arc.mixin;
 
+import com.daqem.arc.Arc;
 import com.daqem.arc.api.action.holder.IActionHolder;
 import com.daqem.arc.api.player.ArcServerPlayer;
 import com.daqem.arc.data.ActionHolderManager;
 import com.daqem.arc.networking.ClientboundUpdateActionHoldersPacket;
 import com.daqem.arc.networking.ClientboundUpdateActionsPacket;
-import com.daqem.knot.Knot;
+import dev.architectury.networking.NetworkManager;
 import net.minecraft.network.Connection;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
@@ -35,15 +36,15 @@ public abstract class PlayerListMixin {
                 arcServerPlayer.arc$getActionLastMetDistances().clear();
                 arcServerPlayer.arc$addActionHolders(actionHolders);
             }
-            Knot.NETWORKING.sendToPlayer(player, new ClientboundUpdateActionsPacket(ActionHolderManager.getInstance().getActions()));
-            Knot.NETWORKING.sendToPlayer(player, new ClientboundUpdateActionHoldersPacket(ActionHolderManager.getInstance().getActionHolders()));
+            NetworkManager.sendToPlayer(player, new ClientboundUpdateActionsPacket(ActionHolderManager.getInstance().getActions()));
+            NetworkManager.sendToPlayer(player, new ClientboundUpdateActionHoldersPacket(ActionHolderManager.getInstance().getActionHolders()));
         }
     }
 
     @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/server/players/PlayerList;sendPlayerPermissionLevel(Lnet/minecraft/server/level/ServerPlayer;)V", shift = At.Shift.BEFORE), method = "placeNewPlayer")
     private void placeNewPlayer(Connection connection, ServerPlayer serverPlayer, CommonListenerCookie commonListenerCookie, CallbackInfo ci) {
-        Knot.NETWORKING.sendToPlayer(serverPlayer, new ClientboundUpdateActionsPacket(ActionHolderManager.getInstance().getActions()));
-        Knot.NETWORKING.sendToPlayer(serverPlayer, new ClientboundUpdateActionHoldersPacket(ActionHolderManager.getInstance().getActionHolders()));
+        NetworkManager.sendToPlayer(serverPlayer, new ClientboundUpdateActionsPacket(ActionHolderManager.getInstance().getActions()));
+        NetworkManager.sendToPlayer(serverPlayer, new ClientboundUpdateActionHoldersPacket(ActionHolderManager.getInstance().getActionHolders()));
 
         if (serverPlayer instanceof ArcServerPlayer arcServerPlayer) {
             arcServerPlayer.arc$syncActionHoldersWithClient();
