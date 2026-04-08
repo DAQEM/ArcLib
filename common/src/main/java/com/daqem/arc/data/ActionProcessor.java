@@ -44,7 +44,7 @@ public class ActionProcessor {
 
         if (action.getConditions().stream().allMatch(condition -> condition.isMet(actionData) != condition.isInverted())) {
             if (Arc.DEBUG) {
-                Arc.API.LOGGER.info("Applying rewards for action: {}", action.getIdentifier());
+                Arc.LOGGER.info("Applying rewards for action: {}", action.getIdentifier());
             }
             result = applyRewards(action, actionData);
         }

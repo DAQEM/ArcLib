@@ -4,16 +4,16 @@ import com.daqem.arc.api.action.IActionType;
 import com.daqem.arc.api.action.data.ActionDataBuilder;
 import com.daqem.arc.api.action.data.IActionDataType;
 import com.daqem.arc.api.action.result.ActionResult;
+import com.daqem.arc.api.event.ArcItemEvent;
+import com.daqem.arc.api.event.EventPriority;
+import com.daqem.arc.api.event.EventResult;
 import com.daqem.arc.api.player.ArcPlayer;
 import com.daqem.arc.api.player.ArcServerPlayer;
-import com.daqem.knot.Knot;
-import com.daqem.knot.events.EventPriority;
-import com.daqem.knot.events.EventResult;
 
 public class ItemEvents {
 
     public static void registerEvents() {
-        Knot.Events.Item.DROP_ITEM.register((player, itemEntity) -> {
+        ArcItemEvent.DROP_ITEM.register((player, itemEntity) -> {
             if (player instanceof ArcServerPlayer arcServerPlayer) {
                 new ActionDataBuilder(arcServerPlayer, IActionType.DROP_ITEM)
                         .withData(IActionDataType.ENTITY, itemEntity)
@@ -27,7 +27,7 @@ public class ItemEvents {
             return EventResult.PASS;
         }, EventPriority.HIGH);
 
-        Knot.Events.Item.CRAFT_ITEM.register((serverPlayer, recipe, stack) -> {
+        ArcItemEvent.CRAFT_ITEM.register((serverPlayer, recipe, stack) -> {
             if (serverPlayer instanceof ArcServerPlayer arcServerPlayer) {
                 new ActionDataBuilder(arcServerPlayer, IActionType.CRAFT_ITEM)
                         .withData(IActionDataType.RECIPE, recipe)
@@ -39,7 +39,7 @@ public class ItemEvents {
             }
         }, EventPriority.HIGH);
 
-        Knot.Events.Item.HURT_ITEM.register((serverPlayer, itemStack, damage) -> {
+        ArcItemEvent.HURT_ITEM.register((serverPlayer, itemStack, damage) -> {
             if (serverPlayer instanceof ArcServerPlayer arcServerPlayer) {
                 ActionResult actionResult = new ActionDataBuilder(arcServerPlayer, IActionType.HURT_ITEM)
                         .withData(IActionDataType.ITEM_STACK, itemStack)
@@ -53,13 +53,13 @@ public class ItemEvents {
                     return EventResult.INTERRUPT_FALSE;
                 }
                 if (actionResult.getDamageModifier() != 1F) {
-                    damage.setValue((int) (damage.intValue() * actionResult.getDamageModifier()));
+                    damage.setValue((int) (damage.getValue() * actionResult.getDamageModifier()));
                 }
             }
             return EventResult.PASS;
         }, EventPriority.HIGH);
 
-        Knot.Events.Item.THROW_ITEM.register((serverPlayer, projectile) -> {
+        ArcItemEvent.THROW_ITEM.register((serverPlayer, projectile) -> {
             if (serverPlayer instanceof ArcServerPlayer arcServerPlayer) {
                 new ActionDataBuilder(arcServerPlayer, IActionType.THROW_ITEM)
                         .withData(IActionDataType.ITEM_STACK, projectile.getItem())
@@ -71,7 +71,7 @@ public class ItemEvents {
             }
         }, EventPriority.HIGH);
 
-        Knot.Events.Item.USE_ITEM.register((level, player, hand, itemStack) -> {
+        ArcItemEvent.USE_ITEM.register((level, player, hand, itemStack) -> {
             if (player instanceof ArcPlayer arcPlayer) {
                 ActionResult actionResult = new ActionDataBuilder(arcPlayer, IActionType.USE_ITEM)
                         .withData(IActionDataType.ITEM_STACK, itemStack)
@@ -88,7 +88,7 @@ public class ItemEvents {
             return EventResult.PASS;
         }, EventPriority.HIGH);
 
-        Knot.Events.Item.PICKUP_ITEM.register((player, itemEntity) -> {
+        ArcItemEvent.PICKUP_ITEM.register((player, itemEntity) -> {
             if (player instanceof ArcServerPlayer arcServerPlayer) {
                 new ActionDataBuilder(arcServerPlayer, IActionType.PICKUP_ITEM)
                         .withData(IActionDataType.ENTITY, itemEntity)
@@ -101,7 +101,7 @@ public class ItemEvents {
             }
         }, EventPriority.HIGH);
 
-        Knot.Events.Item.FILL_BUCKET.register((player, filledBucket, level, pos, fluidState) -> {
+        ArcItemEvent.FILL_BUCKET.register((player, filledBucket, level, pos, fluidState) -> {
             if (player instanceof ArcServerPlayer arcServerPlayer) {
                 new ActionDataBuilder(arcServerPlayer, IActionType.FILL_BUCKET)
                         .withData(IActionDataType.ITEM_STACK, filledBucket)
@@ -114,7 +114,7 @@ public class ItemEvents {
             }
         }, EventPriority.HIGH);
 
-        Knot.Events.Item.EMPTY_BUCKET.register((player, emptyBucket, level, pos, fluidState) -> {
+        ArcItemEvent.EMPTY_BUCKET.register((player, emptyBucket, level, pos, fluidState) -> {
             if (player instanceof ArcPlayer arcPlayer) {
                 ActionResult actionResult = new ActionDataBuilder(arcPlayer, IActionType.EMPTY_BUCKET)
                         .withData(IActionDataType.ITEM_STACK, emptyBucket)
@@ -132,7 +132,7 @@ public class ItemEvents {
             return EventResult.PASS;
         }, EventPriority.HIGH);
 
-        Knot.Events.Item.ITEM_BREAK.register((player, brokenItem) -> {
+        ArcItemEvent.ITEM_BREAK.register((player, brokenItem) -> {
             if (player instanceof ArcServerPlayer arcServerPlayer) {
                 new ActionDataBuilder(arcServerPlayer, IActionType.ITEM_BREAK)
                         .withData(IActionDataType.ITEM_STACK, brokenItem)

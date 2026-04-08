@@ -13,32 +13,29 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ItemStackTemplate;
 import org.jetbrains.annotations.Nullable;
 
 public class ItemInHandCondition extends AbstractCondition {
 
-    private final ItemStackTemplate itemStackTemplate;
-    private ItemStack cachedItemStack;
+    private final ItemStack itemStack;
     @Nullable
     private final InteractionHand hand;
 
-    public ItemInHandCondition(boolean inverted, ItemStackTemplate itemStackTemplate, @Nullable InteractionHand hand) {
+    public ItemInHandCondition(boolean inverted, ItemStack itemStack, @Nullable InteractionHand hand) {
         super(inverted);
-        this.itemStackTemplate = itemStackTemplate;
-        this.cachedItemStack = null;
+        this.itemStack = itemStack;
         this.hand = hand;
     }
 
     @Override
     public Component getDescription() {
-        return getDescription(getItemStack().getHoverName(), hand == null ? Arc.API.translatable("hand.any") : Arc.API.translatable("hand." + hand.name().toLowerCase()));
+        return getDescription(itemStack.getHoverName(), hand == null ? Arc.translatable("hand.any") : Arc.translatable("hand." + hand.name().toLowerCase()));
     }
 
     @Override
     public boolean isMet(ActionData actionData) {
         Player player = actionData.getPlayer().arc$getPlayer();
-        Item targetItem = getItemStack().getItem();
+        Item targetItem = itemStack.getItem();
 
         if (hand == null) {
             // Check both hands when no specific hand is defined
@@ -56,15 +53,7 @@ public class ItemInHandCondition extends AbstractCondition {
     }
 
     public ItemStack getItemStack() {
-        if (cachedItemStack != null) {
-            return cachedItemStack;
-        }
-        this.cachedItemStack = itemStackTemplate.create();
-        return cachedItemStack;
-    }
-
-    public ItemStackTemplate getItemStackTemplate() {
-        return itemStackTemplate;
+        return itemStack;
     }
 
     @Nullable
@@ -78,18 +67,18 @@ public class ItemInHandCondition extends AbstractCondition {
         public ItemInHandCondition fromJson(Identifier location, JsonObject jsonObject, boolean inverted) {
             return new ItemInHandCondition(
                     inverted,
-                    getItemStackTemplate(jsonObject,"item"),
+                    getItemStack(jsonObject,"item"),
                     getOptionalHand(jsonObject, "hand")
             );
         }
 
         @Override
         public ItemInHandCondition fromNetwork(Identifier location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
-            ItemStackTemplate itemStackTemplate = ItemStackTemplate.STREAM_CODEC.decode(friendlyByteBuf);
+            ItemStack itemStack = ItemStack.STREAM_CODEC.decode(friendlyByteBuf);
             InteractionHand hand = friendlyByteBuf.readBoolean() ? friendlyByteBuf.readEnum(InteractionHand.class) : null;
             return new ItemInHandCondition(
                     inverted,
-                    itemStackTemplate,
+                    itemStack,
                     hand
             );
         }
@@ -97,7 +86,7 @@ public class ItemInHandCondition extends AbstractCondition {
         @Override
         public void toNetwork(RegistryFriendlyByteBuf friendlyByteBuf, ItemInHandCondition type) {
             IConditionSerializer.super.toNetwork(friendlyByteBuf, type);
-            ItemStackTemplate.STREAM_CODEC.encode(friendlyByteBuf, type.itemStackTemplate);
+            ItemStack.STREAM_CODEC.encode(friendlyByteBuf, type.itemStack);
             friendlyByteBuf.writeBoolean(type.hand != null);
             if (type.hand != null) {
                 friendlyByteBuf.writeEnum(type.hand);

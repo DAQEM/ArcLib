@@ -5,7 +5,7 @@ import com.daqem.arc.api.action.IAction;
 import com.daqem.arc.config.ArcCommonConfig;
 import com.daqem.arc.data.condition.recipe.RecipeCache;
 import com.daqem.arc.registry.ArcRegistry;
-import com.daqem.knot.api.platform.Platform;
+import com.daqem.yamlconfig.YamlConfigExpectPlatform;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
@@ -31,7 +31,7 @@ import java.util.stream.Stream;
 public class ActionManager extends SimplePreparableReloadListener<List<IAction>> {
 
     @Override
-    protected @NotNull List<IAction> prepare(ResourceManager resourceManager, @NotNull ProfilerFiller profilerFiller) {
+    protected @NotNull List<IAction> prepare(ResourceManager resourceManager, ProfilerFiller profilerFiller) {
         Map<Identifier, Resource> resourceMap = resourceManager.listResources("arc", (resourceLocation) ->
                         resourceLocation.getPath().endsWith(".json")).entrySet().stream()
                 .collect(Collectors.toMap(entry ->
@@ -50,12 +50,12 @@ public class ActionManager extends SimplePreparableReloadListener<List<IAction>>
                 map.put(location, jsonElement);
             }
             catch (Exception runtimeException) {
-                Arc.API.LOGGER.error("Parsing error loading action {}", location, runtimeException);
+                Arc.LOGGER.error("Parsing error loading action {}", location, runtimeException);
             }
         }
 
         try {
-            Path configDir = Platform.INFO.getConfigFolder().resolve(Arc.MOD_ID).resolve("actions");
+            Path configDir = YamlConfigExpectPlatform.getConfigDirectory().resolve(Arc.MOD_ID).resolve("actions");
             if (!Files.exists(configDir)) {
                 Files.createDirectories(configDir);
             }
@@ -80,12 +80,12 @@ public class ActionManager extends SimplePreparableReloadListener<List<IAction>>
                                 Identifier location = Identifier.fromNamespaceAndPath(namespace, resourcePath);
                                 map.put(location, jsonElement);
                             } catch (Exception e) {
-                                Arc.API.LOGGER.error("Parsing error loading action from config {}", path, e);
+                                Arc.LOGGER.error("Parsing error loading action from config {}", path, e);
                             }
                         });
             }
         } catch (Exception e) {
-            Arc.API.LOGGER.error("Error loading actions from config", e);
+            Arc.LOGGER.error("Error loading actions from config", e);
         }
         List<IAction> actions = new ArrayList<>();
         List<String> excludedActions = ArcCommonConfig.excludedActions.get();
@@ -100,7 +100,7 @@ public class ActionManager extends SimplePreparableReloadListener<List<IAction>>
                 actions.add(action);
             }
             catch (JsonParseException | IllegalArgumentException runtimeException) {
-                Arc.API.LOGGER.error("Parsing error loading action {}", location, runtimeException);
+                Arc.LOGGER.error("Parsing error loading action {}", location, runtimeException);
             }
         }
 
@@ -108,12 +108,12 @@ public class ActionManager extends SimplePreparableReloadListener<List<IAction>>
     }
 
     @Override
-    protected void apply(@NotNull List<IAction> actions, @NotNull ResourceManager resourceManager, @NotNull ProfilerFiller profilerFiller) {
+    protected void apply(List<IAction> actions, ResourceManager resourceManager, ProfilerFiller profilerFiller) {
         ActionHolderManager actionHolderManager = ActionHolderManager.getInstance();
         RecipeCache.invalidate();
         actionHolderManager.clearAllActions();
         actionHolderManager.registerActions(actions);
-        Arc.API.LOGGER.info("Loaded {} actions", actions.size());
+        Arc.LOGGER.info("Loaded {} actions", actions.size());
     }
 
     /**

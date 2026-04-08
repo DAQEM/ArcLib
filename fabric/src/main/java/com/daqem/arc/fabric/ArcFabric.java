@@ -15,6 +15,6 @@ public class ArcFabric implements ModInitializer {
     }
 
     private void registerCommandArgumentTypes() {
-        ArgumentTypeRegistry.registerArgumentType(Arc.API.getId("action"), ActionArgument.class, SingletonArgumentInfo.contextFree(ActionArgument::action));
+        ArgumentTypeRegistry.registerArgumentType(Arc.getId("action"), ActionArgument.class, SingletonArgumentInfo.contextFree(ActionArgument::action));
     }
 }

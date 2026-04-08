@@ -4,17 +4,41 @@ import com.daqem.arc.api.action.IActionType;
 import com.daqem.arc.api.action.data.ActionDataBuilder;
 import com.daqem.arc.api.action.data.IActionDataType;
 import com.daqem.arc.api.action.result.ActionResult;
+import com.daqem.arc.api.event.ArcEntityEvent;
+import com.daqem.arc.api.event.EventPriority;
+import com.daqem.arc.api.event.EventResult;
 import com.daqem.arc.api.player.ArcServerPlayer;
-import com.daqem.knot.Knot;
-import com.daqem.knot.events.EventPriority;
-import com.daqem.knot.events.EventResult;
+import dev.architectury.event.events.common.EntityEvent;
+import dev.architectury.event.events.common.InteractionEvent;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 
 public class EntityEvents {
 
     public static void registerEvents() {
-        Knot.Events.Entity.PLAYER_DEATH.register((serverPlayer, damageSource) -> {
+        EntityEvent.LIVING_DEATH.register((entity, source) -> {
+            if (entity instanceof ServerPlayer serverPlayer) {
+                EventResult eventResult = ArcEntityEvent.PLAYER_DEATH.invoker().onPlayerDeath(serverPlayer, source);
+                if (eventResult.cancelsEvent()) {
+                    return dev.architectury.event.EventResult.interruptFalse();
+                }
+            }
+            if (source.getEntity() instanceof ServerPlayer serverPlayer) {
+                EventResult eventResult = ArcEntityEvent.PLAYER_KILL_ENTITY.invoker().onPlayerKillEntity(serverPlayer, entity, source);
+                if (eventResult.cancelsEvent()) {
+                    return dev.architectury.event.EventResult.interruptFalse();
+                }
+            }
+            return dev.architectury.event.EventResult.pass();
+        });
+        EntityEvent.ANIMAL_TAME.register((animal, player) ->
+                ArcEntityEvent.TAME_ANIMAL.invoker().onTameAnimal(animal, player).toArchEventResult());
+        InteractionEvent.INTERACT_ENTITY.register((player, entity, hand) ->
+                ArcEntityEvent.INTERACT_WITH_ENTITY.invoker().onInteractWithEntity(player, entity, hand).toArchEventResult());
+
+
+        ArcEntityEvent.PLAYER_DEATH.register((serverPlayer, damageSource) -> {
             if (serverPlayer instanceof ArcServerPlayer arcServerPlayer) {
                 ActionResult actionResult = new ActionDataBuilder(arcServerPlayer, IActionType.DEATH)
                         .withData(IActionDataType.ENTITY, damageSource.getEntity())
@@ -32,7 +56,7 @@ public class EntityEvents {
             return EventResult.PASS;
         }, EventPriority.HIGH);
 
-        Knot.Events.Entity.PLAYER_KILL_ENTITY.register((serverPlayer, entity, damageSource) -> {
+        ArcEntityEvent.PLAYER_KILL_ENTITY.register((serverPlayer, entity, damageSource) -> {
             if (serverPlayer instanceof ArcServerPlayer arcServerPlayer) {
                 ActionResult actionResult = new ActionDataBuilder(arcServerPlayer, IActionType.KILL_ENTITY)
                         .withData(IActionDataType.ENTITY, entity)
@@ -50,7 +74,7 @@ public class EntityEvents {
             return EventResult.PASS;
         }, EventPriority.HIGH);
 
-        Knot.Events.Entity.TAME_ANIMAL.register((animal, player) -> {
+        ArcEntityEvent.TAME_ANIMAL.register((animal, player) -> {
             if (player instanceof ArcServerPlayer arcServerPlayer) {
                 ActionResult actionResult = new ActionDataBuilder(arcServerPlayer, IActionType.TAME_ANIMAL)
                         .withData(IActionDataType.ENTITY, animal)
@@ -66,7 +90,7 @@ public class EntityEvents {
             return EventResult.PASS;
         });
 
-        Knot.Events.Entity.INTERACT_WITH_ENTITY.register((player, entity, hand) -> {
+        ArcEntityEvent.INTERACT_WITH_ENTITY.register((player, entity, hand) -> {
             if (player instanceof ArcServerPlayer arcServerPlayer) {
                 ActionResult actionResult = new ActionDataBuilder(arcServerPlayer, IActionType.INTERACT_ENTITY)
                         .withData(IActionDataType.ITEM_STACK, player.getItemInHand(hand))
@@ -84,7 +108,7 @@ public class EntityEvents {
             return EventResult.PASS;
         });
 
-        Knot.Events.Entity.PLAYER_HURT_ENTITY.register((serverPlayer, entity, damageSource, damage) -> {
+        ArcEntityEvent.PLAYER_HURT_ENTITY.register((serverPlayer, entity, damageSource, damage) -> {
             if (serverPlayer instanceof ArcServerPlayer arcServerPlayer) {
                 ActionResult actionResult = new ActionDataBuilder(arcServerPlayer, IActionType.HURT_ENTITY)
                         .withData(IActionDataType.ENTITY, entity)
@@ -104,7 +128,7 @@ public class EntityEvents {
             return EventResult.PASS;
         });
 
-        Knot.Events.Entity.BREED_ANIMAL.register((serverLevel, serverPlayer, baby) -> {
+        ArcEntityEvent.BREED_ANIMAL.register((serverLevel, serverPlayer, baby) -> {
             if (serverPlayer instanceof ArcServerPlayer arcServerPlayer) {
                 var actionResult = new ActionDataBuilder(arcServerPlayer, IActionType.BREED_ANIMAL)
                         .withData(IActionDataType.ENTITY, baby)
@@ -117,7 +141,7 @@ public class EntityEvents {
             return EventResult.PASS;
         }, EventPriority.HIGH);
 
-        Knot.Events.Entity.TRADE_WITH_VILLAGER.register((player, merchant, offer, boughtStack) -> {
+        ArcEntityEvent.TRADE_WITH_VILLAGER.register((player, merchant, offer, boughtStack) -> {
             if (player instanceof ArcServerPlayer arcServerPlayer && merchant instanceof Entity merchantEntity) {
                 new ActionDataBuilder(arcServerPlayer, IActionType.TRADE_WITH_VILLAGER)
                         .withData(IActionDataType.ENTITY, merchantEntity)

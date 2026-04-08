@@ -5,7 +5,7 @@ import com.daqem.uilib.gui.component.sprite.SpriteComponent;
 import com.daqem.uilib.gui.component.text.TruncatedTextComponent;
 import com.daqem.uilib.gui.component.text.multiline.MultiLineTextComponent;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
@@ -22,7 +22,7 @@ public class ScrollItemComponent extends SpriteComponent {
     private final Component description;
 
     public ScrollItemComponent(Component name, Component description) {
-        super(0, 0, WIDTH, 0, Arc.API.getId("item_background"));
+        super(0, 0, WIDTH, 0, Arc.getId("item_background"));
         this.description = description;
         int lineHeight = Minecraft.getInstance().font.lineHeight;
 
@@ -42,8 +42,8 @@ public class ScrollItemComponent extends SpriteComponent {
     }
 
     @Override
-    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick, int parentWidth, int parentHeight) {
-        super.extractRenderState(guiGraphics, mouseX, mouseY, partialTick, parentWidth, parentHeight);
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, int parentWidth, int parentHeight) {
+        super.render(guiGraphics, mouseX, mouseY, partialTick, parentWidth, parentHeight);
         if (getRectangle().containsPoint(mouseX, mouseY)) {
             guiGraphics.setTooltipForNextFrame(
                     Minecraft.getInstance().font,

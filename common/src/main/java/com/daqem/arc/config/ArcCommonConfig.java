@@ -1,7 +1,7 @@
 package com.daqem.arc.config;
 
 import com.daqem.arc.Arc;
-import com.daqem.knot.api.platform.Platform;
+import com.daqem.yamlconfig.YamlConfigExpectPlatform;
 import com.daqem.yamlconfig.api.config.ConfigExtension;
 import com.daqem.yamlconfig.api.config.ConfigType;
 import com.daqem.yamlconfig.api.config.IConfigBuilder;
@@ -26,7 +26,7 @@ public class ArcCommonConfig {
                 "arc-common",
                 ConfigExtension.YAML,
                 ConfigType.COMMON,
-                Platform.INFO.getConfigFolder().resolve(Arc.MOD_ID)
+                YamlConfigExpectPlatform.getConfigDirectory().resolve(Arc.MOD_ID)
         );
 
         builder.push("actions");

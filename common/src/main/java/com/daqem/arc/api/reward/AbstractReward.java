@@ -38,12 +38,12 @@ public abstract class AbstractReward implements IReward {
 
     @Override
     public Component getName() {
-        return Arc.API.translatable("reward." + this.getType().getIdentifier().getPath());
+        return Arc.translatable("reward." + this.getType().getIdentifier().getPath());
     }
 
     @Override
     public Component getDescription(Object... args) {
-        return Arc.API.translatable("reward.description." + this.getType().getIdentifier().getPath(), args);
+        return Arc.translatable("reward.description." + this.getType().getIdentifier().getPath(), args);
     }
 
     @Override
