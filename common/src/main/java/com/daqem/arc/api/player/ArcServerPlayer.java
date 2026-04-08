@@ -11,17 +11,6 @@ public interface ArcServerPlayer extends ArcPlayer {
 
     ServerPlayer arc$getServerPlayer();
 
-    NonNullList<StatData> arc$getStatData();
-
-    void arc$addStatData(StatData statData);
-
-    double arc$getTotalWalkedCm();
-    double arc$getTotalSprintedCm();
-    double arc$getTotalSwamCm();
-    double arc$getTotalCrouchedCm();
-    double arc$getTotalElytraFlyCm();
-    double arc$getTotalHorseRideCm();
-
     Map<Object, Double> arc$getActionLastMetDistances();
     void arc$setActionLastMetDistance(Object action, double distance);
 

@@ -1,7 +1,8 @@
 package com.daqem.arc.client.translator;
 
 import com.daqem.arc.Arc;
-import com.daqem.yamlconfig.YamlConfigExpectPlatform;
+import com.daqem.knot.Knot;
+import com.daqem.knot.api.platform.Platform;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -17,12 +18,12 @@ public class ConfigTranslator {
     private static final Gson GSON = new Gson();
 
     public static void load(List<String> languages, Map<String, String> translations) {
-        Path configDir = YamlConfigExpectPlatform.getConfigDirectory().resolve(Arc.MOD_ID).resolve("lang");
+        Path configDir = Platform.INFO.getConfigFolder().resolve(Arc.MOD_ID).resolve("lang");
         if (!Files.exists(configDir)) {
             try {
                 Files.createDirectories(configDir);
             } catch (IOException e) {
-                Arc.LOGGER.error("Failed to create arc lang config directory", e);
+                Arc.API.LOGGER.error("Failed to create arc lang config directory", e);
                 return;
             }
         }
@@ -40,7 +41,7 @@ public class ConfigTranslator {
                         }
                     }
                 } catch (Exception e) {
-                    Arc.LOGGER.error("Failed to load translation file: {}", langFile, e);
+                    Arc.API.LOGGER.error("Failed to load translation file: {}", langFile, e);
                 }
             }
         }

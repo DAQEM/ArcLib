@@ -1,7 +1,7 @@
 package com.daqem.arc.client.gui.action.widgets;
 
 import com.daqem.uilib.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -19,8 +19,8 @@ public class PageSwitchButtonWidget extends ButtonWidget {
     }
 
     @Override
-    protected void renderContents(@NotNull GuiGraphics guiGraphics, int i, int j, float f) {
-        super.renderContents(guiGraphics, i, j, f);
+    protected void extractContents(@NotNull GuiGraphicsExtractor guiGraphics, int i, int j, float f) {
+        super.extractContents(guiGraphics, i, j, f);
         guiGraphics.blitSprite(
                 RenderPipelines.GUI_TEXTURED,
                 this.spriteLocation,

@@ -1,45 +1,28 @@
 package com.daqem.arc.networking;
 
+import com.daqem.arc.Arc;
 import com.daqem.arc.api.action.holder.IActionHolder;
 import com.daqem.arc.api.action.holder.IActionHolderSerializer;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class ClientboundUpdateActionHoldersPacket implements CustomPacketPayload {
+public record ClientboundUpdateActionHoldersPacket(List<IActionHolder> actionHolders) implements CustomPacketPayload {
 
-    private final List<IActionHolder> actionHolders;
+    public static final Type<@NotNull ClientboundUpdateActionHoldersPacket> TYPE = new Type<>(Arc.API.getId("clientbound_update_action_holders_packet"));
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, ClientboundUpdateActionHoldersPacket> STREAM_CODEC = new StreamCodec<>() {
-        @Override
-        public @NotNull ClientboundUpdateActionHoldersPacket decode(RegistryFriendlyByteBuf buf) {
-            return new ClientboundUpdateActionHoldersPacket(buf);
-        }
-
-        @Override
-        public void encode(RegistryFriendlyByteBuf buf, ClientboundUpdateActionHoldersPacket packet) {
-            buf.writeCollection(packet.actionHolders,
-                    (friendlyByteBuf, action) -> IActionHolderSerializer.toNetwork(action, (RegistryFriendlyByteBuf) friendlyByteBuf));
-        }
-    };
-
-    public ClientboundUpdateActionHoldersPacket(List<IActionHolder> actionHolders) {
-        this.actionHolders = actionHolders;
-    }
-
-    public ClientboundUpdateActionHoldersPacket(RegistryFriendlyByteBuf friendlyByteBuf) {
-        this.actionHolders = friendlyByteBuf.readList(friendlyByteBuf1 -> IActionHolderSerializer.fromNetwork((RegistryFriendlyByteBuf) friendlyByteBuf1));
-    }
+    public static final StreamCodec<RegistryFriendlyByteBuf, ClientboundUpdateActionHoldersPacket> STREAM_CODEC = StreamCodec.composite(
+            IActionHolderSerializer.STREAM_CODEC.apply(ByteBufCodecs.list()),
+            ClientboundUpdateActionHoldersPacket::actionHolders,
+            ClientboundUpdateActionHoldersPacket::new
+    );
 
     @Override
-    public @NotNull Type<? extends CustomPacketPayload> type() {
-        return ArcNetworking.CLIENTBOUND_UPDATE_ACTION_HOLDERS;
-    }
-
-    public List<IActionHolder> getActionHolders() {
-        return actionHolders;
+    public @NotNull Type<? extends @NotNull CustomPacketPayload> type() {
+        return TYPE;
     }
 }

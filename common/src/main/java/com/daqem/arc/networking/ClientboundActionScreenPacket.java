@@ -1,5 +1,6 @@
 package com.daqem.arc.networking;
 
+import com.daqem.arc.Arc;
 import com.daqem.arc.api.action.IAction;
 import com.daqem.arc.api.action.IActionSerializer;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -7,36 +8,18 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import org.jetbrains.annotations.NotNull;
 
-public class ClientboundActionScreenPacket implements CustomPacketPayload {
+public record ClientboundActionScreenPacket(IAction action) implements CustomPacketPayload {
 
-    IAction action;
+    public static final Type<@NotNull ClientboundActionScreenPacket> TYPE = new Type<>(Arc.API.getId("clientbound_action_screen_packet"));
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, ClientboundActionScreenPacket> STREAM_CODEC = new StreamCodec<>() {
-        @Override
-        public @NotNull ClientboundActionScreenPacket decode(RegistryFriendlyByteBuf buf) {
-            return new ClientboundActionScreenPacket(buf);
-        }
-
-        @Override
-        public void encode(RegistryFriendlyByteBuf buf, ClientboundActionScreenPacket packet) {
-            IActionSerializer.toNetwork(packet.action, buf);
-        }
-    };
-
-    public ClientboundActionScreenPacket(IAction action) {
-        this.action = action;
-    }
-
-    public ClientboundActionScreenPacket(RegistryFriendlyByteBuf friendlyByteBuf) {
-        this.action = IActionSerializer.fromNetwork(friendlyByteBuf);
-    }
+    public static final StreamCodec<RegistryFriendlyByteBuf, ClientboundActionScreenPacket> STREAM_CODEC = StreamCodec.composite(
+            IActionSerializer.STREAM_CODEC,
+            ClientboundActionScreenPacket::action,
+            ClientboundActionScreenPacket::new
+    );
 
     @Override
-    public @NotNull Type<? extends CustomPacketPayload> type() {
-        return ArcNetworking.CLIENTBOUND_ACTION_SCREEN;
-    }
-
-    public IAction getAction() {
-        return action;
+    public @NotNull Type<? extends @NotNull CustomPacketPayload> type() {
+        return TYPE;
     }
 }

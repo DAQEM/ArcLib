@@ -1,6 +1,6 @@
 package com.daqem.arc.event;
 
-import dev.architectury.event.events.common.TickEvent;
+import com.daqem.knot.Knot;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -13,7 +13,7 @@ public class NextTickScheduler {
     }
 
     public static void registerEvent() {
-        TickEvent.SERVER_PRE.register(server -> {
+        Knot.Events.Tick.SERVER_PRE.register(_ -> {
             while (!tasks.isEmpty()) {
                 tasks.poll().run();
             }

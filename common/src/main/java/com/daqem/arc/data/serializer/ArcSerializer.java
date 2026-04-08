@@ -25,6 +25,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.Nullable;
@@ -244,6 +245,34 @@ public interface ArcSerializer {
             return null;
         }
         return getItemStack(jsonObject, key, null);
+    }
+
+    default ItemStackTemplate getItemStackTemplate(JsonObject jsonObject, String key, @Nullable ItemStackTemplate defaultTemplate) {
+        if (!jsonObject.has(key) || jsonObject.get(key).isJsonNull()) {
+            if (defaultTemplate != null) {
+                return defaultTemplate;
+            }
+            throw new JsonParseException("Expected '" + key + "' to be an item stack template");
+        }
+
+        return ItemStackTemplate.CODEC.decode(JsonOps.INSTANCE, jsonObject.get(key)).result()
+                .orElseGet(() -> {
+                    if (defaultTemplate != null) {
+                        return new Pair<>(defaultTemplate, null);
+                    }
+                    throw new JsonParseException("Expected '" + jsonObject.get(key) + "' to be an item stack template, but it was invalid");
+                }).getFirst();
+    }
+
+    default ItemStackTemplate getItemStackTemplate(JsonObject jsonObject, String key) {
+        return getItemStackTemplate(jsonObject, key, null);
+    }
+
+    default @Nullable ItemStackTemplate getOptionalItemStackTemplate(JsonObject jsonObject, String key) {
+        if (!jsonObject.has(key) || jsonObject.get(key).isJsonNull()) {
+            return null;
+        }
+        return getItemStackTemplate(jsonObject, key, null);
     }
 
     //endregion

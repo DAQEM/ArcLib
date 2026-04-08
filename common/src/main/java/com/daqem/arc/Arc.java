@@ -10,18 +10,11 @@ import com.daqem.arc.event.*;
 import com.daqem.arc.networking.ArcNetworking;
 import com.daqem.arc.registry.ArcRegistry;
 import com.daqem.arc.registry.EntityDataRegistry;
-import com.mojang.logging.LogUtils;
-import dev.architectury.event.events.common.CommandRegistrationEvent;
-import dev.architectury.registry.ReloadListenerRegistry;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.Identifier;
-import net.minecraft.server.packs.PackType;
-import org.slf4j.Logger;
+import com.daqem.knot.Knot;
 
 public class Arc {
     public static final String MOD_ID = "arc";
-    public static final Logger LOGGER = LogUtils.getLogger();
+    public static final Knot API = new Knot(MOD_ID);
     public static boolean DEBUG = false;
 
     public static void init() {
@@ -30,12 +23,12 @@ public class Arc {
         registerEvents();
         ArcRegistry.init();
         EntityDataRegistry.init();
-        ReloadListenerRegistry.register(PackType.SERVER_DATA, new PlayerActionHolderManager(), Arc.getId("please_do_not_use_this"));
-        ReloadListenerRegistry.register(PackType.SERVER_DATA, new ActionManager(), Arc.getId(MOD_ID));
+        Knot.RELOAD_REGISTRY.registerData(Arc.API.getId("please_do_not_use_this"), new PlayerActionHolderManager());
+        Knot.RELOAD_REGISTRY.registerData(Arc.API.getId(MOD_ID), new ActionManager());
     }
 
     private static void registerEvents() {
-        CommandRegistrationEvent.EVENT.register(ArcCommand::registerCommand);
+        Knot.Events.Server.COMMAND_REGISTER.register(ArcCommand::registerCommand);
 
         AdvancementEvents.registerEvents();
         BlockEvents.registerEvents();
@@ -44,22 +37,6 @@ public class Arc {
         MovementEvents.registerEvents();
         PlayerEvents.registerEvents();
         NextTickScheduler.registerEvent();
-    }
-
-    public static Identifier getId(String id) {
-        return Identifier.fromNamespaceAndPath(MOD_ID, id);
-    }
-
-    public static MutableComponent translatable(String str) {
-        return Component.translatable(MOD_ID + "." + str);
-    }
-
-    public static MutableComponent translatable(String str, Object... objects) {
-        return Component.translatable(MOD_ID + "." + str, objects);
-    }
-
-    public static MutableComponent literal(String str) {
-        return Component.literal(str);
     }
 
     @SuppressWarnings("unused")

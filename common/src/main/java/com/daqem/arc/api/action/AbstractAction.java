@@ -52,12 +52,12 @@ public abstract class AbstractAction implements IAction {
 
     @Override
     public Component getName() {
-        return Arc.translatable("action." + this.getType().getIdentifier().getPath());
+        return Arc.API.translatable("action." + this.getType().getIdentifier().getPath());
     }
 
     @Override
     public Component getDescription() {
-        return Arc.translatable("action.description." + this.getType().getIdentifier().getPath());
+        return Arc.API.translatable("action.description." + this.getType().getIdentifier().getPath());
     }
 
     @Override

@@ -11,6 +11,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.mojang.serialization.JsonOps;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.GsonHelper;
 
@@ -19,6 +20,11 @@ import java.util.List;
 import java.util.Objects;
 
 public interface IActionSerializer<T extends IAction> extends ArcSerializer {
+
+    StreamCodec<RegistryFriendlyByteBuf, IAction> STREAM_CODEC = StreamCodec.of(
+            (buf, action) -> toNetwork(action, buf),
+            IActionSerializer::fromNetwork
+    );
 
     T fromJson(Identifier location, JsonObject jsonObject, Identifier actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions);
 

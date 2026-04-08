@@ -24,18 +24,18 @@ public class ActionComponent extends SpriteComponent {
     private final ScrollContainerComponent scrollContainerComponent;
 
     public ActionComponent(int index, IAction action) {
-        super(0, 0, 326, 166, Arc.getId("action_background"));
+        super(0, 0, 326, 166, Arc.API.getId("action_background"));
         this.action = action;
 
         String indexString = String.valueOf(index + 1);
         Font font = Minecraft.getInstance().font;
         TruncatedTextComponent titleComponent = new TruncatedTextComponent(7, 13, 130 - font.width(indexString), action.getName().copy().withStyle(Style.EMPTY.withBold(true)), 0xFF333333);
-        TextComponent indexComponent = new TextComponent(140, 13, Arc.literal(indexString), 0xFFAAAAAA);
+        TextComponent indexComponent = new TextComponent(140, 13, Arc.API.literal(indexString), 0xFFAAAAAA);
         indexComponent.setTextAlign(TextAlign.RIGHT);
         MultiLineTextComponent descriptionComponent = new MultiLineTextComponent(7, 13 + 5 + font.lineHeight, 132, action.getDescription(), 0xFF555555);
         ColorComponent lineComponent = new ColorComponent(7, 13 + font.lineHeight + 1, 132, 1, 0xFFFFFFFF);
-        this.conditionsTabComponent = new ConditionsTabWidget(156, -28, true, new SpriteComponent(0, 0, 18, 18, Arc.getId("conditions_icon")), this);
-        this.rewardsTabComponent = new RewardsTabWidget(188, -28, false, new SpriteComponent(0, 0, 18, 18, Arc.getId("rewards_icon")), this);
+        this.conditionsTabComponent = new ConditionsTabWidget(156, -28, true, new SpriteComponent(0, 0, 18, 18, Arc.API.getId("conditions_icon")), this);
+        this.rewardsTabComponent = new RewardsTabWidget(188, -28, false, new SpriteComponent(0, 0, 18, 18, Arc.API.getId("rewards_icon")), this);
         this.scrollContainerComponent = new ScrollContainerComponent(157, 15, 162, 140, getScrollItemComponents(conditionsTabComponent));
 
         this.addComponent(titleComponent);

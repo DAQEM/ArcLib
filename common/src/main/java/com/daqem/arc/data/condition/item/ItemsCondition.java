@@ -35,7 +35,7 @@ public class ItemsCondition extends AbstractCondition {
 
     @Override
     public Component getDescription() {
-        return getDescription(items.stream().map(Item::getName).reduce(
+        return getDescription(items.stream().map(item -> item.getDefaultInstance().getDisplayName()).reduce(
                 (a, b) -> ((MutableComponent) a).append(", ").append(b)
         ).orElse(Component.literal("No Items")
         ), itemTags.stream().map(TagKey::location).map(Identifier::toString).reduce(

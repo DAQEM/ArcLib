@@ -2,36 +2,19 @@
   "required": true,
   "minVersion": "0.8",
   "package": "com.daqem.arc.mixin",
-  "compatibilityLevel": "JAVA_21",
+  "compatibilityLevel": "JAVA_25",
   "client": [
     "ClientLanguageMixin",
     "MixinLocalPlayer"
   ],
   "mixins": [
     "EntityAccessor",
-    "GrindstoneMenuMixin",
     "MixinAbstractArrow",
     "MixinAbstractCookingRecipe",
-    "MixinAbstractFurnaceBlockEntity",
-    "MixinAnimal",
-    "MixinAnvilMenu",
-    "MixinBlockStateBase",
-    "MixinBucketItem",
-    "MixinConsumable",
-    "MixinFishingHook",
-    "MixinFishingRodHookedTrigger",
     "MixinIngredient",
-    "MixinItemStack",
-    "MixinLivingEntity",
-    "MixinMerchantResultSlot",
-    "MixinPlayer",
-    "MixinProjectile",
-    "MixinResultSlot",
     "MixinServerPlayer",
-    "MixinSmithingMenu",
     "MobEffectInstanceAccessor",
-    "PlayerListMixin",
-    "PotionSlotMixin"
+    "PlayerListMixin"
   ],
   "injectors": {
     "defaultRequire": 1

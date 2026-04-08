@@ -12,21 +12,24 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 
 public class ItemCondition extends AbstractCondition {
 
-    private final ItemStack itemStack;
+    private final ItemStackTemplate itemStackTemplate;
+    private ItemStack cachedItemStack;
     private final boolean checkComponents;
 
-    public ItemCondition(boolean inverted, ItemStack itemStack, boolean checkComponents) {
+    public ItemCondition(boolean inverted, ItemStackTemplate itemStackTemplate, boolean checkComponents) {
         super(inverted);
-        this.itemStack = itemStack;
+        this.itemStackTemplate = itemStackTemplate;
+        this.cachedItemStack = null;
         this.checkComponents = checkComponents;
     }
 
     @Override
     public Component getDescription() {
-        return getDescription(itemStack.getHoverName());
+        return getDescription(getItemStack().getHoverName());
     }
 
     @Override
@@ -34,18 +37,18 @@ public class ItemCondition extends AbstractCondition {
         Item item = actionData.getData(IActionDataType.ITEM);
         ItemStack itemStack = actionData.getData(IActionDataType.ITEM_STACK);
         boolean hasItem = item != null || itemStack != null;
-        boolean passOnItem = item != null && item == this.itemStack.getItem();
+        boolean passOnItem = item != null && item == getItemStack().getItem();
         boolean passOnItemStack = itemStack != null && testItemStack(itemStack);
         return hasItem && (passOnItem || passOnItemStack);
     }
 
     private boolean testItemStack(ItemStack itemStack) {
-        boolean sameItem = ItemStack.isSameItem(this.itemStack, itemStack);
-        boolean hasCount = this.itemStack.getCount() > 1;
-        boolean sameCount = itemStack.getCount() == this.itemStack.getCount();
+        boolean sameItem = ItemStack.isSameItem(getItemStack(), itemStack);
+        boolean hasCount = getItemStack().getCount() > 1;
+        boolean sameCount = itemStack.getCount() == getItemStack().getCount();
         boolean passOnCount = !hasCount || sameCount;
-        boolean hasComponents = !checkComponents || !this.itemStack.getComponents().isEmpty();
-        boolean sameComponents = !checkComponents || ItemStack.isSameItemSameComponents(this.itemStack, itemStack);
+        boolean hasComponents = !checkComponents || !getItemStack().getComponents().isEmpty();
+        boolean sameComponents = !checkComponents || ItemStack.isSameItemSameComponents(getItemStack(), itemStack);
         boolean passOnComponents = !checkComponents || !hasComponents || sameComponents;
         return sameItem && passOnCount && passOnComponents;
     }
@@ -56,7 +59,15 @@ public class ItemCondition extends AbstractCondition {
     }
 
     public ItemStack getItemStack() {
-        return itemStack;
+        if (cachedItemStack != null) {
+            return cachedItemStack;
+        }
+        this.cachedItemStack = itemStackTemplate.create();
+        return cachedItemStack;
+    }
+
+    public ItemStackTemplate getItemStackTemplate() {
+        return itemStackTemplate;
     }
 
     public boolean isCheckComponents() {
@@ -69,7 +80,7 @@ public class ItemCondition extends AbstractCondition {
         public ItemCondition fromJson(Identifier location, JsonObject jsonObject, boolean inverted) {
             return new ItemCondition(
                     inverted,
-                    getItemStack(jsonObject, "item"),
+                    getItemStackTemplate(jsonObject, "item"),
                     GsonHelper.getAsBoolean(jsonObject, "check_components", true));
         }
 
@@ -77,14 +88,14 @@ public class ItemCondition extends AbstractCondition {
         public ItemCondition fromNetwork(Identifier location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
             return new ItemCondition(
                     inverted,
-                    ItemStack.STREAM_CODEC.decode(friendlyByteBuf),
+                    ItemStackTemplate.STREAM_CODEC.decode(friendlyByteBuf),
                     friendlyByteBuf.readBoolean());
         }
 
         @Override
         public void toNetwork(RegistryFriendlyByteBuf friendlyByteBuf, ItemCondition type) {
             IConditionSerializer.super.toNetwork(friendlyByteBuf, type);
-            ItemStack.STREAM_CODEC.encode(friendlyByteBuf, type.itemStack);
+            ItemStackTemplate.STREAM_CODEC.encode(friendlyByteBuf, type.itemStackTemplate);
             friendlyByteBuf.writeBoolean(type.checkComponents);
         }
     }

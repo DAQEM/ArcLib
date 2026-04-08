@@ -26,9 +26,9 @@ public class ChangeWeatherReward extends AbstractReward {
     public ActionResult apply(ActionData actionData) {
         if (actionData.getPlayer().arc$getLevel() instanceof ServerLevel serverLevel) {
             switch (weatherType) {
-                case CLEAR -> serverLevel.setWeatherParameters(duration, 0, false, false);
-                case RAIN -> serverLevel.setWeatherParameters(0, duration, true, false);
-                case THUNDER -> serverLevel.setWeatherParameters(0, duration, true, true);
+                case CLEAR -> serverLevel.getServer().setWeatherParameters(duration, 0, false, false);
+                case RAIN -> serverLevel.getServer().setWeatherParameters(0, duration, true, false);
+                case THUNDER -> serverLevel.getServer().setWeatherParameters(0, duration, true, true);
             }
         }
         return new ActionResult();
