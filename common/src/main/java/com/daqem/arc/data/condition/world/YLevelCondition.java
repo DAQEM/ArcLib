@@ -3,19 +3,21 @@ package com.daqem.arc.data.condition.world;
 import com.daqem.arc.api.condition.AbstractCondition;
 import com.daqem.arc.api.condition.IConditionSerializer;
 import com.daqem.arc.api.condition.IConditionType;
+import com.daqem.arc.api.math.INumberProvider;
+import com.daqem.arc.api.math.INumberProviderSerializer;
 import com.daqem.arc.data.ActionData;
+import com.daqem.arc.data.math.ConstantNumberProvider;
 import com.google.gson.JsonObject;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.GsonHelper;
 
 public class YLevelCondition extends AbstractCondition {
 
-    private final int minY;
-    private final int maxY;
+    private final INumberProvider minY;
+    private final INumberProvider maxY;
 
-    public YLevelCondition(boolean inverted, int minY, int maxY) {
+    public YLevelCondition(boolean inverted, INumberProvider minY, INumberProvider maxY) {
         super(inverted);
         this.minY = minY;
         this.maxY = maxY;
@@ -23,13 +25,30 @@ public class YLevelCondition extends AbstractCondition {
 
     @Override
     public Component getDescription() {
-        return getDescription(minY, maxY);
+        return getDescription(minY.toString(), maxY.toString());
     }
 
     @Override
     public boolean isMet(ActionData actionData) {
         double y = actionData.getPlayer().arc$getPlayer().getY();
-        return y >= minY && y <= maxY;
+        double resolvedMin = minY.resolve(actionData);
+        double resolvedMax = maxY.resolve(actionData);
+
+        if (resolvedMin > resolvedMax) {
+            double temp = resolvedMin;
+            resolvedMin = resolvedMax;
+            resolvedMax = temp;
+        }
+
+        return y >= resolvedMin && y <= resolvedMax;
+    }
+
+    public INumberProvider getMaxY() {
+        return maxY;
+    }
+
+    public INumberProvider getMinY() {
+        return minY;
     }
 
     @Override
@@ -43,8 +62,8 @@ public class YLevelCondition extends AbstractCondition {
         public YLevelCondition fromJson(Identifier location, JsonObject jsonObject, boolean inverted) {
             return new YLevelCondition(
                     inverted,
-                    GsonHelper.getAsInt(jsonObject, "min_y", Integer.MIN_VALUE),
-                    GsonHelper.getAsInt(jsonObject, "max_y", Integer.MAX_VALUE)
+                    getNumberProvider(jsonObject, "min_y", new ConstantNumberProvider(Integer.MIN_VALUE)),
+                    getNumberProvider(jsonObject, "max_y", new ConstantNumberProvider(Integer.MAX_VALUE))
             );
         }
 
@@ -52,16 +71,16 @@ public class YLevelCondition extends AbstractCondition {
         public YLevelCondition fromNetwork(Identifier location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
             return new YLevelCondition(
                     inverted,
-                    friendlyByteBuf.readVarInt(),
-                    friendlyByteBuf.readVarInt()
+                    INumberProviderSerializer.fromNetworkStatic(friendlyByteBuf),
+                    INumberProviderSerializer.fromNetworkStatic(friendlyByteBuf)
             );
         }
 
         @Override
         public void toNetwork(RegistryFriendlyByteBuf friendlyByteBuf, YLevelCondition type) {
             IConditionSerializer.super.toNetwork(friendlyByteBuf, type);
-            friendlyByteBuf.writeVarInt(type.minY);
-            friendlyByteBuf.writeVarInt(type.maxY);
+            INumberProviderSerializer.toNetwork(type.minY, friendlyByteBuf);
+            INumberProviderSerializer.toNetwork(type.maxY, friendlyByteBuf);
         }
     }
 }

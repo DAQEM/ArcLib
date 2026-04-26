@@ -4,7 +4,10 @@ import com.daqem.arc.api.action.data.IActionDataType;
 import com.daqem.arc.api.condition.AbstractCondition;
 import com.daqem.arc.api.condition.IConditionSerializer;
 import com.daqem.arc.api.condition.IConditionType;
+import com.daqem.arc.api.math.INumberProvider;
+import com.daqem.arc.api.math.INumberProviderSerializer;
 import com.daqem.arc.data.ActionData;
+import com.daqem.arc.data.math.ConstantNumberProvider;
 import com.google.gson.JsonObject;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -18,16 +21,16 @@ import java.util.Optional;
 
 public class CropAgeCondition extends AbstractCondition {
 
-    private final int age;
+    private final INumberProvider age;
 
-    public CropAgeCondition(boolean inverted, int age) {
+    public CropAgeCondition(boolean inverted, INumberProvider age) {
         super(inverted);
         this.age = age;
     }
 
     @Override
     public Component getDescription() {
-        return getDescription(age);
+        return getDescription(age.toString());
     }
 
     @Override
@@ -42,7 +45,7 @@ public class CropAgeCondition extends AbstractCondition {
                 IntegerProperty ageProperty = (IntegerProperty) optionalAgeProperty.get();
                 Optional<Integer> optionalAgeValue = blockState.getOptionalValue(ageProperty);
                 if (optionalAgeValue.isPresent()) {
-                    return optionalAgeValue.get() == this.age;
+                    return optionalAgeValue.get() == Math.round(this.age.resolve(actionData));
                 }
             }
         }
@@ -54,7 +57,7 @@ public class CropAgeCondition extends AbstractCondition {
         return IConditionType.CROP_AGE;
     }
 
-    public int getAge() {
+    public INumberProvider getAge() {
         return age;
     }
 
@@ -64,20 +67,22 @@ public class CropAgeCondition extends AbstractCondition {
         public CropAgeCondition fromJson(Identifier location, JsonObject jsonObject, boolean inverted) {
             return new CropAgeCondition(
                     inverted,
-                    jsonObject.get("age").getAsInt());
+                    getNumberProvider(jsonObject, "age", new ConstantNumberProvider(0.0))
+            );
         }
 
         @Override
         public CropAgeCondition fromNetwork(Identifier location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
             return new CropAgeCondition(
                     inverted,
-                    friendlyByteBuf.readInt());
+                    INumberProviderSerializer.fromNetworkStatic(friendlyByteBuf)
+            );
         }
 
         @Override
         public void toNetwork(RegistryFriendlyByteBuf friendlyByteBuf, CropAgeCondition type) {
             IConditionSerializer.super.toNetwork(friendlyByteBuf, type);
-            friendlyByteBuf.writeInt(type.age);
+            INumberProviderSerializer.toNetwork(type.age, friendlyByteBuf);
         }
     }
 }

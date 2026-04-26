@@ -16,7 +16,12 @@ import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 public interface IActionDataType<T> {
+
+    Map<Identifier, IActionDataType<?>> TYPES = new ConcurrentHashMap<>();
 
     IActionDataType<BlockState> BLOCK_STATE = register(Arc.API.getId("block_state"));
     IActionDataType<BlockPos> BLOCK_POSITION = register(Arc.API.getId("block_position"));
@@ -40,7 +45,9 @@ public interface IActionDataType<T> {
     IActionDataType<Boolean> IS_CRITICAL_HIT = register(Arc.API.getId("is_critical_hit"));
 
     static <T> IActionDataType<T> register(Identifier location) {
-        return () -> location;
+        IActionDataType<T> type = () -> location;
+        TYPES.put(location, type);
+        return type;
     }
 
     Identifier getIdentifier();

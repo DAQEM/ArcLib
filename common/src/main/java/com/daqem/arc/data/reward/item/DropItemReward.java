@@ -2,10 +2,13 @@ package com.daqem.arc.data.reward.item;
 
 import com.daqem.arc.api.action.data.IActionDataType;
 import com.daqem.arc.api.action.result.ActionResult;
+import com.daqem.arc.api.math.INumberProvider;
+import com.daqem.arc.api.math.INumberProviderSerializer;
 import com.daqem.arc.api.reward.AbstractReward;
 import com.daqem.arc.api.reward.IRewardSerializer;
 import com.daqem.arc.api.reward.IRewardType;
 import com.daqem.arc.data.ActionData;
+import com.daqem.arc.data.math.ConstantNumberProvider;
 import com.google.gson.JsonObject;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -25,17 +28,19 @@ import java.util.List;
 public class DropItemReward extends AbstractReward {
 
     private final ItemStackTemplate itemStackTemplate;
+    private final INumberProvider amount;
     private ItemStack cachedItemStack;
 
-    public DropItemReward(double chance, int priority, ItemStackTemplate itemStackTemplate) {
+    public DropItemReward(double chance, int priority, ItemStackTemplate itemStackTemplate, INumberProvider amount) {
         super(chance, priority);
         this.itemStackTemplate = itemStackTemplate;
+        this.amount = amount;
         this.cachedItemStack = null;
     }
 
     @Override
     public Component getDescription() {
-        return getDescription(getItemStack().getCount(), getItemStack().getHoverName());
+        return getDescription(amount.toString(), getItemStack().getHoverName());
     }
 
     @Override
@@ -45,8 +50,12 @@ public class DropItemReward extends AbstractReward {
             Level level = actionData.getData(IActionDataType.WORLD);
             if (level == null) level = actionData.getPlayer().arc$getLevel();
             if (level instanceof ServerLevel serverLevel) {
+
+                int resolvedAmount = (int) Math.round(amount.resolve(actionData));
+                if (resolvedAmount <= 0) return new ActionResult();
+
                 if (!getItemStack().isEmpty()) {
-                    for (int i = 0; i < getItemStack().getCount(); i++) {
+                    for (int i = 0; i < resolvedAmount; i++) {
                         ItemEntity entity = new ItemEntity(
                                 serverLevel,
                                 pos.getX(),
@@ -66,16 +75,18 @@ public class DropItemReward extends AbstractReward {
                                         .withParameter(LootContextParams.BLOCK_STATE, state)
                                         .withParameter(LootContextParams.THIS_ENTITY, actionData.getPlayer().arc$getPlayer())
                         );
-                        for (int i = 0; i < getItemStack().getCount(); i++) {
-                            ItemStack randomDrop = drops.get(serverLevel.getRandom().nextInt(drops.size()));
-                            ItemEntity entity = new ItemEntity(
-                                    serverLevel,
-                                    pos.getX(),
-                                    pos.getY(),
-                                    pos.getZ(),
-                                    randomDrop);
-                            entity.setDefaultPickUpDelay();
-                            serverLevel.addFreshEntity(entity);
+                        if (!drops.isEmpty()) {
+                            for (int i = 0; i < resolvedAmount; i++) {
+                                ItemStack randomDrop = drops.get(serverLevel.getRandom().nextInt(drops.size()));
+                                ItemEntity entity = new ItemEntity(
+                                        serverLevel,
+                                        pos.getX(),
+                                        pos.getY(),
+                                        pos.getZ(),
+                                        randomDrop.copyWithCount(1));
+                                entity.setDefaultPickUpDelay();
+                                serverLevel.addFreshEntity(entity);
+                            }
                         }
                     }
                 }
@@ -101,11 +112,24 @@ public class DropItemReward extends AbstractReward {
         return itemStackTemplate;
     }
 
+    public INumberProvider getAmount() {
+        return amount;
+    }
+
     public static class Serializer implements IRewardSerializer<DropItemReward> {
 
         @Override
         public DropItemReward fromJson(JsonObject jsonObject, double chance, int priority) {
-            return new DropItemReward(chance, priority, getItemStackTemplate(jsonObject, "item"));
+            // FIX: Gracefully inherit the count from the template to preserve backwards compatibility!
+            ItemStackTemplate template = getItemStackTemplate(jsonObject, "item");
+            int templateCount = template.count();
+
+            return new DropItemReward(
+                    chance,
+                    priority,
+                    template,
+                    getNumberProvider(jsonObject, "amount", new ConstantNumberProvider(templateCount))
+            );
         }
 
         @Override
@@ -113,13 +137,16 @@ public class DropItemReward extends AbstractReward {
             return new DropItemReward(
                     chance,
                     priority,
-                    ItemStackTemplate.STREAM_CODEC.decode(friendlyByteBuf));
+                    ItemStackTemplate.STREAM_CODEC.decode(friendlyByteBuf),
+                    INumberProviderSerializer.fromNetworkStatic(friendlyByteBuf)
+            );
         }
 
         @Override
         public void toNetwork(RegistryFriendlyByteBuf friendlyByteBuf, DropItemReward type) {
             IRewardSerializer.super.toNetwork(friendlyByteBuf, type);
             ItemStackTemplate.STREAM_CODEC.encode(friendlyByteBuf, type.itemStackTemplate);
+            INumberProviderSerializer.toNetwork(type.amount, friendlyByteBuf);
         }
     }
 }

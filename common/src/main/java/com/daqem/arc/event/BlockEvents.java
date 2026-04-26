@@ -19,6 +19,8 @@ public class BlockEvents {
                         .withData(IActionDataType.BLOCK_STATE, blockState)
                         .withData(IActionDataType.BLOCK_POSITION, blockPos)
                         .withData(IActionDataType.WORLD, serverLevel)
+                        .withData(IActionDataType.ITEM_STACK, serverPlayer.getMainHandItem())
+                        .withData(IActionDataType.ITEM, serverPlayer.getMainHandItem().getItem())
                         .build()
                         .sendToAction();
 
@@ -35,6 +37,8 @@ public class BlockEvents {
                         .withData(IActionDataType.BLOCK_STATE, state)
                         .withData(IActionDataType.BLOCK_POSITION, pos)
                         .withData(IActionDataType.WORLD, level)
+                        .withData(IActionDataType.ITEM_STACK, arcPlayer.arc$getPlayer().getMainHandItem())
+                        .withData(IActionDataType.ITEM, arcPlayer.arc$getPlayer().getMainHandItem().getItem())
                         .build()
                         .sendToAction();
 
@@ -56,6 +60,7 @@ public class BlockEvents {
                         .withData(IActionDataType.BLOCK_POSITION, blockPos)
                         .withData(IActionDataType.WORLD, level)
                         .withData(IActionDataType.ITEM_STACK, itemStack)
+                        .withData(IActionDataType.ITEM, itemStack.getItem())
                         .withData(IActionDataType.HAND, hand)
                         .build()
                         .sendToAction();
@@ -72,6 +77,8 @@ public class BlockEvents {
                         .withData(IActionDataType.BLOCK_STATE, blockState)
                         .withData(IActionDataType.BLOCK_POSITION, blockPos)
                         .withData(IActionDataType.WORLD, level)
+                        .withData(IActionDataType.ITEM_STACK, arcPlayer.arc$getPlayer().getMainHandItem())
+                        .withData(IActionDataType.ITEM, arcPlayer.arc$getPlayer().getMainHandItem().getItem())
                         .build()
                         .sendToAction();
                 if (actionResult.shouldCancelAction()) {
@@ -87,6 +94,8 @@ public class BlockEvents {
                         .withData(IActionDataType.BLOCK_STATE, blockState)
                         .withData(IActionDataType.BLOCK_POSITION, blockPos)
                         .withData(IActionDataType.WORLD, level)
+                        .withData(IActionDataType.ITEM_STACK, serverPlayer.getMainHandItem())
+                        .withData(IActionDataType.ITEM, serverPlayer.getMainHandItem().getItem())
                         .build()
                         .sendToAction();
                 if (actionResult.shouldCancelAction()) {
@@ -123,6 +132,7 @@ public class BlockEvents {
                         .withData(IActionDataType.BLOCK_POSITION, blockPos)
                         .withData(IActionDataType.WORLD, level)
                         .withData(IActionDataType.ITEM_STACK, hoe)
+                        .withData(IActionDataType.ITEM, hoe.getItem())
                         .build()
                         .sendToAction();
             }

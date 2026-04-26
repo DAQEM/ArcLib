@@ -3,20 +3,22 @@ package com.daqem.arc.data.condition.world;
 import com.daqem.arc.api.condition.AbstractCondition;
 import com.daqem.arc.api.condition.IConditionSerializer;
 import com.daqem.arc.api.condition.IConditionType;
+import com.daqem.arc.api.math.INumberProvider;
+import com.daqem.arc.api.math.INumberProviderSerializer;
 import com.daqem.arc.data.ActionData;
+import com.daqem.arc.data.math.ConstantNumberProvider;
 import com.google.gson.JsonObject;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.Level;
 
 public class TimeOfDayCondition extends AbstractCondition {
 
-    private final int minTime;
-    private final int maxTime;
+    private final INumberProvider minTime;
+    private final INumberProvider maxTime;
 
-    public TimeOfDayCondition(boolean inverted, int minTime, int maxTime) {
+    public TimeOfDayCondition(boolean inverted, INumberProvider minTime, INumberProvider maxTime) {
         super(inverted);
         this.minTime = minTime;
         this.maxTime = maxTime;
@@ -24,14 +26,32 @@ public class TimeOfDayCondition extends AbstractCondition {
 
     @Override
     public Component getDescription() {
-        return getDescription(minTime, maxTime);
+        return getDescription(minTime.toString(), maxTime.toString());
     }
 
     @Override
     public boolean isMet(ActionData actionData) {
         Level level = actionData.getPlayer().arc$getLevel();
         long time = level.getOverworldClockTime() % 24000;
-        return time >= minTime && time <= maxTime;
+
+        double resolvedMin = minTime.resolve(actionData);
+        double resolvedMax = maxTime.resolve(actionData);
+
+        if (resolvedMin > resolvedMax) {
+            double temp = resolvedMin;
+            resolvedMin = resolvedMax;
+            resolvedMax = temp;
+        }
+
+        return time >= resolvedMin && time <= resolvedMax;
+    }
+
+    public INumberProvider getMaxTime() {
+        return maxTime;
+    }
+
+    public INumberProvider getMinTime() {
+        return minTime;
     }
 
     @Override
@@ -45,8 +65,8 @@ public class TimeOfDayCondition extends AbstractCondition {
         public TimeOfDayCondition fromJson(Identifier location, JsonObject jsonObject, boolean inverted) {
             return new TimeOfDayCondition(
                     inverted,
-                    GsonHelper.getAsInt(jsonObject, "min_time"),
-                    GsonHelper.getAsInt(jsonObject, "max_time")
+                    getNumberProvider(jsonObject, "min_time", new ConstantNumberProvider(0.0)),
+                    getNumberProvider(jsonObject, "max_time", new ConstantNumberProvider(24000.0))
             );
         }
 
@@ -54,16 +74,16 @@ public class TimeOfDayCondition extends AbstractCondition {
         public TimeOfDayCondition fromNetwork(Identifier location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
             return new TimeOfDayCondition(
                     inverted,
-                    friendlyByteBuf.readVarInt(),
-                    friendlyByteBuf.readVarInt()
+                    INumberProviderSerializer.fromNetworkStatic(friendlyByteBuf),
+                    INumberProviderSerializer.fromNetworkStatic(friendlyByteBuf)
             );
         }
 
         @Override
         public void toNetwork(RegistryFriendlyByteBuf friendlyByteBuf, TimeOfDayCondition type) {
             IConditionSerializer.super.toNetwork(friendlyByteBuf, type);
-            friendlyByteBuf.writeVarInt(type.minTime);
-            friendlyByteBuf.writeVarInt(type.maxTime);
+            INumberProviderSerializer.toNetwork(type.minTime, friendlyByteBuf);
+            INumberProviderSerializer.toNetwork(type.maxTime, friendlyByteBuf);
         }
     }
 }

@@ -1,12 +1,14 @@
 package com.daqem.arc.data.serializer;
 
 import com.daqem.arc.api.ComparisonType;
-import com.daqem.arc.model.ArcBlockState;
-import com.daqem.arc.model.ArcEnchantment;
-import com.daqem.arc.model.ArcWeatherType;
-import com.daqem.arc.model.EntityDataProperty;
+import com.daqem.arc.api.math.INumberProvider;
+import com.daqem.arc.api.math.MathOperator;
+import com.daqem.arc.data.math.ConstantNumberProvider;
+import com.daqem.arc.model.*;
+import com.daqem.arc.model.target.ArcEntityTarget;
 import com.daqem.arc.model.target.ArcItemTarget;
 import com.daqem.arc.model.target.ArcPositionTarget;
+import com.daqem.arc.registry.ArcRegistry;
 import com.google.gson.*;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.JsonOps;
@@ -1109,6 +1111,105 @@ public interface ArcSerializer {
             return null;
         }
         return getSoundSource(jsonObject, key, null);
+    }
+
+    //endregion
+
+    //region Number Provider
+
+    default INumberProvider getNumberProvider(JsonObject jsonObject, String key, @Nullable INumberProvider defaultProvider) {
+        if (!jsonObject.has(key) || jsonObject.get(key).isJsonNull()) {
+            if (defaultProvider != null) {
+                return defaultProvider;
+            }
+            throw new JsonParseException("Expected '" + key + "' to be a number provider");
+        }
+
+        JsonElement element = jsonObject.get(key);
+
+        if (element.isJsonPrimitive() && element.getAsJsonPrimitive().isNumber()) {
+            return new ConstantNumberProvider(element.getAsDouble());
+        }
+
+        if (element.isJsonObject()) {
+            JsonObject obj = element.getAsJsonObject();
+            String type = GsonHelper.getAsString(obj, "type");
+            return ArcRegistry.NUMBER_PROVIDER.getOptional(Identifier.parse(type))
+                    .orElseThrow(() -> new JsonParseException("Unknown number provider type: " + type))
+                    .getSerializer().fromJson(obj);
+        }
+
+        throw new JsonParseException("Expected '" + key + "' to be a number or a number provider object");
+    }
+
+    default INumberProvider getNumberProvider(JsonObject jsonObject, String key) {
+        return getNumberProvider(jsonObject, key, null);
+    }
+
+//endregion
+
+    //region Entity Target
+
+    default ArcEntityTarget getEntityTarget(JsonObject jsonObject, String elementName, @Nullable ArcEntityTarget defaultTarget) {
+        if (!jsonObject.has(elementName) || jsonObject.get(elementName).isJsonNull()) {
+            if (defaultTarget != null) return defaultTarget;
+            throw new JsonParseException("Expected '" + elementName + "' to be an entity target");
+        }
+        String targetName = GsonHelper.getAsString(jsonObject, elementName).toUpperCase();
+        try {
+            return ArcEntityTarget.valueOf(targetName);
+        } catch (IllegalArgumentException e) {
+            if (defaultTarget != null) return defaultTarget;
+            throw new JsonParseException("Expected '" + targetName + "' to be an entity target. Options are: " + Arrays.toString(ArcEntityTarget.values()));
+        }
+    }
+
+    default ArcEntityTarget getEntityTarget(JsonObject jsonObject, String elementName) {
+        return getEntityTarget(jsonObject, elementName, null);
+    }
+
+    //endregion
+
+    //region Item Data Property
+
+    default ItemDataProperty getItemDataProperty(JsonObject jsonObject, String elementName, @Nullable ItemDataProperty defaultProperty) {
+        if (!jsonObject.has(elementName) || jsonObject.get(elementName).isJsonNull()) {
+            if (defaultProperty != null) return defaultProperty;
+            throw new JsonParseException("Expected '" + elementName + "' to be an item data property");
+        }
+        String propName = GsonHelper.getAsString(jsonObject, elementName).toUpperCase();
+        try {
+            return ItemDataProperty.valueOf(propName);
+        } catch (IllegalArgumentException e) {
+            if (defaultProperty != null) return defaultProperty;
+            throw new JsonParseException("Expected '" + propName + "' to be an item data property. Options are: " + Arrays.toString(ItemDataProperty.values()));
+        }
+    }
+
+    default ItemDataProperty getItemDataProperty(JsonObject jsonObject, String elementName) {
+        return getItemDataProperty(jsonObject, elementName, null);
+    }
+
+    //endregion
+
+    //region Math Operator
+
+    default MathOperator getMathOperator(JsonObject jsonObject, String elementName, @Nullable MathOperator defaultOperator) {
+        if (!jsonObject.has(elementName) || jsonObject.get(elementName).isJsonNull()) {
+            if (defaultOperator != null) return defaultOperator;
+            throw new JsonParseException("Expected '" + elementName + "' to be a math operator");
+        }
+        String opName = GsonHelper.getAsString(jsonObject, elementName).toUpperCase();
+        try {
+            return MathOperator.valueOf(opName);
+        } catch (IllegalArgumentException e) {
+            if (defaultOperator != null) return defaultOperator;
+            throw new JsonParseException("Expected '" + opName + "' to be a math operator. Options are: " + Arrays.toString(MathOperator.values()));
+        }
+    }
+
+    default MathOperator getMathOperator(JsonObject jsonObject, String elementName) {
+        return getMathOperator(jsonObject, elementName, null);
     }
 
     //endregion

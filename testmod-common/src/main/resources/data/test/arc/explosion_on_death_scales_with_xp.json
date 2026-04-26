@@ -1,0 +1,32 @@
+{
+  "holder": {
+    "type": "arc:player",
+    "id": "arc:player"
+  },
+  "type": "arc:on_death",
+  "rewards":[
+    {
+      "type": "arc:create_explosion",
+      "causes_fire": true,
+      "block_interaction": "block",
+      "radius": {
+        "type": "arc:calculate",
+        "base": {
+          "type": "arc:entity_data",
+          "target": "player",
+          "property": "arc:experience_level"
+        },
+        "modifiers":[
+          {
+            "operator": "divide",
+            "value": 10.0
+          },
+          {
+            "operator": "max",
+            "value": 1.0
+          }
+        ]
+      }
+    }
+  ]
+}

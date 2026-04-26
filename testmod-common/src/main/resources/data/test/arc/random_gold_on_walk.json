@@ -1,0 +1,26 @@
+{
+  "holder": {
+    "type": "arc:player",
+    "id": "arc:player"
+  },
+  "type": "arc:on_walk",
+  "conditions":[
+    {
+      "type": "arc:distance",
+      "distance_in_blocks": 10
+    }
+  ],
+  "rewards":[
+    {
+      "type": "arc:item",
+      "item": {
+        "id": "minecraft:gold_nugget"
+      },
+      "amount": {
+        "type": "arc:random",
+        "min": 1.0,
+        "max": 5.0
+      }
+    }
+  ]
+}

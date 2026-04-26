@@ -2,16 +2,18 @@ package com.daqem.arc.data.reward.combat;
 
 import com.daqem.arc.api.action.data.IActionDataType;
 import com.daqem.arc.api.action.result.ActionResult;
+import com.daqem.arc.api.math.INumberProvider;
+import com.daqem.arc.api.math.INumberProviderSerializer;
 import com.daqem.arc.api.reward.AbstractReward;
 import com.daqem.arc.api.reward.IRewardSerializer;
 import com.daqem.arc.api.reward.IRewardType;
 import com.daqem.arc.data.ActionData;
+import com.daqem.arc.data.math.ConstantNumberProvider;
 import com.google.gson.JsonObject;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -31,16 +33,16 @@ import java.util.Random;
 
 public class MultipleArrowsReward extends AbstractReward {
 
-    private final int amount;
+    private final INumberProvider amount;
 
-    public MultipleArrowsReward(double chance, int priority, int amount) {
+    public MultipleArrowsReward(double chance, int priority, INumberProvider amount) {
         super(chance, priority);
         this.amount = amount;
     }
 
     @Override
     public Component getDescription() {
-        return getDescription(amount);
+        return getDescription(amount.toString());
     }
 
     @Override
@@ -51,6 +53,11 @@ public class MultipleArrowsReward extends AbstractReward {
     @Override
     public ActionResult apply(ActionData actionData) {
         Entity entity = actionData.getData(IActionDataType.ENTITY);
+        int resolvedAmount = (int) Math.round(amount.resolve(actionData));
+
+        if (resolvedAmount < 1) return new ActionResult();
+        if (resolvedAmount > 25) resolvedAmount = 25; // Limit to 25 arrows to prevent lag
+
         if (entity instanceof AbstractArrow) {
             Player player = actionData.getPlayer().arc$getPlayer();
             ItemStack bow;
@@ -64,8 +71,8 @@ public class MultipleArrowsReward extends AbstractReward {
             if (bow.getItem() instanceof BowItem bowItem) {
                 float power = BowItem.getPowerForTime(bowItem.getUseDuration(bow, player) - player.getUseItemRemainingTicks());
                 float[] afloat = getShotPitches(new Random());
-                int[] arrowPositions = scatterArrows(amount);
-                for (int i = 0; i < amount; i++) {
+                int[] arrowPositions = scatterArrows(resolvedAmount);
+                for (int i = 0; i < resolvedAmount; i++) {
                     shootProjectile(player.level(), player, bow, Items.ARROW.getDefaultInstance(), afloat[1], power * 3, arrowPositions[i]);
                 }
             }
@@ -74,29 +81,18 @@ public class MultipleArrowsReward extends AbstractReward {
     }
 
     public static int[] scatterArrows(int numArrows) {
-        if (numArrows < 1 || numArrows > 20) {
-            throw new IllegalArgumentException("Number of arrows should be between 1 and 20.");
-        }
-
-        if (numArrows == 1) {
-            return new int[]{0};
-        }
-
+        if (numArrows == 1) return new int[]{0};
         int[] arrowPositions = new int[numArrows];
         double interval = 20.0 / (numArrows - 1);
-
         for (int i = 0; i < numArrows; i++) {
             arrowPositions[i] = (int) (-10 + i * interval);
         }
-
         return arrowPositions;
     }
 
-    private void shootProjectile(Level level, LivingEntity livingEntity, ItemStack bow, ItemStack arrow,
-                                 float shotPitch, float power, float pitch) {
+    private void shootProjectile(Level level, LivingEntity livingEntity, ItemStack bow, ItemStack arrow, float shotPitch, float power, float pitch) {
         if (livingEntity instanceof Player player) {
             AbstractArrow projectile = new AbstractArrow(EntityType.ARROW, livingEntity, level, arrow, bow) {
-
                 @Override
                 protected @NotNull ItemStack getDefaultPickupItem() {
                     return arrow;
@@ -131,7 +127,7 @@ public class MultipleArrowsReward extends AbstractReward {
         return 1.0F / (random.nextFloat() * 0.5F + 1.8F) + f;
     }
 
-    public int getAmount() {
+    public INumberProvider getAmount() {
         return amount;
     }
 
@@ -139,24 +135,18 @@ public class MultipleArrowsReward extends AbstractReward {
 
         @Override
         public MultipleArrowsReward fromJson(JsonObject jsonObject, double chance, int priority) {
-            return new MultipleArrowsReward(
-                    chance,
-                    priority,
-                    Math.clamp(GsonHelper.getAsInt(jsonObject, "amount"), 1, 20));
+            return new MultipleArrowsReward(chance, priority, getNumberProvider(jsonObject, "amount", new ConstantNumberProvider(1.0)));
         }
 
         @Override
-        public MultipleArrowsReward fromNetwork(RegistryFriendlyByteBuf friendlyByteBuf, double chance, int priority) {
-            return new MultipleArrowsReward(
-                    chance,
-                    priority,
-                    friendlyByteBuf.readInt());
+        public MultipleArrowsReward fromNetwork(RegistryFriendlyByteBuf buf, double chance, int priority) {
+            return new MultipleArrowsReward(chance, priority, INumberProviderSerializer.fromNetworkStatic(buf));
         }
 
         @Override
-        public void toNetwork(RegistryFriendlyByteBuf friendlyByteBuf, MultipleArrowsReward type) {
-            IRewardSerializer.super.toNetwork(friendlyByteBuf, type);
-            friendlyByteBuf.writeInt(type.amount);
+        public void toNetwork(RegistryFriendlyByteBuf buf, MultipleArrowsReward type) {
+            IRewardSerializer.super.toNetwork(buf, type);
+            INumberProviderSerializer.toNetwork(type.amount, buf);
         }
     }
 }

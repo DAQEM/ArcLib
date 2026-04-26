@@ -1,0 +1,26 @@
+{
+  "holder": {
+    "type": "arc:player",
+    "id": "arc:player"
+  },
+  "type": "arc:on_break_block",
+  "conditions":[
+    {
+      "type": "arc:item_in_hand",
+      "item": "minecraft:iron_pickaxe"
+    },
+    {
+      "type": "arc:item_durability",
+      "durability": 50.0,
+      "comparison": "<"
+    }
+  ],
+  "rewards":[
+    {
+      "type": "arc:item",
+      "item": {
+        "id": "minecraft:diamond"
+      }
+    }
+  ]
+}

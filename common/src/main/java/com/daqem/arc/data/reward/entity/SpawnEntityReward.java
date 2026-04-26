@@ -1,15 +1,17 @@
 package com.daqem.arc.data.reward.entity;
 
 import com.daqem.arc.api.action.result.ActionResult;
+import com.daqem.arc.api.math.INumberProvider;
+import com.daqem.arc.api.math.INumberProviderSerializer;
 import com.daqem.arc.api.reward.AbstractReward;
 import com.daqem.arc.api.reward.IRewardSerializer;
 import com.daqem.arc.api.reward.IRewardType;
 import com.daqem.arc.data.ActionData;
+import com.daqem.arc.data.math.ConstantNumberProvider;
 import com.google.gson.JsonObject;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
@@ -18,9 +20,9 @@ import net.minecraft.world.entity.player.Player;
 public class SpawnEntityReward extends AbstractReward {
 
     private final EntityType<?> entityType;
-    private final int count;
+    private final INumberProvider count;
 
-    public SpawnEntityReward(double chance, int priority, EntityType<?> entityType, int count) {
+    public SpawnEntityReward(double chance, int priority, EntityType<?> entityType, INumberProvider count) {
         super(chance, priority);
         this.entityType = entityType;
         this.count = count;
@@ -28,14 +30,15 @@ public class SpawnEntityReward extends AbstractReward {
 
     @Override
     public Component getDescription() {
-        return getDescription(count, entityType.getDescription());
+        return getDescription(count.toString(), entityType.getDescription());
     }
 
     @Override
     public ActionResult apply(ActionData actionData) {
         Player player = actionData.getPlayer().arc$getPlayer();
         if (player.level() instanceof ServerLevel serverLevel) {
-            for (int i = 0; i < count; i++) {
+            int resolvedCount = (int) Math.round(count.resolve(actionData));
+            for (int i = 0; i < resolvedCount; i++) {
                 Entity entity = entityType.create(serverLevel, EntitySpawnReason.EVENT);
                 if (entity != null) {
                     entity.moveOrInterpolateTo(player.position(), player.getYRot(), player.getXRot());
@@ -44,6 +47,14 @@ public class SpawnEntityReward extends AbstractReward {
             }
         }
         return new ActionResult();
+    }
+
+    public EntityType<?> getEntityType() {
+        return entityType;
+    }
+
+    public INumberProvider getCount() {
+        return count;
     }
 
     @Override
@@ -59,7 +70,7 @@ public class SpawnEntityReward extends AbstractReward {
                     chance,
                     priority,
                     getEntityType(jsonObject, "entity_type"),
-                    GsonHelper.getAsInt(jsonObject, "count", 1)
+                    getNumberProvider(jsonObject, "count", new ConstantNumberProvider(1.0))
             );
         }
 
@@ -69,7 +80,7 @@ public class SpawnEntityReward extends AbstractReward {
                     chance,
                     priority,
                     EntityType.STREAM_CODEC.decode(friendlyByteBuf),
-                    friendlyByteBuf.readVarInt()
+                    INumberProviderSerializer.fromNetworkStatic(friendlyByteBuf)
             );
         }
 
@@ -77,7 +88,7 @@ public class SpawnEntityReward extends AbstractReward {
         public void toNetwork(RegistryFriendlyByteBuf friendlyByteBuf, SpawnEntityReward type) {
             IRewardSerializer.super.toNetwork(friendlyByteBuf, type);
             EntityType.STREAM_CODEC.encode(friendlyByteBuf, type.entityType);
-            friendlyByteBuf.writeVarInt(type.count);
+            INumberProviderSerializer.toNetwork(type.count, friendlyByteBuf);
         }
     }
 }

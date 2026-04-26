@@ -1,0 +1,29 @@
+{
+  "holder": {
+    "type": "arc:player",
+    "id": "arc:player"
+  },
+  "type": "arc:on_get_hurt",
+  "rewards":[
+    {
+      "type": "arc:exp",
+      "min": {
+        "type": "arc:action_data",
+        "data": "arc:damage_amount"
+      },
+      "max": {
+        "type": "arc:calculate",
+        "base": {
+          "type": "arc:action_data",
+          "data": "arc:damage_amount"
+        },
+        "modifiers":[
+          {
+            "operator": "multiply",
+            "value": 2.0
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -2,22 +2,24 @@ package com.daqem.arc.data.reward.entity;
 
 import com.daqem.arc.api.action.data.IActionDataType;
 import com.daqem.arc.api.action.result.ActionResult;
+import com.daqem.arc.api.math.INumberProvider;
+import com.daqem.arc.api.math.INumberProviderSerializer;
 import com.daqem.arc.api.reward.AbstractReward;
 import com.daqem.arc.api.reward.IRewardSerializer;
 import com.daqem.arc.api.reward.IRewardType;
 import com.daqem.arc.data.ActionData;
+import com.daqem.arc.data.math.ConstantNumberProvider;
 import com.google.gson.JsonObject;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 
 public class PushEntityReward extends AbstractReward {
 
-    private final double force;
+    private final INumberProvider force;
 
-    public PushEntityReward(double chance, int priority, double force) {
+    public PushEntityReward(double chance, int priority, INumberProvider force) {
         super(chance, priority);
         this.force = force;
     }
@@ -27,10 +29,15 @@ public class PushEntityReward extends AbstractReward {
         Player player = actionData.getPlayer().arc$getPlayer();
         Entity target = actionData.getData(IActionDataType.ENTITY);
         if (target != null) {
-            Vec3 pushVector = target.position().subtract(player.position()).normalize().scale(force);
+            double resolvedForce = force.resolve(actionData);
+            Vec3 pushVector = target.position().subtract(player.position()).normalize().scale(resolvedForce);
             target.push(pushVector.x, pushVector.y, pushVector.z);
         }
         return new ActionResult();
+    }
+
+    public INumberProvider getForce() {
+        return force;
     }
 
     @Override
@@ -45,7 +52,7 @@ public class PushEntityReward extends AbstractReward {
             return new PushEntityReward(
                     chance,
                     priority,
-                    GsonHelper.getAsDouble(jsonObject, "force", 1.0)
+                    getNumberProvider(jsonObject, "force", new ConstantNumberProvider(1.0))
             );
         }
 
@@ -54,14 +61,14 @@ public class PushEntityReward extends AbstractReward {
             return new PushEntityReward(
                     chance,
                     priority,
-                    friendlyByteBuf.readDouble()
+                    INumberProviderSerializer.fromNetworkStatic(friendlyByteBuf)
             );
         }
 
         @Override
         public void toNetwork(RegistryFriendlyByteBuf friendlyByteBuf, PushEntityReward type) {
             IRewardSerializer.super.toNetwork(friendlyByteBuf, type);
-            friendlyByteBuf.writeDouble(type.force);
+            INumberProviderSerializer.toNetwork(type.force, friendlyByteBuf);
         }
     }
 }

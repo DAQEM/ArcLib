@@ -4,20 +4,22 @@ import com.daqem.arc.api.ComparisonType;
 import com.daqem.arc.api.condition.AbstractCondition;
 import com.daqem.arc.api.condition.IConditionSerializer;
 import com.daqem.arc.api.condition.IConditionType;
+import com.daqem.arc.api.math.INumberProvider;
+import com.daqem.arc.api.math.INumberProviderSerializer;
 import com.daqem.arc.data.ActionData;
+import com.daqem.arc.data.math.ConstantNumberProvider;
 import com.google.gson.JsonObject;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.entity.player.Player;
 
 public class FoodLevelCondition extends AbstractCondition {
 
-    private final int foodLevel;
+    private final INumberProvider foodLevel;
     private final ComparisonType comparisonType;
 
-    public FoodLevelCondition(boolean inverted, int foodLevel, ComparisonType comparisonType) {
+    public FoodLevelCondition(boolean inverted, INumberProvider foodLevel, ComparisonType comparisonType) {
         super(inverted);
         this.foodLevel = foodLevel;
         this.comparisonType = comparisonType;
@@ -25,13 +27,21 @@ public class FoodLevelCondition extends AbstractCondition {
 
     @Override
     public Component getDescription() {
-        return getDescription(comparisonType.getSymbol(), foodLevel);
+        return getDescription(comparisonType.getSymbol(), foodLevel.toString());
     }
 
     @Override
     public boolean isMet(ActionData actionData) {
         Player player = actionData.getPlayer().arc$getPlayer();
-        return comparisonType.compare(player.getFoodData().getFoodLevel(), this.foodLevel);
+        return comparisonType.compare(player.getFoodData().getFoodLevel(), this.foodLevel.resolve(actionData));
+    }
+
+    public ComparisonType getComparisonType() {
+        return comparisonType;
+    }
+
+    public INumberProvider getFoodLevel() {
+        return foodLevel;
     }
 
     @Override
@@ -45,7 +55,7 @@ public class FoodLevelCondition extends AbstractCondition {
         public FoodLevelCondition fromJson(Identifier location, JsonObject jsonObject, boolean inverted) {
             return new FoodLevelCondition(
                     inverted,
-                    GsonHelper.getAsInt(jsonObject, "food_level"),
+                    getNumberProvider(jsonObject, "food_level", new ConstantNumberProvider(0.0)),
                     getComparisonType(jsonObject, "comparison", ComparisonType.EQUAL)
             );
         }
@@ -54,7 +64,7 @@ public class FoodLevelCondition extends AbstractCondition {
         public FoodLevelCondition fromNetwork(Identifier location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
             return new FoodLevelCondition(
                     inverted,
-                    friendlyByteBuf.readVarInt(),
+                    INumberProviderSerializer.fromNetworkStatic(friendlyByteBuf),
                     friendlyByteBuf.readEnum(ComparisonType.class)
             );
         }
@@ -62,7 +72,7 @@ public class FoodLevelCondition extends AbstractCondition {
         @Override
         public void toNetwork(RegistryFriendlyByteBuf friendlyByteBuf, FoodLevelCondition type) {
             IConditionSerializer.super.toNetwork(friendlyByteBuf, type);
-            friendlyByteBuf.writeVarInt(type.foodLevel);
+            INumberProviderSerializer.toNetwork(type.foodLevel, friendlyByteBuf);
             friendlyByteBuf.writeEnum(type.comparisonType);
         }
     }

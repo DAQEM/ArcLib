@@ -3,12 +3,14 @@ package com.daqem.arc.data.condition.player;
 import com.daqem.arc.api.condition.AbstractCondition;
 import com.daqem.arc.api.condition.IConditionSerializer;
 import com.daqem.arc.api.condition.IConditionType;
+import com.daqem.arc.api.math.INumberProvider;
+import com.daqem.arc.api.math.INumberProviderSerializer;
 import com.daqem.arc.data.ActionData;
+import com.daqem.arc.data.math.ConstantNumberProvider;
 import com.google.gson.JsonObject;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.scores.Objective;
 import net.minecraft.world.scores.ScoreHolder;
 import net.minecraft.world.scores.Scoreboard;
@@ -16,23 +18,19 @@ import net.minecraft.world.scores.Scoreboard;
 public class ScoreboardCondition extends AbstractCondition {
 
     private final String objective;
-    private final int min;
-    private final int max;
+    private final INumberProvider min;
+    private final INumberProvider max;
 
-    public ScoreboardCondition(boolean inverted, String objective, int min, int max) {
+    public ScoreboardCondition(boolean inverted, String objective, INumberProvider min, INumberProvider max) {
         super(inverted);
         this.objective = objective;
         this.min = min;
         this.max = max;
-
-        if (min > max) {
-            throw new IllegalArgumentException("min cannot be greater than max for ScoreboardCondition.");
-        }
     }
 
     @Override
     public Component getDescription() {
-        return getDescription(objective, min, max);
+        return getDescription(objective, min.toString(), max.toString());
     }
 
     @Override
@@ -41,7 +39,17 @@ public class ScoreboardCondition extends AbstractCondition {
         Objective objective = scoreboard.getObjective(this.objective);
         if (objective != null) {
             int score = scoreboard.getOrCreatePlayerScore((ScoreHolder) actionData.getPlayer(), objective).get();
-            return score >= min && score <= max;
+
+            double resolvedMin = min.resolve(actionData);
+            double resolvedMax = max.resolve(actionData);
+
+            if (resolvedMin > resolvedMax) {
+                double temp = resolvedMin;
+                resolvedMin = resolvedMax;
+                resolvedMax = temp;
+            }
+
+            return score >= resolvedMin && score <= resolvedMax;
         }
         return false;
     }
@@ -55,11 +63,11 @@ public class ScoreboardCondition extends AbstractCondition {
         return objective;
     }
 
-    public int getMin() {
+    public INumberProvider getMin() {
         return min;
     }
 
-    public int getMax() {
+    public INumberProvider getMax() {
         return max;
     }
 
@@ -70,8 +78,9 @@ public class ScoreboardCondition extends AbstractCondition {
             return new ScoreboardCondition(
                     inverted,
                     getString(jsonObject, "objective"),
-                    GsonHelper.getAsInt(jsonObject, "min"),
-                    GsonHelper.getAsInt(jsonObject, "max"));
+                    getNumberProvider(jsonObject, "min", new ConstantNumberProvider(Integer.MIN_VALUE)),
+                    getNumberProvider(jsonObject, "max", new ConstantNumberProvider(Integer.MAX_VALUE))
+            );
         }
 
         @Override
@@ -79,16 +88,17 @@ public class ScoreboardCondition extends AbstractCondition {
             return new ScoreboardCondition(
                     inverted,
                     friendlyByteBuf.readUtf(),
-                    friendlyByteBuf.readInt(),
-                    friendlyByteBuf.readInt());
+                    INumberProviderSerializer.fromNetworkStatic(friendlyByteBuf),
+                    INumberProviderSerializer.fromNetworkStatic(friendlyByteBuf)
+            );
         }
 
         @Override
         public void toNetwork(RegistryFriendlyByteBuf friendlyByteBuf, ScoreboardCondition type) {
             IConditionSerializer.super.toNetwork(friendlyByteBuf, type);
             friendlyByteBuf.writeUtf(type.objective);
-            friendlyByteBuf.writeInt(type.min);
-            friendlyByteBuf.writeInt(type.max);
+            INumberProviderSerializer.toNetwork(type.min, friendlyByteBuf);
+            INumberProviderSerializer.toNetwork(type.max, friendlyByteBuf);
         }
     }
 }

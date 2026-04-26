@@ -1,10 +1,13 @@
 package com.daqem.arc.data.reward.world;
 
 import com.daqem.arc.api.action.result.ActionResult;
+import com.daqem.arc.api.math.INumberProvider;
+import com.daqem.arc.api.math.INumberProviderSerializer;
 import com.daqem.arc.api.reward.AbstractReward;
 import com.daqem.arc.api.reward.IRewardSerializer;
 import com.daqem.arc.api.reward.IRewardType;
 import com.daqem.arc.data.ActionData;
+import com.daqem.arc.data.math.ConstantNumberProvider;
 import com.daqem.arc.model.target.ArcPositionTarget;
 import com.google.gson.JsonObject;
 import net.minecraft.core.Holder;
@@ -13,19 +16,18 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
 
 public class PlaySoundReward extends AbstractReward {
 
     private final Holder<SoundEvent> soundEvent;
-    private final float volume;
-    private final float pitch;
+    private final INumberProvider volume;
+    private final INumberProvider pitch;
     private final ArcPositionTarget positionTarget;
     private final SoundSource soundSource;
 
-    public PlaySoundReward(double chance, int priority, Holder<SoundEvent> soundEvent, float volume, float pitch, ArcPositionTarget positionTarget, SoundSource soundSource) {
+    public PlaySoundReward(double chance, int priority, Holder<SoundEvent> soundEvent, INumberProvider volume, INumberProvider pitch, ArcPositionTarget positionTarget, SoundSource soundSource) {
         super(chance, priority);
         this.soundEvent = soundEvent;
         this.volume = volume;
@@ -45,10 +47,32 @@ public class PlaySoundReward extends AbstractReward {
             Vec3 position = positionTarget.getPosition(actionData);
             Entity causingEntity = positionTarget.getEntity(actionData);
             if (position != null) {
-                serverPlayer.level().playSound(causingEntity, position.x, position.y, position.z, soundEvent.value(), soundSource, volume, pitch);
+                float resolvedVolume = (float) volume.resolve(actionData);
+                float resolvedPitch = (float) pitch.resolve(actionData);
+                serverPlayer.level().playSound(causingEntity, position.x, position.y, position.z, soundEvent.value(), soundSource, resolvedVolume, resolvedPitch);
             }
         }
         return new ActionResult();
+    }
+
+    public ArcPositionTarget getPositionTarget() {
+        return positionTarget;
+    }
+
+    public Holder<SoundEvent> getSoundEvent() {
+        return soundEvent;
+    }
+
+    public INumberProvider getPitch() {
+        return pitch;
+    }
+
+    public INumberProvider getVolume() {
+        return volume;
+    }
+
+    public SoundSource getSoundSource() {
+        return soundSource;
     }
 
     @Override
@@ -64,8 +88,8 @@ public class PlaySoundReward extends AbstractReward {
                     chance,
                     priority,
                     getSoundEvent(jsonObject, "sound"),
-                    GsonHelper.getAsFloat(jsonObject, "volume", 1.0f),
-                    GsonHelper.getAsFloat(jsonObject, "pitch", 1.0f),
+                    getNumberProvider(jsonObject, "volume", new ConstantNumberProvider(1.0)),
+                    getNumberProvider(jsonObject, "pitch", new ConstantNumberProvider(1.0)),
                     getPositionTarget(jsonObject, "position", ArcPositionTarget.PLAYER),
                     getSoundSource(jsonObject, "sound_source", SoundSource.PLAYERS)
             );
@@ -77,8 +101,8 @@ public class PlaySoundReward extends AbstractReward {
                     chance,
                     priority,
                     SoundEvent.STREAM_CODEC.decode(friendlyByteBuf),
-                    friendlyByteBuf.readFloat(),
-                    friendlyByteBuf.readFloat(),
+                    INumberProviderSerializer.fromNetworkStatic(friendlyByteBuf),
+                    INumberProviderSerializer.fromNetworkStatic(friendlyByteBuf),
                     friendlyByteBuf.readEnum(ArcPositionTarget.class),
                     friendlyByteBuf.readEnum(SoundSource.class)
             );
@@ -88,8 +112,8 @@ public class PlaySoundReward extends AbstractReward {
         public void toNetwork(RegistryFriendlyByteBuf friendlyByteBuf, PlaySoundReward type) {
             IRewardSerializer.super.toNetwork(friendlyByteBuf, type);
             SoundEvent.STREAM_CODEC.encode(friendlyByteBuf, type.soundEvent);
-            friendlyByteBuf.writeFloat(type.volume);
-            friendlyByteBuf.writeFloat(type.pitch);
+            INumberProviderSerializer.toNetwork(type.volume, friendlyByteBuf);
+            INumberProviderSerializer.toNetwork(type.pitch, friendlyByteBuf);
             friendlyByteBuf.writeEnum(type.positionTarget);
             friendlyByteBuf.writeEnum(type.soundSource);
         }

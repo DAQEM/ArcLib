@@ -1,0 +1,43 @@
+{
+  "holder": {
+    "type": "arc:player",
+    "id": "arc:player"
+  },
+  "type": "arc:on_kill_entity",
+  "rewards":[
+    {
+      "type": "arc:heal",
+      "amount": {
+        "type": "arc:calculate",
+        "base": {
+          "type": "arc:entity_data",
+          "target": "entity",
+          "property": "arc:max_health"
+        },
+        "modifiers":[
+          {
+            "operator": "multiply",
+            "value": 0.1
+          },
+          {
+            "operator": "multiply",
+            "value": {
+              "type": "arc:calculate",
+              "base": 1.0,
+              "modifiers":[
+                {
+                  "operator": "add",
+                  "value": {
+                    "type": "arc:entity_data",
+                    "target": "entity",
+                    "property": "arc:is_on_fire"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

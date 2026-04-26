@@ -4,7 +4,10 @@ import com.daqem.arc.api.ComparisonType;
 import com.daqem.arc.api.condition.AbstractCondition;
 import com.daqem.arc.api.condition.IConditionSerializer;
 import com.daqem.arc.api.condition.IConditionType;
+import com.daqem.arc.api.math.INumberProvider;
+import com.daqem.arc.api.math.INumberProviderSerializer;
 import com.daqem.arc.data.ActionData;
+import com.daqem.arc.data.math.ConstantNumberProvider;
 import com.google.gson.JsonObject;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -14,11 +17,11 @@ import net.minecraft.world.entity.player.Player;
 
 public class HealthCondition extends AbstractCondition {
 
-    private final double health;
+    private final INumberProvider health;
     private final ComparisonType comparisonType;
     private final boolean isPercentage;
 
-    public HealthCondition(boolean inverted, double health, ComparisonType comparisonType, boolean isPercentage) {
+    public HealthCondition(boolean inverted, INumberProvider health, ComparisonType comparisonType, boolean isPercentage) {
         super(inverted);
         this.health = health;
         this.comparisonType = comparisonType;
@@ -27,7 +30,7 @@ public class HealthCondition extends AbstractCondition {
 
     @Override
     public Component getDescription() {
-        return getDescription(comparisonType.getSymbol(), health + (isPercentage ? "%" : ""));
+        return getDescription(comparisonType.getSymbol(), health.toString() + (isPercentage ? "%" : ""));
     }
 
     @Override
@@ -37,7 +40,19 @@ public class HealthCondition extends AbstractCondition {
         if (isPercentage) {
             playerHealth = (playerHealth / player.getMaxHealth()) * 100.0;
         }
-        return comparisonType.compare(playerHealth, this.health);
+        return comparisonType.compare(playerHealth, this.health.resolve(actionData));
+    }
+
+    public INumberProvider getHealth() {
+        return health;
+    }
+
+    public ComparisonType getComparisonType() {
+        return comparisonType;
+    }
+
+    public boolean isPercentage() {
+        return isPercentage;
     }
 
     @Override
@@ -46,33 +61,32 @@ public class HealthCondition extends AbstractCondition {
     }
 
     public static class Serializer implements IConditionSerializer<HealthCondition> {
-
         @Override
         public HealthCondition fromJson(Identifier location, JsonObject jsonObject, boolean inverted) {
             return new HealthCondition(
                     inverted,
-                    GsonHelper.getAsDouble(jsonObject, "health"),
+                    getNumberProvider(jsonObject, "health", new ConstantNumberProvider(0.0)),
                     getComparisonType(jsonObject, "comparison", ComparisonType.EQUAL),
                     GsonHelper.getAsBoolean(jsonObject, "is_percentage", false)
             );
         }
 
         @Override
-        public HealthCondition fromNetwork(Identifier location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
+        public HealthCondition fromNetwork(Identifier location, RegistryFriendlyByteBuf buf, boolean inverted) {
             return new HealthCondition(
                     inverted,
-                    friendlyByteBuf.readDouble(),
-                    friendlyByteBuf.readEnum(ComparisonType.class),
-                    friendlyByteBuf.readBoolean()
+                    INumberProviderSerializer.fromNetworkStatic(buf),
+                    buf.readEnum(ComparisonType.class),
+                    buf.readBoolean()
             );
         }
 
         @Override
-        public void toNetwork(RegistryFriendlyByteBuf friendlyByteBuf, HealthCondition type) {
-            IConditionSerializer.super.toNetwork(friendlyByteBuf, type);
-            friendlyByteBuf.writeDouble(type.health);
-            friendlyByteBuf.writeEnum(type.comparisonType);
-            friendlyByteBuf.writeBoolean(type.isPercentage);
+        public void toNetwork(RegistryFriendlyByteBuf buf, HealthCondition type) {
+            IConditionSerializer.super.toNetwork(buf, type);
+            INumberProviderSerializer.toNetwork(type.health, buf);
+            buf.writeEnum(type.comparisonType);
+            buf.writeBoolean(type.isPercentage);
         }
     }
 }

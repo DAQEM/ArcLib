@@ -16,6 +16,7 @@ public class MovementEvents {
                         .withData(IActionDataType.DISTANCE_IN_CM, distanceInCm)
                         .withData(IActionDataType.WORLD, serverPlayer.level())
                         .withData(IActionDataType.BLOCK_POSITION, serverPlayer.blockPosition())
+                        .withData(IActionDataType.BLOCK_STATE, serverPlayer.level().getBlockState(serverPlayer.blockPosition().below()))
                         .build()
                         .sendToAction();
             }

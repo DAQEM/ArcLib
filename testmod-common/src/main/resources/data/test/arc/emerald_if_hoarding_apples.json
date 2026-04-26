@@ -1,0 +1,28 @@
+{
+  "holder": {
+    "type": "arc:player",
+    "id": "arc:player"
+  },
+  "type": "arc:on_eat",
+  "conditions":[
+    {
+      "type": "arc:item",
+      "item": "minecraft:apple"
+    },
+    {
+      "type": "arc:item_in_inventory",
+      "item": "minecraft:apple",
+      "check_count": true,
+      "count": 10,
+      "comparison": ">="
+    }
+  ],
+  "rewards":[
+    {
+      "type": "arc:item",
+      "item": {
+        "id": "minecraft:emerald"
+      }
+    }
+  ]
+}

@@ -1,10 +1,13 @@
 package com.daqem.arc.data.reward.item;
 
 import com.daqem.arc.api.action.result.ActionResult;
+import com.daqem.arc.api.math.INumberProvider;
+import com.daqem.arc.api.math.INumberProviderSerializer;
 import com.daqem.arc.api.reward.AbstractReward;
 import com.daqem.arc.api.reward.IRewardSerializer;
 import com.daqem.arc.api.reward.IRewardType;
 import com.daqem.arc.data.ActionData;
+import com.daqem.arc.data.math.ConstantNumberProvider;
 import com.google.gson.JsonObject;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -15,11 +18,11 @@ import net.minecraft.world.item.ItemStack;
 
 public class RepairHeldItemReward extends AbstractReward {
 
-    private final int amount;
+    private final INumberProvider amount;
     private final boolean isPercentage;
     private final InteractionHand hand;
 
-    public RepairHeldItemReward(double chance, int priority, int amount, boolean isPercentage, InteractionHand hand) {
+    public RepairHeldItemReward(double chance, int priority, INumberProvider amount, boolean isPercentage, InteractionHand hand) {
         super(chance, priority);
         this.amount = amount;
         this.isPercentage = isPercentage;
@@ -28,7 +31,7 @@ public class RepairHeldItemReward extends AbstractReward {
 
     @Override
     public Component getDescription() {
-        return getDescription(amount + (isPercentage ? "%" : ""), hand.name());
+        return getDescription(amount.toString() + (isPercentage ? "%" : ""), hand.name());
     }
 
     @Override
@@ -37,13 +40,26 @@ public class RepairHeldItemReward extends AbstractReward {
         ItemStack stack = player.getItemInHand(hand);
 
         if (stack.isDamageableItem()) {
-            int repairAmount = amount;
+            double resolvedAmount = amount.resolve(actionData);
+            int repairAmount = (int) Math.round(resolvedAmount);
             if (isPercentage) {
-                repairAmount = (int) (stack.getMaxDamage() * (amount / 100.0));
+                repairAmount = (int) (stack.getMaxDamage() * (resolvedAmount / 100.0));
             }
             stack.setDamageValue(Math.max(0, stack.getDamageValue() - repairAmount));
         }
         return new ActionResult();
+    }
+
+    public INumberProvider getAmount() {
+        return amount;
+    }
+
+    public InteractionHand getHand() {
+        return hand;
+    }
+
+    public boolean isPercentage() {
+        return isPercentage;
     }
 
     @Override
@@ -52,35 +68,32 @@ public class RepairHeldItemReward extends AbstractReward {
     }
 
     public static class Serializer implements IRewardSerializer<RepairHeldItemReward> {
-
         @Override
         public RepairHeldItemReward fromJson(JsonObject jsonObject, double chance, int priority) {
             return new RepairHeldItemReward(
-                    chance,
-                    priority,
-                    GsonHelper.getAsInt(jsonObject, "amount"),
+                    chance, priority,
+                    getNumberProvider(jsonObject, "amount", new ConstantNumberProvider(1.0)),
                     GsonHelper.getAsBoolean(jsonObject, "is_percentage", false),
                     getHand(jsonObject, "hand", InteractionHand.MAIN_HAND)
             );
         }
 
         @Override
-        public RepairHeldItemReward fromNetwork(RegistryFriendlyByteBuf friendlyByteBuf, double chance, int priority) {
+        public RepairHeldItemReward fromNetwork(RegistryFriendlyByteBuf buf, double chance, int priority) {
             return new RepairHeldItemReward(
-                    chance,
-                    priority,
-                    friendlyByteBuf.readVarInt(),
-                    friendlyByteBuf.readBoolean(),
-                    friendlyByteBuf.readEnum(InteractionHand.class)
+                    chance, priority,
+                    INumberProviderSerializer.fromNetworkStatic(buf),
+                    buf.readBoolean(),
+                    buf.readEnum(InteractionHand.class)
             );
         }
 
         @Override
-        public void toNetwork(RegistryFriendlyByteBuf friendlyByteBuf, RepairHeldItemReward type) {
-            IRewardSerializer.super.toNetwork(friendlyByteBuf, type);
-            friendlyByteBuf.writeVarInt(type.amount);
-            friendlyByteBuf.writeBoolean(type.isPercentage);
-            friendlyByteBuf.writeEnum(type.hand);
+        public void toNetwork(RegistryFriendlyByteBuf buf, RepairHeldItemReward type) {
+            IRewardSerializer.super.toNetwork(buf, type);
+            INumberProviderSerializer.toNetwork(type.amount, buf);
+            buf.writeBoolean(type.isPercentage);
+            buf.writeEnum(type.hand);
         }
     }
 }

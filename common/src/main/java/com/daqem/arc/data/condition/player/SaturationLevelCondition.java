@@ -4,20 +4,22 @@ import com.daqem.arc.api.ComparisonType;
 import com.daqem.arc.api.condition.AbstractCondition;
 import com.daqem.arc.api.condition.IConditionSerializer;
 import com.daqem.arc.api.condition.IConditionType;
+import com.daqem.arc.api.math.INumberProvider;
+import com.daqem.arc.api.math.INumberProviderSerializer;
 import com.daqem.arc.data.ActionData;
+import com.daqem.arc.data.math.ConstantNumberProvider;
 import com.google.gson.JsonObject;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.entity.player.Player;
 
 public class SaturationLevelCondition extends AbstractCondition {
 
-    private final float saturationLevel;
+    private final INumberProvider saturationLevel;
     private final ComparisonType comparisonType;
 
-    public SaturationLevelCondition(boolean inverted, float saturationLevel, ComparisonType comparisonType) {
+    public SaturationLevelCondition(boolean inverted, INumberProvider saturationLevel, ComparisonType comparisonType) {
         super(inverted);
         this.saturationLevel = saturationLevel;
         this.comparisonType = comparisonType;
@@ -25,13 +27,21 @@ public class SaturationLevelCondition extends AbstractCondition {
 
     @Override
     public Component getDescription() {
-        return getDescription(comparisonType.getSymbol(), saturationLevel);
+        return getDescription(comparisonType.getSymbol(), saturationLevel.toString());
     }
 
     @Override
     public boolean isMet(ActionData actionData) {
         Player player = actionData.getPlayer().arc$getPlayer();
-        return comparisonType.compare(player.getFoodData().getSaturationLevel(), this.saturationLevel);
+        return comparisonType.compare(player.getFoodData().getSaturationLevel(), this.saturationLevel.resolve(actionData));
+    }
+
+    public ComparisonType getComparisonType() {
+        return comparisonType;
+    }
+
+    public INumberProvider getSaturationLevel() {
+        return saturationLevel;
     }
 
     @Override
@@ -45,7 +55,7 @@ public class SaturationLevelCondition extends AbstractCondition {
         public SaturationLevelCondition fromJson(Identifier location, JsonObject jsonObject, boolean inverted) {
             return new SaturationLevelCondition(
                     inverted,
-                    GsonHelper.getAsFloat(jsonObject, "saturation_level"),
+                    getNumberProvider(jsonObject, "saturation_level", new ConstantNumberProvider(0.0)),
                     getComparisonType(jsonObject, "comparison", ComparisonType.EQUAL)
             );
         }
@@ -54,7 +64,7 @@ public class SaturationLevelCondition extends AbstractCondition {
         public SaturationLevelCondition fromNetwork(Identifier location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
             return new SaturationLevelCondition(
                     inverted,
-                    friendlyByteBuf.readFloat(),
+                    INumberProviderSerializer.fromNetworkStatic(friendlyByteBuf),
                     friendlyByteBuf.readEnum(ComparisonType.class)
             );
         }
@@ -62,7 +72,7 @@ public class SaturationLevelCondition extends AbstractCondition {
         @Override
         public void toNetwork(RegistryFriendlyByteBuf friendlyByteBuf, SaturationLevelCondition type) {
             IConditionSerializer.super.toNetwork(friendlyByteBuf, type);
-            friendlyByteBuf.writeFloat(type.saturationLevel);
+            INumberProviderSerializer.toNetwork(type.saturationLevel, friendlyByteBuf);
             friendlyByteBuf.writeEnum(type.comparisonType);
         }
     }
