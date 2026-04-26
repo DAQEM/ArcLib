@@ -31,7 +31,7 @@ public class RepairHeldItemReward extends AbstractReward {
 
     @Override
     public Component getDescription() {
-        return getDescription(amount.toString() + (isPercentage ? "%" : ""), hand.name());
+        return getDescription(amount.getDescription(), (isPercentage ? "%" : ""), hand.name());
     }
 
     @Override

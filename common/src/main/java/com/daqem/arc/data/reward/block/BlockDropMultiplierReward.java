@@ -35,7 +35,7 @@ public class BlockDropMultiplierReward extends AbstractReward {
 
     @Override
     public Component getDescription() {
-        return getDescription(multiplier.toString());
+        return getDescription(multiplier.getDescription());
     }
 
     @Override

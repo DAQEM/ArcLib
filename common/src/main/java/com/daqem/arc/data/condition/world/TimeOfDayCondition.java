@@ -26,7 +26,7 @@ public class TimeOfDayCondition extends AbstractCondition {
 
     @Override
     public Component getDescription() {
-        return getDescription(minTime.toString(), maxTime.toString());
+        return getDescription(minTime.getDescription(), maxTime.getDescription());
     }
 
     @Override

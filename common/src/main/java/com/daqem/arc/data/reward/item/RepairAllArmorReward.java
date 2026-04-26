@@ -32,7 +32,7 @@ public class RepairAllArmorReward extends AbstractReward {
 
     @Override
     public Component getDescription() {
-        return getDescription(amount.toString() + (isPercentage ? "%" : ""));
+        return getDescription(amount.getDescription(), (isPercentage ? "%" : ""));
     }
 
     @Override

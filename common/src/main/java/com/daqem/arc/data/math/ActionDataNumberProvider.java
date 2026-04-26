@@ -1,5 +1,6 @@
 package com.daqem.arc.data.math;
 
+import com.daqem.arc.Arc;
 import com.daqem.arc.api.action.data.IActionDataType;
 import com.daqem.arc.api.math.INumberProvider;
 import com.daqem.arc.api.math.INumberProviderSerializer;
@@ -7,6 +8,7 @@ import com.daqem.arc.api.math.INumberProviderType;
 import com.daqem.arc.data.ActionData;
 import com.google.gson.JsonObject;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 
 public class ActionDataNumberProvider implements INumberProvider {
@@ -30,8 +32,10 @@ public class ActionDataNumberProvider implements INumberProvider {
     }
 
     @Override
-    public String toString() {
-        return "Dynamic";
+    public Component getDescription() {
+        return Arc.API.translatable("number_provider.action_data",
+                Arc.API.translatable("action_data." + dataTypeId.getPath())
+        );
     }
 
     @Override

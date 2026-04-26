@@ -1,5 +1,6 @@
 package com.daqem.arc.data.reward.world;
 
+import com.daqem.arc.Arc;
 import com.daqem.arc.api.action.result.ActionResult;
 import com.daqem.arc.api.math.INumberProvider;
 import com.daqem.arc.api.math.INumberProviderSerializer;
@@ -10,6 +11,7 @@ import com.daqem.arc.data.ActionData;
 import com.daqem.arc.data.math.ConstantNumberProvider;
 import com.google.gson.JsonObject;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.GsonHelper;
 
@@ -22,6 +24,14 @@ public class ChangeTimeReward extends AbstractReward {
         super(chance, priority);
         this.time = time;
         this.addTime = addTime;
+    }
+
+    @Override
+    public Component getDescription() {
+        if (addTime) {
+            return Arc.API.translatable("reward.description.add" + this.getType().getIdentifier().getPath(), time.getDescription());
+        }
+        return Arc.API.translatable("reward.description." + this.getType().getIdentifier().getPath(), time.getDescription());
     }
 
     @Override

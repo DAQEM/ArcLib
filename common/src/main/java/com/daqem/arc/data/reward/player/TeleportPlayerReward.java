@@ -25,7 +25,7 @@ public class TeleportPlayerReward extends AbstractReward {
 
     @Override
     public Component getDescription() {
-        return getDescription(radius.toString());
+        return getDescription(radius.getDescription());
     }
 
     @Override

@@ -26,7 +26,7 @@ public class FeedReward extends AbstractReward {
 
     @Override
     public Component getDescription() {
-        return getDescription(foodLevel.toString(), saturation.toString());
+        return getDescription(foodLevel.getDescription(), saturation.getDescription());
     }
 
     @Override

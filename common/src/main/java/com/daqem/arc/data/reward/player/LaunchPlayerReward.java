@@ -28,7 +28,7 @@ public class LaunchPlayerReward extends AbstractReward {
 
     @Override
     public Component getDescription() {
-        return getDescription(String.format("X:%s, Y:%s, Z:%s", forceX.toString(), forceY.toString(), forceZ.toString()));
+        return getDescription(String.format("X:%s, Y:%s, Z:%s", forceX.getDescription(), forceY.getDescription(), forceZ.getDescription()));
     }
 
     @Override

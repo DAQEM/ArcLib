@@ -30,7 +30,7 @@ public class ScoreboardCondition extends AbstractCondition {
 
     @Override
     public Component getDescription() {
-        return getDescription(objective, min.toString(), max.toString());
+        return getDescription(objective, min.getDescription(), max.getDescription());
     }
 
     @Override

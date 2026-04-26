@@ -26,7 +26,7 @@ public class HealReward extends AbstractReward {
 
     @Override
     public Component getDescription() {
-        return getDescription(amount.toString() + (isPercentage ? "%" : " hearts"));
+        return getDescription(amount.getDescription(), (isPercentage ? "%" : " hearts"));
     }
 
     @Override

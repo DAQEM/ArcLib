@@ -24,7 +24,7 @@ public class ExpLevelCondition extends AbstractCondition {
 
     @Override
     public Component getDescription() {
-        return getDescription(level.toString());
+        return getDescription(level.getDescription());
     }
 
     @Override

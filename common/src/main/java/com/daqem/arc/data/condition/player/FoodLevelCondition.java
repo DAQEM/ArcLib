@@ -27,7 +27,7 @@ public class FoodLevelCondition extends AbstractCondition {
 
     @Override
     public Component getDescription() {
-        return getDescription(comparisonType.getSymbol(), foodLevel.toString());
+        return getDescription(comparisonType.getSymbol(), foodLevel.getDescription());
     }
 
     @Override

@@ -42,7 +42,7 @@ public class MultipleArrowsReward extends AbstractReward {
 
     @Override
     public Component getDescription() {
-        return getDescription(amount.toString());
+        return getDescription(amount.getDescription());
     }
 
     @Override

@@ -27,7 +27,7 @@ public class LightLevelCondition extends AbstractCondition {
 
     @Override
     public Component getDescription() {
-        return getDescription(comparisonType.getSymbol(), lightLevel.toString());
+        return getDescription(comparisonType.getSymbol(), lightLevel.getDescription());
     }
 
     @Override

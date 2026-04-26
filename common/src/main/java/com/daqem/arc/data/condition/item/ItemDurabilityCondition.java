@@ -33,7 +33,7 @@ public class ItemDurabilityCondition extends AbstractCondition {
 
     @Override
     public Component getDescription() {
-        return getDescription(comparisonType.getSymbol(), durability.toString() + (isPercentage ? "%" : ""));
+        return getDescription(comparisonType.getSymbol(), durability.getDescription(), (isPercentage ? "%" : ""));
     }
 
     @Override

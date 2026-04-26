@@ -1,11 +1,13 @@
 package com.daqem.arc.data.math;
 
+import com.daqem.arc.Arc;
 import com.daqem.arc.api.math.INumberProvider;
 import com.daqem.arc.api.math.INumberProviderSerializer;
 import com.daqem.arc.api.math.INumberProviderType;
 import com.daqem.arc.data.ActionData;
 import com.google.gson.JsonObject;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 
 public class RandomNumberProvider implements INumberProvider {
 
@@ -32,8 +34,8 @@ public class RandomNumberProvider implements INumberProvider {
     }
 
     @Override
-    public String toString() {
-        return "Random";
+    public Component getDescription() {
+        return Arc.API.translatable("number_provider.random", min.getDescription(), max.getDescription());
     }
 
     @Override

@@ -11,6 +11,7 @@ import com.daqem.arc.data.ActionData;
 import com.daqem.arc.data.math.ConstantNumberProvider;
 import com.google.gson.JsonObject;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
@@ -22,6 +23,11 @@ public class PushEntityReward extends AbstractReward {
     public PushEntityReward(double chance, int priority, INumberProvider force) {
         super(chance, priority);
         this.force = force;
+    }
+
+    @Override
+    public Component getDescription() {
+        return super.getDescription(force.getDescription());
     }
 
     @Override

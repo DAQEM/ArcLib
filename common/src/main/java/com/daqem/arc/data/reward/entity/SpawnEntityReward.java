@@ -30,7 +30,7 @@ public class SpawnEntityReward extends AbstractReward {
 
     @Override
     public Component getDescription() {
-        return getDescription(count.toString(), entityType.getDescription());
+        return getDescription(count.getDescription(), entityType.getDescription());
     }
 
     @Override

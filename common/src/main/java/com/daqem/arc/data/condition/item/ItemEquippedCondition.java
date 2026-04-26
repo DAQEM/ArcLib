@@ -39,7 +39,7 @@ public class ItemEquippedCondition extends AbstractCondition {
 
     @Override
     public Component getDescription() {
-        return getDescription(getItemStack().getHoverName());
+        return getDescription(count.getDescription(), getItemStack().getHoverName());
     }
 
     @Override

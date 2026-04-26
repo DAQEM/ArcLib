@@ -27,7 +27,7 @@ public class EffectAmplifierAdditionReward extends AbstractReward {
 
     @Override
     public Component getDescription() {
-        return getDescription(addition.toString());
+        return getDescription(addition.getDescription());
     }
 
     @Override

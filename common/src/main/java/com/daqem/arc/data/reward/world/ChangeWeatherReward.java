@@ -11,6 +11,7 @@ import com.daqem.arc.data.math.ConstantNumberProvider;
 import com.daqem.arc.model.ArcWeatherType;
 import com.google.gson.JsonObject;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 
 public class ChangeWeatherReward extends AbstractReward {
@@ -22,6 +23,11 @@ public class ChangeWeatherReward extends AbstractReward {
         super(chance, priority);
         this.weatherType = weatherType;
         this.duration = duration;
+    }
+
+    @Override
+    public Component getDescription() {
+        return super.getDescription(weatherType.toString(), duration.getDescription());
     }
 
     @Override

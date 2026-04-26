@@ -30,7 +30,7 @@ public class CropAgeCondition extends AbstractCondition {
 
     @Override
     public Component getDescription() {
-        return getDescription(age.toString());
+        return getDescription(age.getDescription());
     }
 
     @Override

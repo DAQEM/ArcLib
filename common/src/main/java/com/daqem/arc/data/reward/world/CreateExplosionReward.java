@@ -29,7 +29,7 @@ public class CreateExplosionReward extends AbstractReward {
 
     @Override
     public Component getDescription() {
-        return getDescription(radius.toString(), causesFire, blockInteraction.name());
+        return getDescription(radius.getDescription(), causesFire, blockInteraction.name());
     }
 
     @Override

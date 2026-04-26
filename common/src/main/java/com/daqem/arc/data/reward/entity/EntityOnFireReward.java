@@ -25,7 +25,7 @@ public class EntityOnFireReward extends AbstractReward {
 
     @Override
     public Component getDescription() {
-        return getDescription(fireTicks.toString() + " ticks");
+        return getDescription(fireTicks.getDescription());
     }
 
     @Override

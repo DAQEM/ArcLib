@@ -25,7 +25,7 @@ public class YLevelCondition extends AbstractCondition {
 
     @Override
     public Component getDescription() {
-        return getDescription(minY.toString(), maxY.toString());
+        return getDescription(minY.getDescription(), maxY.getDescription());
     }
 
     @Override

@@ -30,7 +30,7 @@ public class TargetHealthCondition extends AbstractCondition {
 
     @Override
     public Component getDescription() {
-        return getDescription(comparisonType.getSymbol(), health.toString() + (isPercentage ? "%" : ""));
+        return getDescription(comparisonType.getSymbol(), health.getDescription(), (isPercentage ? "%" : ""));
     }
 
     @Override

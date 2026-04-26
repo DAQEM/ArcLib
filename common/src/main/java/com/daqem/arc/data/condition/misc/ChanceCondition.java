@@ -23,7 +23,7 @@ public class ChanceCondition extends AbstractCondition {
 
     @Override
     public Component getDescription() {
-        return getDescription(chance.toString() + "%");
+        return getDescription(chance.getDescription() + "%");
     }
 
     @Override

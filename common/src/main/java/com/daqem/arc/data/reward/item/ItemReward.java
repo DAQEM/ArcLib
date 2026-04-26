@@ -30,7 +30,7 @@ public class ItemReward extends AbstractReward {
 
     @Override
     public Component getDescription() {
-        return getDescription(amount.toString(), getItemStack().getHoverName());
+        return getDescription(amount.getDescription(), getItemStack().getHoverName());
     }
 
     @Override

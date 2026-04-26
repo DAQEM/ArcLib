@@ -26,7 +26,7 @@ public class MoveToEntityReward extends AbstractReward {
 
     @Override
     public Component getDescription() {
-        return getDescription(force.toString());
+        return getDescription(force.getDescription());
     }
 
     @Override

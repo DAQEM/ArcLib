@@ -1,5 +1,6 @@
 package com.daqem.arc.data.math;
 
+import com.daqem.arc.Arc;
 import com.daqem.arc.api.math.INumberProvider;
 import com.daqem.arc.api.math.INumberProviderSerializer;
 import com.daqem.arc.api.math.INumberProviderType;
@@ -8,6 +9,7 @@ import com.daqem.arc.model.ItemDataProperty;
 import com.daqem.arc.model.target.ArcItemTarget;
 import com.google.gson.JsonObject;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
 public class ItemDataNumberProvider implements INumberProvider {
@@ -31,8 +33,11 @@ public class ItemDataNumberProvider implements INumberProvider {
     }
 
     @Override
-    public String toString() {
-        return "Dynamic";
+    public Component getDescription() {
+        return Arc.API.translatable("number_provider.item_data",
+                Arc.API.translatable("item_target." + target.name().toLowerCase()),
+                Arc.API.translatable("item_data_property." + property.name().toLowerCase())
+        );
     }
 
     @Override

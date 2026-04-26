@@ -27,7 +27,7 @@ public class SaturationLevelCondition extends AbstractCondition {
 
     @Override
     public Component getDescription() {
-        return getDescription(comparisonType.getSymbol(), saturationLevel.toString());
+        return getDescription(comparisonType.getSymbol(), saturationLevel.getDescription());
     }
 
     @Override

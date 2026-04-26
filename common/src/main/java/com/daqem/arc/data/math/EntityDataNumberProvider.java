@@ -1,5 +1,6 @@
 package com.daqem.arc.data.math;
 
+import com.daqem.arc.Arc;
 import com.daqem.arc.api.math.INumberProvider;
 import com.daqem.arc.api.math.INumberProviderSerializer;
 import com.daqem.arc.api.math.INumberProviderType;
@@ -8,12 +9,14 @@ import com.daqem.arc.model.target.ArcEntityTarget;
 import com.daqem.arc.registry.EntityDataRegistry;
 import com.google.gson.JsonObject;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 
 import java.util.Optional;
 
 public class EntityDataNumberProvider implements INumberProvider {
+
     private final ArcEntityTarget target;
     private final Identifier property;
 
@@ -44,8 +47,11 @@ public class EntityDataNumberProvider implements INumberProvider {
     }
 
     @Override
-    public String toString() {
-        return "Dynamic";
+    public Component getDescription() {
+        return Arc.API.translatable("number_provider.entity_data",
+                Arc.API.translatable("entity_target." + target.name().toLowerCase()),
+                Arc.API.translatable("entity_data_property." + property.getPath())
+        );
     }
 
     @Override

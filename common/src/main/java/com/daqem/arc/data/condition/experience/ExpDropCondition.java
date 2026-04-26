@@ -26,7 +26,7 @@ public class ExpDropCondition extends AbstractCondition {
 
     @Override
     public Component getDescription() {
-        return getDescription(min.toString(), max.toString());
+        return getDescription(min.getDescription(), max.getDescription());
     }
 
     @Override

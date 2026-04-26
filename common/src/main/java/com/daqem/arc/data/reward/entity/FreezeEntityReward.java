@@ -11,17 +11,23 @@ import com.daqem.arc.data.ActionData;
 import com.daqem.arc.data.math.ConstantNumberProvider;
 import com.google.gson.JsonObject;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 
 public class FreezeEntityReward extends AbstractReward {
 
-    private final INumberProvider duration; // Duration in ticks
+    private final INumberProvider duration;
 
     public FreezeEntityReward(double chance, int priority, INumberProvider duration) {
         super(chance, priority);
         this.duration = duration;
+    }
+
+    @Override
+    public Component getDescription() {
+        return super.getDescription(duration.getDescription());
     }
 
     @Override

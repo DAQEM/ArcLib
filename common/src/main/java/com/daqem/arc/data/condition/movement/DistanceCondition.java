@@ -25,7 +25,7 @@ public class DistanceCondition extends AbstractCondition {
 
     @Override
     public Component getDescription() {
-        return getDescription(distanceInBlocks.toString());
+        return getDescription(distanceInBlocks.getDescription());
     }
 
     @Override

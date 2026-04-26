@@ -38,7 +38,7 @@ public class ItemInInventoryCondition extends AbstractCondition {
 
     @Override
     public Component getDescription() {
-        return getDescription(getItemStack().getHoverName());
+        return getDescription(count.getDescription(), getItemStack().getHoverName());
     }
 
     @Override

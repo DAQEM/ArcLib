@@ -1,5 +1,6 @@
 package com.daqem.arc.data.math;
 
+import com.daqem.arc.Arc;
 import com.daqem.arc.api.math.MathOperator;
 import com.daqem.arc.api.math.INumberProvider;
 import com.daqem.arc.api.math.INumberProviderSerializer;
@@ -9,6 +10,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,8 +34,16 @@ public class CalculateNumberProvider implements INumberProvider {
     }
 
     @Override
-    public String toString() {
-        return "Dynamic";
+    public Component getDescription() {
+        Component current = base.getDescription();
+        for (Modifier modifier : modifiers) {
+            current = Arc.API.translatable("number_provider.calculate",
+                    current,
+                    Arc.API.translatable("math_operator." + modifier.operator().name().toLowerCase()),
+                    modifier.value().getDescription()
+            );
+        }
+        return current;
     }
 
     @Override

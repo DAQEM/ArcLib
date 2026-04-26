@@ -1,11 +1,13 @@
 package com.daqem.arc.data.math;
 
+import com.daqem.arc.Arc;
 import com.daqem.arc.api.math.INumberProvider;
 import com.daqem.arc.api.math.INumberProviderSerializer;
 import com.daqem.arc.api.math.INumberProviderType;
 import com.daqem.arc.data.ActionData;
 import com.google.gson.JsonObject;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.GsonHelper;
 
 public class ConstantNumberProvider implements INumberProvider {
@@ -21,11 +23,11 @@ public class ConstantNumberProvider implements INumberProvider {
     }
 
     @Override
-    public String toString() {
+    public Component getDescription() {
         if (value == (long) value) {
-            return String.valueOf((long) value);
+            return Arc.API.literal(String.valueOf((long) value));
         }
-        return String.valueOf(value);
+        return Arc.API.literal(String.valueOf(value));
     }
 
     @Override
