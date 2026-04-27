@@ -1,0 +1,44 @@
+{
+  "holder": {
+    "type": "arc:player",
+    "id": "arc:player"
+  },
+  "type": "arc:on_break_block",
+  "conditions":[
+    {
+      "type": "arc:item_in_hand",
+      "item": "minecraft:golden_pickaxe"
+    }
+  ],
+  "rewards":[
+    {
+      "type": "arc:exp",
+      "min": {
+        "type": "arc:calculate",
+        "base": {
+          "type": "arc:block_data",
+          "property": "hardness"
+        },
+        "modifiers":[
+          {
+            "operator": "multiply",
+            "value": 2.0
+          }
+        ]
+      },
+      "max": {
+        "type": "arc:calculate",
+        "base": {
+          "type": "arc:block_data",
+          "property": "hardness"
+        },
+        "modifiers":[
+          {
+            "operator": "multiply",
+            "value": 3.0
+          }
+        ]
+      }
+    }
+  ]
+}

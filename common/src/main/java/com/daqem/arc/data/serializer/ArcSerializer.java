@@ -1213,4 +1213,26 @@ public interface ArcSerializer {
     }
 
     //endregion
+
+    //region Block Data Property
+
+    default BlockDataProperty getBlockDataProperty(JsonObject jsonObject, String elementName, @Nullable BlockDataProperty defaultProperty) {
+        if (!jsonObject.has(elementName) || jsonObject.get(elementName).isJsonNull()) {
+            if (defaultProperty != null) return defaultProperty;
+            throw new JsonParseException("Expected '" + elementName + "' to be a block data property");
+        }
+        String propName = GsonHelper.getAsString(jsonObject, elementName).toUpperCase();
+        try {
+            return BlockDataProperty.valueOf(propName);
+        } catch (IllegalArgumentException e) {
+            if (defaultProperty != null) return defaultProperty;
+            throw new JsonParseException("Expected '" + propName + "' to be a block data property. Options are: " + Arrays.toString(BlockDataProperty.values()));
+        }
+    }
+
+    default BlockDataProperty getBlockDataProperty(JsonObject jsonObject, String elementName) {
+        return getBlockDataProperty(jsonObject, elementName, null);
+    }
+
+    //endregion
 }
