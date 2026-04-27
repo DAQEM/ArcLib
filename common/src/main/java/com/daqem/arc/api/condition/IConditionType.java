@@ -11,7 +11,7 @@ import com.daqem.arc.data.condition.effect.EffectCategoryCondition;
 import com.daqem.arc.data.condition.effect.EffectCondition;
 import com.daqem.arc.data.condition.entity.*;
 import com.daqem.arc.data.condition.experience.ExpDropCondition;
-import com.daqem.arc.data.condition.experience.ExpLevelCondition;
+import com.daqem.arc.data.condition.experience.ExpCostCondition;
 import com.daqem.arc.data.condition.item.*;
 import com.daqem.arc.data.condition.misc.ChanceCondition;
 import com.daqem.arc.data.condition.movement.DistanceCondition;
@@ -44,7 +44,10 @@ public interface IConditionType<T extends ICondition> {
     IConditionType<ItemCondition> ITEM = register(Arc.API.getId("item"), new ItemCondition.Serializer());
     IConditionType<ItemsCondition> ITEMS = register(Arc.API.getId("items"), new ItemsCondition.Serializer());
     IConditionType<ExpDropCondition> EXP_DROP = register(Arc.API.getId("exp_drop"), new ExpDropCondition.Serializer());
-    IConditionType<ExpLevelCondition> EXP_LEVEL = register(Arc.API.getId("exp_level"), new ExpLevelCondition.Serializer());
+
+    // Changed to exp_cost but keeping this here for backwards compatibility.
+    IConditionType<ExpCostCondition> EXP_LEVEL = register(Arc.API.getId("exp_level"), new ExpCostCondition.Serializer());
+    IConditionType<ExpCostCondition> EXP_COST = register(Arc.API.getId("exp_cost"), new ExpCostCondition.Serializer());
     IConditionType<ReadyForShearingCondition> READY_FOR_SHEARING = register(Arc.API.getId("ready_for_shearing"), new ReadyForShearingCondition.Serializer());
     IConditionType<IsBlastingRecipeCondition> IS_BLASTING_RECIPE = register(Arc.API.getId("is_blasting_recipe"), new IsBlastingRecipeCondition.Serializer());
     IConditionType<IsSmokingRecipeCondition> IS_SMOKING_RECIPE = register(Arc.API.getId("is_smoking_recipe"), new IsSmokingRecipeCondition.Serializer());

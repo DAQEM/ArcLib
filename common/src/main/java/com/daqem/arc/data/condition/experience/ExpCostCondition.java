@@ -13,11 +13,11 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 
-public class ExpLevelCondition extends AbstractCondition {
+public class ExpCostCondition extends AbstractCondition {
 
     private final INumberProvider level;
 
-    public ExpLevelCondition(boolean inverted, INumberProvider level) {
+    public ExpCostCondition(boolean inverted, INumberProvider level) {
         super(inverted);
         this.level = level;
     }
@@ -39,29 +39,29 @@ public class ExpLevelCondition extends AbstractCondition {
 
     @Override
     public IConditionType<?> getType() {
-        return IConditionType.EXP_LEVEL;
+        return IConditionType.EXP_COST;
     }
 
-    public static class Serializer implements IConditionSerializer<ExpLevelCondition> {
+    public static class Serializer implements IConditionSerializer<ExpCostCondition> {
 
         @Override
-        public ExpLevelCondition fromJson(Identifier location, JsonObject jsonObject, boolean inverted) {
-            return new ExpLevelCondition(
+        public ExpCostCondition fromJson(Identifier location, JsonObject jsonObject, boolean inverted) {
+            return new ExpCostCondition(
                     inverted,
                     getNumberProvider(jsonObject, "level", new ConstantNumberProvider(0.0))
             );
         }
 
         @Override
-        public ExpLevelCondition fromNetwork(Identifier location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
-            return new ExpLevelCondition(
+        public ExpCostCondition fromNetwork(Identifier location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
+            return new ExpCostCondition(
                     inverted,
                     INumberProviderSerializer.fromNetworkStatic(friendlyByteBuf)
             );
         }
 
         @Override
-        public void toNetwork(RegistryFriendlyByteBuf friendlyByteBuf, ExpLevelCondition type) {
+        public void toNetwork(RegistryFriendlyByteBuf friendlyByteBuf, ExpCostCondition type) {
             IConditionSerializer.super.toNetwork(friendlyByteBuf, type);
             INumberProviderSerializer.toNetwork(type.level, friendlyByteBuf);
         }
