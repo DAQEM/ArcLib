@@ -457,7 +457,7 @@
   "arc.action_data.block_state": "Blockstatus",
   "arc.action_data.block_position": "Blockposition",
   "arc.action_data.exp_drop": "EP-Drop",
-  "arc.action_data.exp_level": "EP-Level",
+  "arc.action_data.exp_cost": "EP-Kosten",
   "arc.action_data.world": "Welt",
   "arc.action_data.damage_source": "Schadensquelle",
   "arc.action_data.entity": "Entität",

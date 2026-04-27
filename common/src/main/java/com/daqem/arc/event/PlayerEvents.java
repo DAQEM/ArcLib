@@ -136,11 +136,11 @@ public class PlayerEvents {
             }
         }, EventPriority.HIGH);
 
-        Knot.Events.Player.ENCHANT_ITEM.register((serverPlayer, stack, level) -> {
+        Knot.Events.Player.ENCHANT_ITEM.register((serverPlayer, stack, enchantmentCost) -> {
             if (serverPlayer instanceof ArcServerPlayer arcServerPlayer) {
                 new ActionDataBuilder(arcServerPlayer, IActionType.ENCHANT_ITEM)
                         .withData(IActionDataType.ITEM_STACK, stack)
-                        .withData(IActionDataType.EXP_LEVEL, level)
+                        .withData(IActionDataType.EXP_COST, enchantmentCost)
                         .build()
                         .sendToAction();
             }
@@ -195,7 +195,7 @@ public class PlayerEvents {
                         .withData(IActionDataType.ITEM, stack.getItem())
                         .withData(IActionDataType.WORLD, player.level())
                         .withData(IActionDataType.BLOCK_POSITION, player.blockPosition())
-                        .withData(IActionDataType.EXP_LEVEL, cost)
+                        .withData(IActionDataType.EXP_COST, cost)
                         .build()
                         .sendToAction();
             }

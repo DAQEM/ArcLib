@@ -457,7 +457,7 @@
   "arc.action_data.block_state": "方块状态",
   "arc.action_data.block_position": "方块位置",
   "arc.action_data.exp_drop": "经验掉落",
-  "arc.action_data.exp_level": "经验等级",
+  "arc.action_data.exp_cost": "经验等级",
   "arc.action_data.world": "世界",
   "arc.action_data.damage_source": "伤害来源",
   "arc.action_data.entity": "实体",

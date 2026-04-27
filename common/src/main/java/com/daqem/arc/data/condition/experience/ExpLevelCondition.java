@@ -29,7 +29,7 @@ public class ExpLevelCondition extends AbstractCondition {
 
     @Override
     public boolean isMet(ActionData actionData) {
-        Integer expLevel = actionData.getData(IActionDataType.EXP_LEVEL);
+        Integer expLevel = actionData.getData(IActionDataType.EXP_COST);
         return expLevel != null && expLevel == Math.round(this.level.resolve(actionData));
     }
 

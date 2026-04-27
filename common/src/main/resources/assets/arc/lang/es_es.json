@@ -457,7 +457,7 @@
   "arc.action_data.block_state": "Estado del Bloque",
   "arc.action_data.block_position": "Posición del Bloque",
   "arc.action_data.exp_drop": "Experiencia Dejada",
-  "arc.action_data.exp_level": "Nivel de Experiencia",
+  "arc.action_data.exp_cost": "Costo de Experiencia",
   "arc.action_data.world": "Mundo",
   "arc.action_data.damage_source": "Fuente de Daño",
   "arc.action_data.entity": "Entidad",

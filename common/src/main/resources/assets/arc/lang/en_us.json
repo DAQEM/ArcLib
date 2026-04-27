@@ -465,7 +465,7 @@
   "arc.action_data.block_state": "Block State",
   "arc.action_data.block_position": "Block Position",
   "arc.action_data.exp_drop": "Exp Drop",
-  "arc.action_data.exp_level": "Exp Level",
+  "arc.action_data.exp_cost": "Exp Cost",
   "arc.action_data.world": "World",
   "arc.action_data.damage_source": "Damage Source",
   "arc.action_data.entity": "Entity",

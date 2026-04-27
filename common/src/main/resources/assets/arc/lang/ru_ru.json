@@ -457,7 +457,7 @@
   "arc.action_data.block_state": "Состояние Блока",
   "arc.action_data.block_position": "Позиция Блока",
   "arc.action_data.exp_drop": "Выпавший Опыт",
-  "arc.action_data.exp_level": "Уровень Опыта",
+  "arc.action_data.exp_cost": "Стоимость опыта",
   "arc.action_data.world": "Мир",
   "arc.action_data.damage_source": "Источник Урона",
   "arc.action_data.entity": "Существо",
