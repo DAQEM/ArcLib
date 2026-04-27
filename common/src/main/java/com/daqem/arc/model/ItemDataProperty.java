@@ -25,6 +25,12 @@ public enum ItemDataProperty implements StringRepresentable {
         public double getValue(ItemStack stack) {
             return stack.getCount();
         }
+    },
+    MAX_STACK_SIZE("max_stack_size") {
+        @Override
+        public double getValue(ItemStack stack) {
+            return stack.getMaxStackSize();
+        }
     };
 
     public static final StringRepresentable.EnumCodec<@NotNull ItemDataProperty> CODEC = StringRepresentable.fromEnum(ItemDataProperty::values);
