@@ -26,7 +26,7 @@ public interface IActionDataType<T> {
     IActionDataType<BlockState> BLOCK_STATE = register(Arc.API.getId("block_state"));
     IActionDataType<BlockPos> BLOCK_POSITION = register(Arc.API.getId("block_position"));
     IActionDataType<Integer> EXP_DROP = register(Arc.API.getId("exp_drop"));
-    IActionDataType<Integer> EXP_LEVEL = register(Arc.API.getId("exp_level"));
+    IActionDataType<Integer> EXP_COST = register(Arc.API.getId("exp_cost"));
     IActionDataType<Level> WORLD = register(Arc.API.getId("world"));
     IActionDataType<DamageSource> DAMAGE_SOURCE = register(Arc.API.getId("damage_source"));
     IActionDataType<Entity> ENTITY = register(Arc.API.getId("entity"));
