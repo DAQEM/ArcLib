@@ -6,14 +6,13 @@ plugins {
 apply from: rootProject.file("gradle/scripts/publishing.gradle")
 apply from: rootProject.file("gradle/scripts/maven-publishing.gradle")
 
-dependencies {
-    implementation "com.daqem.knot:knot-neoforge:${project.knot_version}"
-    implementation "com.daqem.uilib:uilib-neoforge:${project.uilib_version}"
-    implementation "com.daqem.yamlconfig:yamlconfig-neoforge:${project.yamlconfig_version}"
-}
-
 neoForge {
     version = neoforge_version
+    // Automatically enable neoforge AccessTransformers if the file exists
+    def at = project(':common').file('src/main/resources/META-INF/accesstransformer.cfg')
+    if (at.exists()) {
+        accessTransformers.from(at.absolutePath)
+    }
     parchment {
         minecraftVersion = parchment_minecraft
         mappingsVersion = parchment_version

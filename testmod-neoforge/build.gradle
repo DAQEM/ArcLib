@@ -55,10 +55,6 @@ configurations {
 }
 
 dependencies {
-    implementation "com.daqem.knot:knot-neoforge:${project.knot_version}"
-    implementation "com.daqem.uilib:uilib-neoforge:${project.uilib_version}"
-    implementation "com.daqem.yamlconfig:yamlconfig-neoforge:${project.yamlconfig_version}"
-
     testmodCommonJava project(path: ':testmod-common', configuration: 'testmodCommonJava')
     testmodCommonResources project(path: ':testmod-common', configuration: 'testmodCommonResources')
 }

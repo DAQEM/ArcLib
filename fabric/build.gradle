@@ -11,16 +11,25 @@ dependencies {
     }
     modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
-
-    modImplementation "com.daqem.knot:knot-fabric:${project.knot_version}"
-    modImplementation "com.daqem.uilib:uilib-fabric:${project.uilib_version}"
-    modImplementation "com.daqem.yamlconfig:yamlconfig-fabric:${project.yamlconfig_version}"
 }
 
 apply from: rootProject.file("gradle/scripts/publishing.gradle")
 apply from: rootProject.file("gradle/scripts/maven-publishing.gradle")
 
+sourceSets {
+    main {
+        resources {
+            srcDir project(':common').file('src/main/resources')
+        }
+    }
+}
+
 loom {
+    accessWidenerPath = project(":common").file("src/main/resources/${mod_id}.accesswidener")
+
+    mixin {
+        defaultRefmapName.set("${mod_id}.refmap.json")
+    }
     runs {
         client {
             client()
