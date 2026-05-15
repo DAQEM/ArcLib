@@ -24,9 +24,36 @@ repositories {
         }
         filter { includeGroupAndSubgroups('org.spongepowered') }
     }
+    exclusiveContent {
+        forRepositories(
+                maven {
+                    name = 'ParchmentMC'
+                    url = 'https://maven.parchmentmc.org/'
+                },
+                maven {
+                    name = "NeoForge"
+                    url = 'https://maven.neoforged.net/releases'
+                }
+        )
+        filter { includeGroup('org.parchmentmc.data') }
+    }
     maven {
-        name = 'DAQEM'
+        name = 'DAQEM Releases'
         url = 'https://maven.daqem.com/releases'
+    }
+    maven {
+        name = 'DAQEM Snapshots'
+        url = 'https://maven.daqem.com/snapshots'
+    }
+}
+
+['apiElements', 'runtimeElements', 'sourcesElements'].each { variant ->
+    configurations."$variant".outgoing {
+        capability("$group:${base.archivesName.get()}:$version")
+        capability("$group:$mod_id-${project.name}-${minecraft_version}:$version")
+    }
+    publishing.publications.configureEach {
+        suppressPomMetadataWarningsFor(variant)
     }
 }
 
@@ -65,12 +92,9 @@ processResources {
             "mod_website"          : project.mod_website,
             "mod_repository"       : project.mod_repository,
             "minecraft_version"    : project.minecraft_version,
-            "fabric_version"       : project.fabric_version,
             "fabric_loader_version": project.fabric_loader_version,
             "neoforge_version"     : project.neoforge_version,
-            "knot_version"         : project.knot_version,
-            "uilib_version"        : project.uilib_version,
-            "yamlconfig_version"   : project.yamlconfig_version
+            "uilib_version"        : project.uilib_version
     ]
 
     var jsonExpandProps = expandProps.collectEntries {

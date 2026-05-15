@@ -31,4 +31,4 @@ include("testmod-common")
 include("testmod-fabric")
 include("testmod-neoforge")
 
-rootProject.name = "ArcLib 26.1.2"
+rootProject.name = "ArcLib 1.21.1"
