@@ -7,7 +7,7 @@ import com.daqem.arc.api.condition.IConditionType;
 import com.daqem.arc.data.ActionData;
 import com.google.gson.JsonObject;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
 public class CriticalHitCondition extends AbstractCondition {
 
@@ -29,12 +29,12 @@ public class CriticalHitCondition extends AbstractCondition {
     public static class Serializer implements IConditionSerializer<CriticalHitCondition> {
 
         @Override
-        public CriticalHitCondition fromJson(Identifier location, JsonObject jsonObject, boolean inverted) {
+        public CriticalHitCondition fromJson(ResourceLocation location, JsonObject jsonObject, boolean inverted) {
             return new CriticalHitCondition(inverted);
         }
 
         @Override
-        public CriticalHitCondition fromNetwork(Identifier location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
+        public CriticalHitCondition fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
             return new CriticalHitCondition(inverted);
         }
     }

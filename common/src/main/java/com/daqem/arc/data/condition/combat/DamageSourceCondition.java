@@ -8,9 +8,10 @@ import com.daqem.arc.data.ActionData;
 import com.google.gson.JsonObject;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.JsonOps;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
@@ -76,22 +77,22 @@ public class DamageSourceCondition extends AbstractCondition {
     public static class Serializer implements IConditionSerializer<DamageSourceCondition> {
 
         @Override
-        public DamageSourceCondition fromJson(Identifier location, JsonObject jsonObject, boolean inverted) {
+        public DamageSourceCondition fromJson(ResourceLocation location, JsonObject jsonObject, boolean inverted) {
             return new DamageSourceCondition(
                     inverted,
                     GsonHelper.getAsString(jsonObject, "source", "any"),
-                    EntityType.CODEC.decode(JsonOps.INSTANCE, jsonObject.get("direct_entity_type")).result().orElse(new Pair<>(null, null)).getFirst(),
-                    EntityType.CODEC.decode(JsonOps.INSTANCE, jsonObject.get("causing_entity_type")).result().orElse(new Pair<>(null, null)).getFirst()
+                    getOptionalEntityType(jsonObject, "direct_entity_type"),
+                    getOptionalEntityType(jsonObject, "causing_entity_type")
             );
         }
 
         @Override
-        public DamageSourceCondition fromNetwork(Identifier location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
+        public DamageSourceCondition fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
             return new DamageSourceCondition(
                     inverted,
                     friendlyByteBuf.readUtf(),
-                    friendlyByteBuf.readBoolean() ? EntityType.STREAM_CODEC.decode(friendlyByteBuf) : null,
-                    friendlyByteBuf.readBoolean() ? EntityType.STREAM_CODEC.decode(friendlyByteBuf) : null
+                    friendlyByteBuf.readBoolean() ? BuiltInRegistries.ENTITY_TYPE.byId(friendlyByteBuf.readVarInt()) : null,
+                    friendlyByteBuf.readBoolean() ? BuiltInRegistries.ENTITY_TYPE.byId(friendlyByteBuf.readVarInt()) : null
             );
         }
 
@@ -101,11 +102,11 @@ public class DamageSourceCondition extends AbstractCondition {
             friendlyByteBuf.writeUtf(type.source);
             friendlyByteBuf.writeBoolean(type.directEntityType != null);
             if (type.directEntityType != null) {
-                EntityType.STREAM_CODEC.encode(friendlyByteBuf, type.directEntityType);
+                friendlyByteBuf.writeVarInt(BuiltInRegistries.ENTITY_TYPE.getId(type.directEntityType));
             }
             friendlyByteBuf.writeBoolean(type.causingEntityType != null);
             if (type.causingEntityType != null) {
-                EntityType.STREAM_CODEC.encode(friendlyByteBuf, type.causingEntityType);
+                friendlyByteBuf.writeVarInt(BuiltInRegistries.ENTITY_TYPE.getId(type.causingEntityType));
             }
         }
     }

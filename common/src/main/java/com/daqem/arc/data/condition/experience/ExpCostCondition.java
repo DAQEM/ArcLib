@@ -11,7 +11,7 @@ import com.daqem.arc.data.math.ConstantNumberProvider;
 import com.google.gson.JsonObject;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
 public class ExpCostCondition extends AbstractCondition {
 
@@ -45,7 +45,7 @@ public class ExpCostCondition extends AbstractCondition {
     public static class Serializer implements IConditionSerializer<ExpCostCondition> {
 
         @Override
-        public ExpCostCondition fromJson(Identifier location, JsonObject jsonObject, boolean inverted) {
+        public ExpCostCondition fromJson(ResourceLocation location, JsonObject jsonObject, boolean inverted) {
             return new ExpCostCondition(
                     inverted,
                     getNumberProvider(jsonObject, "level", new ConstantNumberProvider(0.0))
@@ -53,7 +53,7 @@ public class ExpCostCondition extends AbstractCondition {
         }
 
         @Override
-        public ExpCostCondition fromNetwork(Identifier location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
+        public ExpCostCondition fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
             return new ExpCostCondition(
                     inverted,
                     INumberProviderSerializer.fromNetworkStatic(friendlyByteBuf)

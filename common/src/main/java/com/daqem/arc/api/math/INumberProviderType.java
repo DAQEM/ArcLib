@@ -4,7 +4,7 @@ import com.daqem.arc.Arc;
 import com.daqem.arc.data.math.*;
 import com.daqem.arc.registry.ArcRegistry;
 import net.minecraft.core.Registry;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
 public interface INumberProviderType<T extends INumberProvider> {
 
@@ -22,11 +22,11 @@ public interface INumberProviderType<T extends INumberProvider> {
     INumberProviderType<EffectDataNumberProvider> EFFECT_DATA = register(Arc.API.getId("effect_data"), new EffectDataNumberProvider.Serializer());
     INumberProviderType<DistanceNumberProvider> DISTANCE = register(Arc.API.getId("distance_provider"), new DistanceNumberProvider.Serializer());
 
-    static <T extends INumberProvider> INumberProviderType<T> register(final Identifier location, final INumberProviderSerializer<T> serializer) {
+    static <T extends INumberProvider> INumberProviderType<T> register(final ResourceLocation location, final INumberProviderSerializer<T> serializer) {
         return Registry.register(ArcRegistry.NUMBER_PROVIDER, location, new INumberProviderType<T>() {
 
             @Override
-            public Identifier getIdentifier() {
+            public ResourceLocation getResourceLocation() {
                 return location;
             }
 
@@ -45,7 +45,7 @@ public interface INumberProviderType<T extends INumberProvider> {
     static void init() {
     }
 
-    Identifier getIdentifier();
+    ResourceLocation getResourceLocation();
 
     INumberProviderSerializer<T> getSerializer();
 }

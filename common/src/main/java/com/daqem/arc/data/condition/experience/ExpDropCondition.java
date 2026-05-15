@@ -11,7 +11,7 @@ import com.daqem.arc.data.math.ConstantNumberProvider;
 import com.google.gson.JsonObject;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
 public class ExpDropCondition extends AbstractCondition {
 
@@ -53,7 +53,7 @@ public class ExpDropCondition extends AbstractCondition {
 
     public static class Serializer implements IConditionSerializer<ExpDropCondition> {
         @Override
-        public ExpDropCondition fromJson(Identifier location, JsonObject jsonObject, boolean inverted) {
+        public ExpDropCondition fromJson(ResourceLocation location, JsonObject jsonObject, boolean inverted) {
             return new ExpDropCondition(
                     inverted,
                     getNumberProvider(jsonObject, "min", new ConstantNumberProvider(Integer.MIN_VALUE)),
@@ -62,7 +62,7 @@ public class ExpDropCondition extends AbstractCondition {
         }
 
         @Override
-        public ExpDropCondition fromNetwork(Identifier location, RegistryFriendlyByteBuf buf, boolean inverted) {
+        public ExpDropCondition fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf buf, boolean inverted) {
             return new ExpDropCondition(
                     inverted,
                     INumberProviderSerializer.fromNetworkStatic(buf),

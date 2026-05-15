@@ -12,7 +12,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
@@ -21,10 +21,10 @@ import java.util.Optional;
 
 public class EnchantmentLevelNumberProvider implements INumberProvider {
 
-    private final Identifier enchantmentId;
+    private final ResourceLocation enchantmentId;
     private final ArcItemTarget target;
 
-    public EnchantmentLevelNumberProvider(Identifier enchantmentId, ArcItemTarget target) {
+    public EnchantmentLevelNumberProvider(ResourceLocation enchantmentId, ArcItemTarget target) {
         this.enchantmentId = enchantmentId;
         this.target = target;
     }
@@ -67,20 +67,20 @@ public class EnchantmentLevelNumberProvider implements INumberProvider {
         @Override
         public EnchantmentLevelNumberProvider fromJson(JsonObject jsonObject) {
             return new EnchantmentLevelNumberProvider(
-                    getIdentifier(jsonObject, "enchantment"),
+                    getResourceLocation(jsonObject, "enchantment"),
                     getItemTarget(jsonObject, "target", ArcItemTarget.ACTION)
             );
         }
 
         @Override
         public EnchantmentLevelNumberProvider fromNetwork(RegistryFriendlyByteBuf buf) {
-            return new EnchantmentLevelNumberProvider(buf.readIdentifier(), buf.readEnum(ArcItemTarget.class));
+            return new EnchantmentLevelNumberProvider(buf.readResourceLocation(), buf.readEnum(ArcItemTarget.class));
         }
 
         @Override
         public void toNetwork(RegistryFriendlyByteBuf buf, EnchantmentLevelNumberProvider type) {
             INumberProviderSerializer.super.toNetwork(buf, type);
-            buf.writeIdentifier(type.enchantmentId);
+            buf.writeResourceLocation(type.enchantmentId);
             buf.writeEnum(type.target);
         }
     }

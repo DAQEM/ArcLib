@@ -8,7 +8,7 @@ import com.daqem.arc.data.ActionData;
 import com.google.gson.JsonObject;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -37,20 +37,20 @@ public class IsOreCondition extends AbstractCondition {
     public static boolean isOre(Block block) {
         return ((block instanceof DropExperienceBlock && block != Blocks.SCULK)
                 || block instanceof RedStoneOreBlock
-                || block.defaultBlockState().is(new TagKey<>(Registries.BLOCK, Identifier.fromNamespaceAndPath("forge", "ores")))
-                || block.defaultBlockState().is(new TagKey<>(Registries.BLOCK, Identifier.fromNamespaceAndPath("c", "ores")))
+                || block.defaultBlockState().is(new TagKey<>(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath("forge", "ores")))
+                || block.defaultBlockState().is(new TagKey<>(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath("c", "ores")))
                 || block == Blocks.ANCIENT_DEBRIS);
     }
 
     public static class Serializer implements IConditionSerializer<IsOreCondition> {
 
         @Override
-        public IsOreCondition fromJson(Identifier location, JsonObject jsonObject, boolean inverted) {
+        public IsOreCondition fromJson(ResourceLocation location, JsonObject jsonObject, boolean inverted) {
             return new IsOreCondition(inverted);
         }
 
         @Override
-        public IsOreCondition fromNetwork(Identifier location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
+        public IsOreCondition fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
             return new IsOreCondition(inverted);
         }
 

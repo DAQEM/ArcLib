@@ -8,13 +8,13 @@ import com.daqem.arc.api.condition.ICondition;
 import com.daqem.arc.api.reward.IReward;
 import com.google.gson.JsonObject;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.List;
 
 public class ElytraFlyAction extends AbstractAction {
 
-    public ElytraFlyAction(Identifier location, Identifier actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+    public ElytraFlyAction(ResourceLocation location, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
         super(location, actionHolderLocation, actionHolderType, rewards, conditions);
     }
 
@@ -26,12 +26,12 @@ public class ElytraFlyAction extends AbstractAction {
     public static class Serializer implements IActionSerializer<ElytraFlyAction> {
 
         @Override
-        public ElytraFlyAction fromJson(Identifier location, JsonObject jsonObject, Identifier actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+        public ElytraFlyAction fromJson(ResourceLocation location, JsonObject jsonObject, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
             return new ElytraFlyAction(location, actionHolderLocation, actionHolderType, rewards, conditions);
         }
 
         @Override
-        public ElytraFlyAction fromNetwork(Identifier location, RegistryFriendlyByteBuf friendlyByteBuf, Identifier actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
+        public ElytraFlyAction fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, ResourceLocation actionHolderLocation, IActionHolderType<?> actionHolderType, List<IReward> rewards, List<ICondition> conditions) {
             return new ElytraFlyAction(location, actionHolderLocation, actionHolderType, rewards, conditions);
         }
 

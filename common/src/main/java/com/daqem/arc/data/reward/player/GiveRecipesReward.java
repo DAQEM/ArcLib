@@ -8,7 +8,7 @@ import com.daqem.arc.data.ActionData;
 import com.google.gson.JsonObject;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
@@ -17,9 +17,9 @@ import java.util.List;
 
 public class GiveRecipesReward extends AbstractReward {
 
-    private final List<Identifier> recipes;
+    private final List<ResourceLocation> recipes;
 
-    public GiveRecipesReward(double chance, int priority, List<Identifier> recipes) {
+    public GiveRecipesReward(double chance, int priority, List<ResourceLocation> recipes) {
         super(chance, priority);
         this.recipes = recipes;
     }
@@ -28,7 +28,7 @@ public class GiveRecipesReward extends AbstractReward {
     public ActionResult apply(ActionData actionData) {
         if (actionData.getPlayer().arc$getPlayer() instanceof ServerPlayer player) {
             Collection<RecipeHolder<?>> recipesToUnlock = player.level().getServer().getRecipeManager().getRecipes().stream()
-                    .filter(recipe -> this.recipes.contains(recipe.id().identifier()))
+                    .filter(recipe -> this.recipes.contains(recipe.id()))
                     .toList();
             player.awardRecipes(recipesToUnlock);
         }
@@ -47,19 +47,19 @@ public class GiveRecipesReward extends AbstractReward {
             return new GiveRecipesReward(
                     chance,
                     priority,
-                    getIdentifiers(jsonObject, "recipes")
+                    getResourceLocations(jsonObject, "recipes")
             );
         }
 
         @Override
         public GiveRecipesReward fromNetwork(RegistryFriendlyByteBuf friendlyByteBuf, double chance, int priority) {
-            return new GiveRecipesReward(chance, priority, friendlyByteBuf.readList(FriendlyByteBuf::readIdentifier));
+            return new GiveRecipesReward(chance, priority, friendlyByteBuf.readList(FriendlyByteBuf::readResourceLocation));
         }
 
         @Override
         public void toNetwork(RegistryFriendlyByteBuf friendlyByteBuf, GiveRecipesReward type) {
             IRewardSerializer.super.toNetwork(friendlyByteBuf, type);
-            friendlyByteBuf.writeCollection(type.recipes, FriendlyByteBuf::writeIdentifier);
+            friendlyByteBuf.writeCollection(type.recipes, FriendlyByteBuf::writeResourceLocation);
         }
     }
 }

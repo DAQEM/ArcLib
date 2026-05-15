@@ -4,7 +4,7 @@ import com.daqem.arc.Arc;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -21,7 +21,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public interface IActionDataType<T> {
 
-    Map<Identifier, IActionDataType<?>> TYPES = new ConcurrentHashMap<>();
+    Map<ResourceLocation, IActionDataType<?>> TYPES = new ConcurrentHashMap<>();
 
     IActionDataType<BlockState> BLOCK_STATE = register(Arc.API.getId("block_state"));
     IActionDataType<BlockPos> BLOCK_POSITION = register(Arc.API.getId("block_position"));
@@ -44,11 +44,11 @@ public interface IActionDataType<T> {
     IActionDataType<MerchantOffer> TRADE_OFFER = register(Arc.API.getId("trade_offer"));
     IActionDataType<Boolean> IS_CRITICAL_HIT = register(Arc.API.getId("is_critical_hit"));
 
-    static <T> IActionDataType<T> register(Identifier location) {
+    static <T> IActionDataType<T> register(ResourceLocation location) {
         IActionDataType<T> type = () -> location;
         TYPES.put(location, type);
         return type;
     }
 
-    Identifier getIdentifier();
+    ResourceLocation getResourceLocation();
 }

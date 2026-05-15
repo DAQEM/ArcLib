@@ -11,17 +11,17 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 
 public class AttributeNumberProvider implements INumberProvider {
 
-    private final Identifier attributeId;
+    private final ResourceLocation attributeId;
     private final ArcEntityTarget target;
 
-    public AttributeNumberProvider(Identifier attributeId, ArcEntityTarget target) {
+    public AttributeNumberProvider(ResourceLocation attributeId, ArcEntityTarget target) {
         this.attributeId = attributeId;
         this.target = target;
     }
@@ -30,7 +30,7 @@ public class AttributeNumberProvider implements INumberProvider {
     public double resolve(ActionData actionData) {
         Entity entity = target.getEntity(actionData);
         if (entity instanceof LivingEntity livingEntity) {
-            Attribute attribute = BuiltInRegistries.ATTRIBUTE.getValue(attributeId);
+            Attribute attribute = BuiltInRegistries.ATTRIBUTE.get(attributeId);
             if (attribute != null && livingEntity.getAttributes().hasAttribute(Holder.direct(attribute))) {
                 return livingEntity.getAttributeValue(Holder.direct(attribute));
             }
@@ -60,20 +60,20 @@ public class AttributeNumberProvider implements INumberProvider {
         @Override
         public AttributeNumberProvider fromJson(JsonObject jsonObject) {
             return new AttributeNumberProvider(
-                    getIdentifier(jsonObject, "attribute"),
+                    getResourceLocation(jsonObject, "attribute"),
                     getEntityTarget(jsonObject, "target", ArcEntityTarget.PLAYER)
             );
         }
 
         @Override
         public AttributeNumberProvider fromNetwork(RegistryFriendlyByteBuf buf) {
-            return new AttributeNumberProvider(buf.readIdentifier(), buf.readEnum(ArcEntityTarget.class));
+            return new AttributeNumberProvider(buf.readResourceLocation(), buf.readEnum(ArcEntityTarget.class));
         }
 
         @Override
         public void toNetwork(RegistryFriendlyByteBuf buf, AttributeNumberProvider type) {
             INumberProviderSerializer.super.toNetwork(buf, type);
-            buf.writeIdentifier(type.attributeId);
+            buf.writeResourceLocation(type.attributeId);
             buf.writeEnum(type.target);
         }
     }

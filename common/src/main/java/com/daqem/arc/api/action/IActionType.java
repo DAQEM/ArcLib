@@ -15,7 +15,7 @@ import com.daqem.arc.data.action.movement.*;
 import com.daqem.arc.data.action.player.*;
 import com.daqem.arc.registry.ArcRegistry;
 import net.minecraft.core.Registry;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
 public interface IActionType<T extends IAction> {
 
@@ -82,11 +82,11 @@ public interface IActionType<T extends IAction> {
     IActionType<ItemBreakAction> ITEM_BREAK = register(Arc.API.getId("on_item_break"), new ItemBreakAction.Serializer());
     IActionType<TradeWithVillagerAction> TRADE_WITH_VILLAGER = register(Arc.API.getId("on_trade_with_villager"), new TradeWithVillagerAction.Serializer());
 
-    static <T extends IAction> IActionType<T> register(final Identifier location, final IActionSerializer<T> serializer) {
+    static <T extends IAction> IActionType<T> register(final ResourceLocation location, final IActionSerializer<T> serializer) {
         return Registry.register(ArcRegistry.ACTION, location, new IActionType<T>(){
 
             @Override
-            public Identifier getIdentifier() {
+            public ResourceLocation getResourceLocation() {
                 return location;
             }
 
@@ -105,7 +105,7 @@ public interface IActionType<T extends IAction> {
     static void init() {
     }
 
-    Identifier getIdentifier();
+    ResourceLocation getResourceLocation();
 
     IActionSerializer<T> getSerializer();
 }

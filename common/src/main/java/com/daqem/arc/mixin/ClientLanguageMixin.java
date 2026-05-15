@@ -19,7 +19,7 @@ public class ClientLanguageMixin {
             method = "loadFrom",
             at = @At(
                     value = "INVOKE",
-                    target = "Ljava/util/Map;copyOf(Ljava/util/Map;)Ljava/util/Map;"
+                    target = "Lcom/google/common/collect/ImmutableMap;copyOf(Ljava/util/Map;)Lcom/google/common/collect/ImmutableMap;"
             ),
             locals = LocalCapture.CAPTURE_FAILHARD
     )

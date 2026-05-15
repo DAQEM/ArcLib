@@ -35,9 +35,9 @@ public class ChangeWeatherReward extends AbstractReward {
         if (actionData.getPlayer().arc$getLevel() instanceof ServerLevel serverLevel) {
             int resolvedDuration = (int) Math.round(duration.resolve(actionData));
             switch (weatherType) {
-                case CLEAR -> serverLevel.getServer().setWeatherParameters(resolvedDuration, 0, false, false);
-                case RAIN -> serverLevel.getServer().setWeatherParameters(0, resolvedDuration, true, false);
-                case THUNDER -> serverLevel.getServer().setWeatherParameters(0, resolvedDuration, true, true);
+                case CLEAR -> serverLevel.getServer().overworld().setWeatherParameters(resolvedDuration, 0, false, false);
+                case RAIN -> serverLevel.getServer().overworld().setWeatherParameters(0, resolvedDuration, true, false);
+                case THUNDER -> serverLevel.getServer().overworld().setWeatherParameters(0, resolvedDuration, true, true);
             }
         }
         return new ActionResult();

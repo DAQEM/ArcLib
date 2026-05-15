@@ -21,7 +21,7 @@ public class EntityEvents {
                         .withData(IActionDataType.DAMAGE_SOURCE, damageSource)
                         .withData(IActionDataType.BLOCK_POSITION, serverPlayer.blockPosition())
                         .withData(IActionDataType.WORLD, serverPlayer.level())
-                        .withData(IActionDataType.EXP_DROP, serverPlayer.getExperienceReward(serverPlayer.level(), damageSource.getEntity()))
+                        .withData(IActionDataType.EXP_DROP, serverPlayer.getExperienceReward(serverPlayer.serverLevel(), damageSource.getEntity()))
                         .build()
                         .sendToAction();
 

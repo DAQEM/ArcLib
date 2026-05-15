@@ -15,7 +15,7 @@ import com.mojang.serialization.JsonOps;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.TagKey;
@@ -27,7 +27,6 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.Nullable;
@@ -41,7 +40,7 @@ public interface ArcSerializer {
 
     //region Resource Location
 
-    default Identifier getIdentifier(JsonObject jsonObject, String key, @Nullable Identifier defaultLocation) {
+    default ResourceLocation getResourceLocation(JsonObject jsonObject, String key, @Nullable ResourceLocation defaultLocation) {
         if (!jsonObject.has(key) || jsonObject.get(key).isJsonNull()) {
             if (defaultLocation != null) {
                 return defaultLocation;
@@ -49,7 +48,7 @@ public interface ArcSerializer {
             throw new JsonParseException("Expected '" + key + "' to be a resource location");
         }
 
-        return Identifier.CODEC.decode(JsonOps.INSTANCE, jsonObject.get(key)).result()
+        return ResourceLocation.CODEC.decode(JsonOps.INSTANCE, jsonObject.get(key)).result()
                 .orElseGet(() -> {
                     if (defaultLocation != null) {
                         return new Pair<>(defaultLocation, null);
@@ -58,22 +57,22 @@ public interface ArcSerializer {
                 }).getFirst();
     }
 
-    default Identifier getIdentifier(JsonObject jsonObject, String key) {
-        return getIdentifier(jsonObject, key, null);
+    default ResourceLocation getResourceLocation(JsonObject jsonObject, String key) {
+        return getResourceLocation(jsonObject, key, null);
     }
 
-    default @Nullable Identifier getOptionalIdentifier(JsonObject jsonObject, String key) {
+    default @Nullable ResourceLocation getOptionalResourceLocation(JsonObject jsonObject, String key) {
         if (!jsonObject.has(key) || jsonObject.get(key).isJsonNull()) {
             return null;
         }
-        return getIdentifier(jsonObject, key, null);
+        return getResourceLocation(jsonObject, key, null);
     }
 
     //endregion
 
     //region Resource Locations
 
-    default List<Identifier> getIdentifiers(JsonObject jsonObject, String key, @Nullable List<Identifier> defaultLocations) {
+    default List<ResourceLocation> getResourceLocations(JsonObject jsonObject, String key, @Nullable List<ResourceLocation> defaultLocations) {
         if (!jsonObject.has(key) || jsonObject.get(key).isJsonNull()) {
             if (defaultLocations != null) {
                 return defaultLocations;
@@ -81,7 +80,7 @@ public interface ArcSerializer {
             throw new JsonParseException("Expected '" + key + "' to be a list of resource locations");
         }
 
-        return Identifier.CODEC.listOf().decode(JsonOps.INSTANCE, jsonObject.get(key)).result()
+        return ResourceLocation.CODEC.listOf().decode(JsonOps.INSTANCE, jsonObject.get(key)).result()
                 .orElseGet(() -> {
                     if (defaultLocations != null) {
                         return new Pair<>(defaultLocations, null);
@@ -90,15 +89,15 @@ public interface ArcSerializer {
                 }).getFirst();
     }
 
-    default List<Identifier> getIdentifiers(JsonObject jsonObject, String key) {
-        return getIdentifiers(jsonObject, key, null);
+    default List<ResourceLocation> getResourceLocations(JsonObject jsonObject, String key) {
+        return getResourceLocations(jsonObject, key, null);
     }
 
-    default @Nullable List<Identifier> getOptionalIdentifiers(JsonObject jsonObject, String key) {
+    default @Nullable List<ResourceLocation> getOptionalResourceLocations(JsonObject jsonObject, String key) {
         if (!jsonObject.has(key) || jsonObject.get(key).isJsonNull()) {
             return new ArrayList<>();
         }
-        return getIdentifiers(jsonObject, key, new ArrayList<>());
+        return getResourceLocations(jsonObject, key, new ArrayList<>());
     }
 
     //endregion
@@ -192,7 +191,7 @@ public interface ArcSerializer {
                     if (itemTagName != null && itemTagName.startsWith("#")) {
                         itemTagName = itemTagName.substring(1);
                         String finalItemTagName = itemTagName;
-                        Identifier resourceLocation = Identifier.CODEC.decode(JsonOps.INSTANCE, new JsonPrimitive(finalItemTagName)).result()
+                        ResourceLocation resourceLocation = ResourceLocation.CODEC.decode(JsonOps.INSTANCE, new JsonPrimitive(finalItemTagName)).result()
                                 .orElseThrow(() -> new JsonParseException("Expected '" + key + "' to be a list of item tags, but one of the item tags was invalid: " + finalItemTagName))
                                 .getFirst();
                         TagKey<Item> itemTag = TagKey.create(BuiltInRegistries.ITEM.key(), resourceLocation);
@@ -247,34 +246,6 @@ public interface ArcSerializer {
             return null;
         }
         return getItemStack(jsonObject, key, null);
-    }
-
-    default ItemStackTemplate getItemStackTemplate(JsonObject jsonObject, String key, @Nullable ItemStackTemplate defaultTemplate) {
-        if (!jsonObject.has(key) || jsonObject.get(key).isJsonNull()) {
-            if (defaultTemplate != null) {
-                return defaultTemplate;
-            }
-            throw new JsonParseException("Expected '" + key + "' to be an item stack template");
-        }
-
-        return ItemStackTemplate.CODEC.decode(JsonOps.INSTANCE, jsonObject.get(key)).result()
-                .orElseGet(() -> {
-                    if (defaultTemplate != null) {
-                        return new Pair<>(defaultTemplate, null);
-                    }
-                    throw new JsonParseException("Expected '" + jsonObject.get(key) + "' to be an item stack template, but it was invalid");
-                }).getFirst();
-    }
-
-    default ItemStackTemplate getItemStackTemplate(JsonObject jsonObject, String key) {
-        return getItemStackTemplate(jsonObject, key, null);
-    }
-
-    default @Nullable ItemStackTemplate getOptionalItemStackTemplate(JsonObject jsonObject, String key) {
-        if (!jsonObject.has(key) || jsonObject.get(key).isJsonNull()) {
-            return null;
-        }
-        return getItemStackTemplate(jsonObject, key, null);
     }
 
     //endregion
@@ -698,7 +669,7 @@ public interface ArcSerializer {
                     if (blockTagName != null && blockTagName.startsWith("#")) {
                         blockTagName = blockTagName.substring(1);
                         String finalBlockTagName = blockTagName;
-                        Identifier resourceLocation = Identifier.CODEC.decode(JsonOps.INSTANCE, new JsonPrimitive(finalBlockTagName)).result()
+                        ResourceLocation resourceLocation = ResourceLocation.CODEC.decode(JsonOps.INSTANCE, new JsonPrimitive(finalBlockTagName)).result()
                                 .orElseThrow(() -> new JsonParseException("Expected '" + key + "' to be a list of block tags, but one of the block tags was invalid: " + finalBlockTagName))
                                 .getFirst();
                         TagKey<Block> blockTag = TagKey.create(BuiltInRegistries.BLOCK.key(), resourceLocation);
@@ -1134,7 +1105,7 @@ public interface ArcSerializer {
         if (element.isJsonObject()) {
             JsonObject obj = element.getAsJsonObject();
             String type = GsonHelper.getAsString(obj, "type");
-            return ArcRegistry.NUMBER_PROVIDER.getOptional(Identifier.parse(type))
+            return ArcRegistry.NUMBER_PROVIDER.getOptional(ResourceLocation.parse(type))
                     .orElseThrow(() -> new JsonParseException("Unknown number provider type: " + type))
                     .getSerializer().fromJson(obj);
         }

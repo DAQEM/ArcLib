@@ -8,7 +8,7 @@ import com.daqem.arc.data.ActionData;
 import com.google.gson.JsonObject;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.scores.Team;
 
 public class TeamCondition extends AbstractCondition {
@@ -44,14 +44,14 @@ public class TeamCondition extends AbstractCondition {
     public static class Serializer implements IConditionSerializer<TeamCondition> {
 
         @Override
-        public TeamCondition fromJson(Identifier location, JsonObject jsonObject, boolean inverted) {
+        public TeamCondition fromJson(ResourceLocation location, JsonObject jsonObject, boolean inverted) {
             return new TeamCondition(
                     inverted,
                     getString(jsonObject, "team"));
         }
 
         @Override
-        public TeamCondition fromNetwork(Identifier location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
+        public TeamCondition fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
             return new TeamCondition(
                     inverted,
                     friendlyByteBuf.readUtf());

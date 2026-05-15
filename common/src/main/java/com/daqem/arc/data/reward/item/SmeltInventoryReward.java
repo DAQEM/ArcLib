@@ -8,7 +8,7 @@ import com.daqem.arc.data.ActionData;
 import com.google.gson.JsonObject;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
@@ -21,9 +21,9 @@ import java.util.Optional;
 
 public class SmeltInventoryReward extends AbstractReward {
 
-    private final List<Identifier> recipes;
+    private final List<ResourceLocation> recipes;
 
-    public SmeltInventoryReward(double chance, int priority, List<Identifier> recipes) {
+    public SmeltInventoryReward(double chance, int priority, List<ResourceLocation> recipes) {
         super(chance, priority);
         this.recipes = recipes;
     }
@@ -31,8 +31,8 @@ public class SmeltInventoryReward extends AbstractReward {
     @Override
     public ActionResult apply(ActionData actionData) {
         if (actionData.getPlayer().arc$getPlayer() instanceof ServerPlayer player) {
-            ServerLevel level = player.level();
-            RecipeManager recipeManager = level.recipeAccess();
+            ServerLevel level = player.serverLevel();
+            RecipeManager recipeManager = level.getRecipeManager();
 
             List<ItemStack> itemsToAdd = new ArrayList<>();
             List<Integer> slotsToClear = new ArrayList<>();
@@ -44,12 +44,12 @@ public class SmeltInventoryReward extends AbstractReward {
                     Optional<RecipeHolder<@NotNull SmeltingRecipe>> recipeHolderOpt = recipeManager.getRecipeFor(RecipeType.SMELTING, singleRecipeInput, level);
 
                     if (recipeHolderOpt.isPresent()) {
-                        if (!recipes.isEmpty() && !recipes.contains(recipeHolderOpt.get().id().identifier())) {
+                        if (!recipes.isEmpty() && !recipes.contains(recipeHolderOpt.get().id())) {
                             continue;
                         }
 
                         Recipe<@NotNull SingleRecipeInput> recipe = recipeHolderOpt.get().value();
-                        ItemStack result = recipe.assemble(singleRecipeInput);
+                        ItemStack result = recipe.assemble(singleRecipeInput, player.registryAccess());
 
                         if (!result.isEmpty()) {
                             ItemStack smeltedStack = result.copy();
@@ -87,7 +87,7 @@ public class SmeltInventoryReward extends AbstractReward {
             return new SmeltInventoryReward(
                     chance,
                     priority,
-                    getOptionalIdentifiers(jsonObject, "recipes")
+                    getOptionalResourceLocations(jsonObject, "recipes")
             );
         }
 
@@ -96,14 +96,14 @@ public class SmeltInventoryReward extends AbstractReward {
             return new SmeltInventoryReward(
                     chance,
                     priority,
-                    friendlyByteBuf.readList(FriendlyByteBuf::readIdentifier)
+                    friendlyByteBuf.readList(FriendlyByteBuf::readResourceLocation)
             );
         }
 
         @Override
         public void toNetwork(RegistryFriendlyByteBuf friendlyByteBuf, SmeltInventoryReward type) {
             IRewardSerializer.super.toNetwork(friendlyByteBuf, type);
-            friendlyByteBuf.writeCollection(type.recipes, FriendlyByteBuf::writeIdentifier);
+            friendlyByteBuf.writeCollection(type.recipes, FriendlyByteBuf::writeResourceLocation);
         }
     }
 }

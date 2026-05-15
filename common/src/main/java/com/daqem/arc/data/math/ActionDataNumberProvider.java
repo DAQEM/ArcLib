@@ -9,13 +9,13 @@ import com.daqem.arc.data.ActionData;
 import com.google.gson.JsonObject;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
 public class ActionDataNumberProvider implements INumberProvider {
 
-    private final Identifier dataTypeId;
+    private final ResourceLocation dataTypeId;
 
-    public ActionDataNumberProvider(Identifier dataTypeId) {
+    public ActionDataNumberProvider(ResourceLocation dataTypeId) {
         this.dataTypeId = dataTypeId;
     }
 
@@ -52,18 +52,18 @@ public class ActionDataNumberProvider implements INumberProvider {
 
         @Override
         public ActionDataNumberProvider fromJson(JsonObject jsonObject) {
-            return new ActionDataNumberProvider(getIdentifier(jsonObject, "data"));
+            return new ActionDataNumberProvider(getResourceLocation(jsonObject, "data"));
         }
 
         @Override
         public ActionDataNumberProvider fromNetwork(RegistryFriendlyByteBuf buf) {
-            return new ActionDataNumberProvider(buf.readIdentifier());
+            return new ActionDataNumberProvider(buf.readResourceLocation());
         }
 
         @Override
         public void toNetwork(RegistryFriendlyByteBuf buf, ActionDataNumberProvider type) {
             INumberProviderSerializer.super.toNetwork(buf, type);
-            buf.writeIdentifier(type.dataTypeId);
+            buf.writeResourceLocation(type.dataTypeId);
         }
     }
 }

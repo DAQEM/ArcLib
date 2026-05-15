@@ -11,25 +11,24 @@ import com.daqem.arc.data.math.ConstantNumberProvider;
 import com.google.gson.JsonObject;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ItemStackTemplate;
 
 public class ItemEquippedCondition extends AbstractCondition {
 
-    private final ItemStackTemplate itemStackTemplate;
+    private final ItemStack itemStack;
     private final boolean checkComponents;
     private final boolean checkCount;
     private final INumberProvider count;
     private final ComparisonType comparisonType;
     private ItemStack cachedItemStack;
 
-    public ItemEquippedCondition(boolean inverted, ItemStackTemplate itemStackTemplate, boolean checkComponents, boolean checkCount, INumberProvider count, ComparisonType comparisonType) {
+    public ItemEquippedCondition(boolean inverted, ItemStack itemStack, boolean checkComponents, boolean checkCount, INumberProvider count, ComparisonType comparisonType) {
         super(inverted);
-        this.itemStackTemplate = itemStackTemplate;
+        this.itemStack = itemStack;
         this.checkComponents = checkComponents;
         this.checkCount = checkCount;
         this.count = count;
@@ -75,20 +74,12 @@ public class ItemEquippedCondition extends AbstractCondition {
         return IConditionType.ITEM_EQUIPPED;
     }
 
-    public ItemStack getItemStack() {
-        if (cachedItemStack != null) {
-            return cachedItemStack;
-        }
-        this.cachedItemStack = itemStackTemplate.create();
-        return cachedItemStack;
-    }
-
     public ComparisonType getComparisonType() {
         return comparisonType;
     }
 
-    public ItemStackTemplate getItemStackTemplate() {
-        return itemStackTemplate;
+    public ItemStack getItemStack() {
+        return itemStack;
     }
 
     public INumberProvider getCount() {
@@ -106,25 +97,25 @@ public class ItemEquippedCondition extends AbstractCondition {
     public static class Serializer implements IConditionSerializer<ItemEquippedCondition> {
 
         @Override
-        public ItemEquippedCondition fromJson(Identifier location, JsonObject jsonObject, boolean inverted) {
-            ItemStackTemplate template = getItemStackTemplate(jsonObject, "item");
-            int templateCount = template.count();
+        public ItemEquippedCondition fromJson(ResourceLocation location, JsonObject jsonObject, boolean inverted) {
+            ItemStack itemStack = getItemStack(jsonObject, "item");
+            int itemStackCount = itemStack.getCount();
 
             return new ItemEquippedCondition(
                     inverted,
-                    template,
+                    itemStack,
                     GsonHelper.getAsBoolean(jsonObject, "check_components", true),
-                    GsonHelper.getAsBoolean(jsonObject, "check_count", templateCount > 1),
-                    getNumberProvider(jsonObject, "count", new ConstantNumberProvider(templateCount)),
+                    GsonHelper.getAsBoolean(jsonObject, "check_count", itemStackCount > 1),
+                    getNumberProvider(jsonObject, "count", new ConstantNumberProvider(itemStackCount)),
                     getComparisonType(jsonObject, "comparison", ComparisonType.GREATER_THAN_OR_EQUAL)
             );
         }
 
         @Override
-        public ItemEquippedCondition fromNetwork(Identifier location, RegistryFriendlyByteBuf buf, boolean inverted) {
+        public ItemEquippedCondition fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf buf, boolean inverted) {
             return new ItemEquippedCondition(
                     inverted,
-                    ItemStackTemplate.STREAM_CODEC.decode(buf),
+                    ItemStack.STREAM_CODEC.decode(buf),
                     buf.readBoolean(),
                     buf.readBoolean(),
                     INumberProviderSerializer.fromNetworkStatic(buf),
@@ -135,7 +126,7 @@ public class ItemEquippedCondition extends AbstractCondition {
         @Override
         public void toNetwork(RegistryFriendlyByteBuf buf, ItemEquippedCondition type) {
             IConditionSerializer.super.toNetwork(buf, type);
-            ItemStackTemplate.STREAM_CODEC.encode(buf, type.itemStackTemplate);
+            ItemStack.STREAM_CODEC.encode(buf, type.itemStack);
             buf.writeBoolean(type.checkComponents);
             buf.writeBoolean(type.checkCount);
             INumberProviderSerializer.toNetwork(type.count, buf);

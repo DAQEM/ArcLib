@@ -9,7 +9,7 @@ import com.daqem.arc.api.player.ArcServerPlayer;
 import com.daqem.knot.Knot;
 import com.daqem.knot.events.EventPriority;
 import com.daqem.knot.events.EventResult;
-import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
+import net.minecraft.world.entity.projectile.AbstractArrow;
 
 public class PlayerEvents {
 

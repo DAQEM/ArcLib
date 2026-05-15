@@ -15,7 +15,6 @@ public enum ArcItemTarget {
     MAIN_HAND(EquipmentSlot.MAINHAND),
     OFF_HAND(EquipmentSlot.OFFHAND),
     BODY(EquipmentSlot.BODY),
-    SADDLE(EquipmentSlot.SADDLE),
     ACTION(null);
 
     private final EquipmentSlot equipmentSlot;

@@ -4,7 +4,7 @@ import com.daqem.arc.data.serializer.ArcSerializer;
 import com.daqem.arc.registry.ArcRegistry;
 import com.google.gson.JsonObject;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 
 import java.util.Objects;
@@ -16,26 +16,26 @@ public interface IRewardSerializer<T extends IReward> extends ArcSerializer {
     T fromNetwork(RegistryFriendlyByteBuf friendlyByteBuf, double chance, int priority);
 
     static IReward fromNetwork(RegistryFriendlyByteBuf friendlyByteBuf) {
-        Identifier resourceLocation = friendlyByteBuf.readIdentifier();
-        Identifier resourceLocation2 = friendlyByteBuf.readIdentifier();
+        ResourceLocation resourceLocation = friendlyByteBuf.readResourceLocation();
+        ResourceLocation resourceLocation2 = friendlyByteBuf.readResourceLocation();
         return ArcRegistry.REWARD.getOptional(resourceLocation).orElseThrow(
                 () -> new IllegalArgumentException("Unknown reward serializer " + resourceLocation)
         ).getSerializer().fromNetwork(resourceLocation2, friendlyByteBuf);
     }
 
     @SuppressWarnings("unchecked")
-    static <T extends IReward> void toNetwork(T reward, RegistryFriendlyByteBuf friendlyByteBuf, Identifier location) {
-        friendlyByteBuf.writeIdentifier(Objects.requireNonNull(ArcRegistry.REWARD.getKey(reward.getType())));
-        friendlyByteBuf.writeIdentifier(location);
+    static <T extends IReward> void toNetwork(T reward, RegistryFriendlyByteBuf friendlyByteBuf, ResourceLocation location) {
+        friendlyByteBuf.writeResourceLocation(Objects.requireNonNull(ArcRegistry.REWARD.getKey(reward.getType())));
+        friendlyByteBuf.writeResourceLocation(location);
         ((IRewardSerializer<T>)reward.getSerializer()).toNetwork(friendlyByteBuf, reward);
 
     }
 
-    default T fromJson(Identifier location, JsonObject jsonObject) {
+    default T fromJson(ResourceLocation location, JsonObject jsonObject) {
         return fromJson(jsonObject, GsonHelper.getAsDouble(jsonObject, "chance", 100D), GsonHelper.getAsInt(jsonObject, "priority", 1));
     }
 
-    default T fromNetwork(Identifier location, RegistryFriendlyByteBuf friendlyByteBuf) {
+    default T fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf) {
         return fromNetwork(friendlyByteBuf, friendlyByteBuf.readDouble(), friendlyByteBuf.readInt());
     }
 

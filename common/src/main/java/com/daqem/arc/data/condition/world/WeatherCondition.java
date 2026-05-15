@@ -8,7 +8,7 @@ import com.daqem.arc.model.ArcWeatherType;
 import com.google.gson.JsonObject;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 
 public class WeatherCondition extends AbstractCondition {
@@ -43,7 +43,7 @@ public class WeatherCondition extends AbstractCondition {
     public static class Serializer implements IConditionSerializer<WeatherCondition> {
 
         @Override
-        public WeatherCondition fromJson(Identifier location, JsonObject jsonObject, boolean inverted) {
+        public WeatherCondition fromJson(ResourceLocation location, JsonObject jsonObject, boolean inverted) {
             return new WeatherCondition(
                     inverted,
                     getWeatherType(jsonObject, "weather")
@@ -51,7 +51,7 @@ public class WeatherCondition extends AbstractCondition {
         }
 
         @Override
-        public WeatherCondition fromNetwork(Identifier location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
+        public WeatherCondition fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
             return new WeatherCondition(
                     inverted,
                     friendlyByteBuf.readEnum(ArcWeatherType.class)

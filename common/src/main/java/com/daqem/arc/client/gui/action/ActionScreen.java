@@ -6,7 +6,6 @@ import com.daqem.arc.client.gui.action.components.ActionComponent;
 import com.daqem.arc.client.gui.action.widgets.PageSwitchButtonWidget;
 import com.daqem.uilib.gui.AbstractScreen;
 import com.daqem.uilib.gui.background.BlurredBackground;
-import net.minecraft.client.input.KeyEvent;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.List;
@@ -55,15 +54,15 @@ public class ActionScreen extends AbstractScreen {
     }
 
     @Override
-    public boolean keyPressed(KeyEvent keyEvent) {
-        if (keyEvent.key() == KEY_BACK) {
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (keyCode == KEY_BACK) {
             moveToPreviousActionComponent();
             return true;
-        } else if (keyEvent.key() == KEY_FORWARD) {
+        } else if (keyCode == KEY_FORWARD) {
             moveToNextActionComponent();
             return true;
         }
-        return super.keyPressed(keyEvent);
+        return super.keyPressed(keyCode, scanCode, modifiers);
     }
 
     private void moveToActionComponent(IAction action) {

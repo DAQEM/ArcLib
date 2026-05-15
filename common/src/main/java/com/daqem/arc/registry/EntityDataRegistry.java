@@ -4,15 +4,15 @@ import com.daqem.arc.Arc;
 import com.daqem.arc.api.entity.IEntityDataResolver;
 import com.daqem.arc.mixin.EntityAccessor;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.animal.Animal;
-import net.minecraft.world.entity.monster.illager.SpellcasterIllager;
-import net.minecraft.world.entity.npc.villager.AbstractVillager;
-import net.minecraft.world.entity.npc.villager.Villager;
+import net.minecraft.world.entity.monster.SpellcasterIllager;
+import net.minecraft.world.entity.npc.AbstractVillager;
+import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.HashMap;
@@ -22,13 +22,13 @@ import java.util.function.Function;
 
 public class EntityDataRegistry {
 
-    private static final Map<Identifier, IEntityDataResolver<?>> RESOLVERS = new HashMap<>();
+    private static final Map<ResourceLocation, IEntityDataResolver<?>> RESOLVERS = new HashMap<>();
 
     public static <T> void register(IEntityDataResolver<T> resolver) {
         RESOLVERS.put(resolver.getId(), resolver);
     }
 
-    public static Optional<IEntityDataResolver<?>> get(Identifier id) {
+    public static Optional<IEntityDataResolver<?>> get(ResourceLocation id) {
         return Optional.ofNullable(RESOLVERS.get(id));
     }
 
@@ -129,7 +129,7 @@ public class EntityDataRegistry {
         register(new SimpleEntityDataResolver<>(Arc.API.getId("is_trading"), Boolean.class,
                 entity -> entity instanceof AbstractVillager v && v.isTrading()));
         register(new SimpleEntityDataResolver<>(Arc.API.getId("villager_profession"), String.class,
-                entity -> entity instanceof Villager v ? BuiltInRegistries.VILLAGER_PROFESSION.getKey(v.getVillagerData().profession().value()).toString() : "none"));
+                entity -> entity instanceof Villager v ? BuiltInRegistries.VILLAGER_PROFESSION.getKey(v.getVillagerData().getProfession()).toString() : "none"));
         register(new SimpleEntityDataResolver<>(Arc.API.getId("is_casting_spell"), Boolean.class,
                 entity -> entity instanceof SpellcasterIllager si && si.isCastingSpell()));
         register(new SimpleEntityDataResolver<>(Arc.API.getId("current_spell"), String.class,
@@ -137,9 +137,9 @@ public class EntityDataRegistry {
         //endregion
     }
 
-    private record SimpleEntityDataResolver<T>(Identifier id, Class<T> type, Function<Entity, T> dataFetcher) implements IEntityDataResolver<T> {
+    private record SimpleEntityDataResolver<T>(ResourceLocation id, Class<T> type, Function<Entity, T> dataFetcher) implements IEntityDataResolver<T> {
         @Override
-        public Identifier getId() {
+        public ResourceLocation getId() {
             return id;
         }
 

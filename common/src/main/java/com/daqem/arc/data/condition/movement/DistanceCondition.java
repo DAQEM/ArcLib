@@ -12,7 +12,7 @@ import com.daqem.arc.data.math.ConstantNumberProvider;
 import com.google.gson.JsonObject;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
 public class DistanceCondition extends AbstractCondition {
 
@@ -67,7 +67,7 @@ public class DistanceCondition extends AbstractCondition {
     public static class Serializer implements IConditionSerializer<DistanceCondition> {
 
         @Override
-        public DistanceCondition fromJson(Identifier location, JsonObject jsonObject, boolean inverted) {
+        public DistanceCondition fromJson(ResourceLocation location, JsonObject jsonObject, boolean inverted) {
             return new DistanceCondition(
                     inverted,
                     getNumberProvider(jsonObject, "distance_in_blocks", new ConstantNumberProvider(1.0))
@@ -75,7 +75,7 @@ public class DistanceCondition extends AbstractCondition {
         }
 
         @Override
-        public DistanceCondition fromNetwork(Identifier location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
+        public DistanceCondition fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
             return new DistanceCondition(
                     inverted,
                     INumberProviderSerializer.fromNetworkStatic(friendlyByteBuf)

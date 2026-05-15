@@ -38,8 +38,12 @@ repositories {
         filter { includeGroup('org.parchmentmc.data') }
     }
     maven {
-        name = 'BlameJared'
-        url = 'https://maven.blamejared.com'
+        name = 'DAQEM Releases'
+        url = 'https://maven.daqem.com/releases'
+    }
+    maven {
+        name = 'DAQEM Snapshots'
+        url = 'https://maven.daqem.com/snapshots'
     }
 }
 
@@ -89,7 +93,10 @@ processResources {
             "mod_repository"       : project.mod_repository,
             "minecraft_version"    : project.minecraft_version,
             "fabric_loader_version": project.fabric_loader_version,
-            "neoforge_version"     : project.neoforge_version
+            "neoforge_version"     : project.neoforge_version,
+            "knot_version"         : project.knot_version,
+            "uilib_version"        : project.uilib_version,
+            "yamlconfig_version"   : project.yamlconfig_version
     ]
 
     var jsonExpandProps = expandProps.collectEntries {

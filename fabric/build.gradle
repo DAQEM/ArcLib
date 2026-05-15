@@ -11,6 +11,10 @@ dependencies {
     }
     modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
+
+    implementation "com.daqem.knot:knot-fabric:${project.knot_version}"
+    implementation "com.daqem.uilib:uilib-fabric:${project.uilib_version}"
+    implementation "com.daqem.yamlconfig:yamlconfig-fabric:${project.yamlconfig_version}"
 }
 
 apply from: rootProject.file("gradle/scripts/publishing.gradle")

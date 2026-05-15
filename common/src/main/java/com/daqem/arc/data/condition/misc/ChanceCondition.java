@@ -10,7 +10,7 @@ import com.daqem.arc.data.math.ConstantNumberProvider;
 import com.google.gson.JsonObject;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
 public class ChanceCondition extends AbstractCondition {
 
@@ -42,12 +42,12 @@ public class ChanceCondition extends AbstractCondition {
 
     public static class Serializer implements IConditionSerializer<ChanceCondition> {
         @Override
-        public ChanceCondition fromJson(Identifier location, JsonObject jsonObject, boolean inverted) {
+        public ChanceCondition fromJson(ResourceLocation location, JsonObject jsonObject, boolean inverted) {
             return new ChanceCondition(inverted, getNumberProvider(jsonObject, "chance", new ConstantNumberProvider(100.0)));
         }
 
         @Override
-        public ChanceCondition fromNetwork(Identifier location, RegistryFriendlyByteBuf buf, boolean inverted) {
+        public ChanceCondition fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf buf, boolean inverted) {
             return new ChanceCondition(inverted, INumberProviderSerializer.fromNetworkStatic(buf));
         }
 

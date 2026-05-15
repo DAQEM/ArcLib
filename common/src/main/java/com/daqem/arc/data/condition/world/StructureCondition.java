@@ -8,7 +8,7 @@ import com.google.gson.JsonObject;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.levelgen.structure.Structure;
@@ -43,25 +43,25 @@ public class StructureCondition extends AbstractCondition {
     public static class Serializer implements IConditionSerializer<StructureCondition> {
 
         @Override
-        public StructureCondition fromJson(Identifier location, JsonObject jsonObject, boolean inverted) {
+        public StructureCondition fromJson(ResourceLocation location, JsonObject jsonObject, boolean inverted) {
             return new StructureCondition(
                     inverted,
-                    TagKey.create(Registries.STRUCTURE, getIdentifier(jsonObject, "structure"))
+                    TagKey.create(Registries.STRUCTURE, getResourceLocation(jsonObject, "structure"))
             );
         }
 
         @Override
-        public StructureCondition fromNetwork(Identifier location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
+        public StructureCondition fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
             return new StructureCondition(
                     inverted,
-                    TagKey.create(Registries.STRUCTURE, friendlyByteBuf.readIdentifier())
+                    TagKey.create(Registries.STRUCTURE, friendlyByteBuf.readResourceLocation())
             );
         }
 
         @Override
         public void toNetwork(RegistryFriendlyByteBuf friendlyByteBuf, StructureCondition type) {
             IConditionSerializer.super.toNetwork(friendlyByteBuf, type);
-            friendlyByteBuf.writeIdentifier(type.structureTag.location());
+            friendlyByteBuf.writeResourceLocation(type.structureTag.location());
         }
     }
 }

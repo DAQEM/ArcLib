@@ -16,7 +16,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootParams;
@@ -27,13 +26,13 @@ import java.util.List;
 
 public class DropItemReward extends AbstractReward {
 
-    private final ItemStackTemplate itemStackTemplate;
+    private final ItemStack itemStack;
     private final INumberProvider amount;
     private ItemStack cachedItemStack;
 
-    public DropItemReward(double chance, int priority, ItemStackTemplate itemStackTemplate, INumberProvider amount) {
+    public DropItemReward(double chance, int priority, ItemStack itemStack, INumberProvider amount) {
         super(chance, priority);
-        this.itemStackTemplate = itemStackTemplate;
+        this.itemStack = itemStack;
         this.amount = amount;
         this.cachedItemStack = null;
     }
@@ -101,15 +100,7 @@ public class DropItemReward extends AbstractReward {
     }
 
     public ItemStack getItemStack() {
-        if (cachedItemStack != null) {
-            return cachedItemStack;
-        }
-        this.cachedItemStack = itemStackTemplate.create();
-        return cachedItemStack;
-    }
-
-    public ItemStackTemplate getItemStackTemplate() {
-        return itemStackTemplate;
+        return itemStack;
     }
 
     public INumberProvider getAmount() {
@@ -121,14 +112,14 @@ public class DropItemReward extends AbstractReward {
         @Override
         public DropItemReward fromJson(JsonObject jsonObject, double chance, int priority) {
             // FIX: Gracefully inherit the count from the template to preserve backwards compatibility!
-            ItemStackTemplate template = getItemStackTemplate(jsonObject, "item");
-            int templateCount = template.count();
+            ItemStack itemStack = getItemStack(jsonObject, "item");
+            int itemStackCount = itemStack.getCount();
 
             return new DropItemReward(
                     chance,
                     priority,
-                    template,
-                    getNumberProvider(jsonObject, "amount", new ConstantNumberProvider(templateCount))
+                    itemStack,
+                    getNumberProvider(jsonObject, "amount", new ConstantNumberProvider(itemStackCount))
             );
         }
 
@@ -137,7 +128,7 @@ public class DropItemReward extends AbstractReward {
             return new DropItemReward(
                     chance,
                     priority,
-                    ItemStackTemplate.STREAM_CODEC.decode(friendlyByteBuf),
+                    ItemStack.STREAM_CODEC.decode(friendlyByteBuf),
                     INumberProviderSerializer.fromNetworkStatic(friendlyByteBuf)
             );
         }
@@ -145,7 +136,7 @@ public class DropItemReward extends AbstractReward {
         @Override
         public void toNetwork(RegistryFriendlyByteBuf friendlyByteBuf, DropItemReward type) {
             IRewardSerializer.super.toNetwork(friendlyByteBuf, type);
-            ItemStackTemplate.STREAM_CODEC.encode(friendlyByteBuf, type.itemStackTemplate);
+            ItemStack.STREAM_CODEC.encode(friendlyByteBuf, type.itemStack);
             INumberProviderSerializer.toNetwork(type.amount, friendlyByteBuf);
         }
     }

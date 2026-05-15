@@ -2,7 +2,7 @@ package com.daqem.arc.data.serializer;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.EntityType;
@@ -38,7 +38,7 @@ public class ElementConverter<T> {
     }
 
     public T convertToElement(String element) {
-        T type = registry.get(Identifier.parse(element)).map(Holder.Reference::value).orElse(null);
+        T type = registry.getHolder(ResourceLocation.parse(element)).map(Holder.Reference::value).orElse(null);
 
         if (type instanceof Block && element.equals("minecraft:air")) {
             return type;
@@ -55,23 +55,23 @@ public class ElementConverter<T> {
 
         // If not found in the registry, it will return the default value for the type.
         // This checks if the element is actually in the registry.
-        else if (type == registry.get(Identifier.parse("x")) || type == null) {
-            throw new IllegalArgumentException(element + " could not be found in registry " + registry.key().identifier());
+        else if (type == registry.getHolder(ResourceLocation.parse("x")) || type == null) {
+            throw new IllegalArgumentException(element + " could not be found in registry " + registry.key().location());
         }
 
         return type;
     }
 
     private Function<String, T> convertToElement() {
-        return elementLoc -> registry.get(
-                Identifier.parse(elementLoc)).map(Holder.Reference::value).orElseThrow(
-                () -> new IllegalArgumentException(elementLoc + " could not be found in registry " + registry.key().identifier()));
+        return elementLoc -> registry.getHolder(
+                ResourceLocation.parse(elementLoc)).map(Holder.Reference::value).orElseThrow(
+                () -> new IllegalArgumentException(elementLoc + " could not be found in registry " + registry.key().location()));
     }
 
     private Function<String, TagKey<T>> replaceHashAndConvertToTag() {
         return elementLoc -> TagKey.create(
                 registry.key(),
-                Identifier.parse(
+                ResourceLocation.parse(
                         elementLoc.replace("#", "")));
     }
 }

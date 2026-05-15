@@ -3,13 +3,11 @@ package com.daqem.arc.client.gui.action.components;
 import com.daqem.arc.Arc;
 import com.daqem.uilib.gui.component.sprite.SpriteComponent;
 import com.daqem.uilib.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.WidgetSprites;
-import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.util.ARGB;
 
 public abstract class AbstractTabWidget extends ButtonWidget {
 
@@ -32,20 +30,18 @@ public abstract class AbstractTabWidget extends ButtonWidget {
     }
 
     @Override
-    protected void extractContents(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
+    protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         this.iconComponent.setX(getX() + 4);
         this.iconComponent.setY(getY() + 6 + (isSelected() ? 0 : 2));
 
         guiGraphics.blitSprite(
-                RenderPipelines.GUI_TEXTURED,
                 SPRITES.get(isSelected(), isSelected()),
                 this.getX(),
                 this.getY(),
                 this.getWidth(),
-                this.getHeight(),
-                ARGB.white(this.alpha)
+                this.getHeight()
         );
-        this.iconComponent.extractRenderStateBase(guiGraphics, mouseX, mouseY, partialTick, getWidth(), getHeight());
+        this.iconComponent.renderBase(guiGraphics, mouseX, mouseY, partialTick, getWidth(), getHeight());
     }
 
     public boolean isSelected() {

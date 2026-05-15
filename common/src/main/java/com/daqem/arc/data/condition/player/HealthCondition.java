@@ -11,7 +11,7 @@ import com.daqem.arc.data.math.ConstantNumberProvider;
 import com.google.gson.JsonObject;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.entity.player.Player;
 
@@ -62,7 +62,7 @@ public class HealthCondition extends AbstractCondition {
 
     public static class Serializer implements IConditionSerializer<HealthCondition> {
         @Override
-        public HealthCondition fromJson(Identifier location, JsonObject jsonObject, boolean inverted) {
+        public HealthCondition fromJson(ResourceLocation location, JsonObject jsonObject, boolean inverted) {
             return new HealthCondition(
                     inverted,
                     getNumberProvider(jsonObject, "health", new ConstantNumberProvider(0.0)),
@@ -72,7 +72,7 @@ public class HealthCondition extends AbstractCondition {
         }
 
         @Override
-        public HealthCondition fromNetwork(Identifier location, RegistryFriendlyByteBuf buf, boolean inverted) {
+        public HealthCondition fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf buf, boolean inverted) {
             return new HealthCondition(
                     inverted,
                     INumberProviderSerializer.fromNetworkStatic(buf),

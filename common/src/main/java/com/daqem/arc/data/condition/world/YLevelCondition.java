@@ -10,7 +10,7 @@ import com.daqem.arc.data.math.ConstantNumberProvider;
 import com.google.gson.JsonObject;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
 public class YLevelCondition extends AbstractCondition {
 
@@ -59,7 +59,7 @@ public class YLevelCondition extends AbstractCondition {
     public static class Serializer implements IConditionSerializer<YLevelCondition> {
 
         @Override
-        public YLevelCondition fromJson(Identifier location, JsonObject jsonObject, boolean inverted) {
+        public YLevelCondition fromJson(ResourceLocation location, JsonObject jsonObject, boolean inverted) {
             return new YLevelCondition(
                     inverted,
                     getNumberProvider(jsonObject, "min_y", new ConstantNumberProvider(Integer.MIN_VALUE)),
@@ -68,7 +68,7 @@ public class YLevelCondition extends AbstractCondition {
         }
 
         @Override
-        public YLevelCondition fromNetwork(Identifier location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
+        public YLevelCondition fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
             return new YLevelCondition(
                     inverted,
                     INumberProviderSerializer.fromNetworkStatic(friendlyByteBuf),

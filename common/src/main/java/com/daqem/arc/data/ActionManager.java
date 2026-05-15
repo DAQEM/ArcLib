@@ -10,7 +10,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSyntaxException;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
@@ -32,19 +32,19 @@ public class ActionManager extends SimplePreparableReloadListener<List<IAction>>
 
     @Override
     protected @NotNull List<IAction> prepare(ResourceManager resourceManager, @NotNull ProfilerFiller profilerFiller) {
-        Map<Identifier, Resource> resourceMap = resourceManager.listResources("arc", (resourceLocation) ->
+        Map<ResourceLocation, Resource> resourceMap = resourceManager.listResources("arc", (resourceLocation) ->
                         resourceLocation.getPath().endsWith(".json")).entrySet().stream()
                 .collect(Collectors.toMap(entry ->
-                                Identifier.fromNamespaceAndPath(
+                                ResourceLocation.fromNamespaceAndPath(
                                         entry.getKey().getNamespace(),
                                         entry.getKey().getPath()
                                                 .substring(0, entry.getKey().getPath().length() - ".json".length())
                                                 .substring("arc/".length())),
                         Map.Entry::getValue));
 
-        Map<Identifier, JsonElement> map = new HashMap<>();
-        for (Map.Entry<Identifier, Resource> entry : resourceMap.entrySet()) {
-            Identifier location = entry.getKey();
+        Map<ResourceLocation, JsonElement> map = new HashMap<>();
+        for (Map.Entry<ResourceLocation, Resource> entry : resourceMap.entrySet()) {
+            ResourceLocation location = entry.getKey();
             try {
                 JsonElement jsonElement = GsonHelper.parse(entry.getValue().openAsReader());
                 map.put(location, jsonElement);
@@ -77,7 +77,7 @@ public class ActionManager extends SimplePreparableReloadListener<List<IAction>>
                                     namespace = Arc.MOD_ID;
                                     resourcePath = relativePath;
                                 }
-                                Identifier location = Identifier.fromNamespaceAndPath(namespace, resourcePath);
+                                ResourceLocation location = ResourceLocation.fromNamespaceAndPath(namespace, resourcePath);
                                 map.put(location, jsonElement);
                             } catch (Exception e) {
                                 Arc.API.LOGGER.error("Parsing error loading action from config {}", path, e);
@@ -90,8 +90,8 @@ public class ActionManager extends SimplePreparableReloadListener<List<IAction>>
         List<IAction> actions = new ArrayList<>();
         List<String> excludedActions = ArcCommonConfig.excludedActions.get();
 
-        for (Map.Entry<Identifier, JsonElement> entry : map.entrySet()) {
-            Identifier location = entry.getKey();
+        for (Map.Entry<ResourceLocation, JsonElement> entry : map.entrySet()) {
+            ResourceLocation location = entry.getKey();
             if (excludedActions.contains(location.toString())) {
                 continue;
             }
@@ -124,9 +124,9 @@ public class ActionManager extends SimplePreparableReloadListener<List<IAction>>
      * @return the parsed IAction instance
      * @throws JsonSyntaxException if the JSON object is invalid or if the action type is unsupported
      */
-    public static IAction fromJson(Identifier location, JsonObject jsonObject) {
+    public static IAction fromJson(ResourceLocation location, JsonObject jsonObject) {
         String type = GsonHelper.getAsString(jsonObject, "type");
-        return ArcRegistry.ACTION.getOptional(Identifier.parse(type))
+        return ArcRegistry.ACTION.getOptional(ResourceLocation.parse(type))
                 .orElseThrow(() -> new JsonSyntaxException("Invalid or unsupported action type '" + type + "'"))
                 .getSerializer().fromJson(location, jsonObject);
     }

@@ -3,9 +3,8 @@ package com.daqem.arc.client.gui.holder.components;
 import com.daqem.arc.api.action.holder.IActionHolder;
 import com.daqem.uilib.gui.component.EmptyComponent;
 import com.daqem.uilib.gui.widget.ScrollContainerWidget;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.resources.Identifier;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -17,10 +16,16 @@ public class AHScrollContainerComponent extends EmptyComponent {
 
         ScrollContainerWidget scrollContainerWidget = new ScrollContainerWidget(151, 175) {
             @Override
-            protected void extractScrollbar(@NotNull GuiGraphicsExtractor guiGraphics, int i, int j) {
+            protected void extractScrollbar(@NotNull GuiGraphics guiGraphics, int i, int j) {
                 super.extractScrollbar(guiGraphics, i, j);
                 if (!this.scrollable()) {
-                    guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, Identifier.withDefaultNamespace("widget/scroller"), this.scrollBarX(), this.getY(), 6, this.getHeight());
+                    guiGraphics.blitSprite(
+                            ResourceLocation.withDefaultNamespace("widget/scroller"),
+                            this.scrollBarX(),
+                            this.getY(),
+                            6,
+                            this.getHeight()
+                    );
                 }
             }
         };

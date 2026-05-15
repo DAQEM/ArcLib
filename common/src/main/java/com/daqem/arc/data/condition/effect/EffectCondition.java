@@ -9,7 +9,7 @@ import com.daqem.arc.data.ActionData;
 import com.google.gson.JsonObject;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.effect.MobEffectInstance;
 
@@ -84,7 +84,7 @@ public class EffectCondition extends AbstractCondition {
     public static class Serializer implements IConditionSerializer<EffectCondition> {
 
         @Override
-        public EffectCondition fromJson(Identifier location, JsonObject jsonObject, boolean inverted) {
+        public EffectCondition fromJson(ResourceLocation location, JsonObject jsonObject, boolean inverted) {
             return new EffectCondition(
                     inverted,
                     getMobEffectInstance(jsonObject, "effect"),
@@ -96,7 +96,7 @@ public class EffectCondition extends AbstractCondition {
         }
 
         @Override
-        public EffectCondition fromNetwork(Identifier location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
+        public EffectCondition fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
             return new EffectCondition(
                     inverted,
                     MobEffectInstance.STREAM_CODEC.decode(friendlyByteBuf),

@@ -10,6 +10,7 @@ import com.daqem.arc.data.ActionData;
 import com.daqem.arc.data.math.ConstantNumberProvider;
 import com.daqem.arc.model.target.ArcPositionTarget;
 import com.google.gson.JsonObject;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -38,7 +39,7 @@ public class PlaySoundReward extends AbstractReward {
 
     @Override
     public Component getDescription() {
-        return getDescription(soundEvent.value().location());
+        return getDescription(soundEvent.value().getLocation().toString());
     }
 
     @Override
@@ -49,7 +50,7 @@ public class PlaySoundReward extends AbstractReward {
             if (position != null) {
                 float resolvedVolume = (float) volume.resolve(actionData);
                 float resolvedPitch = (float) pitch.resolve(actionData);
-                serverPlayer.level().playSound(causingEntity, position.x, position.y, position.z, soundEvent.value(), soundSource, resolvedVolume, resolvedPitch);
+                serverPlayer.level().playSound(causingEntity, BlockPos.containing(position), soundEvent.value(), soundSource, resolvedVolume, resolvedPitch);
             }
         }
         return new ActionResult();

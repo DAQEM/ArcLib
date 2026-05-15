@@ -9,11 +9,11 @@ import com.daqem.arc.api.reward.IRewardType;
 import com.daqem.arc.data.ActionData;
 import com.daqem.arc.data.math.ConstantNumberProvider;
 import com.google.gson.JsonObject;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 
@@ -39,9 +39,9 @@ public class SpawnEntityReward extends AbstractReward {
         if (player.level() instanceof ServerLevel serverLevel) {
             int resolvedCount = (int) Math.round(count.resolve(actionData));
             for (int i = 0; i < resolvedCount; i++) {
-                Entity entity = entityType.create(serverLevel, EntitySpawnReason.EVENT);
+                Entity entity = entityType.create(serverLevel);
                 if (entity != null) {
-                    entity.moveOrInterpolateTo(player.position(), player.getYRot(), player.getXRot());
+                    entity.moveTo(player.position(), player.getYRot(), player.getXRot());
                     serverLevel.addFreshEntity(entity);
                 }
             }
@@ -79,7 +79,7 @@ public class SpawnEntityReward extends AbstractReward {
             return new SpawnEntityReward(
                     chance,
                     priority,
-                    EntityType.STREAM_CODEC.decode(friendlyByteBuf),
+                    BuiltInRegistries.ENTITY_TYPE.byId(friendlyByteBuf.readVarInt()),
                     INumberProviderSerializer.fromNetworkStatic(friendlyByteBuf)
             );
         }
@@ -87,7 +87,7 @@ public class SpawnEntityReward extends AbstractReward {
         @Override
         public void toNetwork(RegistryFriendlyByteBuf friendlyByteBuf, SpawnEntityReward type) {
             IRewardSerializer.super.toNetwork(friendlyByteBuf, type);
-            EntityType.STREAM_CODEC.encode(friendlyByteBuf, type.entityType);
+            friendlyByteBuf.writeVarInt(BuiltInRegistries.ENTITY_TYPE.getId(type.entityType));
             INumberProviderSerializer.toNetwork(type.count, friendlyByteBuf);
         }
     }

@@ -8,23 +8,23 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 
 import java.util.Optional;
 
-public record EntityDataProperty(Identifier id, String value, ComparisonType comparisonType) {
+public record EntityDataProperty(ResourceLocation id, String value, ComparisonType comparisonType) {
 
     public static final Codec<EntityDataProperty> CODEC = RecordCodecBuilder.create(instance ->
             instance.group(
-                    Identifier.CODEC.fieldOf("id").forGetter(EntityDataProperty::id),
+                    ResourceLocation.CODEC.fieldOf("id").forGetter(EntityDataProperty::id),
                     Codec.STRING.fieldOf("value").forGetter(EntityDataProperty::value),
                     ComparisonType.CODEC.optionalFieldOf("comparison", ComparisonType.EQUAL).forGetter(EntityDataProperty::comparisonType)
             ).apply(instance, EntityDataProperty::new)
     );
 
     public static final StreamCodec<RegistryFriendlyByteBuf, EntityDataProperty> STREAM_CODEC = StreamCodec.composite(
-            Identifier.STREAM_CODEC,
+            ResourceLocation.STREAM_CODEC,
             EntityDataProperty::id,
             ByteBufCodecs.STRING_UTF8,
             EntityDataProperty::value,

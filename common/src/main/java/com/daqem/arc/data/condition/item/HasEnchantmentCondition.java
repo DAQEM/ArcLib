@@ -10,7 +10,7 @@ import com.daqem.arc.model.target.ArcItemTarget;
 import com.google.gson.JsonObject;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
@@ -63,7 +63,7 @@ public class HasEnchantmentCondition extends AbstractCondition {
     public static class Serializer implements IConditionSerializer<HasEnchantmentCondition> {
 
         @Override
-        public HasEnchantmentCondition fromJson(Identifier location, JsonObject jsonObject, boolean inverted) {
+        public HasEnchantmentCondition fromJson(ResourceLocation location, JsonObject jsonObject, boolean inverted) {
             return new HasEnchantmentCondition(
                     inverted,
                     getEnchantment(jsonObject, "enchantment"),
@@ -73,7 +73,7 @@ public class HasEnchantmentCondition extends AbstractCondition {
         }
 
         @Override
-        public HasEnchantmentCondition fromNetwork(Identifier location, RegistryFriendlyByteBuf buf, boolean inverted) {
+        public HasEnchantmentCondition fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf buf, boolean inverted) {
             return new HasEnchantmentCondition(
                     inverted,
                     ArcEnchantment.STREAM_CODEC.decode(buf),

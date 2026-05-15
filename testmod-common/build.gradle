@@ -20,6 +20,10 @@ dependencies {
             requireCapability "$group:$mod_id-common"
         }
     }
+
+    implementation "com.daqem.knot:knot-common:${project.knot_version}"
+    implementation "com.daqem.uilib:uilib-common:${project.uilib_version}"
+    implementation "com.daqem.yamlconfig:yamlconfig-common:${project.yamlconfig_version}"
 }
 
 // Expose source sets so the loader-specific testmods can bundle them exactly like the main project

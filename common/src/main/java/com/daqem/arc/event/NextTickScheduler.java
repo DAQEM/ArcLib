@@ -13,7 +13,7 @@ public class NextTickScheduler {
     }
 
     public static void registerEvent() {
-        Knot.Events.Tick.SERVER_PRE.register(_ -> {
+        Knot.Events.Tick.SERVER_PRE.register(server -> {
             while (!tasks.isEmpty()) {
                 tasks.poll().run();
             }

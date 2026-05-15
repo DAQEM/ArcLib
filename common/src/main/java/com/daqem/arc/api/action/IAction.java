@@ -4,7 +4,7 @@ import com.daqem.arc.api.action.holder.IActionHolderType;
 import com.daqem.arc.api.condition.ICondition;
 import com.daqem.arc.api.reward.IReward;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.List;
 
@@ -16,11 +16,11 @@ public interface IAction {
 
     IActionHolderType<?> getActionHolderType();
 
-    Identifier getActionHolderLocation();
+    ResourceLocation getActionHolderLocation();
 
     boolean shouldPerformOnClient();
 
-    Identifier getIdentifier();
+    ResourceLocation getResourceLocation();
 
     Component getName();
 

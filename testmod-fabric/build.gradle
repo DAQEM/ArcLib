@@ -20,7 +20,7 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
 
-    modImplementation(project(':fabric')) {
+    implementation(project(':fabric')) {
         capabilities {
             requireCapability "$group:$mod_id-fabric"
         }
@@ -37,6 +37,10 @@ dependencies {
             requireCapability "$group:$mod_id-common"
         }
     }
+
+    implementation "com.daqem.knot:knot-fabric:${project.knot_version}"
+    implementation "com.daqem.uilib:uilib-fabric:${project.uilib_version}"
+    implementation "com.daqem.yamlconfig:yamlconfig-fabric:${project.yamlconfig_version}"
 }
 
 // Pull in the testmod-common sources

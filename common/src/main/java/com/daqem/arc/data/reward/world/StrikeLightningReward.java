@@ -9,7 +9,6 @@ import com.daqem.arc.model.target.ArcPositionTarget;
 import com.google.gson.JsonObject;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.util.GsonHelper;
-import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.player.Player;
@@ -36,9 +35,9 @@ public class StrikeLightningReward extends AbstractReward {
         }
         Vec3 position = positionTarget.getPosition(actionData);
         if (position != null) {
-            LightningBolt lightningBolt = EntityType.LIGHTNING_BOLT.create(level, EntitySpawnReason.EVENT);
+            LightningBolt lightningBolt = EntityType.LIGHTNING_BOLT.create(level);
             if (lightningBolt != null) {
-                lightningBolt.snapTo(new Vec3(position.x, Math.floor(position.y), position.z));
+                lightningBolt.moveTo(new Vec3(position.x, Math.floor(position.y), position.z));
                 lightningBolt.setVisualOnly(visualOnly);
                 level.addFreshEntity(lightningBolt);
             }

@@ -13,7 +13,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -39,7 +39,7 @@ public class ItemsCondition extends AbstractCondition {
         return getDescription(items.stream().map(item -> item.getDefaultInstance().getDisplayName()).reduce(
                 (a, b) -> ((MutableComponent) a).append(", ").append(b)
         ).orElse(Component.literal("No Items")
-        ), itemTags.stream().map(TagKey::location).map(Identifier::toString).reduce(
+        ), itemTags.stream().map(TagKey::location).map(ResourceLocation::toString).reduce(
                 (a, b) -> a + ", " + b
         ).orElse("No Item Tags"));
     }
@@ -92,7 +92,7 @@ public class ItemsCondition extends AbstractCondition {
 
     public static class Serializer implements IConditionSerializer<ItemsCondition> {
         @Override
-        public ItemsCondition fromJson(Identifier location, JsonObject jsonObject, boolean inverted) {
+        public ItemsCondition fromJson(ResourceLocation location, JsonObject jsonObject, boolean inverted) {
             return new ItemsCondition(
                     inverted,
                     getItems(jsonObject, "items"),
@@ -102,7 +102,7 @@ public class ItemsCondition extends AbstractCondition {
         }
 
         @Override
-        public ItemsCondition fromNetwork(Identifier location, RegistryFriendlyByteBuf buf, boolean inverted) {
+        public ItemsCondition fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf buf, boolean inverted) {
             int itemCount = buf.readVarInt();
             int tagCount = buf.readVarInt();
 
@@ -113,7 +113,7 @@ public class ItemsCondition extends AbstractCondition {
                 items.add(ByteBufCodecs.registry(Registries.ITEM).decode(buf));
             }
             for (int i = 0; i < tagCount; i++) {
-                itemTags.add(TagKey.create(BuiltInRegistries.ITEM.key(), buf.readIdentifier()));
+                itemTags.add(TagKey.create(BuiltInRegistries.ITEM.key(), buf.readResourceLocation()));
             }
 
             return new ItemsCondition(inverted, items, itemTags, buf.readEnum(ArcItemTarget.class));
@@ -125,7 +125,7 @@ public class ItemsCondition extends AbstractCondition {
             buf.writeVarInt(type.items.size());
             buf.writeVarInt(type.itemTags.size());
             type.items.forEach(item -> ByteBufCodecs.registry(Registries.ITEM).encode(buf, item));
-            type.itemTags.forEach(tag -> buf.writeIdentifier(tag.location()));
+            type.itemTags.forEach(tag -> buf.writeResourceLocation(tag.location()));
             buf.writeEnum(type.target);
         }
     }

@@ -8,7 +8,7 @@ import com.daqem.arc.data.ActionData;
 import com.google.gson.JsonObject;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
 
@@ -44,14 +44,14 @@ public class EffectCategoryCondition extends AbstractCondition {
     public static class Serializer implements IConditionSerializer<EffectCategoryCondition> {
 
         @Override
-        public EffectCategoryCondition fromJson(Identifier location, JsonObject jsonObject, boolean inverted) {
+        public EffectCategoryCondition fromJson(ResourceLocation location, JsonObject jsonObject, boolean inverted) {
             return new EffectCategoryCondition(
                     inverted,
                     getMobEffectCategory(jsonObject, "category"));
         }
 
         @Override
-        public EffectCategoryCondition fromNetwork(Identifier location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
+        public EffectCategoryCondition fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
             return new EffectCategoryCondition(
                     inverted,
                     friendlyByteBuf.readEnum(MobEffectCategory.class));

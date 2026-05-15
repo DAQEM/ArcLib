@@ -5,8 +5,9 @@ import com.daqem.uilib.gui.component.sprite.SpriteComponent;
 import com.daqem.uilib.gui.component.text.TruncatedTextComponent;
 import com.daqem.uilib.gui.component.text.multiline.MultiLineTextComponent;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
@@ -42,15 +43,15 @@ public class ScrollItemComponent extends SpriteComponent {
     }
 
     @Override
-    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick, int parentWidth, int parentHeight) {
-        super.extractRenderState(guiGraphics, mouseX, mouseY, partialTick, parentWidth, parentHeight);
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, int parentWidth, int parentHeight) {
+        super.render(guiGraphics, mouseX, mouseY, partialTick, parentWidth, parentHeight);
         if (getRectangle().containsPoint(mouseX, mouseY)) {
-            guiGraphics.setTooltipForNextFrame(
-                    Minecraft.getInstance().font,
-                    Language.getInstance().getVisualOrder(List.of(description)),
-                    mouseX,
-                    mouseY
-            );
+            Screen screen = Minecraft.getInstance().screen;
+            if (screen != null) {
+                screen.setTooltipForNextRenderPass(
+                        Language.getInstance().getVisualOrder(List.of(description))
+                );
+            }
         }
     }
 

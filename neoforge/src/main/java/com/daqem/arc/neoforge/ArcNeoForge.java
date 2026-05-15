@@ -12,7 +12,6 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 @Mod(Arc.MOD_ID)
-@EventBusSubscriber(modid = Arc.MOD_ID)
 public class ArcNeoForge {
 
     public ArcNeoForge(IEventBus modEventBus) {

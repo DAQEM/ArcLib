@@ -1,6 +1,6 @@
 package com.daqem.arc.player.stat;
 
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.stats.Stat;
 import net.minecraft.stats.Stats;
 
@@ -26,7 +26,7 @@ public class StatData {
         return stat;
     }
 
-    public boolean is(Identifier location) {
+    public boolean is(ResourceLocation location) {
         return stat.equals(Stats.CUSTOM.get(location));
     }
 }

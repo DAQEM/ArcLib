@@ -6,8 +6,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.StringRepresentable;
-import net.minecraft.world.attribute.EnvironmentAttribute;
-import net.minecraft.world.attribute.EnvironmentAttributes;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
@@ -34,14 +32,13 @@ public enum PositionDataProperty implements StringRepresentable {
     TIME_OF_DAY("time_of_day") {
         @Override
         public double getValue(ActionData data, Vec3 pos) {
-            return data.getPlayer().arc$getLevel().getOverworldClockTime() % 24000;
+            return data.getPlayer().arc$getLevel().getTimeOfDay(0);
         }
     },
     MOON_PHASE("moon_phase") {
         @Override
         public double getValue(ActionData data, Vec3 pos) {
-            Level level = data.getPlayer().arc$getLevel();
-            return level.environmentAttributes().getValue(EnvironmentAttributes.MOON_PHASE, pos).index();
+            return data.getPlayer().arc$getLevel().getMoonPhase();
         }
     };
 

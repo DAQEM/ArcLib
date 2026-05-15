@@ -10,7 +10,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 
 public class DimensionCondition extends AbstractCondition {
@@ -24,7 +24,7 @@ public class DimensionCondition extends AbstractCondition {
 
     @Override
     public Component getDescription() {
-        return getDescription(dimension.identifier());
+        return getDescription(dimension.location());
     }
 
     @Override
@@ -32,7 +32,7 @@ public class DimensionCondition extends AbstractCondition {
         Level world = actionData.getData(IActionDataType.WORLD);
         if (world == null)
             world = actionData.getPlayer().arc$getLevel();
-        return world.dimension().identifier().equals(dimension.identifier());
+        return world.dimension().location().equals(dimension.location());
     }
 
     @Override
@@ -47,14 +47,14 @@ public class DimensionCondition extends AbstractCondition {
     public static class Serializer implements IConditionSerializer<DimensionCondition> {
 
         @Override
-        public DimensionCondition fromJson(Identifier location, JsonObject jsonObject, boolean inverted) {
+        public DimensionCondition fromJson(ResourceLocation location, JsonObject jsonObject, boolean inverted) {
             return new DimensionCondition(
                     inverted,
                     getDimension(jsonObject, "dimension"));
         }
 
         @Override
-        public DimensionCondition fromNetwork(Identifier location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
+        public DimensionCondition fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
             return new DimensionCondition(
                     inverted,
                     friendlyByteBuf.readResourceKey(Registries.DIMENSION));

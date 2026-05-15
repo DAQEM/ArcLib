@@ -11,7 +11,7 @@ import com.daqem.arc.data.math.ConstantNumberProvider;
 import com.google.gson.JsonObject;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.block.state.properties.Property;
@@ -64,7 +64,7 @@ public class CropAgeCondition extends AbstractCondition {
     public static class Serializer implements IConditionSerializer<CropAgeCondition> {
 
         @Override
-        public CropAgeCondition fromJson(Identifier location, JsonObject jsonObject, boolean inverted) {
+        public CropAgeCondition fromJson(ResourceLocation location, JsonObject jsonObject, boolean inverted) {
             return new CropAgeCondition(
                     inverted,
                     getNumberProvider(jsonObject, "age", new ConstantNumberProvider(0.0))
@@ -72,7 +72,7 @@ public class CropAgeCondition extends AbstractCondition {
         }
 
         @Override
-        public CropAgeCondition fromNetwork(Identifier location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
+        public CropAgeCondition fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
             return new CropAgeCondition(
                     inverted,
                     INumberProviderSerializer.fromNetworkStatic(friendlyByteBuf)

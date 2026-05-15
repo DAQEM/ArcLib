@@ -10,7 +10,7 @@ import com.daqem.arc.registry.EntityDataRegistry;
 import com.google.gson.JsonObject;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 
 import java.util.Optional;
@@ -18,9 +18,9 @@ import java.util.Optional;
 public class EntityDataNumberProvider implements INumberProvider {
 
     private final ArcEntityTarget target;
-    private final Identifier property;
+    private final ResourceLocation property;
 
-    public EntityDataNumberProvider(ArcEntityTarget target, Identifier property) {
+    public EntityDataNumberProvider(ArcEntityTarget target, ResourceLocation property) {
         this.target = target;
         this.property = property;
     }
@@ -70,7 +70,7 @@ public class EntityDataNumberProvider implements INumberProvider {
         public EntityDataNumberProvider fromJson(JsonObject jsonObject) {
             return new EntityDataNumberProvider(
                     getEntityTarget(jsonObject, "target", ArcEntityTarget.PLAYER),
-                    getIdentifier(jsonObject, "property")
+                    getResourceLocation(jsonObject, "property")
             );
         }
 
@@ -78,7 +78,7 @@ public class EntityDataNumberProvider implements INumberProvider {
         public EntityDataNumberProvider fromNetwork(RegistryFriendlyByteBuf buf) {
             return new EntityDataNumberProvider(
                     buf.readEnum(ArcEntityTarget.class),
-                    buf.readIdentifier()
+                    buf.readResourceLocation()
             );
         }
 
@@ -86,7 +86,7 @@ public class EntityDataNumberProvider implements INumberProvider {
         public void toNetwork(RegistryFriendlyByteBuf buf, EntityDataNumberProvider type) {
             INumberProviderSerializer.super.toNetwork(buf, type);
             buf.writeEnum(type.target);
-            buf.writeIdentifier(type.property);
+            buf.writeResourceLocation(type.property);
         }
     }
 }

@@ -13,7 +13,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -37,7 +37,7 @@ public class BlocksCondition extends AbstractCondition {
         return getDescription(blockStates.stream().map(x -> x.block().getName()).reduce(
                 (a, b) -> a.append(", ").append(b)
         ).orElse(Component.literal("No Blocks")
-        ), blockTags.stream().map(TagKey::location).map(Identifier::toString).reduce(
+        ), blockTags.stream().map(TagKey::location).map(ResourceLocation::toString).reduce(
                 (a, b) -> a + ", " + b
         ).orElse("No Block Tags"));
     }
@@ -81,7 +81,7 @@ public class BlocksCondition extends AbstractCondition {
     public static class Serializer implements IConditionSerializer<BlocksCondition> {
 
         @Override
-        public BlocksCondition fromJson(Identifier location, JsonObject jsonObject, boolean inverted) {
+        public BlocksCondition fromJson(ResourceLocation location, JsonObject jsonObject, boolean inverted) {
             return new BlocksCondition(
                     inverted,
                     getBlockStates(jsonObject, "blocks"),
@@ -89,14 +89,14 @@ public class BlocksCondition extends AbstractCondition {
         }
 
         @Override
-        public BlocksCondition fromNetwork(Identifier location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
+        public BlocksCondition fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
             List<ArcBlockState> blocks = friendlyByteBuf.readList(buf ->
                     ArcBlockState.STREAM_CODEC.decode((RegistryFriendlyByteBuf) buf));
             List<TagKey<Block>> blockTags = new ArrayList<>();
 
             int tagCount = friendlyByteBuf.readVarInt();
             for (int i = 0; i < tagCount; i++) {
-                blockTags.add(TagKey.create(BuiltInRegistries.BLOCK.key(), friendlyByteBuf.readIdentifier()));
+                blockTags.add(TagKey.create(BuiltInRegistries.BLOCK.key(), friendlyByteBuf.readResourceLocation()));
             }
 
 
@@ -113,7 +113,7 @@ public class BlocksCondition extends AbstractCondition {
             friendlyByteBuf.writeCollection(type.blockStates, (buf, blockState) ->
                     ArcBlockState.STREAM_CODEC.encode((RegistryFriendlyByteBuf) buf, blockState));
             friendlyByteBuf.writeVarInt(type.blockTags.size());
-            type.blockTags.forEach(tag -> friendlyByteBuf.writeIdentifier(tag.location()));
+            type.blockTags.forEach(tag -> friendlyByteBuf.writeResourceLocation(tag.location()));
         }
     }
 }

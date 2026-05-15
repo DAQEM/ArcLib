@@ -12,30 +12,27 @@ import com.daqem.arc.model.target.ArcItemTarget;
 import com.google.gson.JsonObject;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ItemStackTemplate;
 
 public class ItemCondition extends AbstractCondition {
 
-    private final ItemStackTemplate itemStackTemplate;
+    private final ItemStack itemStack;
     private final boolean checkComponents;
     private final boolean checkCount;
     private final INumberProvider count;
     private final ComparisonType comparisonType;
     private final ArcItemTarget target;
-    private ItemStack cachedItemStack;
 
-    public ItemCondition(boolean inverted, ItemStackTemplate itemStackTemplate, boolean checkComponents, boolean checkCount, INumberProvider count, ComparisonType comparisonType, ArcItemTarget target) {
+    public ItemCondition(boolean inverted, ItemStack itemStack, boolean checkComponents, boolean checkCount, INumberProvider count, ComparisonType comparisonType, ArcItemTarget target) {
         super(inverted);
-        this.itemStackTemplate = itemStackTemplate;
+        this.itemStack = itemStack;
         this.checkComponents = checkComponents;
         this.checkCount = checkCount;
         this.count = count;
         this.comparisonType = comparisonType;
         this.target = target;
-        this.cachedItemStack = null;
     }
 
     @Override
@@ -69,12 +66,6 @@ public class ItemCondition extends AbstractCondition {
         return IConditionType.ITEM;
     }
 
-    public ItemStack getItemStack() {
-        if (cachedItemStack != null) return cachedItemStack;
-        this.cachedItemStack = itemStackTemplate.create();
-        return cachedItemStack;
-    }
-
     public ComparisonType getComparisonType() {
         return comparisonType;
     }
@@ -83,8 +74,8 @@ public class ItemCondition extends AbstractCondition {
         return count;
     }
 
-    public ItemStackTemplate getItemStackTemplate() {
-        return itemStackTemplate;
+    public ItemStack getItemStack() {
+        return itemStack;
     }
 
     public boolean shouldCheckComponents() {
@@ -101,26 +92,26 @@ public class ItemCondition extends AbstractCondition {
 
     public static class Serializer implements IConditionSerializer<ItemCondition> {
         @Override
-        public ItemCondition fromJson(Identifier location, JsonObject jsonObject, boolean inverted) {
-            ItemStackTemplate template = getItemStackTemplate(jsonObject, "item");
-            int templateCount = template.count();
+        public ItemCondition fromJson(ResourceLocation location, JsonObject jsonObject, boolean inverted) {
+            ItemStack itemStack = getItemStack(jsonObject, "item");
+            int itemStackCount = itemStack.getCount();
 
             return new ItemCondition(
                     inverted,
-                    template,
+                    itemStack,
                     GsonHelper.getAsBoolean(jsonObject, "check_components", true),
-                    GsonHelper.getAsBoolean(jsonObject, "check_count", templateCount > 1),
-                    getNumberProvider(jsonObject, "count", new ConstantNumberProvider(templateCount)),
+                    GsonHelper.getAsBoolean(jsonObject, "check_count", itemStackCount > 1),
+                    getNumberProvider(jsonObject, "count", new ConstantNumberProvider(itemStackCount)),
                     getComparisonType(jsonObject, "comparison", ComparisonType.EQUAL),
                     getItemTarget(jsonObject, "target", ArcItemTarget.ACTION)
             );
         }
 
         @Override
-        public ItemCondition fromNetwork(Identifier location, RegistryFriendlyByteBuf buf, boolean inverted) {
+        public ItemCondition fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf buf, boolean inverted) {
             return new ItemCondition(
                     inverted,
-                    ItemStackTemplate.STREAM_CODEC.decode(buf),
+                    ItemStack.STREAM_CODEC.decode(buf),
                     buf.readBoolean(),
                     buf.readBoolean(),
                     INumberProviderSerializer.fromNetworkStatic(buf),
@@ -132,7 +123,7 @@ public class ItemCondition extends AbstractCondition {
         @Override
         public void toNetwork(RegistryFriendlyByteBuf buf, ItemCondition type) {
             IConditionSerializer.super.toNetwork(buf, type);
-            ItemStackTemplate.STREAM_CODEC.encode(buf, type.itemStackTemplate);
+            ItemStack.STREAM_CODEC.encode(buf, type.itemStack);
             buf.writeBoolean(type.checkComponents);
             buf.writeBoolean(type.checkCount);
             INumberProviderSerializer.toNetwork(type.count, buf);

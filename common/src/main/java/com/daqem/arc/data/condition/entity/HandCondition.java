@@ -8,7 +8,7 @@ import com.daqem.arc.data.ActionData;
 import com.google.gson.JsonObject;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 
 public class HandCondition extends AbstractCondition {
@@ -43,14 +43,14 @@ public class HandCondition extends AbstractCondition {
     public static class Serializer implements IConditionSerializer<HandCondition> {
 
         @Override
-        public HandCondition fromJson(Identifier location, JsonObject jsonObject, boolean inverted) {
+        public HandCondition fromJson(ResourceLocation location, JsonObject jsonObject, boolean inverted) {
             return new HandCondition(
                     inverted,
                     getHand(jsonObject, "hand"));
         }
 
         @Override
-        public HandCondition fromNetwork(Identifier location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
+        public HandCondition fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
             return new HandCondition(
                     inverted,
                     friendlyByteBuf.readEnum(InteractionHand.class));

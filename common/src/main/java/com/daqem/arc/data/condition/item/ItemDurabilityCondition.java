@@ -12,7 +12,7 @@ import com.daqem.arc.model.target.ArcItemTarget;
 import com.google.gson.JsonObject;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 
@@ -72,7 +72,7 @@ public class ItemDurabilityCondition extends AbstractCondition {
 
     public static class Serializer implements IConditionSerializer<ItemDurabilityCondition> {
         @Override
-        public ItemDurabilityCondition fromJson(Identifier location, JsonObject jsonObject, boolean inverted) {
+        public ItemDurabilityCondition fromJson(ResourceLocation location, JsonObject jsonObject, boolean inverted) {
             return new ItemDurabilityCondition(
                     inverted,
                     getNumberProvider(jsonObject, "durability", new ConstantNumberProvider(0.0)),
@@ -83,7 +83,7 @@ public class ItemDurabilityCondition extends AbstractCondition {
         }
 
         @Override
-        public ItemDurabilityCondition fromNetwork(Identifier location, RegistryFriendlyByteBuf buf, boolean inverted) {
+        public ItemDurabilityCondition fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf buf, boolean inverted) {
             return new ItemDurabilityCondition(
                     inverted,
                     INumberProviderSerializer.fromNetworkStatic(buf),

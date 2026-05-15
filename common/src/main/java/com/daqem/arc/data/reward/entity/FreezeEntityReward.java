@@ -34,7 +34,7 @@ public class FreezeEntityReward extends AbstractReward {
     public ActionResult apply(ActionData actionData) {
         if (actionData.getData(IActionDataType.ENTITY) instanceof LivingEntity target) {
             int resolvedDuration = (int) Math.round(duration.resolve(actionData));
-            target.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, resolvedDuration, 255, false, false));
+            target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, resolvedDuration, 255, false, false));
         }
         return new ActionResult();
     }

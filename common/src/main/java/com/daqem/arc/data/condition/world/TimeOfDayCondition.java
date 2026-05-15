@@ -10,7 +10,7 @@ import com.daqem.arc.data.math.ConstantNumberProvider;
 import com.google.gson.JsonObject;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 
 public class TimeOfDayCondition extends AbstractCondition {
@@ -32,7 +32,7 @@ public class TimeOfDayCondition extends AbstractCondition {
     @Override
     public boolean isMet(ActionData actionData) {
         Level level = actionData.getPlayer().arc$getLevel();
-        long time = level.getOverworldClockTime() % 24000;
+        long time = level.getDayTime();
 
         double resolvedMin = minTime.resolve(actionData);
         double resolvedMax = maxTime.resolve(actionData);
@@ -62,7 +62,7 @@ public class TimeOfDayCondition extends AbstractCondition {
     public static class Serializer implements IConditionSerializer<TimeOfDayCondition> {
 
         @Override
-        public TimeOfDayCondition fromJson(Identifier location, JsonObject jsonObject, boolean inverted) {
+        public TimeOfDayCondition fromJson(ResourceLocation location, JsonObject jsonObject, boolean inverted) {
             return new TimeOfDayCondition(
                     inverted,
                     getNumberProvider(jsonObject, "min_time", new ConstantNumberProvider(0.0)),
@@ -71,7 +71,7 @@ public class TimeOfDayCondition extends AbstractCondition {
         }
 
         @Override
-        public TimeOfDayCondition fromNetwork(Identifier location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
+        public TimeOfDayCondition fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
             return new TimeOfDayCondition(
                     inverted,
                     INumberProviderSerializer.fromNetworkStatic(friendlyByteBuf),

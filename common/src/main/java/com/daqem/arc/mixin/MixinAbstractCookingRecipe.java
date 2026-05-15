@@ -3,27 +3,30 @@ package com.daqem.arc.mixin;
 import com.daqem.arc.api.IArcAbstractCookingRecipe;
 import com.daqem.arc.api.IArcIngredient;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ItemStackTemplate;
-import net.minecraft.world.item.crafting.AbstractCookingRecipe;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.SingleItemRecipe;
+import net.minecraft.world.item.crafting.*;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(AbstractCookingRecipe.class)
-public abstract class MixinAbstractCookingRecipe extends SingleItemRecipe implements IArcAbstractCookingRecipe {
+public abstract class MixinAbstractCookingRecipe implements Recipe<SingleRecipeInput>, IArcAbstractCookingRecipe {
 
-    public MixinAbstractCookingRecipe(CommonInfo commonInfo, Ingredient input, ItemStackTemplate result) {
-        super(commonInfo, input, result);
-    }
+    @Shadow
+    @Final
+    protected ItemStack result;
+
+    @Shadow
+    @Final
+    protected Ingredient ingredient;
 
     @Override
     public ItemStack arc$getResult() {
-        return this.result().create();
+        return this.result;
     }
 
     @Override
     public IArcIngredient arc$getIngredient() {
-        Ingredient ingredient = this.input();
+        Ingredient ingredient = this.ingredient;
         if ((Object) ingredient instanceof IArcIngredient arcIngredient) {
             return arcIngredient;
         }

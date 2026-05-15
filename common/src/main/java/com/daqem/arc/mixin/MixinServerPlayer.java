@@ -8,7 +8,8 @@ import com.daqem.arc.networking.ClientboundSyncPlayerActionHoldersPacket;
 import com.daqem.arc.player.BlockPosCache;
 import com.daqem.knot.Knot;
 import com.mojang.authlib.GameProfile;
-import net.minecraft.resources.Identifier;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ClientInformation;
 import net.minecraft.server.level.ServerLevel;
@@ -35,7 +36,7 @@ public abstract class MixinServerPlayer extends Player implements ArcServerPlaye
     @Shadow
     public ServerGamePacketListenerImpl connection;
     @Unique
-    private final Map<Identifier, IActionHolder> arc$actionHolders = new HashMap<>();
+    private final Map<ResourceLocation, IActionHolder> arc$actionHolders = new HashMap<>();
     @Unique
     private boolean arc$actionHoldersDirty = false;
     @Unique
@@ -43,8 +44,8 @@ public abstract class MixinServerPlayer extends Player implements ArcServerPlaye
     @Unique
     public BlockPosCache arc$blockPosCache = new BlockPosCache();
 
-    public MixinServerPlayer(Level level, GameProfile gameProfile) {
-        super(level, gameProfile);
+    public MixinServerPlayer(Level level, BlockPos pos, float yRot, GameProfile gameProfile) {
+        super(level, pos, yRot, gameProfile);
     }
 
     @Override
@@ -55,7 +56,7 @@ public abstract class MixinServerPlayer extends Player implements ArcServerPlaye
     @Override
     public void arc$addActionHolder(IActionHolder actionHolder) {
         if (actionHolder == null) return;
-        this.arc$actionHolders.put(actionHolder.getIdentifier(), actionHolder);
+        this.arc$actionHolders.put(actionHolder.getResourceLocation(), actionHolder);
         this.arc$actionHoldersDirty = true;
     }
 
@@ -65,7 +66,7 @@ public abstract class MixinServerPlayer extends Player implements ArcServerPlaye
         boolean changed = false;
         for (IActionHolder actionHolder : actionHolders) {
             if (actionHolder != null) {
-                this.arc$actionHolders.put(actionHolder.getIdentifier(), actionHolder);
+                this.arc$actionHolders.put(actionHolder.getResourceLocation(), actionHolder);
                 changed = true;
             }
         }
@@ -76,7 +77,7 @@ public abstract class MixinServerPlayer extends Player implements ArcServerPlaye
 
     @Override
     public void arc$removeActionHolder(IActionHolder actionHolder) {
-        if (this.arc$actionHolders.remove(actionHolder.getIdentifier()) != null) {
+        if (this.arc$actionHolders.remove(actionHolder.getResourceLocation()) != null) {
             this.arc$actionHoldersDirty = true;
         }
     }

@@ -21,7 +21,7 @@ import com.daqem.arc.data.condition.recipe.IsSmokingRecipeCondition;
 import com.daqem.arc.data.condition.world.*;
 import com.daqem.arc.registry.ArcRegistry;
 import net.minecraft.core.Registry;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
 public interface IConditionType<T extends ICondition> {
 
@@ -86,11 +86,11 @@ public interface IConditionType<T extends ICondition> {
     IConditionType<FullArmorSetCondition> FULL_ARMOR_SET = register(Arc.API.getId("full_armor_set"), new FullArmorSetCondition.Serializer());
     IConditionType<ChanceCondition> CHANCE = register(Arc.API.getId("chance"), new ChanceCondition.Serializer());
 
-    static <T extends ICondition> IConditionType<T> register(final Identifier location, final IConditionSerializer<T> serializer) {
+    static <T extends ICondition> IConditionType<T> register(final ResourceLocation location, final IConditionSerializer<T> serializer) {
         return Registry.register(ArcRegistry.CONDITION, location, new IConditionType<T>(){
 
             @Override
-            public Identifier getIdentifier() {
+            public ResourceLocation getResourceLocation() {
                 return location;
             }
 
@@ -109,7 +109,7 @@ public interface IConditionType<T extends ICondition> {
     static void init() {
     }
 
-    Identifier getIdentifier();
+    ResourceLocation getResourceLocation();
 
     IConditionSerializer<T> getSerializer();
 }

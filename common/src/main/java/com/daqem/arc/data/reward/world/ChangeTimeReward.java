@@ -29,9 +29,9 @@ public class ChangeTimeReward extends AbstractReward {
     @Override
     public Component getDescription() {
         if (addTime) {
-            return Arc.API.translatable("reward.description.add" + this.getType().getIdentifier().getPath(), time.getDescription());
+            return Arc.API.translatable("reward.description.add" + this.getType().getResourceLocation().getPath(), time.getDescription());
         }
-        return Arc.API.translatable("reward.description." + this.getType().getIdentifier().getPath(), time.getDescription());
+        return Arc.API.translatable("reward.description." + this.getType().getResourceLocation().getPath(), time.getDescription());
     }
 
     @Override
@@ -39,11 +39,9 @@ public class ChangeTimeReward extends AbstractReward {
         if (actionData.getPlayer().arc$getLevel() instanceof ServerLevel serverLevel) {
             int resolvedTime = (int) Math.round(time.resolve(actionData));
             if (addTime) {
-                serverLevel.dimensionType().defaultClock().ifPresent(clock ->
-                        serverLevel.clockManager().setTotalTicks(clock, serverLevel.getOverworldClockTime() + resolvedTime));
+                serverLevel.setDayTime(serverLevel.getDayTime() + resolvedTime);
             } else {
-                serverLevel.dimensionType().defaultClock().ifPresent(clock ->
-                        serverLevel.clockManager().setTotalTicks(clock, resolvedTime));
+                serverLevel.setDayTime(resolvedTime);
             }
         }
         return new ActionResult();

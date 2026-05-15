@@ -11,7 +11,7 @@ import com.daqem.arc.data.math.ConstantNumberProvider;
 import com.google.gson.JsonObject;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 
 public class SaturationLevelCondition extends AbstractCondition {
@@ -52,7 +52,7 @@ public class SaturationLevelCondition extends AbstractCondition {
     public static class Serializer implements IConditionSerializer<SaturationLevelCondition> {
 
         @Override
-        public SaturationLevelCondition fromJson(Identifier location, JsonObject jsonObject, boolean inverted) {
+        public SaturationLevelCondition fromJson(ResourceLocation location, JsonObject jsonObject, boolean inverted) {
             return new SaturationLevelCondition(
                     inverted,
                     getNumberProvider(jsonObject, "saturation_level", new ConstantNumberProvider(0.0)),
@@ -61,7 +61,7 @@ public class SaturationLevelCondition extends AbstractCondition {
         }
 
         @Override
-        public SaturationLevelCondition fromNetwork(Identifier location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
+        public SaturationLevelCondition fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
             return new SaturationLevelCondition(
                     inverted,
                     INumberProviderSerializer.fromNetworkStatic(friendlyByteBuf),

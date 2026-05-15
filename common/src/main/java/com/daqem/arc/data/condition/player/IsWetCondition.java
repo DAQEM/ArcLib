@@ -6,7 +6,7 @@ import com.daqem.arc.api.condition.IConditionType;
 import com.daqem.arc.data.ActionData;
 import com.google.gson.JsonObject;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 
 public class IsWetCondition extends AbstractCondition {
@@ -29,12 +29,12 @@ public class IsWetCondition extends AbstractCondition {
     public static class Serializer implements IConditionSerializer<IsWetCondition> {
 
         @Override
-        public IsWetCondition fromJson(Identifier location, JsonObject jsonObject, boolean inverted) {
+        public IsWetCondition fromJson(ResourceLocation location, JsonObject jsonObject, boolean inverted) {
             return new IsWetCondition(inverted);
         }
 
         @Override
-        public IsWetCondition fromNetwork(Identifier location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
+        public IsWetCondition fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
             return new IsWetCondition(inverted);
         }
     }

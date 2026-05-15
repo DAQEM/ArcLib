@@ -8,24 +8,23 @@ import com.daqem.arc.data.ActionData;
 import com.google.gson.JsonObject;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ItemStackTemplate;
 import org.jetbrains.annotations.Nullable;
 
 public class ItemInHandCondition extends AbstractCondition {
 
-    private final ItemStackTemplate itemStackTemplate;
+    private final ItemStack itemStack;
     private ItemStack cachedItemStack;
     @Nullable
     private final InteractionHand hand;
 
-    public ItemInHandCondition(boolean inverted, ItemStackTemplate itemStackTemplate, @Nullable InteractionHand hand) {
+    public ItemInHandCondition(boolean inverted, ItemStack itemStack, @Nullable InteractionHand hand) {
         super(inverted);
-        this.itemStackTemplate = itemStackTemplate;
+        this.itemStack = itemStack;
         this.cachedItemStack = null;
         this.hand = hand;
     }
@@ -56,15 +55,7 @@ public class ItemInHandCondition extends AbstractCondition {
     }
 
     public ItemStack getItemStack() {
-        if (cachedItemStack != null) {
-            return cachedItemStack;
-        }
-        this.cachedItemStack = itemStackTemplate.create();
-        return cachedItemStack;
-    }
-
-    public ItemStackTemplate getItemStackTemplate() {
-        return itemStackTemplate;
+        return itemStack;
     }
 
     @Nullable
@@ -75,21 +66,21 @@ public class ItemInHandCondition extends AbstractCondition {
     public static class Serializer implements IConditionSerializer<ItemInHandCondition> {
 
         @Override
-        public ItemInHandCondition fromJson(Identifier location, JsonObject jsonObject, boolean inverted) {
+        public ItemInHandCondition fromJson(ResourceLocation location, JsonObject jsonObject, boolean inverted) {
             return new ItemInHandCondition(
                     inverted,
-                    getItemStackTemplate(jsonObject,"item"),
+                    this.getItemStack(jsonObject,"item"),
                     getOptionalHand(jsonObject, "hand")
             );
         }
 
         @Override
-        public ItemInHandCondition fromNetwork(Identifier location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
-            ItemStackTemplate itemStackTemplate = ItemStackTemplate.STREAM_CODEC.decode(friendlyByteBuf);
+        public ItemInHandCondition fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
+            ItemStack itemStack = ItemStack.STREAM_CODEC.decode(friendlyByteBuf);
             InteractionHand hand = friendlyByteBuf.readBoolean() ? friendlyByteBuf.readEnum(InteractionHand.class) : null;
             return new ItemInHandCondition(
                     inverted,
-                    itemStackTemplate,
+                    itemStack,
                     hand
             );
         }
@@ -97,7 +88,7 @@ public class ItemInHandCondition extends AbstractCondition {
         @Override
         public void toNetwork(RegistryFriendlyByteBuf friendlyByteBuf, ItemInHandCondition type) {
             IConditionSerializer.super.toNetwork(friendlyByteBuf, type);
-            ItemStackTemplate.STREAM_CODEC.encode(friendlyByteBuf, type.itemStackTemplate);
+            ItemStack.STREAM_CODEC.encode(friendlyByteBuf, type.itemStack);
             friendlyByteBuf.writeBoolean(type.hand != null);
             if (type.hand != null) {
                 friendlyByteBuf.writeEnum(type.hand);

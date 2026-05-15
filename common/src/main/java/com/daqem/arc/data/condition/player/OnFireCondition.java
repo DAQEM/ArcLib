@@ -6,7 +6,7 @@ import com.daqem.arc.api.condition.IConditionType;
 import com.daqem.arc.data.ActionData;
 import com.google.gson.JsonObject;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 
 public class OnFireCondition extends AbstractCondition {
@@ -29,12 +29,12 @@ public class OnFireCondition extends AbstractCondition {
     public static class Serializer implements IConditionSerializer<OnFireCondition> {
 
         @Override
-        public OnFireCondition fromJson(Identifier location, JsonObject jsonObject, boolean inverted) {
+        public OnFireCondition fromJson(ResourceLocation location, JsonObject jsonObject, boolean inverted) {
             return new OnFireCondition(inverted);
         }
 
         @Override
-        public OnFireCondition fromNetwork(Identifier location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
+        public OnFireCondition fromNetwork(ResourceLocation location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
             return new OnFireCondition(inverted);
         }
     }

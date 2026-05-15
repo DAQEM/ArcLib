@@ -13,19 +13,16 @@ import com.google.gson.JsonObject;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ItemStackTemplate;
 
 public class ItemReward extends AbstractReward {
 
-    private final ItemStackTemplate itemStackTemplate;
+    private final ItemStack itemStack;
     private final INumberProvider amount;
-    private ItemStack cachedItemStack;
 
-    public ItemReward(double chance, int priority, ItemStackTemplate itemStackTemplate, INumberProvider amount) {
+    public ItemReward(double chance, int priority, ItemStack itemStack, INumberProvider amount) {
         super(chance, priority);
-        this.itemStackTemplate = itemStackTemplate;
+        this.itemStack = itemStack;
         this.amount = amount;
-        this.cachedItemStack = null;
     }
 
     @Override
@@ -39,7 +36,7 @@ public class ItemReward extends AbstractReward {
 
         int resolvedAmount = (int) Math.round(amount.resolve(actionData));
         if (resolvedAmount > 0) {
-            ItemStack stack = getItemStackTemplate().create();
+            ItemStack stack = getItemStack();
             stack.setCount(resolvedAmount);
             player.arc$getPlayer().addItem(stack);
         }
@@ -53,29 +50,21 @@ public class ItemReward extends AbstractReward {
     }
 
     public ItemStack getItemStack() {
-        if (cachedItemStack != null) {
-            return cachedItemStack;
-        }
-        this.cachedItemStack = itemStackTemplate.create();
-        return cachedItemStack;
-    }
-
-    public ItemStackTemplate getItemStackTemplate() {
-        return itemStackTemplate;
+        return itemStack;
     }
 
     public static class Serializer implements IRewardSerializer<ItemReward> {
 
         @Override
         public ItemReward fromJson(JsonObject jsonObject, double chance, int priority) {
-            ItemStackTemplate template = getItemStackTemplate(jsonObject, "item");
-            int templateCount = template.count();
+            ItemStack itemStack = getItemStack(jsonObject, "item");
+            int itemStackCount = itemStack.getCount();
 
             return new ItemReward(
                     chance,
                     priority,
-                    template,
-                    getNumberProvider(jsonObject, "amount", new ConstantNumberProvider(templateCount))
+                    itemStack,
+                    getNumberProvider(jsonObject, "amount", new ConstantNumberProvider(itemStackCount))
             );
         }
 
@@ -84,7 +73,7 @@ public class ItemReward extends AbstractReward {
             return new ItemReward(
                     chance,
                     priority,
-                    ItemStackTemplate.STREAM_CODEC.decode(friendlyByteBuf),
+                    ItemStack.STREAM_CODEC.decode(friendlyByteBuf),
                     INumberProviderSerializer.fromNetworkStatic(friendlyByteBuf)
             );
         }
@@ -92,7 +81,7 @@ public class ItemReward extends AbstractReward {
         @Override
         public void toNetwork(RegistryFriendlyByteBuf friendlyByteBuf, ItemReward type) {
             IRewardSerializer.super.toNetwork(friendlyByteBuf, type);
-            ItemStackTemplate.STREAM_CODEC.encode(friendlyByteBuf, type.itemStackTemplate);
+            ItemStack.STREAM_CODEC.encode(friendlyByteBuf, type.itemStack);
             INumberProviderSerializer.toNetwork(type.amount, friendlyByteBuf);
         }
     }
