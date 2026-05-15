@@ -4,10 +4,10 @@ import com.daqem.arc.api.IArcIngredient;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
@@ -24,7 +24,7 @@ public abstract class MixinIngredient implements Predicate<ItemStack>, IArcIngre
     public List<Item> arc$getItems() {
         if (this.itemStacks == null) return new ArrayList<>();
         return Stream.of(this.itemStacks)
-                .filter(stack -> !stack.isEmpty())
+                .filter(stack -> stack != null && !stack.isEmpty())
                 .map(ItemStack::getItem)
                 .toList();
     }

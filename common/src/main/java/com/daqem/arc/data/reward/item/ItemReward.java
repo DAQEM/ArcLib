@@ -36,9 +36,7 @@ public class ItemReward extends AbstractReward {
 
         int resolvedAmount = (int) Math.round(amount.resolve(actionData));
         if (resolvedAmount > 0) {
-            ItemStack stack = getItemStack();
-            stack.setCount(resolvedAmount);
-            player.arc$getPlayer().addItem(stack);
+            player.arc$getPlayer().addItem(getItemStack().copyWithCount(resolvedAmount));
         }
 
         return new ActionResult();
