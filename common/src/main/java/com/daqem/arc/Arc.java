@@ -26,8 +26,6 @@ public class Arc {
     public static final String MOD_ID = "arc";
     public static final Logger LOGGER = LogUtils.getLogger();
 
-    public static final Map<BlockPos, BrewingStandData> BREWING_STANDS = new HashMap<>();
-
     public static void initCommon() {
         ArcCommonConfig.init();
         ArcNetworking.init();

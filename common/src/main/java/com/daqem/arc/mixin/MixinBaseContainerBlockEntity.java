@@ -1,9 +1,6 @@
 package com.daqem.arc.mixin;
 
-import com.daqem.arc.Arc;
-import com.daqem.arc.api.player.ArcServerPlayer;
-import com.daqem.arc.player.brewing.BrewingStandData;
-import net.minecraft.core.BlockPos;
+import com.daqem.arc.api.blockentity.IArcBrewingStand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
 import net.minecraft.world.level.block.entity.BrewingStandBlockEntity;
@@ -17,15 +14,8 @@ public class MixinBaseContainerBlockEntity {
 
     @Inject(at = @At("HEAD"), method = "stillValid(Lnet/minecraft/world/entity/player/Player;)Z")
     private void stillValid(Player player, CallbackInfoReturnable<Boolean> cir) {
-        if (player instanceof ArcServerPlayer arcServerPlayer) {
-            if ((BaseContainerBlockEntity) (Object) this instanceof BrewingStandBlockEntity brewingStand) {
-                BlockPos blockPos = brewingStand.getBlockPos();
-                if (Arc.BREWING_STANDS.containsKey(blockPos)) {
-                    Arc.BREWING_STANDS.get(blockPos).setLastPlayerToInteract(arcServerPlayer);
-                } else {
-                    Arc.BREWING_STANDS.put(blockPos, new BrewingStandData(brewingStand));
-                }
-            }
+        if ((BaseContainerBlockEntity) (Object) this instanceof BrewingStandBlockEntity brewingStand) {
+            ((IArcBrewingStand) brewingStand).arc$setLastPlayerToInteract(player.getUUID());
         }
     }
 }
