@@ -8,12 +8,13 @@ import com.daqem.arc.api.reward.serializer.IRewardSerializer;
 import com.daqem.arc.api.reward.type.IRewardType;
 import com.daqem.arc.api.reward.type.RewardType;
 import com.google.gson.*;
+import net.minecraft.core.Holder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.player.Player;
 
 public class RemoveEffectReward extends AbstractReward {
-
 
     public RemoveEffectReward(double chance, int priority) {
         super(chance, priority);
@@ -21,17 +22,20 @@ public class RemoveEffectReward extends AbstractReward {
 
     @Override
     public ActionResult apply(ActionData actionData) {
-        MobEffectInstance effect = actionData.getData(ActionDataType.MOB_EFFECT_INSTANCE);
-        if (effect != null) {
-            Player player = actionData.getPlayer().arc$getPlayer();
-            player.getActiveEffectsMap().keySet()
-                    .stream()
-                    .filter(mobEffect2 -> mobEffect2.value().getDescriptionId()
-                            .equals(effect.getEffect().value().getDescriptionId()))
-                    .findFirst()
-                    .ifPresent(player::removeEffect);
-        }
-        return new ActionResult();
+        ActionResult result = new ActionResult();
+        MobEffectInstance effectInstance = actionData.getData(ActionDataType.MOB_EFFECT_INSTANCE);
+        if (effectInstance == null) return result;
+
+        Holder<MobEffect> effect = effectInstance.getEffect();
+        Player player = actionData.getPlayer().arc$getPlayer();
+
+        player.getActiveEffectsMap().keySet()
+                .stream()
+                .filter(e -> e.is(effect))
+                .findFirst()
+                .ifPresent(player::removeEffect);
+
+        return result.withCancelEffect(effect);
     }
 
     @Override

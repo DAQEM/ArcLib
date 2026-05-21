@@ -23,6 +23,10 @@ public abstract class MixinLivingEntity extends Entity {
 
     @Inject(at = @At("RETURN"), method = "addEffect(Lnet/minecraft/world/effect/MobEffectInstance;Lnet/minecraft/world/entity/Entity;)Z")
     private void addEffect(MobEffectInstance effect, Entity entity, CallbackInfoReturnable<Boolean> cir) {
+        if (!cir.getReturnValueZ()) {
+            return;
+        }
+
         final LivingEntity self = (LivingEntity) (Object) this;
         if (self instanceof ArcServerPlayer serverPlayer) {
             if (self.getActiveEffectsMap().containsKey(effect.getEffect())) {
@@ -33,7 +37,7 @@ public abstract class MixinLivingEntity extends Entity {
                 }
             }
             ActionResult actionResult = PlayerEvents.onEffectAdded(serverPlayer, effect, entity);
-            if (actionResult.shouldCancelAction()) {
+            if (actionResult.shouldCancelAction() || actionResult.getCancelEffects().stream().anyMatch(e -> e.is(effect.getEffect()))) {
                 self.removeEffect(effect.getEffect());
             }
         }
