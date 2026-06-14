@@ -14,6 +14,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.Level;
 
+import java.util.Locale;
+
 public class CreateExplosionReward extends AbstractReward {
 
     private final INumberProvider radius;
@@ -66,7 +68,7 @@ public class CreateExplosionReward extends AbstractReward {
                     priority,
                     getNumberProvider(jsonObject, "radius", new ConstantNumberProvider(1.0)),
                     GsonHelper.getAsBoolean(jsonObject, "causes_fire", false),
-                    Level.ExplosionInteraction.valueOf(GsonHelper.getAsString(jsonObject, "block_interaction", "NONE").toUpperCase())
+                    Level.ExplosionInteraction.valueOf(GsonHelper.getAsString(jsonObject, "block_interaction", "NONE").toUpperCase(Locale.ROOT))
             );
         }
 

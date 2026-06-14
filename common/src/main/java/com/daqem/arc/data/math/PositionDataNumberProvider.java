@@ -13,6 +13,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.Arrays;
+import java.util.Locale;
 
 public class PositionDataNumberProvider implements INumberProvider {
 
@@ -58,7 +59,7 @@ public class PositionDataNumberProvider implements INumberProvider {
             PositionDataProperty property = PositionDataProperty.Y;
             if (propName != null) {
                 try {
-                    property = PositionDataProperty.valueOf(propName.toUpperCase());
+                    property = PositionDataProperty.valueOf(propName.toUpperCase(Locale.ROOT));
                 } catch (IllegalArgumentException e) {
                     throw new IllegalArgumentException("Unknown PositionDataProperty: " + propName + ". Options: " + Arrays.toString(PositionDataProperty.values()));
                 }
