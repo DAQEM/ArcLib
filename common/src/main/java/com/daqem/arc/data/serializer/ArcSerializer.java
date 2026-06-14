@@ -35,6 +35,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 public interface ArcSerializer {
@@ -410,7 +411,7 @@ public interface ArcSerializer {
             throw new JsonParseException("Expected '" + key + "' to be a mob effect category");
         }
 
-        String categoryName = GsonHelper.getAsString(jsonObject, key).toUpperCase();
+        String categoryName = GsonHelper.getAsString(jsonObject, key).toUpperCase(Locale.ROOT);
         MobEffectCategory category;
         try {
             category = MobEffectCategory.valueOf(categoryName);
@@ -884,7 +885,7 @@ public interface ArcSerializer {
             }
             throw new JsonParseException("Expected '" + elementName + "' to be a hand");
         }
-        String handName = GsonHelper.getAsString(jsonObject, elementName).toUpperCase();
+        String handName = GsonHelper.getAsString(jsonObject, elementName).toUpperCase(Locale.ROOT);
         InteractionHand hand = handName.equals("MAIN") ? InteractionHand.MAIN_HAND : handName.equals("OFF") ? InteractionHand.OFF_HAND : null;
         if (hand == null) {
             try {
@@ -918,7 +919,7 @@ public interface ArcSerializer {
             }
             throw new JsonParseException("Expected '" + elementName + "' to be an item target");
         }
-        String targetName = GsonHelper.getAsString(jsonObject, elementName).toUpperCase();
+        String targetName = GsonHelper.getAsString(jsonObject, elementName).toUpperCase(Locale.ROOT);
         ArcItemTarget target;
         try {
             target = ArcItemTarget.valueOf(targetName);
@@ -953,7 +954,7 @@ public interface ArcSerializer {
             }
             throw new JsonParseException("Expected '" + elementName + "' to be a position target");
         }
-        String targetName = GsonHelper.getAsString(jsonObject, elementName).toUpperCase();
+        String targetName = GsonHelper.getAsString(jsonObject, elementName).toUpperCase(Locale.ROOT);
         ArcPositionTarget target;
         try {
             target = ArcPositionTarget.valueOf(targetName);
@@ -989,7 +990,7 @@ public interface ArcSerializer {
             }
             throw new JsonParseException("Expected '" + elementName + "' to be a weather type");
         }
-        String weatherTypeName = GsonHelper.getAsString(jsonObject, elementName).toUpperCase();
+        String weatherTypeName = GsonHelper.getAsString(jsonObject, elementName).toUpperCase(Locale.ROOT);
         ArcWeatherType weatherType;
         try {
             weatherType = ArcWeatherType.valueOf(weatherTypeName);
@@ -1089,7 +1090,7 @@ public interface ArcSerializer {
             throw new JsonParseException("Expected '" + key + "' to be a sound source");
         }
 
-        String soundSourceName = GsonHelper.getAsString(jsonObject, key).toUpperCase();
+        String soundSourceName = GsonHelper.getAsString(jsonObject, key).toUpperCase(Locale.ROOT);
         SoundSource soundSource;
         try {
             soundSource = SoundSource.valueOf(soundSourceName);
@@ -1155,7 +1156,7 @@ public interface ArcSerializer {
             if (defaultTarget != null) return defaultTarget;
             throw new JsonParseException("Expected '" + elementName + "' to be an entity target");
         }
-        String targetName = GsonHelper.getAsString(jsonObject, elementName).toUpperCase();
+        String targetName = GsonHelper.getAsString(jsonObject, elementName).toUpperCase(Locale.ROOT);
         try {
             return ArcEntityTarget.valueOf(targetName);
         } catch (IllegalArgumentException e) {
@@ -1177,7 +1178,7 @@ public interface ArcSerializer {
             if (defaultProperty != null) return defaultProperty;
             throw new JsonParseException("Expected '" + elementName + "' to be an item data property");
         }
-        String propName = GsonHelper.getAsString(jsonObject, elementName).toUpperCase();
+        String propName = GsonHelper.getAsString(jsonObject, elementName).toUpperCase(Locale.ROOT);
         try {
             return ItemDataProperty.valueOf(propName);
         } catch (IllegalArgumentException e) {
@@ -1199,7 +1200,7 @@ public interface ArcSerializer {
             if (defaultOperator != null) return defaultOperator;
             throw new JsonParseException("Expected '" + elementName + "' to be a math operator");
         }
-        String opName = GsonHelper.getAsString(jsonObject, elementName).toUpperCase();
+        String opName = GsonHelper.getAsString(jsonObject, elementName).toUpperCase(Locale.ROOT);
         try {
             return MathOperator.valueOf(opName);
         } catch (IllegalArgumentException e) {
@@ -1221,7 +1222,7 @@ public interface ArcSerializer {
             if (defaultProperty != null) return defaultProperty;
             throw new JsonParseException("Expected '" + elementName + "' to be a block data property");
         }
-        String propName = GsonHelper.getAsString(jsonObject, elementName).toUpperCase();
+        String propName = GsonHelper.getAsString(jsonObject, elementName).toUpperCase(Locale.ROOT);
         try {
             return BlockDataProperty.valueOf(propName);
         } catch (IllegalArgumentException e) {

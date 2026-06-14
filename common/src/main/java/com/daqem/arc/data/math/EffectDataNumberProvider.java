@@ -17,6 +17,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 
 import java.util.Arrays;
+import java.util.Locale;
 
 public class EffectDataNumberProvider implements INumberProvider {
 
@@ -64,7 +65,7 @@ public class EffectDataNumberProvider implements INumberProvider {
     public static class Serializer implements INumberProviderSerializer<EffectDataNumberProvider> {
         @Override
         public EffectDataNumberProvider fromJson(JsonObject jsonObject) {
-            String propStr = GsonHelper.getAsString(jsonObject, "property", "AMPLIFIER").toUpperCase();
+            String propStr = GsonHelper.getAsString(jsonObject, "property", "AMPLIFIER").toUpperCase(Locale.ROOT);
             EffectDataProperty property;
             try {
                 property = EffectDataProperty.valueOf(propStr);
