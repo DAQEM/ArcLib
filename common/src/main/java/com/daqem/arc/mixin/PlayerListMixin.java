@@ -41,11 +41,11 @@ public abstract class PlayerListMixin {
     }
 
     @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/server/players/PlayerList;sendPlayerPermissionLevel(Lnet/minecraft/server/level/ServerPlayer;)V", shift = At.Shift.BEFORE), method = "placeNewPlayer")
-    private void placeNewPlayer(Connection connection, ServerPlayer serverPlayer, CommonListenerCookie commonListenerCookie, CallbackInfo ci) {
-        Knot.NETWORKING.sendToPlayer(serverPlayer, new ClientboundUpdateActionsPacket(ActionHolderManager.getInstance().getActions()));
-        Knot.NETWORKING.sendToPlayer(serverPlayer, new ClientboundUpdateActionHoldersPacket(ActionHolderManager.getInstance().getActionHolders()));
+    private void placeNewPlayer(Connection connection, ServerPlayer player, CommonListenerCookie cookie, CallbackInfo ci) {
+        Knot.NETWORKING.sendToPlayer(player, new ClientboundUpdateActionsPacket(ActionHolderManager.getInstance().getActions()));
+        Knot.NETWORKING.sendToPlayer(player, new ClientboundUpdateActionHoldersPacket(ActionHolderManager.getInstance().getActionHolders()));
 
-        if (serverPlayer instanceof ArcServerPlayer arcServerPlayer) {
+        if (player instanceof ArcServerPlayer arcServerPlayer) {
             arcServerPlayer.arc$syncActionHoldersWithClient();
         }
     }

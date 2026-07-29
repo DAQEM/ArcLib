@@ -9,6 +9,6 @@ import org.jetbrains.annotations.NotNull;
 public class ClientboundActionHoldersScreenPacketHandler {
 
     public static void handle(@NotNull ClientboundActionHoldersScreenPacket packet, ClientboundContext clientboundContext) {
-        Minecraft.getInstance().setScreen(new ActionHoldersScreen(packet.actionHolders()));
+        Minecraft.getInstance().gui.setScreen(new ActionHoldersScreen(packet.actionHolders()));
     }
 }

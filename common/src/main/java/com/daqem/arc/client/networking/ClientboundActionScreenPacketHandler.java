@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 public class ClientboundActionScreenPacketHandler {
 
     public static void handle(@NotNull ClientboundActionScreenPacket packet, ClientboundContext clientboundContext) {
-        Minecraft.getInstance().setScreen(new ActionScreen(
+        Minecraft.getInstance().gui.setScreen(new ActionScreen(
                 ActionHolderManager.getInstance().getActions(),
                 ActionHolderManager.getInstance().getActions().stream()
                         .filter(a -> a.getIdentifier().equals(packet.action().getIdentifier()))

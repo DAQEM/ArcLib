@@ -16,7 +16,7 @@ public enum ArcPositionTarget {
             case PLAYER -> actionData.getPlayer().arc$getPlayer().position();
             case BLOCK -> {
                 BlockPos blockPos = actionData.getData(IActionDataType.BLOCK_POSITION);
-                yield blockPos != null ? blockPos.getCenter() : actionData.getPlayer().arc$getPlayer().position();
+                yield blockPos != null ? Vec3.atCenterOf(blockPos) : actionData.getPlayer().arc$getPlayer().position();
             }
             case ENTITY -> {
                 Entity entity = actionData.getData(IActionDataType.ENTITY);

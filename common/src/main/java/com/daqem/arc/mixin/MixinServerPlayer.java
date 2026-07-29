@@ -137,7 +137,7 @@ public abstract class MixinServerPlayer extends Player implements ArcServerPlaye
     }
 
     @Inject(at = @At("TAIL"), method = "restoreFrom(Lnet/minecraft/server/level/ServerPlayer;Z)V")
-    public void restoreFrom(ServerPlayer oldPlayer, boolean alive, CallbackInfo ci) {
+    public void restoreFrom(ServerPlayer oldPlayer, boolean restoreAll, CallbackInfo ci) {
         if (oldPlayer instanceof ArcServerPlayer arcServerPlayer) {
             this.arc$actionLastMetDistances.putAll(arcServerPlayer.arc$getActionLastMetDistances());
             this.arc$blockPosCache = arcServerPlayer.arc$getBlockPosCache();
@@ -146,7 +146,7 @@ public abstract class MixinServerPlayer extends Player implements ArcServerPlaye
     }
 
     @Inject(at = @At("TAIL"), method = "<init>")
-    public void readAdditionalSaveData(MinecraftServer minecraftServer, ServerLevel serverLevel, GameProfile gameProfile, ClientInformation clientInformation, CallbackInfo ci) {
+    public void readAdditionalSaveData(MinecraftServer server, ServerLevel level, GameProfile gameProfile, ClientInformation clientInformation, CallbackInfo ci) {
         if (((ServerPlayer) (Object) this) instanceof ArcPlayer arcPlayer) {
             arcPlayer.arc$addActionHolders(PlayerActionHolderManager.getInstance().getPlayerActionHoldersList());
         }
