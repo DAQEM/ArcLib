@@ -1,5 +1,6 @@
 package com.daqem.arc.data.condition.experience;
 
+import com.daqem.arc.api.ComparisonType;
 import com.daqem.arc.api.action.data.IActionDataType;
 import com.daqem.arc.api.condition.AbstractCondition;
 import com.daqem.arc.api.condition.IConditionSerializer;
@@ -16,25 +17,31 @@ import net.minecraft.resources.Identifier;
 public class ExpCostCondition extends AbstractCondition {
 
     private final INumberProvider level;
+    private final ComparisonType comparisonType;
 
-    public ExpCostCondition(boolean inverted, INumberProvider level) {
+    public ExpCostCondition(boolean inverted, INumberProvider level, ComparisonType comparisonType) {
         super(inverted);
         this.level = level;
+        this.comparisonType = comparisonType;
     }
 
     @Override
     public Component getDescription() {
-        return getDescription(level.getDescription());
+        return getDescription(comparisonType.getSymbol(), level.getDescription());
     }
 
     @Override
     public boolean isMet(ActionData actionData) {
         Integer expLevel = actionData.getData(IActionDataType.EXP_COST);
-        return expLevel != null && expLevel == Math.round(this.level.resolve(actionData));
+        return expLevel != null && comparisonType.compare(expLevel, Math.round(this.level.resolve(actionData)));
     }
 
     public INumberProvider getLevel() {
         return level;
+    }
+
+    public ComparisonType getComparisonType() {
+        return comparisonType;
     }
 
     @Override
@@ -48,7 +55,8 @@ public class ExpCostCondition extends AbstractCondition {
         public ExpCostCondition fromJson(Identifier location, JsonObject jsonObject, boolean inverted) {
             return new ExpCostCondition(
                     inverted,
-                    getNumberProvider(jsonObject, "level", new ConstantNumberProvider(0.0))
+                    getNumberProvider(jsonObject, "level", new ConstantNumberProvider(0.0)),
+                    getComparisonType(jsonObject, "comparison", ComparisonType.EQUAL)
             );
         }
 
@@ -56,7 +64,8 @@ public class ExpCostCondition extends AbstractCondition {
         public ExpCostCondition fromNetwork(Identifier location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
             return new ExpCostCondition(
                     inverted,
-                    INumberProviderSerializer.fromNetworkStatic(friendlyByteBuf)
+                    INumberProviderSerializer.fromNetworkStatic(friendlyByteBuf),
+                    friendlyByteBuf.readEnum(ComparisonType.class)
             );
         }
 
@@ -64,6 +73,7 @@ public class ExpCostCondition extends AbstractCondition {
         public void toNetwork(RegistryFriendlyByteBuf friendlyByteBuf, ExpCostCondition type) {
             IConditionSerializer.super.toNetwork(friendlyByteBuf, type);
             INumberProviderSerializer.toNetwork(type.level, friendlyByteBuf);
+            friendlyByteBuf.writeEnum(type.comparisonType);
         }
     }
 }
