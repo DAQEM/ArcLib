@@ -328,6 +328,52 @@ public interface ArcSerializer {
         return getItemStacks(jsonObject, key, new ArrayList<>());
     }
 
+    default List<ItemStackTemplate> getItemStackTemplates(JsonObject jsonObject, String key, List<ItemStackTemplate> defaultItemStacks) {
+        if (!jsonObject.has(key) || jsonObject.get(key).isJsonNull()) {
+            if (defaultItemStacks != null) {
+                return defaultItemStacks;
+            }
+            throw new JsonParseException("Expected '" + key + "' to be a list of item stack templates");
+        }
+
+        JsonElement element = jsonObject.get(key);
+
+        if (element.isJsonArray()) {
+            JsonArray jsonArray = element.getAsJsonArray();
+            List<ItemStackTemplate> itemStacks = new ArrayList<>();
+            for (JsonElement itemElement : jsonArray) {
+                String itemName = itemElement.getAsString();
+                if (itemName != null && !itemName.startsWith("#")) {
+                    if (itemElement.isJsonPrimitive()) {
+                        Item item = BuiltInRegistries.ITEM.byNameCodec().decode(JsonOps.INSTANCE, itemElement).result()
+                                .orElseThrow(() -> new JsonParseException("Expected '" + key + "' to be a list of item stack templates, but one of the items was invalid: " + itemElement.getAsString()))
+                                .getFirst();
+                        itemStacks.add(new ItemStackTemplate(item));
+                    } else {
+                        ItemStackTemplate itemStack = ItemStackTemplate.CODEC.decode(JsonOps.INSTANCE, itemElement).result()
+                                .orElseThrow(() -> new JsonParseException("Expected '" + key + "' to be a list of item stack templates, but one of the item stack templates was invalid"))
+                                .getFirst();
+                        itemStacks.add(itemStack);
+                    }
+                }
+            }
+            return itemStacks;
+        } else {
+            throw new JsonParseException("Expected '" + key + "' to be a list of item stack templates, but it was not an array");
+        }
+    }
+
+    default List<ItemStackTemplate> getItemStackTemplates(JsonObject jsonObject, String key) {
+        return getItemStackTemplates(jsonObject, key, new ArrayList<>());
+    }
+
+    default List<ItemStackTemplate> getOptionalItemStackTemplates(JsonObject jsonObject, String key) {
+        if (!jsonObject.has(key) || jsonObject.get(key).isJsonNull()) {
+            return new ArrayList<>();
+        }
+        return getItemStackTemplates(jsonObject, key, new ArrayList<>());
+    }
+
     //endregion
 
     //region Mob Effect

@@ -21,6 +21,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,7 +67,7 @@ public class ItemsCondition extends AbstractCondition {
     @Override
     public Component getDescription() {
         List<String> allNames = items.stream()
-                .map(arcStack -> BuiltInRegistries.ITEM.getKey(arcStack.itemStack().getItem()).toString())
+                .map(arcStack -> BuiltInRegistries.ITEM.getKey(arcStack.getItem()).toString())
                 .distinct()
                 .collect(Collectors.toList());
         return super.getDescription(String.join(", ", allNames));
@@ -78,7 +79,7 @@ public class ItemsCondition extends AbstractCondition {
 
     @Deprecated()
     public List<ItemStack> getItemStacks(RegistryAccess registryAccess) {
-        return items.stream().map(ArcItemStack::itemStack).collect(Collectors.toList());
+        return items.stream().map(ArcItemStack::getItemStack).collect(Collectors.toList());
     }
 
     public static class Serializer implements IConditionSerializer<ItemsCondition> {
@@ -96,10 +97,10 @@ public class ItemsCondition extends AbstractCondition {
                         TagKey<Item> tagKey = TagKey.create(Registries.ITEM, Identifier.parse(str.substring(1)));
                         BuiltInRegistries.ITEM.get(tagKey).ifPresent(named ->
                                 named.forEach(holder ->
-                                        items.add(new ArcItemStack(holder.value().getDefaultInstance()))));
+                                        items.add(new ArcItemStack(new ItemStackTemplate(holder.value())))));
                     } else {
                         BuiltInRegistries.ITEM.get(Identifier.parse(str)).ifPresent(item ->
-                                items.add(new ArcItemStack(item.value().getDefaultInstance())));
+                                items.add(new ArcItemStack(new ItemStackTemplate(item.value()))));
                     }
                 } else if (element.isJsonObject()) {
                     ArcItemStack stack = ArcItemStack.CODEC.parse(JsonOps.INSTANCE, element).getOrThrow();
