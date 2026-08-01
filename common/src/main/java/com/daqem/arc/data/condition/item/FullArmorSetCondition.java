@@ -13,6 +13,7 @@ import net.minecraft.util.GsonHelper;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -66,7 +67,7 @@ public class FullArmorSetCondition extends AbstractCondition {
         public FullArmorSetCondition fromJson(Identifier location, JsonObject jsonObject, boolean inverted) {
             return new FullArmorSetCondition(
                     inverted,
-                    getItemStacks(jsonObject, "items").stream().map(ArcItemStack::new).toList(),
+                    getItemStackTemplates(jsonObject, "items").stream().map(ArcItemStack::new).toList(),
                     GsonHelper.getAsBoolean(jsonObject, "check_components", true)
             );
         }
@@ -75,7 +76,7 @@ public class FullArmorSetCondition extends AbstractCondition {
         public FullArmorSetCondition fromNetwork(Identifier location, RegistryFriendlyByteBuf friendlyByteBuf, boolean inverted) {
             return new FullArmorSetCondition(
                     inverted,
-                    friendlyByteBuf.readList(object -> ItemStack.STREAM_CODEC.decode(friendlyByteBuf)).stream().map(ArcItemStack::new).toList(),
+                    friendlyByteBuf.readList(object -> ItemStackTemplate.STREAM_CODEC.decode(friendlyByteBuf)).stream().map(ArcItemStack::new).toList(),
                     friendlyByteBuf.readBoolean()
             );
         }
@@ -83,7 +84,7 @@ public class FullArmorSetCondition extends AbstractCondition {
         @Override
         public void toNetwork(RegistryFriendlyByteBuf friendlyByteBuf, FullArmorSetCondition type) {
             IConditionSerializer.super.toNetwork(friendlyByteBuf, type);
-            friendlyByteBuf.writeCollection(type.armorItems.stream().map(ArcItemStack::itemStack).toList(), (buf, itemStack) -> ItemStack.STREAM_CODEC.encode((RegistryFriendlyByteBuf) buf, itemStack));
+            friendlyByteBuf.writeCollection(type.armorItems.stream().map(ArcItemStack::getItemStackTemplate).toList(), (buf, itemStack) -> ItemStackTemplate.STREAM_CODEC.encode((RegistryFriendlyByteBuf) buf, itemStack));
             friendlyByteBuf.writeBoolean(type.checkComponents);
         }
     }
