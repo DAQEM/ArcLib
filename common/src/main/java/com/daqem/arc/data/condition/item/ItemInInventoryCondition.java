@@ -1,6 +1,7 @@
 package com.daqem.arc.data.condition.item;
 
 import com.daqem.arc.api.ComparisonType;
+import com.daqem.arc.api.ComponentMatchType;
 import com.daqem.arc.api.condition.AbstractCondition;
 import com.daqem.arc.api.condition.IConditionSerializer;
 import com.daqem.arc.api.condition.IConditionType;
@@ -20,16 +21,16 @@ import net.minecraft.world.item.ItemStackTemplate;
 public class ItemInInventoryCondition extends AbstractCondition {
 
     private final ItemStackTemplate itemStackTemplate;
-    private final boolean checkComponents;
+    private final ComponentMatchType componentMatchType;
     private final boolean checkCount;
     private final INumberProvider count;
     private final ComparisonType comparisonType;
     private ItemStack cachedItemStack;
 
-    public ItemInInventoryCondition(boolean inverted, ItemStackTemplate itemStackTemplate, boolean checkComponents, boolean checkCount, INumberProvider count, ComparisonType comparisonType) {
+    public ItemInInventoryCondition(boolean inverted, ItemStackTemplate itemStackTemplate, ComponentMatchType componentMatchType, boolean checkCount, INumberProvider count, ComparisonType comparisonType) {
         super(inverted);
         this.itemStackTemplate = itemStackTemplate;
-        this.checkComponents = checkComponents;
+        this.componentMatchType = componentMatchType;
         this.checkCount = checkCount;
         this.count = count;
         this.comparisonType = comparisonType;
@@ -49,9 +50,7 @@ public class ItemInInventoryCondition extends AbstractCondition {
         int totalFound = 0;
         for (ItemStack stack : player.getInventory().getNonEquipmentItems()) {
             if (ItemStack.isSameItem(stack, targetStack)) {
-                boolean hasComponents = !checkComponents || !targetStack.getComponents().isEmpty();
-                boolean sameComponents = !checkComponents || ItemStack.isSameItemSameComponents(targetStack, stack);
-                if (!checkComponents || !hasComponents || sameComponents) {
+                if (componentMatchType.matches(targetStack, stack)) {
                     totalFound += stack.getCount();
                 }
             }
@@ -87,8 +86,8 @@ public class ItemInInventoryCondition extends AbstractCondition {
         return count;
     }
 
-    public boolean shouldCheckComponents() {
-        return checkComponents;
+    public ComponentMatchType getComponentMatchType() {
+        return componentMatchType;
     }
 
     public boolean shouldCheckCount() {
@@ -105,7 +104,7 @@ public class ItemInInventoryCondition extends AbstractCondition {
             return new ItemInInventoryCondition(
                     inverted,
                     template,
-                    GsonHelper.getAsBoolean(jsonObject, "check_components", false),
+                    ComponentMatchType.fromJson(jsonObject, "check_components", ComponentMatchType.NONE),
                     GsonHelper.getAsBoolean(jsonObject, "check_count", templateCount > 1),
                     getNumberProvider(jsonObject, "count", new ConstantNumberProvider(templateCount)),
                     getComparisonType(jsonObject, "comparison", ComparisonType.GREATER_THAN_OR_EQUAL)
@@ -117,7 +116,7 @@ public class ItemInInventoryCondition extends AbstractCondition {
             return new ItemInInventoryCondition(
                     inverted,
                     ItemStackTemplate.STREAM_CODEC.decode(buf),
-                    buf.readBoolean(),
+                    buf.readEnum(ComponentMatchType.class),
                     buf.readBoolean(),
                     INumberProviderSerializer.fromNetworkStatic(buf),
                     buf.readEnum(ComparisonType.class)
@@ -128,7 +127,7 @@ public class ItemInInventoryCondition extends AbstractCondition {
         public void toNetwork(RegistryFriendlyByteBuf buf, ItemInInventoryCondition type) {
             IConditionSerializer.super.toNetwork(buf, type);
             ItemStackTemplate.STREAM_CODEC.encode(buf, type.itemStackTemplate);
-            buf.writeBoolean(type.checkComponents);
+            buf.writeEnum(type.componentMatchType);
             buf.writeBoolean(type.checkCount);
             INumberProviderSerializer.toNetwork(type.count, buf);
             buf.writeEnum(type.comparisonType);
