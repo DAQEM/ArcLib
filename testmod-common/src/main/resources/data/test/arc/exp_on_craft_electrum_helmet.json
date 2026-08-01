@@ -1,0 +1,29 @@
+{
+  "holder": {
+    "type": "arc:player",
+    "id": "arc:player"
+  },
+  "type": "arc:on_craft_item",
+  "rewards": [
+    {
+      "type": "arc:exp",
+      "chance": 100,
+      "min": 50,
+      "max": 100
+    }
+  ],
+  "conditions": [
+    {
+      "type": "arc:items",
+      "check_components": "contains",
+      "items": [
+        {
+          "id": "minecraft:diamond_helmet",
+          "components": {
+            "minecraft:item_model": "minecraft:electrum_helmet"
+          }
+        }
+      ]
+    }
+  ]
+}
