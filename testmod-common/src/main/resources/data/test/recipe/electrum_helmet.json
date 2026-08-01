@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": ["minecraft:diamond_helmet", "minecraft:heart_of_the_sea"],
+  "result": {
+    "id": "minecraft:diamond_helmet",
+    "components": {
+      "minecraft:max_damage": 1000,
+      "minecraft:item_model": "minecraft:electrum_helmet"
+    }
+  }
+}
