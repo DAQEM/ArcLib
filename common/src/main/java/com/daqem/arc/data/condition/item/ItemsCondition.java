@@ -1,132 +1,127 @@
 package com.daqem.arc.data.condition.item;
 
+import com.daqem.arc.api.action.data.IActionDataType;
 import com.daqem.arc.api.condition.AbstractCondition;
+import com.daqem.arc.api.condition.ICondition;
 import com.daqem.arc.api.condition.IConditionSerializer;
 import com.daqem.arc.api.condition.IConditionType;
 import com.daqem.arc.data.ActionData;
-import com.daqem.arc.model.target.ArcItemTarget;
+import com.daqem.arc.model.ArcItemStack;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.mojang.serialization.JsonOps;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ItemsCondition extends AbstractCondition {
 
-    private final List<Item> items;
-    private final List<TagKey<Item>> itemTags;
-    private final ArcItemTarget target;
+    private final boolean checkComponents;
+    private final List<ArcItemStack> items;
 
-    public ItemsCondition(boolean inverted, List<Item> items, List<TagKey<Item>> itemTags, ArcItemTarget target) {
+    public ItemsCondition(boolean inverted, boolean checkComponents, List<ArcItemStack> items) {
         super(inverted);
+        this.checkComponents = checkComponents;
         this.items = items;
-        this.itemTags = itemTags;
-        this.target = target;
-    }
-
-    @Override
-    public Component getDescription() {
-        return getDescription(items.stream().map(item -> item.getDefaultInstance().getDisplayName()).reduce(
-                (a, b) -> ((MutableComponent) a).append(", ").append(b)
-        ).orElse(Component.literal("No Items")
-        ), itemTags.stream().map(TagKey::location).map(Identifier::toString).reduce(
-                (a, b) -> a + ", " + b
-        ).orElse("No Item Tags"));
     }
 
     @Override
     public boolean isMet(ActionData actionData) {
-        ItemStack itemStack = target.getItemStack(actionData, actionData.getPlayer().arc$getPlayer());
-        return itemStack != null && !itemStack.isEmpty() && (isItem(itemStack) || isItemByTag(itemStack));
+        ItemStack actionStack = actionData.getData(IActionDataType.ITEM_STACK);
+        if (actionStack == null) {
+            Item actionItem = actionData.getData(IActionDataType.ITEM);
+            if (actionItem != null) {
+                actionStack = actionItem.getDefaultInstance();
+            } else {
+                return false;
+            }
+        }
+
+        for (ArcItemStack arcStack : items) {
+            if (arcStack.matches(actionStack, checkComponents)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     @Override
-    public IConditionType<?> getType() {
+    public IConditionType<? extends ICondition> getType() {
         return IConditionType.ITEMS;
     }
 
-    private boolean isItem(ItemStack itemStack) {
-        return this.items.contains(itemStack.getItem());
+    @Override
+    public Component getDescription() {
+        List<String> allNames = items.stream()
+                .map(arcStack -> BuiltInRegistries.ITEM.getKey(arcStack.itemStack().getItem()).toString())
+                .distinct()
+                .collect(Collectors.toList());
+        return super.getDescription(String.join(", ", allNames));
     }
 
-    private boolean isItemByTag(ItemStack itemStack) {
-        return this.itemTags.stream().anyMatch(itemStack::is);
+    public List<ItemStack> getItemStacks() {
+        return getItemStacks(null);
     }
 
-    public List<Item> getItems() {
-        return items;
-    }
-
-    public List<TagKey<Item>> getItemTags() {
-        return itemTags;
-    }
-
-    public ArcItemTarget getTarget() {
-        return target;
-    }
-
+    @Deprecated()
     public List<ItemStack> getItemStacks(RegistryAccess registryAccess) {
-        List<ItemStack> itemStacks = new ArrayList<>();
-        for (Item item : items) {
-            itemStacks.add(new ItemStack(item));
-        }
-        for (TagKey<Item> itemTag : itemTags) {
-            registryAccess.lookupOrThrow(Registries.ITEM).get(itemTag).ifPresent(holders -> {
-                for (var holder : holders) {
-                    itemStacks.add(new ItemStack(holder.value()));
-                }
-            });
-        }
-        return itemStacks;
+        return items.stream().map(ArcItemStack::itemStack).collect(Collectors.toList());
     }
 
     public static class Serializer implements IConditionSerializer<ItemsCondition> {
+
         @Override
         public ItemsCondition fromJson(Identifier location, JsonObject jsonObject, boolean inverted) {
-            return new ItemsCondition(
-                    inverted,
-                    getItems(jsonObject, "items"),
-                    getItemTags(jsonObject, "items"),
-                    getItemTarget(jsonObject, "target", ArcItemTarget.ACTION)
-            );
+            boolean checkComponents = GsonHelper.getAsBoolean(jsonObject, "check_components", false);
+            List<ArcItemStack> items = new ArrayList<>();
+
+            JsonArray itemsArray = GsonHelper.getAsJsonArray(jsonObject, "items");
+            for (JsonElement element : itemsArray) {
+                if (element.isJsonPrimitive() && element.getAsJsonPrimitive().isString()) {
+                    String str = element.getAsString();
+                    if (str.startsWith("#")) {
+                        TagKey<Item> tagKey = TagKey.create(Registries.ITEM, Identifier.parse(str.substring(1)));
+                        BuiltInRegistries.ITEM.get(tagKey).ifPresent(named ->
+                                named.forEach(holder ->
+                                        items.add(new ArcItemStack(holder.value().getDefaultInstance()))));
+                    } else {
+                        BuiltInRegistries.ITEM.get(Identifier.parse(str)).ifPresent(item ->
+                                items.add(new ArcItemStack(item.value().getDefaultInstance())));
+                    }
+                } else if (element.isJsonObject()) {
+                    ArcItemStack stack = ArcItemStack.CODEC.parse(JsonOps.INSTANCE, element).getOrThrow();
+                    items.add(stack);
+                }
+            }
+
+            return new ItemsCondition(inverted, checkComponents, items);
         }
 
         @Override
         public ItemsCondition fromNetwork(Identifier location, RegistryFriendlyByteBuf buf, boolean inverted) {
-            int itemCount = buf.readVarInt();
-            int tagCount = buf.readVarInt();
-
-            List<Item> items = new ArrayList<>();
-            List<TagKey<Item>> itemTags = new ArrayList<>();
-
-            for (int i = 0; i < itemCount; i++) {
-                items.add(ByteBufCodecs.registry(Registries.ITEM).decode(buf));
-            }
-            for (int i = 0; i < tagCount; i++) {
-                itemTags.add(TagKey.create(BuiltInRegistries.ITEM.key(), buf.readIdentifier()));
-            }
-
-            return new ItemsCondition(inverted, items, itemTags, buf.readEnum(ArcItemTarget.class));
+            boolean checkComponents = buf.readBoolean();
+            List<ArcItemStack> items = buf.readList(buf1 -> ArcItemStack.STREAM_CODEC.decode((RegistryFriendlyByteBuf) buf1));
+            return new ItemsCondition(inverted, checkComponents, items);
         }
 
         @Override
         public void toNetwork(RegistryFriendlyByteBuf buf, ItemsCondition type) {
             IConditionSerializer.super.toNetwork(buf, type);
-            buf.writeVarInt(type.items.size());
-            buf.writeVarInt(type.itemTags.size());
-            type.items.forEach(item -> ByteBufCodecs.registry(Registries.ITEM).encode(buf, item));
-            type.itemTags.forEach(tag -> buf.writeIdentifier(tag.location()));
-            buf.writeEnum(type.target);
+            buf.writeBoolean(type.checkComponents);
+            buf.writeCollection(type.items, (buf1, stack) -> ArcItemStack.STREAM_CODEC.encode((RegistryFriendlyByteBuf) buf1, stack));
         }
     }
 }
