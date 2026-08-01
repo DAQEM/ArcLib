@@ -11,6 +11,7 @@ import com.daqem.arc.networking.ArcNetworking;
 import com.daqem.arc.registry.ArcRegistry;
 import com.daqem.arc.registry.EntityDataRegistry;
 import com.daqem.knot.Knot;
+import net.minecraft.resources.Identifier;
 
 public class Arc {
     public static final String MOD_ID = "arc";
@@ -24,7 +25,7 @@ public class Arc {
         ArcRegistry.init();
         EntityDataRegistry.init();
         Knot.RELOAD_REGISTRY.registerData(Arc.API.getId("please_do_not_use_this"), new PlayerActionHolderManager());
-        Knot.RELOAD_REGISTRY.registerData(Arc.API.getId(MOD_ID), new ActionManager());
+        Knot.RELOAD_REGISTRY.registerData(Arc.API.getId(MOD_ID), new ActionManager(), Identifier.parse("recipes"));
     }
 
     private static void registerEvents() {

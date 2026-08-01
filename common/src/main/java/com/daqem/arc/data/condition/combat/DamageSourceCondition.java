@@ -5,6 +5,7 @@ import com.daqem.arc.api.condition.AbstractCondition;
 import com.daqem.arc.api.condition.IConditionSerializer;
 import com.daqem.arc.api.condition.IConditionType;
 import com.daqem.arc.data.ActionData;
+import com.daqem.arc.data.RegistryOpsContext;
 import com.google.gson.JsonObject;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.JsonOps;
@@ -80,8 +81,8 @@ public class DamageSourceCondition extends AbstractCondition {
             return new DamageSourceCondition(
                     inverted,
                     GsonHelper.getAsString(jsonObject, "source", "any"),
-                    EntityType.CODEC.decode(JsonOps.INSTANCE, jsonObject.get("direct_entity_type")).result().orElse(new Pair<>(null, null)).getFirst(),
-                    EntityType.CODEC.decode(JsonOps.INSTANCE, jsonObject.get("causing_entity_type")).result().orElse(new Pair<>(null, null)).getFirst()
+                    EntityType.CODEC.decode(RegistryOpsContext.getOps(JsonOps.INSTANCE), jsonObject.get("direct_entity_type")).result().orElse(new Pair<>(null, null)).getFirst(),
+                    EntityType.CODEC.decode(RegistryOpsContext.getOps(JsonOps.INSTANCE), jsonObject.get("causing_entity_type")).result().orElse(new Pair<>(null, null)).getFirst()
             );
         }
 
