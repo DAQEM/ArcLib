@@ -5,6 +5,7 @@ import com.daqem.arc.api.condition.ICondition;
 import com.daqem.arc.api.condition.IConditionSerializer;
 import com.daqem.arc.api.reward.IReward;
 import com.daqem.arc.api.reward.IRewardSerializer;
+import com.daqem.arc.data.RegistryOpsContext;
 import com.daqem.arc.data.serializer.ArcSerializer;
 import com.daqem.arc.registry.ArcRegistry;
 import com.google.gson.JsonObject;
@@ -71,7 +72,7 @@ public interface IActionSerializer<T extends IAction> extends ArcSerializer {
 
         return fromJson(location, jsonObject,
                 getIdentifier(holderObject, "id"),
-                ArcRegistry.ACTION_HOLDER.byNameCodec().decode(JsonOps.INSTANCE, holderObject.get("type")).result()
+                ArcRegistry.ACTION_HOLDER.byNameCodec().decode(RegistryOpsContext.getOps(JsonOps.INSTANCE), holderObject.get("type")).result()
                         .orElseThrow(() -> new JsonParseException("Invalid action holder type")).getFirst(),
                 rewards, conditions);
     }

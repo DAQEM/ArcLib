@@ -3,6 +3,7 @@ package com.daqem.arc.data.serializer;
 import com.daqem.arc.api.ComparisonType;
 import com.daqem.arc.api.math.INumberProvider;
 import com.daqem.arc.api.math.MathOperator;
+import com.daqem.arc.data.RegistryOpsContext;
 import com.daqem.arc.data.math.ConstantNumberProvider;
 import com.daqem.arc.model.*;
 import com.daqem.arc.model.target.ArcEntityTarget;
@@ -50,7 +51,7 @@ public interface ArcSerializer {
             throw new JsonParseException("Expected '" + key + "' to be a resource location");
         }
 
-        return Identifier.CODEC.decode(JsonOps.INSTANCE, jsonObject.get(key)).result()
+        return Identifier.CODEC.decode(RegistryOpsContext.getOps(JsonOps.INSTANCE), jsonObject.get(key)).result()
                 .orElseGet(() -> {
                     if (defaultLocation != null) {
                         return new Pair<>(defaultLocation, null);
@@ -82,7 +83,7 @@ public interface ArcSerializer {
             throw new JsonParseException("Expected '" + key + "' to be a list of resource locations");
         }
 
-        return Identifier.CODEC.listOf().decode(JsonOps.INSTANCE, jsonObject.get(key)).result()
+        return Identifier.CODEC.listOf().decode(RegistryOpsContext.getOps(JsonOps.INSTANCE), jsonObject.get(key)).result()
                 .orElseGet(() -> {
                     if (defaultLocations != null) {
                         return new Pair<>(defaultLocations, null);
@@ -114,7 +115,7 @@ public interface ArcSerializer {
             throw new JsonParseException("Expected '" + key + "' to be an item");
         }
 
-        return BuiltInRegistries.ITEM.byNameCodec().decode(JsonOps.INSTANCE, jsonObject.get(key)).result()
+        return BuiltInRegistries.ITEM.byNameCodec().decode(RegistryOpsContext.getOps(JsonOps.INSTANCE), jsonObject.get(key)).result()
                 .orElseGet(() -> {
                     if (defaultItem != null) {
                         return new Pair<>(defaultItem, null);
@@ -154,7 +155,7 @@ public interface ArcSerializer {
             for (JsonElement itemElement : jsonArray) {
                 String itemName = itemElement.getAsString();
                 if (itemName != null && !itemName.startsWith("#")) {
-                    Item item = BuiltInRegistries.ITEM.byNameCodec().decode(JsonOps.INSTANCE, itemElement).result()
+                    Item item = BuiltInRegistries.ITEM.byNameCodec().decode(RegistryOpsContext.getOps(JsonOps.INSTANCE), itemElement).result()
                             .orElseThrow(() -> new JsonParseException("Expected '" + key + "' to be a list of items, but one of the items was invalid: " + itemName))
                             .getFirst();
                     items.add(item);
@@ -193,7 +194,7 @@ public interface ArcSerializer {
                     if (itemTagName != null && itemTagName.startsWith("#")) {
                         itemTagName = itemTagName.substring(1);
                         String finalItemTagName = itemTagName;
-                        Identifier resourceLocation = Identifier.CODEC.decode(JsonOps.INSTANCE, new JsonPrimitive(finalItemTagName)).result()
+                        Identifier resourceLocation = Identifier.CODEC.decode(RegistryOpsContext.getOps(JsonOps.INSTANCE), new JsonPrimitive(finalItemTagName)).result()
                                 .orElseThrow(() -> new JsonParseException("Expected '" + key + "' to be a list of item tags, but one of the item tags was invalid: " + finalItemTagName))
                                 .getFirst();
                         TagKey<Item> itemTag = TagKey.create(BuiltInRegistries.ITEM.key(), resourceLocation);
@@ -230,7 +231,7 @@ public interface ArcSerializer {
             return new ItemStack(item);
         }
 
-        return ItemStack.CODEC.decode(JsonOps.INSTANCE, element).result()
+        return ItemStack.CODEC.decode(RegistryOpsContext.getOps(JsonOps.INSTANCE), element).result()
                 .orElseGet(() -> {
                     if (defaultItemStack != null) {
                         return new Pair<>(defaultItemStack, null);
@@ -258,7 +259,7 @@ public interface ArcSerializer {
             throw new JsonParseException("Expected '" + key + "' to be an item stack template");
         }
 
-        return ItemStackTemplate.CODEC.decode(JsonOps.INSTANCE, jsonObject.get(key)).result()
+        return ItemStackTemplate.CODEC.decode(RegistryOpsContext.getOps(JsonOps.INSTANCE), jsonObject.get(key)).result()
                 .orElseGet(() -> {
                     if (defaultTemplate != null) {
                         return new Pair<>(defaultTemplate, null);
@@ -299,12 +300,12 @@ public interface ArcSerializer {
                 String itemName = itemElement.getAsString();
                 if (itemName != null && !itemName.startsWith("#")) {
                     if (itemElement.isJsonPrimitive()) {
-                        Item item = BuiltInRegistries.ITEM.byNameCodec().decode(JsonOps.INSTANCE, itemElement).result()
+                        Item item = BuiltInRegistries.ITEM.byNameCodec().decode(RegistryOpsContext.getOps(JsonOps.INSTANCE), itemElement).result()
                                 .orElseThrow(() -> new JsonParseException("Expected '" + key + "' to be a list of item stacks, but one of the items was invalid: " + itemElement.getAsString()))
                                 .getFirst();
                         itemStacks.add(new ItemStack(item));
                     } else {
-                        ItemStack itemStack = ItemStack.CODEC.decode(JsonOps.INSTANCE, itemElement).result()
+                        ItemStack itemStack = ItemStack.CODEC.decode(RegistryOpsContext.getOps(JsonOps.INSTANCE), itemElement).result()
                                 .orElseThrow(() -> new JsonParseException("Expected '" + key + "' to be a list of item stacks, but one of the item stacks was invalid"))
                                 .getFirst();
                         itemStacks.add(itemStack);
@@ -345,12 +346,12 @@ public interface ArcSerializer {
                 String itemName = itemElement.getAsString();
                 if (itemName != null && !itemName.startsWith("#")) {
                     if (itemElement.isJsonPrimitive()) {
-                        Item item = BuiltInRegistries.ITEM.byNameCodec().decode(JsonOps.INSTANCE, itemElement).result()
+                        Item item = BuiltInRegistries.ITEM.byNameCodec().decode(RegistryOpsContext.getOps(JsonOps.INSTANCE), itemElement).result()
                                 .orElseThrow(() -> new JsonParseException("Expected '" + key + "' to be a list of item stack templates, but one of the items was invalid: " + itemElement.getAsString()))
                                 .getFirst();
                         itemStacks.add(new ItemStackTemplate(item));
                     } else {
-                        ItemStackTemplate itemStack = ItemStackTemplate.CODEC.decode(JsonOps.INSTANCE, itemElement).result()
+                        ItemStackTemplate itemStack = ItemStackTemplate.CODEC.decode(RegistryOpsContext.getOps(JsonOps.INSTANCE), itemElement).result()
                                 .orElseThrow(() -> new JsonParseException("Expected '" + key + "' to be a list of item stack templates, but one of the item stack templates was invalid"))
                                 .getFirst();
                         itemStacks.add(itemStack);
@@ -386,7 +387,7 @@ public interface ArcSerializer {
             throw new JsonParseException("Expected '" + key + "' to be a mob effect");
         }
 
-        return BuiltInRegistries.MOB_EFFECT.byNameCodec().decode(JsonOps.INSTANCE, jsonObject.get(key)).result()
+        return BuiltInRegistries.MOB_EFFECT.byNameCodec().decode(RegistryOpsContext.getOps(JsonOps.INSTANCE), jsonObject.get(key)).result()
                 .orElseGet(() -> {
                     if (defaultEffect != null) {
                         return new Pair<>(defaultEffect, null);
@@ -425,7 +426,7 @@ public interface ArcSerializer {
             return new MobEffectInstance(Holder.direct(mobEffect), 200, 0, false, true);
         }
 
-        return MobEffectInstance.CODEC.decode(JsonOps.INSTANCE, element).result()
+        return MobEffectInstance.CODEC.decode(RegistryOpsContext.getOps(JsonOps.INSTANCE), element).result()
                 .orElseGet(() -> {
                     if (defaultEffect != null) {
                         return new Pair<>(defaultEffect, null);
@@ -493,7 +494,7 @@ public interface ArcSerializer {
             throw new JsonParseException("Expected '" + key + "' to be an enchantment");
         }
 
-        return ArcEnchantment.CODEC.decode(JsonOps.INSTANCE, jsonObject.get(key)).result()
+        return ArcEnchantment.CODEC.decode(RegistryOpsContext.getOps(JsonOps.INSTANCE), jsonObject.get(key)).result()
                 .orElseGet(() -> {
                     if (defaultEnchantment != null) {
                         return new Pair<>(defaultEnchantment, null);
@@ -525,7 +526,7 @@ public interface ArcSerializer {
             throw new JsonParseException("Expected '" + key + "' to be an enchantment");
         }
 
-        return ArcEnchantment.CODEC.listOf().decode(JsonOps.INSTANCE, jsonObject.get(key)).result()
+        return ArcEnchantment.CODEC.listOf().decode(RegistryOpsContext.getOps(JsonOps.INSTANCE), jsonObject.get(key)).result()
                 .orElseGet(() -> {
                     if (defaultEnchantment != null) {
                         return new Pair<>(defaultEnchantment, null);
@@ -557,7 +558,7 @@ public interface ArcSerializer {
             throw new JsonParseException("Expected '" + key + "' to be a comparison type");
         }
 
-        return ComparisonType.CODEC.decode(JsonOps.INSTANCE, jsonObject.get(key)).result()
+        return ComparisonType.CODEC.decode(RegistryOpsContext.getOps(JsonOps.INSTANCE), jsonObject.get(key)).result()
                 .orElseGet(() -> {
                     if (defaultType != null) {
                         return new Pair<>(defaultType, null);
@@ -589,7 +590,7 @@ public interface ArcSerializer {
             throw new JsonParseException("Expected '" + key + "' to be a block");
         }
 
-        return BuiltInRegistries.BLOCK.byNameCodec().decode(JsonOps.INSTANCE, jsonObject.get(key)).result()
+        return BuiltInRegistries.BLOCK.byNameCodec().decode(RegistryOpsContext.getOps(JsonOps.INSTANCE), jsonObject.get(key)).result()
                 .orElseGet(() -> {
                     if (defaultBlock != null) {
                         return new Pair<>(defaultBlock, null);
@@ -629,7 +630,7 @@ public interface ArcSerializer {
             for (JsonElement blockElement : jsonArray) {
                 String blockName = blockElement.getAsString();
                 if (blockName != null && !blockName.startsWith("#")) {
-                    Block block = BuiltInRegistries.BLOCK.byNameCodec().decode(JsonOps.INSTANCE, blockElement).result()
+                    Block block = BuiltInRegistries.BLOCK.byNameCodec().decode(RegistryOpsContext.getOps(JsonOps.INSTANCE), blockElement).result()
                             .orElseThrow(() -> new JsonParseException("Expected '" + key + "' to be a list of blocks, but one of the blocks was invalid: " + blockName))
                             .getFirst();
                     blocks.add(block);
@@ -657,7 +658,7 @@ public interface ArcSerializer {
             throw new JsonParseException("Expected '" + key + "' to be a block");
         }
 
-        return ArcBlockState.CODEC.decode(JsonOps.INSTANCE, jsonObject.get(key)).result()
+        return ArcBlockState.CODEC.decode(RegistryOpsContext.getOps(JsonOps.INSTANCE), jsonObject.get(key)).result()
                 .orElseGet(() -> {
                     if (defaultBlock != null) {
                         return new Pair<>(defaultBlock, null);
@@ -702,7 +703,7 @@ public interface ArcSerializer {
             filteredArray.add(element);
         }
 
-        return ArcBlockState.CODEC.listOf().decode(JsonOps.INSTANCE, filteredArray).result()
+        return ArcBlockState.CODEC.listOf().decode(RegistryOpsContext.getOps(JsonOps.INSTANCE), filteredArray).result()
                 .orElseGet(() -> {
                     if (defaultBlocks != null) {
                         return new Pair<>(defaultBlocks, null);
@@ -745,7 +746,7 @@ public interface ArcSerializer {
                     if (blockTagName != null && blockTagName.startsWith("#")) {
                         blockTagName = blockTagName.substring(1);
                         String finalBlockTagName = blockTagName;
-                        Identifier resourceLocation = Identifier.CODEC.decode(JsonOps.INSTANCE, new JsonPrimitive(finalBlockTagName)).result()
+                        Identifier resourceLocation = Identifier.CODEC.decode(RegistryOpsContext.getOps(JsonOps.INSTANCE), new JsonPrimitive(finalBlockTagName)).result()
                                 .orElseThrow(() -> new JsonParseException("Expected '" + key + "' to be a list of block tags, but one of the block tags was invalid: " + finalBlockTagName))
                                 .getFirst();
                         TagKey<Block> blockTag = TagKey.create(BuiltInRegistries.BLOCK.key(), resourceLocation);
@@ -775,7 +776,7 @@ public interface ArcSerializer {
             throw new JsonParseException("Expected '" + key + "' to be an entity type");
         }
 
-        return BuiltInRegistries.ENTITY_TYPE.byNameCodec().decode(JsonOps.INSTANCE, jsonObject.get(key)).result()
+        return BuiltInRegistries.ENTITY_TYPE.byNameCodec().decode(RegistryOpsContext.getOps(JsonOps.INSTANCE), jsonObject.get(key)).result()
                 .orElseGet(() -> {
                     if (defaultEntityType != null) {
                         return new Pair<>(defaultEntityType, null);
@@ -815,7 +816,7 @@ public interface ArcSerializer {
             for (JsonElement entityTypeElement : jsonArray) {
                 String entityTypeName = entityTypeElement.getAsString();
                 if (entityTypeName != null && !entityTypeName.startsWith("#")) {
-                    EntityType<?> entityType = BuiltInRegistries.ENTITY_TYPE.byNameCodec().decode(JsonOps.INSTANCE, entityTypeElement).result()
+                    EntityType<?> entityType = BuiltInRegistries.ENTITY_TYPE.byNameCodec().decode(RegistryOpsContext.getOps(JsonOps.INSTANCE), entityTypeElement).result()
                             .orElseThrow(() -> new JsonParseException("Expected '" + key + "' to be a list of entity types, but one of the entity types was invalid: " + entityTypeName))
                             .getFirst();
                     entityTypes.add(entityType);
@@ -843,7 +844,7 @@ public interface ArcSerializer {
             throw new JsonParseException("Expected '" + key + "' to be a entity data property");
         }
 
-        return EntityDataProperty.CODEC.decode(JsonOps.INSTANCE, jsonObject.get(key)).result()
+        return EntityDataProperty.CODEC.decode(RegistryOpsContext.getOps(JsonOps.INSTANCE), jsonObject.get(key)).result()
                 .orElseGet(() -> {
                     if (defaultEntityDataProperty != null) {
                         return new Pair<>(defaultEntityDataProperty, null);
@@ -875,7 +876,7 @@ public interface ArcSerializer {
             throw new JsonParseException("Expected '" + key + "' to be a list of entity data properties");
         }
 
-        return EntityDataProperty.CODEC.listOf().decode(JsonOps.INSTANCE, jsonObject.get(key)).result()
+        return EntityDataProperty.CODEC.listOf().decode(RegistryOpsContext.getOps(JsonOps.INSTANCE), jsonObject.get(key)).result()
                 .orElseGet(() -> {
                     if (defaultEntityDataProperties != null) {
                         return new Pair<>(defaultEntityDataProperties, null);
@@ -1072,7 +1073,7 @@ public interface ArcSerializer {
             throw new JsonParseException("Expected '" + elementName + "' to be a dimension");
         }
 
-        return Level.RESOURCE_KEY_CODEC.decode(JsonOps.INSTANCE, jsonObject.get(elementName)).result()
+        return Level.RESOURCE_KEY_CODEC.decode(RegistryOpsContext.getOps(JsonOps.INSTANCE), jsonObject.get(elementName)).result()
                 .orElseGet(() -> {
                     if (defaultDimension != null) {
                         return new Pair<>(defaultDimension, null);
@@ -1104,7 +1105,7 @@ public interface ArcSerializer {
             throw new JsonParseException("Expected '" + key + "' to be a sound event");
         }
 
-        return BuiltInRegistries.SOUND_EVENT.holderByNameCodec().decode(JsonOps.INSTANCE, jsonObject.get(key)).result()
+        return BuiltInRegistries.SOUND_EVENT.holderByNameCodec().decode(RegistryOpsContext.getOps(JsonOps.INSTANCE), jsonObject.get(key)).result()
                 .orElseGet(() -> {
                     if (defaultSoundEvent != null) {
                         return new Pair<>(defaultSoundEvent, null);
