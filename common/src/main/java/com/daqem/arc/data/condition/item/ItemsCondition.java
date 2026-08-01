@@ -1,5 +1,6 @@
 package com.daqem.arc.data.condition.item;
 
+import com.daqem.arc.api.ComponentMatchType;
 import com.daqem.arc.api.action.data.IActionDataType;
 import com.daqem.arc.api.condition.AbstractCondition;
 import com.daqem.arc.api.condition.ICondition;
@@ -29,12 +30,12 @@ import java.util.stream.Collectors;
 
 public class ItemsCondition extends AbstractCondition {
 
-    private final boolean checkComponents;
+    private final ComponentMatchType componentMatchType;
     private final List<ArcItemStack> items;
 
-    public ItemsCondition(boolean inverted, boolean checkComponents, List<ArcItemStack> items) {
+    public ItemsCondition(boolean inverted, ComponentMatchType componentMatchType, List<ArcItemStack> items) {
         super(inverted);
-        this.checkComponents = checkComponents;
+        this.componentMatchType = componentMatchType;
         this.items = items;
     }
 
@@ -51,7 +52,7 @@ public class ItemsCondition extends AbstractCondition {
         }
 
         for (ArcItemStack arcStack : items) {
-            if (arcStack.matches(actionStack, checkComponents)) {
+            if (arcStack.matches(actionStack, componentMatchType)) {
                 return true;
             }
         }
@@ -82,11 +83,15 @@ public class ItemsCondition extends AbstractCondition {
         return items.stream().map(ArcItemStack::getItemStack).collect(Collectors.toList());
     }
 
+    public ComponentMatchType getComponentMatchType() {
+        return componentMatchType;
+    }
+
     public static class Serializer implements IConditionSerializer<ItemsCondition> {
 
         @Override
         public ItemsCondition fromJson(Identifier location, JsonObject jsonObject, boolean inverted) {
-            boolean checkComponents = GsonHelper.getAsBoolean(jsonObject, "check_components", false);
+            ComponentMatchType componentMatchType = ComponentMatchType.fromJson(jsonObject, "check_components", ComponentMatchType.NONE);
             List<ArcItemStack> items = new ArrayList<>();
 
             JsonArray itemsArray = GsonHelper.getAsJsonArray(jsonObject, "items");
@@ -108,20 +113,20 @@ public class ItemsCondition extends AbstractCondition {
                 }
             }
 
-            return new ItemsCondition(inverted, checkComponents, items);
+            return new ItemsCondition(inverted, componentMatchType, items);
         }
 
         @Override
         public ItemsCondition fromNetwork(Identifier location, RegistryFriendlyByteBuf buf, boolean inverted) {
-            boolean checkComponents = buf.readBoolean();
+            ComponentMatchType componentMatchType = buf.readEnum(ComponentMatchType.class);
             List<ArcItemStack> items = buf.readList(buf1 -> ArcItemStack.STREAM_CODEC.decode((RegistryFriendlyByteBuf) buf1));
-            return new ItemsCondition(inverted, checkComponents, items);
+            return new ItemsCondition(inverted, componentMatchType, items);
         }
 
         @Override
         public void toNetwork(RegistryFriendlyByteBuf buf, ItemsCondition type) {
             IConditionSerializer.super.toNetwork(buf, type);
-            buf.writeBoolean(type.checkComponents);
+            buf.writeEnum(type.componentMatchType);
             buf.writeCollection(type.items, (buf1, stack) -> ArcItemStack.STREAM_CODEC.encode((RegistryFriendlyByteBuf) buf1, stack));
         }
     }

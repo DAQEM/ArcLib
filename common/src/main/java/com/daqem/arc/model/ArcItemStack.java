@@ -1,5 +1,6 @@
 package com.daqem.arc.model;
 
+import com.daqem.arc.api.ComponentMatchType;
 import com.mojang.serialization.Codec;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -41,14 +42,12 @@ public class ArcItemStack {
         return getItemStack().getHoverName();
     }
 
-    public boolean matches(ItemStack other, boolean checkComponents) {
+    public boolean matches(ItemStack other, ComponentMatchType matchType) {
         boolean sameItem = ItemStack.isSameItem(getItemStack(), other);
         boolean hasCount = getItemStack().getCount() > 1;
         boolean sameCount = other.getCount() == getItemStack().getCount();
         boolean passOnCount = !hasCount || sameCount;
-        boolean hasComponents = !checkComponents || !getItemStack().getComponents().isEmpty();
-        boolean sameComponents = !checkComponents || ItemStack.isSameItemSameComponents(getItemStack(), other);
-        boolean passOnComponents = !checkComponents || !hasComponents || sameComponents;
+        boolean passOnComponents = matchType.matches(getItemStack(), other);
         return sameItem && passOnCount && passOnComponents;
     }
 }
