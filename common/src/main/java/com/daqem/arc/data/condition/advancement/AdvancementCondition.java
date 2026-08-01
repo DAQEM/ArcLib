@@ -6,6 +6,7 @@ import com.daqem.arc.api.condition.ICondition;
 import com.daqem.arc.api.condition.IConditionSerializer;
 import com.daqem.arc.api.condition.IConditionType;
 import com.daqem.arc.data.ActionData;
+import com.daqem.arc.data.RegistryOpsContext;
 import com.google.gson.JsonObject;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.JsonOps;
@@ -66,7 +67,7 @@ public class AdvancementCondition extends AbstractCondition {
                     inverted,
                     getOptionalIdentifier(jsonObject, "id"),
                     getOptionalIdentifier(jsonObject, "parent_id"),
-                    AdvancementType.CODEC.decode(JsonOps.INSTANCE, jsonObject.get("type")).result().orElse(new Pair<>(null, null)).getFirst()
+                    AdvancementType.CODEC.decode(RegistryOpsContext.getOps(JsonOps.INSTANCE), jsonObject.get("type")).result().orElse(new Pair<>(null, null)).getFirst()
             );
         }
 

@@ -12,6 +12,7 @@
     "MixinAbstractArrow",
     "MixinAbstractCookingRecipe",
     "MixinIngredient",
+    "MixinRecipeManager",
     "MixinServerPlayer",
     "MobEffectInstanceAccessor",
     "PlayerListMixin"
