@@ -1,5 +1,6 @@
 package com.daqem.arc.data.condition.item;
 
+import com.daqem.arc.api.ComponentMatchType;
 import com.daqem.arc.api.condition.AbstractCondition;
 import com.daqem.arc.api.condition.IConditionSerializer;
 import com.daqem.arc.api.condition.IConditionType;
@@ -9,7 +10,6 @@ import com.google.gson.JsonObject;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -21,12 +21,12 @@ import java.util.stream.Collectors;
 public class FullArmorSetCondition extends AbstractCondition {
 
     private final List<ArcItemStack> armorItems;
-    private final boolean checkComponents;
+    private final ComponentMatchType componentMatchType;
 
-    public FullArmorSetCondition(boolean inverted, List<ArcItemStack> armorItems, boolean checkComponents) {
+    public FullArmorSetCondition(boolean inverted, List<ArcItemStack> armorItems, ComponentMatchType componentMatchType) {
         super(inverted);
         this.armorItems = armorItems;
-        this.checkComponents = checkComponents;
+        this.componentMatchType = componentMatchType;
     }
 
     @Override
@@ -51,7 +51,7 @@ public class FullArmorSetCondition extends AbstractCondition {
         return this.armorItems.stream()
                 .allMatch(x -> equippedArmor.stream()
                         .anyMatch(y ->
-                                x.matches(y, this.checkComponents)
+                                x.matches(y, this.componentMatchType)
                         )
                 );
     }
@@ -61,6 +61,10 @@ public class FullArmorSetCondition extends AbstractCondition {
         return IConditionType.FULL_ARMOR_SET;
     }
 
+    public ComponentMatchType getComponentMatchType() {
+        return componentMatchType;
+    }
+
     public static class Serializer implements IConditionSerializer<FullArmorSetCondition> {
 
         @Override
@@ -68,7 +72,7 @@ public class FullArmorSetCondition extends AbstractCondition {
             return new FullArmorSetCondition(
                     inverted,
                     getItemStackTemplates(jsonObject, "items").stream().map(ArcItemStack::new).toList(),
-                    GsonHelper.getAsBoolean(jsonObject, "check_components", true)
+                    ComponentMatchType.fromJson(jsonObject, "check_components", ComponentMatchType.EXACT)
             );
         }
 
@@ -77,7 +81,7 @@ public class FullArmorSetCondition extends AbstractCondition {
             return new FullArmorSetCondition(
                     inverted,
                     friendlyByteBuf.readList(object -> ItemStackTemplate.STREAM_CODEC.decode(friendlyByteBuf)).stream().map(ArcItemStack::new).toList(),
-                    friendlyByteBuf.readBoolean()
+                    friendlyByteBuf.readEnum(ComponentMatchType.class)
             );
         }
 
@@ -85,7 +89,7 @@ public class FullArmorSetCondition extends AbstractCondition {
         public void toNetwork(RegistryFriendlyByteBuf friendlyByteBuf, FullArmorSetCondition type) {
             IConditionSerializer.super.toNetwork(friendlyByteBuf, type);
             friendlyByteBuf.writeCollection(type.armorItems.stream().map(ArcItemStack::getItemStackTemplate).toList(), (buf, itemStack) -> ItemStackTemplate.STREAM_CODEC.encode((RegistryFriendlyByteBuf) buf, itemStack));
-            friendlyByteBuf.writeBoolean(type.checkComponents);
+            friendlyByteBuf.writeEnum(type.componentMatchType);
         }
     }
 }
