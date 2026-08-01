@@ -10,7 +10,6 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
-import java.util.Objects;
 
 public enum ComponentMatchType implements StringRepresentable {
     NONE("none"),
@@ -31,9 +30,19 @@ public enum ComponentMatchType implements StringRepresentable {
             case NONE -> true;
             case EXACT -> ItemStack.isSameItemSameComponents(targetStack, currentStack);
             case CONTAINS -> {
-                for (var component : targetStack.getComponents()) {
-                    if (!Objects.equals(currentStack.get(component.type()), component.value())) {
-                        yield false;
+                // We only check the components that were explicitly defined in the patch (from the JSON).
+                // This ignores default components inherited from the base item (e.g. max_damage on a diamond helmet).
+                for (var entry : targetStack.getComponentsPatch().entrySet()) {
+                    if (entry.getValue().isPresent()) {
+                        if (!java.util.Objects.equals(currentStack.get(entry.getKey()), entry.getValue().get())) {
+                            yield false;
+                        }
+                    } else {
+                        // If it's empty, it means the component was explicitly removed in the patch.
+                        // So the current stack should NOT have it.
+                        if (currentStack.has(entry.getKey())) {
+                            yield false;
+                        }
                     }
                 }
                 yield true;
