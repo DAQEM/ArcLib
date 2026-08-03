@@ -25,7 +25,7 @@ public class Arc {
         ArcRegistry.init();
         EntityDataRegistry.init();
         Knot.RELOAD_REGISTRY.registerData(Arc.API.getId("please_do_not_use_this"), new PlayerActionHolderManager());
-        Knot.RELOAD_REGISTRY.registerData(Arc.API.getId(MOD_ID), new ActionManager(), Identifier.parse("recipes"));
+        Knot.RELOAD_REGISTRY.registerData(Arc.API.getId(MOD_ID), new ActionManager());
     }
 
     private static void registerEvents() {
