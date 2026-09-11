@@ -12,7 +12,9 @@
     "MixinBlockBehaviour",
     "MixinHoeItem",
     "PlayerMixin",
-    "ServerPlayerMixin"
+    "ServerPlayerMixin",
+    "compat.fallingtree.FallingTreeCommonsImplMixin",
+    "compat.rightclickharvest.RightClickHarvestPlatformImplMixin"
   ],
   "injectors": {
     "defaultRequire": 1
